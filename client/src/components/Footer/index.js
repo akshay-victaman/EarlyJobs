@@ -16,7 +16,7 @@ const Footer = () => {
                     <FaLinkedin className="footer-social-media-icon" />
                 </a>
                 <a href="https://goformeet.co/" className="footer-social-media-link" rel="noreferrer" target="_blank">
-                    <img src="/favicon_logo.png" alt="goformeet" className="footer-social-media-image" />
+                    <img src="/goformeet_logo.png" alt="goformeet" className="footer-social-media-image" />
                 </a>
                 <a href="https://www.t.me/earlyjobsoffice/" className="footer-social-media-link" rel="noreferrer" target="_blank">
                     <FaTelegram className="footer-social-media-icon" />
