@@ -1,0 +1,42 @@
+.profile-filters-container {
+    width: 100%;
+  }
+  
+  .line {
+    width: 100%;
+    border: 1px solid #475569;
+    margin-top: 25px;
+    margin-bottom: 20px;
+  }
+  
+  .search-box-mobile-con {
+    display: none;
+  }
+  
+  .filter-jobs-heading {
+    font-size: 15px;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 16px;
+  }
+  
+  .filter-jobs-employment-type-list {
+    padding-left: 0px;
+    list-style-type: none;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .profile-filters-container {
+      width: 100%;
+    }
+    .search-box-mobile-con {
+      display: flex;
+      border: 1px solid #475569;
+      border-radius: 4px;
+      width: 100%;
+      padding-left: 15px;
+      align-items: center;
+      margin-bottom: 20px;
+      align-self: flex-start;
+    }
+  }

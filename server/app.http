@@ -1,0 +1,181 @@
+// Get all users
+GET http://localhost:5000/api/users/
+
+###
+
+GET https://job-backend-c3ah.onrender.com/
+
+###
+
+// Get user by username
+GET http://localhost:5000/api/users/AksHay
+
+###
+
+// user registration
+POST http://localhost:5000/api/users/register
+Content-Type: application/json
+
+{
+    "username": "likki",
+    "password": "likki123",
+    "email": "likki@gmail.com",
+    "role": "BDE",
+    "location": "Mumbai",
+    "hiringCtc": 6,
+    "industry": "IT"
+}
+
+###
+
+// user login
+POST http://localhost:5000/api/users/login
+Content-Type: application/json
+    
+{
+    "username": "akshay",
+    "password": "akshay123"
+}
+
+###
+
+// Get all Account Managers
+GET http://localhost:5000/api/users/all/account-managers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Get all HRs
+GET http://localhost:5000/api/users/all/hr
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Post new Job
+POST http://localhost:5000/jobs/add/new
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+{
+    "companyName": "Google",
+    "title": "Software Engineer",
+    "category": "IT",
+    "description": "Software Engineer",
+    "location": "Bangalore",
+    "ctc": 10,
+    "skills": "Java, Python, C++",
+    "employmentType": "Full Time",
+    "workType": "Work From Home",
+    "commission": "10%",
+    "noOfOpenings": 10,
+    "status": "Open",
+    "hiringNeed": "Urgent",
+    "postedBy": "Prashobh",
+    "assignedTo": "Akshay"
+}
+
+###
+
+// Get jobs Details
+GET http://localhost:5000/jobs/details/1e49bd38-57c0-4110-ae8a-6a56fd223582
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// assign job to HR
+POST http://localhost:5000/jobs/assign
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+    
+{
+    "jobId": "1e49bd38-57c0-4110-ae8a-6a56fd223582",
+    "assignedTo": "Yashwanth",
+    "assignedBy": "Prashobh"
+}
+
+###
+
+// Get all jobs for Account Manager
+GET http://localhost:5000/jobs/account-manager/sAi
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Get all jobs for HR
+GET http://localhost:5000/jobs/hr/Yashwanth
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Post candidate details
+POST http://localhost:5000/jobs/candidate/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+{
+    "candidateName": "santhosh",
+    "candidateEmail": "santhosh123@gmail.com",
+    "candidatePhone": "9874563210",
+    "jobId": "38993740-f3d8-4749-871f-9dab5dfafce7",
+    "username": "Akshay",
+    "offerStatus": "Pending"
+}
+
+###
+
+// Get all candidates for Job
+GET http://localhost:5000/jobs/candidate/38993740-f3d8-4749-871f-9dab5dfafce7
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Update candidate Job status
+PUT http://localhost:5000/jobs/candidate/status/update
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+{
+    "candidateId": "d51e4560-5ad3-4025-9878-f4b6b48e80a3",
+    "jobId": "38993740-f3d8-4749-871f-9dab5dfafce7",
+    "username": "Akshay",
+    "offerStatus": "Selected"
+}
+
+###
+
+// Get all users for Admin
+GET http://localhost:5000/admin/get-users/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Get all candidates for Admin
+GET http://localhost:5000/admin/get-candidates/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Get all jobs for Admin
+GET http://localhost:5000/admin/get-jobs/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Update a Job to Archive
+PUT http://localhost:5000/admin/archive-job/c6ecbe67-5ee1-4bbc-91db-a6bc781f81a0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Block a user
+PUT http://localhost:5000/admin/block-user/John Doe
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Unblock a user
+PUT http://localhost:5000/admin/unblock-user/John Doe
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+

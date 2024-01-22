@@ -1,0 +1,16 @@
+.salary-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.salary-input {
+    width: 48% !important;
+}
+
+.spoc-label {
+    font-size: 16px;
+    text-align: center;
+    margin: 10px 0px;
+}

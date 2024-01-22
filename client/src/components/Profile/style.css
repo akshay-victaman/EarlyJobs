@@ -1,0 +1,71 @@
+.profile-container {
+    background-image: url('/public/gold-image-bg.jpg');
+    width: 100%;
+    background-size: cover;
+    padding: 30px 15px;
+    font-family: 'Roboto';
+    border-radius: 20px;
+  }
+  
+  .profile-image {
+    width: 50px;
+  }
+  
+  .profile-name {
+    font-size: 20px;
+    color: #4f46e5;
+    font-weight: 500;
+    margin-top: 5px;
+  }
+  
+  .profile-designation {
+    font-size: 15px;
+    color: #475569;
+    line-height: 1.5;
+    margin-top: 13px;
+    margin-bottom: 0px;
+  }
+  
+  .loader-container-job {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 200px;
+  }
+  
+  .profile-failure-con {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .profile-failure-button {
+    background-color: #f9a828;
+    color: #ffffff;
+    border: 0px;
+    border-radius: 4px;
+    padding: 10px 25px;
+    font-size: 10px;
+    font-family: 'Roboto';
+  }
+  
+  @media screen and (max-width: 768px) {
+    .profile-image {
+      width: 40px;
+    }
+    .profile-name {
+      font-size: 15px;
+    }
+    .profile-designation {
+      font-size: 12px;
+    }
+    .loader-container {
+      height: 160px;
+    }
+    .profile-failure-con {
+      height: 160px;
+    }
+  }

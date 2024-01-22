@@ -1,0 +1,173 @@
+.bde-container {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bde-heading {
+    font-size: 25px;
+    font-weight: 600;
+    color: #2a2727;
+}
+
+.head-span {
+    color: #EB6A4D;
+    text-decoration: underline;
+}
+
+
+.add-job-container {
+    height: 75vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.bde-heading-another-job {
+    font-size: 20px;
+    font-weight: 600;
+    color: #31bd31;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+ .bde-job-form {
+    width: 90%;
+    display: flex;
+    padding: 20px 15px;
+    flex-direction: column;
+    border-radius: 10px;
+    border: 1px solid #EB6A4D;
+    width: 50%;
+    margin-top: 25px;
+    margin-bottom: 10vh;
+ }
+
+ .bde-form-heading {
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #2a2727;
+ }
+
+ .bde-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 18vh;
+ }
+
+ .bde-form-btn {
+    background-color: #EB6A4D;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    width: 100%;
+    font-weight: 600;
+    margin-top: 10px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bde-form-btn-an {
+    background-color: #31bd31;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    font-weight: 600;
+    margin-top: 10px;
+    height: 35px;
+}
+
+ .bde-form-btn:hover {
+    background-color: #EB6A4D;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    width: 100%;
+    font-weight: 600;
+    margin-top: 10px;
+    height: 35px;
+    box-shadow: 0px 0px 10px 0px #EB6A4D;
+ }
+
+ .bde-form-btn-an:hover {
+    background-color: #31bd31;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    font-weight: 600;
+    margin-top: 10px;
+    height: 35px;
+    box-shadow: 0px 0px 10px 0px #31bd31;
+}
+
+ .bde-form-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #3a3a3a;
+ }
+
+ .bde-form-input {
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #EB6A4D;
+    width: 100%;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    font-size: 14px;
+    outline: none;
+}
+
+ @media screen and (max-width: 768px) {
+    .bde-job-form {
+        width: 100%;
+    }
+    .bde-heading {
+        font-size: 20px;
+        text-align: center;
+    }
+    .bde-container {
+        padding: 0px 15px;
+    }
+    .bde-content {
+        margin-top: 12vh;
+    }
+    .bde-heading-another-job {
+        font-size: 18px;
+        text-align: center;
+    }
+ }
+
+@media screen and (min-width: 1024px) {
+    .bde-job-form {
+        width: 40%;
+    }
+}
