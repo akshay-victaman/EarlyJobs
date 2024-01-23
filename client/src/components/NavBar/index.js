@@ -3,7 +3,6 @@ import { useState } from 'react';
 import Cookies from 'js-cookie';
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import './style.css'
-import Footer from '../Footer';
 
 const NavBar = ({isLoggedIn}) => {
 
@@ -22,6 +21,8 @@ const NavBar = ({isLoggedIn}) => {
         history.replace('/');
     }
 
+    const jwtToken = Cookies.get('jwt_token');
+
     return (
         <>
             <nav className="navbar">
@@ -31,7 +32,7 @@ const NavBar = ({isLoggedIn}) => {
                 <ul className='nav-list'>
 
                     {
-                        isLoggedIn && 
+                        jwtToken && 
                         <>
                             <li className='nav-item'>
                                 <Link to='/' className='nav-link'>Home</Link>
@@ -50,11 +51,23 @@ const NavBar = ({isLoggedIn}) => {
                             <button type='button' className='signup-button'>Add Job Vacancies</button>
                         </Link>
                     </li>
-                    <li className='nav-item'>
+                    {
+                        jwtToken !== undefined ?
+                        <li className='nav-item'>
+                            <button type='button' className='signup-button' onClick={onClickLogout}>Logout</button>
+                        </li>
+                        :
+                        <li className='nav-item'>
+                            <Link to='/apply-as-a-hiring-partner' className='nav-link'>
+                                <button type='button' className='signup-button'>Apply as a hiring partner</button>
+                            </Link>
+                        </li>
+                    }
+                    {/* <li className='nav-item'>
                         <Link to='/apply-as-a-hiring-partner' className='nav-link'>
                             <button type='button' className='signup-button' onClick={onClickLogout}>{isLoggedIn ? 'Logout' : 'Apply as a hiring partner'}</button>
                         </Link>
-                    </li>
+                    </li> */}
                 </ul>
                 <button type='button' className='hamburger-menu'>
                     {
@@ -69,14 +82,8 @@ const NavBar = ({isLoggedIn}) => {
                 menuOpen && 
                 <div className='nav-overlay'>
                     <ul className='nav-list-mobile'>
-                        {/* <li className='nav-item-mobile'>
-                            <Link to='/' className='nav-link'>Home</Link>
-                        </li>
-                        <li className='nav-item-mobile'>
-                            <Link to='/jobs' className='nav-link'>Jobs</Link>
-                        </li> */}
                         {
-                            isLoggedIn && 
+                            jwtToken && 
                             <>
                                 <li className='nav-item-mobile'>
                                     <Link to='/' className='nav-link'>Home</Link>
@@ -96,9 +103,17 @@ const NavBar = ({isLoggedIn}) => {
                             </Link>
                         </li>
                         <li className='nav-item-mobile'>
-                            <Link to={isLoggedIn ? '/' : '/apply-as-a-hiring-partner'} className='nav-link'>
+                            {
+                                jwtToken !== undefined ?
+                                <button type='button' className='signup-button' onClick={onClickLogout}>Logout</button>
+                                :
+                                <Link to='/apply-as-a-hiring-partner' className='nav-link'>
+                                    <button type='button' className='signup-button'>Apply as a hiring partner</button>
+                                </Link>
+                            }
+                            {/* <Link to={isLoggedIn ? '/' : '/apply-as-a-hiring-partner'} className='nav-link'>
                                 <button type='button' className='signup-button'>{isLoggedIn ? 'Logout' : 'Apply as a hiring partner'}</button>
-                            </Link>
+                            </Link> */}
                         </li>
                     </ul>
                 </div>

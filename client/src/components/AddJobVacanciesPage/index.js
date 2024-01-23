@@ -34,7 +34,7 @@ const AddJobVacanciesPage = () => {
         noOfOpenings: '',
         status: '',
         hiringNeed: '',
-        spocDetails: {
+        companyDetails: {
             name: '',
             email: '',
             contactNo: ''
@@ -69,7 +69,7 @@ const AddJobVacanciesPage = () => {
 
     const handleSpocDetailsChange = (e) => {
         const {name, value} = e.target;
-        setAddJobVacancies({ ...addJobVacancies, spocDetails: { ...addJobVacancies.spocDetails, [name]: value}})
+        setAddJobVacancies({ ...addJobVacancies, companyDetails: { ...addJobVacancies.companyDetails, [name]: value}})
     }
 
     const onChangeSkills = (e) => {
@@ -143,7 +143,7 @@ const AddJobVacanciesPage = () => {
                 noOfOpenings: '',
                 status: '',
                 hiringNeed: '',
-                spocDetails: {
+                companyDetails: {
                     name: '',
                     email: '',
                     contactNo: ''
@@ -172,13 +172,13 @@ const AddJobVacanciesPage = () => {
         } else if(addJobVacancies.skills.length === 0 && skills !== "") {
             setError("*Please enter skills")
             return
-        } else if(addJobVacancies.spocDetails.name.trim().length === 0) {
+        } else if(addJobVacancies.companyDetails.name.trim().length === 0) {
             setError("*Please enter SPOC/HR name")
             return
-        } else if(!emailRegex.test(addJobVacancies.spocDetails.email)) {
+        } else if(!emailRegex.test(addJobVacancies.companyDetails.email)) {
             setError("*Please enter valid SPOC/HR email")
             return
-        } else if(addJobVacancies.spocDetails.contactNo.length !== 10) {
+        } else if(addJobVacancies.companyDetails.contactNo.length !== 10) {
             setError("*Please enter valid SPOC/HR contact no")
             return
         }
@@ -200,7 +200,7 @@ const AddJobVacanciesPage = () => {
             noOfOpenings: addJobVacancies.noOfOpenings,
             status: addJobVacancies.status,
             hiringNeed: addJobVacancies.hiringNeed,
-            spocDetails: addJobVacancies.spocDetails,
+            companyDetails: addJobVacancies.companyDetails,
         }
 
         onSubmitToFirestore(newJob)
@@ -212,8 +212,7 @@ const AddJobVacanciesPage = () => {
         <form className='bde-job-form' onSubmit={handlePostJob}>
             <p className='hr-form-subtitle'>( <span className='hr-form-span'>*</span> ) Indicates required field</p>
             {/* <h1 className='bde-form-heading'>Post New Job</h1> */}
-            <label className='bde-form-label' htmlFor='company'>Comapany Name<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='company' required onChange={handleInputChange} value={addJobVacancies.companyName} name='companyName' type='text' placeholder='Enter Company Name' />
+            
             <label className='bde-form-label' htmlFor='title'>Job Title<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='title' required onChange={handleInputChange} value={addJobVacancies.jobTitle} name='jobTitle' type='text' placeholder='Enter Job Title' />
             <label className='bde-form-label' htmlFor='category'>Category<span className='hr-form-span'> *</span></label>
@@ -295,13 +294,15 @@ const AddJobVacanciesPage = () => {
                 <option value='Future'>Future</option>
             </select>
 
-            <label className='bde-form-label spoc-label'>Assign To SPOC/HR<span className='hr-form-span'> *</span></label>
-            <label className='bde-form-label' htmlFor='spoc-name'>SPOC/HR Name<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='spoc-name' type='text' required onChange={handleSpocDetailsChange} value={addJobVacancies.spocDetails.name} name='name' placeholder='Enter SPOC/HR Name' />
-            <label className='bde-form-label' htmlFor='spoc-email'>SPOC/HR Email<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='spoc-email' type='email' required onChange={handleSpocDetailsChange} value={addJobVacancies.spocDetails.email} name='email' placeholder='Enter SPOC/HR Email' />
-            <label className='bde-form-label' htmlFor='spoc-phone'>SPOC/HR Contact No.<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='spoc-phone' type='number' required onChange={handleSpocDetailsChange} value={addJobVacancies.spocDetails.contactNo} name='contactNo' placeholder='Enter SPOC/HR Contact No' />
+            <label className='bde-form-label spoc-label'>Your Company Details<span className='hr-form-span'> *</span></label>
+            <label className='bde-form-label' htmlFor='company'>Comapany Name<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='company' required onChange={handleInputChange} value={addJobVacancies.companyName} name='companyName' type='text' placeholder='Enter Company Name' />
+            <label className='bde-form-label' htmlFor='spoc-name'>Your Name<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='spoc-name' type='text' required onChange={handleSpocDetailsChange} value={addJobVacancies.companyDetails.name} name='name' placeholder='Enter Your Name' />
+            <label className='bde-form-label' htmlFor='spoc-email'>Your Email<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='spoc-email' type='email' required onChange={handleSpocDetailsChange} value={addJobVacancies.companyDetails.email} name='email' placeholder='Enter Your Email' />
+            <label className='bde-form-label' htmlFor='spoc-phone'>Your Contact No.<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='spoc-phone' type='number' required onChange={handleSpocDetailsChange} value={addJobVacancies.companyDetails.contactNo} name='contactNo' placeholder='Enter Your Contact No' />
             <button className='bde-form-btn' type='submit' disabled={loading} > 
                 {loading ? 
                     <Oval

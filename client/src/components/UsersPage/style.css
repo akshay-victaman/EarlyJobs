@@ -11,7 +11,7 @@
 .user-heading {
     font-size: 30px;
     font-weight: 600;
-    color: #f9a828;
+    color: #EB6A4D;
     margin-bottom: 20px;
 }
 
@@ -23,17 +23,18 @@
 
 .users-table {
     border-collapse: collapse;
-    background: #ece3d3;
+    /* background: #ece3d3; */
+    background: #eadad8;
     width: 100%;
-    border: 1px solid #f9a828;
+    border: 1px solid #EB6A4D;
 }
 
 .users-table-heading-row {
-    background-color: #f9a828;
+    background-color: #EB6A4D;
 }
 
 .users-table-data-row {
-    border-top: 1px solid #f9a828;
+    border-top: 1px solid #EB6A4D;
 }
 .users-table-heading, .users-table-data {
     padding: 1rem;
@@ -44,11 +45,12 @@
 .users-table-heading {
     background: #e0cfa2;
     font-weight: 600;
-    background-color: #f9a828;
+    background-color: #EB6A4D;
 }
 
 .users-table-data-row:nth-of-type(2n) {
-    background: #e0cfa2;
+    /* background: #e0cfa2; */
+    background: #e9b7ab;
 }
 
 .user-view-search-filter-con {
@@ -64,7 +66,7 @@
     height: 40px;
     display: flex;
     align-items: center;
-    border: 1px solid #f9a828;
+    border: 1px solid #EB6A4D;
     border-radius: 4px;
     margin-right: 15px;
     margin-bottom: 10px;
@@ -74,7 +76,7 @@
     height: 40px;
     display: flex;
     align-items: center;
-    border: 1px solid #f9a828;
+    border: 1px solid #EB6A4D;
     border-radius: 5px;
     margin-left: 10px;
     outline: none;
@@ -106,13 +108,13 @@
 .search-icon {
     font-size: 20px;
     font-weight: bold;
-    color: #f9a828;
+    color: #EB6A4D;
 }
 
 .block-user-button {
     height: 35px;
     border: none;
-    background-color: #f9a828;
+    background-color: #EB6A4D;
     cursor: pointer;
     outline: none;
     color: white;

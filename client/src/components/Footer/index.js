@@ -1,4 +1,4 @@
-import { FaFacebook, FaInstagram, FaLinkedin, FaTelegram, FaYoutube } from "react-icons/fa";
+import { FaFacebook, FaLinkedin, FaTelegram, FaYoutube } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 import './style.css';
 

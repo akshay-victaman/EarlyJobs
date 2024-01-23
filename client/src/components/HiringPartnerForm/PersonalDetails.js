@@ -67,7 +67,7 @@ const PersonalDetailsForm = (props) => {
                     <input type='number' placeholder="Ex: 9876543210" onChange={handleInputChange} value={personalDetails.wtspNum} required className='hr-input-select' id='whatsapp-number' name='wtspNum' />
                 </div>
                 <label htmlFor='email' className='hr-label'>Email<span className='hr-form-span'> *</span></label>
-                <input type='email' placeholder="Ex: johndoe@gmail.com" onChange={handleInputChange} value={personalDetails.email} required className='hr-input' id='email' name='email' />
+                <input type='email' placeholder="Ex: hr@earlyjobs.in" onChange={handleInputChange} value={personalDetails.email} required className='hr-input' id='email' name='email' />
                 
                 <label htmlFor='current-address' className='hr-label'>Current Address<span className='hr-form-span'> *</span></label>
                 <input type='text' placeholder="Address" onChange={handleInputChange} value={personalDetails.currAddress} required className='hr-input' id='current-address' name='currAddress' />

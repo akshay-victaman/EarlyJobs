@@ -12,6 +12,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import JobDetailsPage from './components/JobDetailsPage';
 import {HiringPartnerForm} from './components/HiringPartnerForm';
 import AddJobVacanciesPage from './components/AddJobVacanciesPage';
+import HiringPartnerReqPage from './components/HiringPartnerReqPage';
+import HiringPartnerDetails from './components/HiringPartnerDetails';
 
 
 const App = () => (
@@ -27,6 +29,8 @@ const App = () => (
     <ProtectedRoute exact path='/admin' component={AdminPage} />
     <ProtectedRoute exact path="/admin/users" component={UsersPage} />
     <ProtectedRoute exact path="/admin/candidates" component={CandidatesPage} />
+    <ProtectedRoute exact path="/admin/hiring-partner-requests" component={HiringPartnerReqPage} />
+    <ProtectedRoute exact path="/admin/hiring-partner-requests/:id" component={HiringPartnerDetails} />
   </Switch>
 )
 
