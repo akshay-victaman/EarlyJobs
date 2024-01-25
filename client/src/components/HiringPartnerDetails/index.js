@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore"
+import { getFirestore, collection, query, where, getDocs, addDoc, getDoc, doc, deleteDoc, setDoc } from "firebase/firestore"
 import app from "../../firebase"
 import NavBar from "../NavBar"
 import './style.css'
@@ -34,6 +34,16 @@ const HiringPartnerDetails = () => {
         }
         getHiringPartnerReqList()
     }, [id])
+
+    const onClickReject = async () => {
+        const db = getFirestore(app);
+        const docRef = await addDoc(collection(db, "RejectedHiringPartnerReq"), { hiringPartnerReqDetails });
+        const docId = docRef.id;
+        const RejectedDate = new Date();
+        await setDoc(doc(db, "RejectedHiringPartnerReq", docId), { formData: {...hiringPartnerReqDetails.formData, RejectedDate, docId} });
+
+        await deleteDoc(doc(db, "HiringPartnerRequests", id));
+    }
 
     const renderHiringPartnerReqDetails = () => {
         const { personalDetails, qualification, about, references, newIdentityProof } = hiringPartnerReqDetails.formData
@@ -317,7 +327,7 @@ const HiringPartnerDetails = () => {
                     </div>
                 </div>
                 <div className="hiring-partner-details-button-con">
-                    <button className="hiring-partner-btn reject-btn">Reject</button>
+                    <button className="hiring-partner-btn reject-btn" onClick={onClickReject}>Reject</button>
                     <button className="hiring-partner-btn">Approve</button>
                 </div>
             </div>

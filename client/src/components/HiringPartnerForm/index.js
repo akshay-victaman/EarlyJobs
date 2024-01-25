@@ -642,11 +642,12 @@ const HiringPartnerForm = () => {
         const docRef = await addDoc(collection(db, "HiringPartnerRequests"), { formData });
         const docId = docRef.id;
         const isApproved = false;
-        await setDoc(doc(db, "HiringPartnerRequests", docId), { formData: {...formData, isApproved, docId} });
+        const AppliedDate = new Date();
+        await setDoc(doc(db, "HiringPartnerRequests", docId), { formData: {...formData, isApproved, AppliedDate, docId} });
 
         console.log(docRef)
         if(docRef) {
-            sendEmail(formData)
+            // sendEmail(formData)
             handleCurrentStep(5)
         }
         setLoading(false)
