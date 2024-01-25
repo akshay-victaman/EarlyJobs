@@ -1,6 +1,7 @@
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
+import Popup from 'reactjs-popup';
 import { useEffect, useState } from "react"
-import { getFirestore, collection, query, where, getDocs, addDoc, getDoc, doc, deleteDoc, setDoc } from "firebase/firestore"
+import { getFirestore, collection, query, where, getDocs, addDoc, doc, deleteDoc, setDoc } from "firebase/firestore"
 import app from "../../firebase"
 import NavBar from "../NavBar"
 import './style.css'
@@ -10,7 +11,9 @@ const HiringPartnerDetails = () => {
 
     const [hiringPartnerReqDetails, setHiringPartnerReqDetails] = useState({})
     const [loading, setLoading] = useState(true)
+    const [rejectApproveStatus, setRejectApproveStatus] = useState(false)
     const { id } = useParams()
+    const history = useHistory()
     console.log(id)
 
     useEffect(() => {
@@ -36,6 +39,7 @@ const HiringPartnerDetails = () => {
     }, [id])
 
     const onClickReject = async () => {
+        setRejectApproveStatus(true)
         const db = getFirestore(app);
         const docRef = await addDoc(collection(db, "RejectedHiringPartnerReq"), { hiringPartnerReqDetails });
         const docId = docRef.id;
@@ -43,6 +47,20 @@ const HiringPartnerDetails = () => {
         await setDoc(doc(db, "RejectedHiringPartnerReq", docId), { formData: {...hiringPartnerReqDetails.formData, RejectedDate, docId} });
 
         await deleteDoc(doc(db, "HiringPartnerRequests", id));
+        history.replace('/admin/hiring-partner-requests')
+        setRejectApproveStatus(false)
+    }
+
+    const renderRejectPopup = (close) => {
+        return (
+            <div className="modal-form">
+                <label className="homepage-label">Do you want to Reject {hiringPartnerReqDetails.formData.personalDetails.fullName}'s Application?</label>
+                <div className='achieve-button-con'>
+                    <button className='job-details-upload-candidate-button' disabled={rejectApproveStatus} onClick={() => onClickReject(close)}>YES</button>
+                    <button className='job-details-upload-candidate-button archieve-cancel-btn' disabled={rejectApproveStatus} onClick={close}>NO</button>
+                </div>
+            </div>
+        )
     }
 
     const renderHiringPartnerReqDetails = () => {
@@ -327,7 +345,19 @@ const HiringPartnerDetails = () => {
                     </div>
                 </div>
                 <div className="hiring-partner-details-button-con">
-                    <button className="hiring-partner-btn reject-btn" onClick={onClickReject}>Reject</button>
+                    <Popup
+                        trigger={<button className="hiring-partner-btn reject-btn">Reject</button>}
+                        modal
+                    >
+                        {close => (
+                        <div className="modal">
+                            <button className="modal-close-button" disabled={rejectApproveStatus} onClick={close}>
+                            &times;
+                            </button>
+                            {renderRejectPopup(close)}
+                        </div>
+                        )}
+                    </Popup>
                     <button className="hiring-partner-btn">Approve</button>
                 </div>
             </div>

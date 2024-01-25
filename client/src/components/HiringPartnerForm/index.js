@@ -647,7 +647,7 @@ const HiringPartnerForm = () => {
 
         console.log(docRef)
         if(docRef) {
-            // sendEmail(formData)
+            sendEmail(formData)
             handleCurrentStep(5)
         }
         setLoading(false)
