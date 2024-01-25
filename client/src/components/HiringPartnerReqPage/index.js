@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import NavBar from '../NavBar'
 import './style.css'
 import { Link } from "react-router-dom";
+import Footer from "../Footer";
 
 const HiringPartnerReqPage = () => {
 
@@ -67,6 +68,7 @@ const HiringPartnerReqPage = () => {
                     </table>
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }

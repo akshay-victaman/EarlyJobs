@@ -5,6 +5,7 @@ import { getFirestore, collection, query, where, getDocs, addDoc, doc, deleteDoc
 import app from "../../firebase"
 import NavBar from "../NavBar"
 import './style.css'
+import Footer from "../Footer";
 
 
 const HiringPartnerDetails = () => {
@@ -14,7 +15,6 @@ const HiringPartnerDetails = () => {
     const [rejectApproveStatus, setRejectApproveStatus] = useState(false)
     const { id } = useParams()
     const history = useHistory()
-    console.log(id)
 
     useEffect(() => {
         const getHiringPartnerReqList = async () => {
@@ -28,7 +28,6 @@ const HiringPartnerDetails = () => {
 
             if (!querySnap.empty) {
                 const documents = querySnap.docs.map((doc) => doc.data());
-                console.log(documents)
                 setHiringPartnerReqDetails(documents[0])
             } else {
                 console.log("No such documents!");
@@ -65,8 +64,6 @@ const HiringPartnerDetails = () => {
 
     const renderHiringPartnerReqDetails = () => {
         const { personalDetails, qualification, about, references, newIdentityProof } = hiringPartnerReqDetails.formData
-        console.log(personalDetails, qualification, about, references, newIdentityProof)
-        console.log(hiringPartnerReqDetails.formData)
         return (
             <div className="job-details-card">
                 <p className="hiring-partner-heading">Personal Details</p>
@@ -375,6 +372,7 @@ const HiringPartnerDetails = () => {
                     loading ? <h1>Loading...</h1> : renderHiringPartnerReqDetails()
                 }
             </div>
+            <Footer />
         </div>
     )
 }

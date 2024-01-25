@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import NavBar from '../NavBar'
 import './style.css'
 import { Link, Redirect } from "react-router-dom";
+import Footer from "../Footer";
 
 const AdminPage = () => {
 
@@ -54,6 +55,7 @@ const AdminPage = () => {
                     <img src='/admin-bg.jpg' alt='admin vector' className='admin-image' />
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }
