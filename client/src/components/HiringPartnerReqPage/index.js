@@ -1,8 +1,36 @@
-
+import { query, where, collection, getFirestore, getDocs } from "firebase/firestore";
+import app from "../../firebase";
+import { useEffect, useState } from "react";
 import NavBar from '../NavBar'
 import './style.css'
+import { Link } from "react-router-dom";
 
 const HiringPartnerReqPage = () => {
+
+    const [hiringPartnerReqList, setHiringPartnerReqList] = useState([])
+
+    useEffect(() => {
+        const getHiringPartnerReqList = async () => {
+            const db = getFirestore(app);
+            const queryRef = query(
+                collection(db, "HiringPartnerRequests"),
+                where("formData.isApproved", "==", false)
+            );
+
+            const querySnap = await getDocs(queryRef);
+
+            if (!querySnap.empty) {
+                const documents = querySnap.docs.map((doc) => doc.data());
+                console.log(documents)
+                setHiringPartnerReqList(documents)
+            } else {
+                console.log("No such documents!");
+            }
+
+        }
+        getHiringPartnerReqList()
+    }, [])
+
     return (
         <div className='homepage-container'>
             <NavBar />
@@ -19,18 +47,22 @@ const HiringPartnerReqPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="users-table-data-row">
-                                <td data-cell='Name' className="users-table-data">John Doe</td>
-                                <td data-cell='Email' className="users-table-data">johndoe@gmail.com</td>
-                                <td data-cell='Phone' className="users-table-data">9876543210</td>
-                                <td data-cell='More Details' className="users-table-data"><button className='hiring-partner-req-btn hrp-button'>View</button></td>
-                            </tr>
-                            <tr className="users-table-data-row">
-                                <td data-cell='Name' className="users-table-data">John Doe</td>
-                                <td data-cell='Email' className="users-table-data">johndoe@gmail.com</td>
-                                <td data-cell='Phone' className="users-table-data">9876543210</td>
-                                <td data-cell='More Details' className="users-table-data"><button className='hiring-partner-req-btn hrp-button'>View</button></td>
-                            </tr>
+                            {
+                                hiringPartnerReqList.map((hiringPartnerReq) => {
+                                    return (
+                                        <tr className="users-table-data-row" key={hiringPartnerReq.formData.docId}>
+                                            <td data-cell='Name' className="users-table-data">{hiringPartnerReq.formData.personalDetails.fullName}</td>
+                                            <td data-cell='Email' className="users-table-data">{hiringPartnerReq.formData.personalDetails.email}</td>
+                                            <td data-cell='Phone' className="users-table-data">{hiringPartnerReq.formData.personalDetails.phone}</td>
+                                            <td data-cell='More Details' className="users-table-data">
+                                                <Link to={`/admin/hiring-partner-requests/${hiringPartnerReq.formData.docId}`} className='link'>
+                                                    <button className='hiring-partner-req-btn hrp-button'>View</button>
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
                         </tbody>
                     </table>
                 </div>

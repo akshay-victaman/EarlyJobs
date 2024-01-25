@@ -1,5 +1,5 @@
 import Stepper from 'react-stepper-horizontal';
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {v4 as uuidv4} from 'uuid';
 import { useEffect, useState } from 'react';
@@ -640,6 +640,10 @@ const HiringPartnerForm = () => {
         console.log(formData)
         const db = getFirestore(app);
         const docRef = await addDoc(collection(db, "HiringPartnerRequests"), { formData });
+        const docId = docRef.id;
+        const isApproved = false;
+        await setDoc(doc(db, "HiringPartnerRequests", docId), { formData: {...formData, isApproved, docId} });
+
         console.log(docRef)
         if(docRef) {
             sendEmail(formData)
@@ -685,7 +689,7 @@ const HiringPartnerForm = () => {
             qualification,
             about,
             references,
-            newIdentityProof
+            newIdentityProof,
         }
 
         

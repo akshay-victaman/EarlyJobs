@@ -5,7 +5,7 @@
   min-height: 85vh;
   margin-top: 15vh;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   flex-direction: column;
 }
@@ -16,7 +16,7 @@
   padding: 50px 30px;
   color: white;
   font-family: 'Roboto';
-  border: 1px solid #f9a828;
+  border: 1px solid #EB6A4D;
   width: 70%;
   height: 100%;
 }
@@ -74,7 +74,7 @@
 }
 
 .job-details-location-icon {
-  color: #f9a828;
+  color: #EB6A4D;
   font-size: 25px;
   margin-right: 8px;
 }
@@ -94,7 +94,7 @@
 
 .line {
   width: 100%;
-  border: 1px solid #f9a828;
+  border: 1px solid #EB6A4D;
   margin-top: 18px;
   margin-bottom: 25px;
 }
@@ -117,7 +117,7 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #f9a828;
+  color: #EB6A4D;
   font-weight: 600;
   font-size: 20px;
 }
@@ -176,7 +176,7 @@
 }
 
 .jobs-details-failure-retry-button {
-  background-color: #f9a828;
+  background-color: #EB6A4D;
   color: #ffffff;
   border: 0px;
   border-radius: 4px;
@@ -213,7 +213,7 @@
 .job-details-select {
   height: 25px;
   border-radius: 3px;
-  border: 1px solid #f9a828;
+  border: 1px solid #EB6A4D;
   width: 150px;
   padding-left: 6px;
   font-size: 13px;
@@ -221,7 +221,7 @@
 }
 
 .job-details-assign-button {
-  background-color: #f9a828;
+  background-color: #EB6A4D;
   color: #ffffff;
   border: none;
   border-radius: 3px;
@@ -259,7 +259,7 @@
 }
 
 .job-details-upload-candidate-button {
-  background-color: #f9a828;
+  background-color: #EB6A4D;
   color: #ffffff;
   border: none;
   border-radius: 5px;
@@ -318,7 +318,7 @@
   outline: none;
   cursor: pointer;
   font-size: 30px;
-  background-color: #f9a828;
+  background-color: #EB6A4D;
   height: 30px;
   width: 30px;
   border-radius: 50%;
@@ -365,7 +365,7 @@
   background-color: #f7f2eb;
   border-radius: 15px;
   font-family: 'Roboto';
-  border: 1px solid #f9a828;
+  border: 1px solid #EB6A4D;
   width: 70%;
 }
 
@@ -378,7 +378,7 @@
 }
 
 .job-details-candidates-table-row {
-  border-top: 1px solid #f9a828;
+  border-top: 1px solid #EB6A4D;
 }
 
 .job-details-candidates-table-row:nth-of-type(2n) {
@@ -388,7 +388,7 @@
 .job-details-candidates-table-cell {
   font-size: 15px;
   color: #000000;
-  border-top: 1px solid #f9a828;
+  border-top: 1px solid #EB6A4D;
   padding: .5rem 1rem;
 
 }
@@ -407,8 +407,8 @@
 
 .archieve-cancel-btn {
   background-color: #ffffff;
-  color: #f9a828;
-  border: 1px solid #f9a828;
+  color: #EB6A4D;
+  border: 1px solid #EB6A4D;
   margin-left: 20px;
 }
 

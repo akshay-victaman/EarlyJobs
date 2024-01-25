@@ -1,0 +1,155 @@
+.hiring-partner-heading {
+    font-size: 25px;
+    font-weight: 600;
+    /* color: #000033; */
+    color: #3f1005;
+}
+
+.hiring-partner-hr {
+    width: 120px;
+    height: 3px;
+    background-color: #EB6A4D;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 10px;
+}
+
+.hiring-partner-details-main {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.hiring-partner-details-sub {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.hiring-partner-details-con {
+    display: flex;
+    /* align-items: center; */
+    margin-bottom: 15px;
+}
+
+.hiring-partner-label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #3f1005;
+    margin-right: 10px;
+}
+
+.hiring-partner-value {
+    font-size: 18px;
+    font-weight: 400;
+    color: #200701;
+}
+
+.hrp-sub-head {
+    margin-bottom: 5px;
+}
+
+.hrp-desc {
+    line-height: 1.5;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.hpd-label {
+    color: #EB6A4D;
+    margin-bottom: 10px;
+}
+
+.hiring-partner-img {
+    width: 48%;
+    max-width: 300px;
+    height: 100%;
+    object-fit: cover;
+    margin-right: 2%;
+    border-radius: 15px;
+    border: 1px solid #EB6A4D;
+}
+
+.hiring-partner-aadhar-con {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.hiring-partner-photo {
+    min-width: 100px;
+    width: 48%;
+    max-width: 200px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 1px solid #EB6A4D;
+    margin: 15px 0px;
+}
+
+.details {
+    margin-bottom: 10px;
+}
+
+.hrp-details-con {
+    margin-top: 10vh;
+}
+
+.hiring-partner-details-button-con {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.hiring-partner-btn {
+    padding: 0px 20px;
+    height: 33px;
+    border: none;
+    border-radius: 6px;
+    background-color: #EB6A4D;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    margin-left: 15px;
+}
+
+.hiring-partner-btn:hover {
+    background-color: #bf573f;
+}
+
+.reject-btn {
+    background-color: transparent;
+    color: #EB6A4D;
+    border: 2px solid #EB6A4D;
+}
+
+.reject-btn:hover {
+    background-color: #EB6A4D;
+    color: #fff;
+}
+
+@media screen and (max-width: 768px) {
+    .hiring-partner-heading {
+        font-size: 20px;
+    }
+    
+    .hiring-partner-label {
+        font-size: 16px;
+    }
+
+    .hiring-partner-value {
+        font-size: 16px;
+    }
+
+    .hrp-desc {
+        font-size: 14px;
+    }
+    
+    .hiring-partner-req-heading {
+        font-size: 20px;
+    }
+    .hrp-details-con {
+        margin-top: 40px;
+    }
+}
