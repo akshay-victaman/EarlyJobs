@@ -163,10 +163,11 @@ const JobDetailsPage = () => {
     }
     setLoading(true)
     const username = Cookies.get('username')
+    const email = Cookies.get('email')
     const assingedData = {
       jobId: jobDetails.id,
       assignedTo: selectedHR,
-      assignedBy: username
+      assignedBy: email,
     }
     const options = {
         method: 'POST',
@@ -214,12 +215,13 @@ const JobDetailsPage = () => {
     }
     setError("")
     const username = Cookies.get('username')
+    const email = Cookies.get('email')
     const candidateData = {
       candidateName,
       candidateEmail,
       candidatePhone,
       jobId: jobDetails.id,
-      username,
+      email,
       offerStatus
     }
     const url = 'http://localhost:5000/jobs/candidate/add'
@@ -261,10 +263,11 @@ const JobDetailsPage = () => {
     }
     setError("")
     const username = Cookies.get('username')
+    const email = Cookies.get('email')
     const candidateData = {
       candidateId,
       jobId: jobDetails.id,
-      username,
+      email,
       offerStatus
     }
     const url = 'http://localhost:5000/jobs/candidate/status/update'
@@ -339,7 +342,7 @@ const JobDetailsPage = () => {
         <select className='job-details-select' value={selectedHR} onChange={handleHumanResourceChange}>
           <option value=''>Select HR</option>
             {   humarResources.length > 0 &&
-                humarResources.map(eachItem => <option value={eachItem.username}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.industry}</option>)
+                humarResources.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.industry}</option>)
             }
         </select>
       </div>

@@ -14,3 +14,34 @@
     text-align: center;
     margin: 10px 0px;
 }
+
+.commission-select {
+    width: 40%!important;
+}
+
+.commission-input-con {
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #EB6A4D;
+    width: 56%!important;
+    margin-bottom: 16px;
+    font-size: 14px;
+    outline: none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+}
+
+.commission-input {
+    height: 100%;
+    border: none;
+    width: 35%!important;
+    padding-left: 8px;
+    font-size: 14px;
+    outline: none;
+    background-color: transparent;
+}
+
+.rupee {
+    padding-left: 10px;
+}

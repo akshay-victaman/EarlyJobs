@@ -7,22 +7,23 @@ import Footer from '../Footer';
 
 const HomePage = () => {
 
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState("");
 
     const history = useHistory();
 
-    const handleUsernameChange = (e) => {
-        setUsername(e.target.value)
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value)
     }
 
     const handlePasswordChange = (e) => {
         setPassword(e.target.value)
     }
 
-    const onSubmitSuccess = (jwtToken, username, role) => {
+    const onSubmitSuccess = (jwtToken, username, role, email) => {
         Cookies.set('jwt_token', jwtToken, {expires: 30})
+        Cookies.set('email', email, {expires: 30})
         Cookies.set('username', username, {expires: 30})
         Cookies.set('role', role, {expires: 30})
         if(role === 'ADMIN') {
@@ -39,12 +40,12 @@ const HomePage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        if(username === '' || password === ''){
+        if(email === '' || password === ''){
             setError("*All fields required")
             return
         }
         const credentials = {
-            username,
+            email,
             password
         }
         const options = {
@@ -63,7 +64,7 @@ const HomePage = () => {
             } else if(data.isBlocked === 1) {
                 setError("Your account has been blocked. Please contact the admin.")
             } else {
-                onSubmitSuccess(data.jwtToken, data.username, data.role)
+                onSubmitSuccess(data.jwtToken, data.username, data.role, data.email,)
                 setError("")
             }
         } else {
@@ -89,8 +90,8 @@ const HomePage = () => {
                 <div className="homepage-card">
                     <form onSubmit={handleLogin} className="login-form">
                         <h1 className="homepage-title">Login</h1>
-                        <label className="homepage-label" id='username'>USERNAME</label>
-                        <input type="text" className="homepage-input" id='username' value={username} onChange={handleUsernameChange} placeholder='Enter username'/>
+                        <label className="homepage-label" id='email'>EMAIL</label>
+                        <input type="email" className="homepage-input" id='email' value={email} onChange={handleEmailChange} placeholder='Enter username'/>
                         <label className="homepage-label" id='password'>PASSWORD</label>
                         <input type="password" className="homepage-input" id='password' value={password} onChange={handlePasswordChange} placeholder='Enter password'/>
                         <button type='submit' className="login-button">Login</button>

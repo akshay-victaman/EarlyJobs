@@ -18,6 +18,7 @@ const NavBar = ({isLoggedIn}) => {
         Cookies.remove('jwt_token');
         Cookies.remove('role');
         Cookies.remove('username')
+        Cookies.remove('email')
         history.replace('/');
     }
 

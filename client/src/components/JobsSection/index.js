@@ -169,12 +169,13 @@ const JobsSection = () => {
   const getJobsCard = async () => {
     setApiStatus(apiStatusConstant.inProgress)
     const username = Cookies.get('username')
+    const email = Cookies.get('email')
     const role = Cookies.get('role')
     let apiUrl = ""
     if (role === 'AC') {
-      apiUrl = `http://localhost:5000/jobs/account-manager/${username}`
+      apiUrl = `http://localhost:5000/jobs/account-manager/${email}`
     } else if (role === 'HR') {
-      apiUrl = `http://localhost:5000/jobs/hr/${username}`
+      apiUrl = `http://localhost:5000/jobs/hr/${email}`
     } else {
       apiUrl = `http://localhost:5000/admin/get-jobs/all`
     }

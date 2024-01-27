@@ -22,7 +22,7 @@ const UsersItem = ({userDetails, renderBlockUnblockPopup}) => {
                     <button className="modal-close-button" onClick={close}>
                     &times;
                     </button>
-                    {renderBlockUnblockPopup(close, username, isBlocked)}
+                    {renderBlockUnblockPopup(close, email, isBlocked)}
                 </div>
                 )}
             </Popup>

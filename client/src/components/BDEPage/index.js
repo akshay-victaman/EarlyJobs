@@ -112,6 +112,7 @@ const BDEPage = () => {
 
         setLoading(true)
         const username = Cookies.get('username')
+        const email = Cookies.get('email')
         const newJob = {
             companyName,
             title: jobTitle,
@@ -127,7 +128,7 @@ const BDEPage = () => {
             status,
             hiringNeed,
             assignedTo,
-            postedBy: username
+            postedBy: email
         }
         console.log(newJob)
         const options = {
@@ -208,7 +209,7 @@ const BDEPage = () => {
             <select className='bde-form-input' onChange={handleAssignedToChange}>
                 <option value=''>Select Account Manager</option>
                 {   accountManagers.length > 0 &&
-                    accountManagers.map(eachItem => <option value={eachItem.username}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.industry}</option>)
+                    accountManagers.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.industry}</option>)
                 }
             </select>
             <button className='bde-form-btn' type='submit' disabled={loading} > 

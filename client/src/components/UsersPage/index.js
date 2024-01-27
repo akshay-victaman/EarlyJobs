@@ -68,8 +68,8 @@ const UsersPage = () => {
         }
     }
 
-    const blockUser = async (close, username) => {
-        const url = `http://localhost:5000/admin/block-user/${username}`;
+    const blockUser = async (close, email) => {
+        const url = `http://localhost:5000/admin/block-user/${email}`;
         const options = {
             method: 'PUT',
             headers: { 
@@ -84,7 +84,7 @@ const UsersPage = () => {
                 alert(data.error);
             } else {
                 setUsers(users.map(eachItem => {
-                    if(eachItem.username === username) {
+                    if(eachItem.email === email) {
                         return {...eachItem, isBlocked: 1}
                     } else {
                         return eachItem;
@@ -98,8 +98,8 @@ const UsersPage = () => {
         }
     }
 
-    const unblockUser = async (close, username) => {
-        const url = `http://localhost:5000/admin/unblock-user/${username}`;
+    const unblockUser = async (close, email) => {
+        const url = `http://localhost:5000/admin/unblock-user/${email}`;
         const options = {
             method: 'PUT',
             headers: { 
@@ -114,7 +114,7 @@ const UsersPage = () => {
                 alert(data.error);
             } else {
                 setUsers(users.map(eachItem => {
-                    if(eachItem.username === username) {
+                    if(eachItem.email === email) {
                         return {...eachItem, isBlocked: 0}
                     } else {
                         return eachItem;
@@ -128,15 +128,15 @@ const UsersPage = () => {
         }
     }
 
-    const renderBlockUnblockPopup = (close, username, isBlocked) => (
+    const renderBlockUnblockPopup = (close, email, isBlocked) => (
         <div className="modal-form">
             <label className="homepage-label">Do you want to {isBlocked === 0 ? "Block" : "Unblock"} this user?</label>
             <div className='achieve-button-con'>
             {
                 isBlocked === 0 ?
-                <button className='job-details-upload-candidate-button' onClick={() => blockUser(close, username)}>YES</button>
+                <button className='job-details-upload-candidate-button' onClick={() => blockUser(close, email)}>YES</button>
                 :
-                <button className='job-details-upload-candidate-button' onClick={() => unblockUser(close, username)}>YES</button>
+                <button className='job-details-upload-candidate-button' onClick={() => unblockUser(close, email)}>YES</button>
             }
             <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>NO</button>
             </div>
