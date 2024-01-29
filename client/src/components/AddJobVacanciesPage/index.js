@@ -28,7 +28,6 @@ const AddJobVacanciesPage = () => {
     const [workError, setWorkError] = useState(false)
     const [commissionError, setCommissionError] = useState(false)
     const [noOfOpeningsError, setNoOfOpeningsError] = useState(false)
-    const [statusError, setStatusError] = useState(false)
     const [hiringNeedError, setHiringNeedError] = useState(false)
     const [nameError, setNameError] = useState(false)
     const [emailError, setEmailError] = useState(false)
@@ -50,7 +49,7 @@ const AddJobVacanciesPage = () => {
         commission: '',
         commissionType: '',
         noOfOpenings: '',
-        status: '',
+        status: 'Open',
         hiringNeed: '',
         companyDetails: {
             name: '',
@@ -85,7 +84,7 @@ const AddJobVacanciesPage = () => {
         setAddJobVacancies({ ...addJobVacancies, [name]: value})
     }
 
-    const handleSpocDetailsChange = (e) => {
+    const handleCompanyDetailsChange = (e) => {
         const {name, value} = e.target;
         setAddJobVacancies({ ...addJobVacancies, companyDetails: { ...addJobVacancies.companyDetails, [name]: value}})
     }
@@ -153,7 +152,7 @@ const AddJobVacanciesPage = () => {
                 commission: '',
                 commissionType: '',
                 noOfOpenings: '',
-                status: '',
+                status: 'Open',
                 hiringNeed: '',
                 companyDetails: {
                     name: '',
@@ -192,8 +191,6 @@ const AddJobVacanciesPage = () => {
         else setCommissionError(false)
         if(addJobVacancies.noOfOpenings.trim().length === 0) setNoOfOpeningsError(true)
         else setNoOfOpeningsError(false)
-        if(addJobVacancies.status.trim().length === 0) setStatusError(true)
-        else setStatusError(false)
         if(addJobVacancies.hiringNeed.trim().length === 0) setHiringNeedError(true)
         else setHiringNeedError(false)
         if(addJobVacancies.companyDetails.name.trim().length === 0) setNameError(true)
@@ -278,8 +275,8 @@ const AddJobVacanciesPage = () => {
             {locationError && <p className='hr-error'>*Please enter job location</p>}
             <label className='bde-form-label' htmlFor='salary'>Salary(in LPA)<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>
-                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMin} name='salaryMin' type='number' placeholder='Minimum' />
-                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMax} name='salaryMax' type='number' placeholder='Maximum' />
+                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMin} name='salaryMin' type='number' placeholder='Minimum - INR' />
+                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMax} name='salaryMax' type='number' placeholder='Maximum - INR' />
             </div>
             {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary</p>}
 
@@ -300,26 +297,30 @@ const AddJobVacanciesPage = () => {
             </div>
             {skillsError && <p className='hr-error'>*Please enter skills</p>}
 
-            <label className='bde-form-label' htmlFor='employment-type'>Employment Type<span className='hr-form-span'> *</span></label>
-            <select className='bde-form-input' id='employment-type'  onChange={handleInputChange} name='employmentType' value={addJobVacancies.employmentType} >
-                <option value=''>Select Employment Type</option>
-                <option value='Full Time'>Full Time</option>
-                <option value='Part Time'>Part Time</option>
-                <option value='Internship'>Internship</option>
-                <option value='Contract'>Contract</option>
-                <option value='Freelance'>Freelance</option>
-            </select>
-            {employmentError && <p className='hr-error'>*Please select employment type</p> }
-
-            <label className='bde-form-label' htmlFor='work-type'>Work Type<span className='hr-form-span'> *</span></label>
-            <select className='bde-form-input' id='work-type'  onChange={handleInputChange} value={addJobVacancies.workType} name='workType'>
-                <option value=''>Select Work Type</option>
-                <option value='On Site'>On Site</option>
-                <option value='Remote'>Remote</option>
-                <option value='Hybrid'>Hybrid</option>
-                <option value='Anywhere'>Anywhere</option>
-            </select>
-            {workError && <p className='hr-error'>*Please select work type</p>}
+            <div className='salary-container'>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='employment-type'>Employment Type<span className='hr-form-span'> *</span></label>
+                    <select className='bde-form-input emp-work-input' id='employment-type'  onChange={handleInputChange} name='employmentType' value={addJobVacancies.employmentType} >
+                        <option value=''>Select Employment Type</option>
+                        <option value='Full Time'>Full Time</option>
+                        <option value='Part Time'>Part Time</option>
+                        <option value='Internship'>Internship</option>
+                        <option value='Contract'>Contract</option>
+                        <option value='Freelance'>Freelance</option>
+                    </select>
+                    {employmentError && <p className='hr-error'>*Please select employment type</p> }
+                </div>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='work-type'>Work Type<span className='hr-form-span'> *</span></label>
+                    <select className='bde-form-input emp-work-input' id='work-type'  onChange={handleInputChange} value={addJobVacancies.workType} name='workType'>
+                        <option value=''>Select Work Type</option>
+                        <option value='On Site'>On Site</option>
+                        <option value='Remote'>Remote</option>
+                        <option value='Hybrid'>Hybrid</option>
+                    </select>
+                    {workError && <p className='hr-error'>*Please select work type</p>}
+                </div>
+            </div>
 
             <label className='bde-form-label' htmlFor='commission'>Consultancy Recruitment Fee(per candidate)<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>
@@ -332,7 +333,7 @@ const AddJobVacanciesPage = () => {
                     {
                         addJobVacancies.commissionType === 'Fixed' && <p className='rupee'>₹</p>
                     }
-                    <input className='commission-input'  id='commission' type='number' onChange={handleInputChange} value={addJobVacancies.commission} name='commission' placeholder={addJobVacancies.commissionType==="Fixed" ? "Ex: 5500" : "Ex: 8.5"} />
+                    <input className='commission-input'  id='commission' type='number' onChange={handleInputChange} value={addJobVacancies.commission} name='commission' placeholder={addJobVacancies.commissionType==="Fixed" ? "5500" : "8.33"} />
                     {
                         addJobVacancies.commissionType === 'Fixed' ?
                         <p className=''>Per Joining
@@ -348,40 +349,43 @@ const AddJobVacanciesPage = () => {
             </div>
             {commissionError && <p className='hr-error'>*Please select commission type & enter commission</p>}
 
-            <label className='bde-form-label' htmlFor='no-of-openings'>No of Openings<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='no-of-openings'  type='number' onChange={handleInputChange} value={addJobVacancies.noOfOpenings} name='noOfOpenings' placeholder='Enter No of Openings' />
-            {noOfOpeningsError && <p className='hr-error'>*Please enter no of openings</p>}
-            
-            <label className='bde-form-label' htmlFor='status'>Status<span className='hr-form-span'> *</span></label>
+            <div className='salary-container'>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='no-of-openings'>No of Openings<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='no-of-openings'  type='number' onChange={handleInputChange} value={addJobVacancies.noOfOpenings} name='noOfOpenings' placeholder='Enter No of Openings' />
+                    {noOfOpeningsError && <p className='hr-error'>*Please enter no of openings</p>}
+                </div>
+            {/* <label className='bde-form-label' htmlFor='status'>Status<span className='hr-form-span'> *</span></label>
             <select className='bde-form-input' id='status'  onChange={handleInputChange} value={addJobVacancies.status} name='status'>
                 <option value=''>Select Status</option>
                 <option value='Open'>Open</option>
                 <option value='Closed'>Closed</option>
             </select>
-            {statusError && <p className='hr-error'>*Please select status</p>}
-
-            <label className='bde-form-label' htmlFor='hiring-need'>Hiring Need<span className='hr-form-span'> *</span></label>
-            <select className='bde-form-input' id='hiring-need'  onChange={handleInputChange} value={addJobVacancies.hiringNeed} name='hiringNeed'>
-                <option value=''>Select Hiring Need</option>
-                <option value='Urgent'>Urgent</option>
-                <option value='Not Urgent'>Not Urgent</option>
-                <option value='Future'>Future</option>
-            </select>
-            {hiringNeedError && <p className='hr-error'>*Please select hiring need</p>}
+            {statusError && <p className='hr-error'>*Please select status</p>} */}
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='hiring-need'>Hiring Need<span className='hr-form-span'> *</span></label>
+                    <select className='bde-form-input emp-work-input' id='hiring-need'  onChange={handleInputChange} value={addJobVacancies.hiringNeed} name='hiringNeed'>
+                        <option value=''>Select Hiring Need</option>
+                        <option value='Immediate'>Immediate</option>
+                        <option value='Future'>Future</option>
+                    </select>
+                    {hiringNeedError && <p className='hr-error'>*Please select hiring need</p>}
+                </div>
+            </div>
 
             <label className='bde-form-label spoc-label'>Your Company Details<span className='hr-form-span'> *</span></label>
             <label className='bde-form-label' htmlFor='company'>Comapany Name<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='company'  onChange={handleInputChange} value={addJobVacancies.companyName} name='companyName' type='text' placeholder='Enter Company Name' />
             {companyError && <p className='hr-error'>*Please enter company name</p>}
-            <label className='bde-form-label' htmlFor='name'>Your Name<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='name' type='text'  onChange={handleSpocDetailsChange} value={addJobVacancies.companyDetails.name} name='name' placeholder='Enter Your Name' />
-            {nameError && <p className='hr-error'>*Please enter your name</p>}
-            <label className='bde-form-label' htmlFor='email'>Your Email<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='email' type='email'  onChange={handleSpocDetailsChange} value={addJobVacancies.companyDetails.email} name='email' placeholder='Enter Your Email' />
-            {emailError && <p className='hr-error'>*Please enter your valid email</p>}
-            <label className='bde-form-label' htmlFor='phone'>Your Contact No.<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='phone' type='number'  onChange={handleSpocDetailsChange} value={addJobVacancies.companyDetails.contactNo} name='contactNo' placeholder='Enter Your Contact No' />
-            {contactNoError && <p className='hr-error'>*Please enter your contact no</p>}
+            <label className='bde-form-label' htmlFor='name'>HR Name<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='name' type='text'  onChange={handleCompanyDetailsChange} value={addJobVacancies.companyDetails.name} name='name' placeholder='Enter HR Name' />
+            {nameError && <p className='hr-error'>*Please enter HR name</p>}
+            <label className='bde-form-label' htmlFor='email'>HR Email<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='email' type='email'  onChange={handleCompanyDetailsChange} value={addJobVacancies.companyDetails.email} name='email' placeholder='Enter HR Email' />
+            {emailError && <p className='hr-error'>*Please enter HR valid email</p>}
+            <label className='bde-form-label' htmlFor='phone'>HR Contact No.<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='phone' type='number'  onChange={handleCompanyDetailsChange} value={addJobVacancies.companyDetails.contactNo} name='contactNo' placeholder='Enter HR Contact No' />
+            {contactNoError && <p className='hr-error'>*Please enter HR contact no</p>}
             <button className='bde-form-btn' type='submit' disabled={loading} > 
                 {loading ? 
                     <Oval
@@ -412,13 +416,14 @@ const AddJobVacanciesPage = () => {
     )
 
     return (
+        <>
         <div className='bde-container'>
             <NavBar />
             <div className='bde-content'>
                 <h1 className='bde-heading'><span className='head-span'>Add Job Vacancies</span></h1>
                 { showJobForm ? renderJobForm() : renderAnotherJobButton()}
             </div>
-            <Footer />
+            {/* <Footer /> */}
             {
                 isVisible && 
                 <div className='hiring-partner-go-to-top' onClick={scrollToTop}>
@@ -426,6 +431,8 @@ const AddJobVacanciesPage = () => {
                 </div>
             }
         </div>
+        <Footer />
+        </>
     )
 }
 

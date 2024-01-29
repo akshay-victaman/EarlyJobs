@@ -19,6 +19,14 @@
     width: 40%!important;
 }
 
+.emp-work-sub-con {
+    width: 48%;
+}
+
+.emp-work-input {
+    margin-top: 5px;
+}
+
 .commission-input-con {
     height: 35px;
     border-radius: 5px;

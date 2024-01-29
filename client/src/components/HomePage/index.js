@@ -91,7 +91,7 @@ const HomePage = () => {
                     <form onSubmit={handleLogin} className="login-form">
                         <h1 className="homepage-title">Login</h1>
                         <label className="homepage-label" id='email'>EMAIL</label>
-                        <input type="email" className="homepage-input" id='email' value={email} onChange={handleEmailChange} placeholder='Enter username'/>
+                        <input type="email" className="homepage-input" id='email' value={email} onChange={handleEmailChange} placeholder='Enter email'/>
                         <label className="homepage-label" id='password'>PASSWORD</label>
                         <input type="password" className="homepage-input" id='password' value={password} onChange={handlePasswordChange} placeholder='Enter password'/>
                         <button type='submit' className="login-button">Login</button>
