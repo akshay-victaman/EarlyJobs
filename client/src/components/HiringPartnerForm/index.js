@@ -500,8 +500,8 @@ const HiringPartnerForm = () => {
     const onSubmitAbout = (e) => {
         e.preventDefault()
         console.log(about)
-        if(about.aboutYou.split(/\s+/).length < 150 || about.aboutYou.split(/\s+/).length > 200) {
-            setError("*Please enter 'about yourself' in 150-200 words")
+        if(about.aboutYou.split(/\s+/).length < 150) {
+            setError("*Please enter 'about yourself' in minimum of 150 words")
             return
         } else if(about.WhyJoinUs.split(/\s+/).length < 100 || about.WhyJoinUs.split(/\s+/).length > 150) {
             setError("*Please enter 'why you want to join us' in 100-150 words")

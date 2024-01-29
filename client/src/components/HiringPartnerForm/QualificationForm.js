@@ -68,7 +68,7 @@ const QualificationForm = (props) => {
                     <button type='button' className='hr-form-btn' onClick={() => handleCurrentStep(0)}>Back</button>
                     <button type='submit' className='hr-form-btn'>Save & Next</button>
                 </div>
-                <p className='hr-error'>{error}</p>
+                <p className='hr-main-error'>{error}</p>
             </form>
         </div>
     )

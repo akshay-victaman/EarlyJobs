@@ -328,8 +328,6 @@ const AddJobVacanciesPage = () => {
                     <option value='Fixed'>Fixed</option>
                     <option value='Percentage'>Percentage</option>
                 </select>
-                {/* <input className='bde-form-input commission-input salary-input'  id='commission' type='number' onChange={handleInputChange} value={addJobVacancies.commission} name='commission' placeholder='Ex: 10' />
-                <p className='bde-form-input commission-input salary-input'>% of annual CTC</p> */}
                 <div className='commission-input-con'>
                     {
                         addJobVacancies.commissionType === 'Fixed' && <p className='rupee'>₹</p>
@@ -402,7 +400,7 @@ const AddJobVacanciesPage = () => {
                     "Add Job"
                 }
             </button>
-            <p className='hr-error hr-main-error'>{error}</p>
+            <p className='hr-main-error'>{error}</p>
         </form>
     )
 

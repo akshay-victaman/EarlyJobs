@@ -85,7 +85,7 @@ const ReferencesForm = (props) => {
                     <button type='submit' className='hr-form-btn'>Save & Next</button>
                 </div>
 
-                <p className='hr-error'>{error}</p>
+                <p className='hr-main-error'>{error}</p>
             </form>
         </div>
     )

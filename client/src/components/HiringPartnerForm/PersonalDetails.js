@@ -91,7 +91,7 @@ const PersonalDetailsForm = (props) => {
                     <button type='button' className='hr-form-btn-add' onClick={handleLanguageChange}>+Add</button>
                 </div>
 
-                <p className='hr-error'>{error}</p>
+                <p className='hr-main-error'>{error}</p>
 
                 <button type='submit' className='hr-form-btn'>Save & Next</button>
             </form>
