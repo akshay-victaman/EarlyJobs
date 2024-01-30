@@ -164,69 +164,62 @@ const AddJobVacanciesPage = () => {
         setLoading(false)
     }
 
-    const handlePostJob = async (e) => {
-        e.preventDefault();
+
+    const validate = () => {
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if(addJobVacancies.companyName.trim().length === 0) setCompanyError(true)
-        else setCompanyError(false)
-        if(addJobVacancies.jobTitle.trim().length === 0) setTitleError(true)
-        else setTitleError(false)
-        if(addJobVacancies.category.trim().length === 0) setCategoryError(true)
-        else setCategoryError(false)
-        if(addJobVacancies.jobDescription.split(/\s+/).length < 150) setDescriptionError(true)
-        else setDescriptionError(false)
-        if(addJobVacancies.jobLocation.trim().length === 0) setLocationError(true)
-        else setLocationError(false)
-        if(addJobVacancies.salaryMin.trim().length === 0 || addJobVacancies.salaryMax.trim().length === 0) setSalaryError(true)
-        else setSalaryError(false)
-        if(addJobVacancies.skills.length === 0) setSkillsError(true)
-        else setSkillsError(false)
-        if(addJobVacancies.employmentType.trim().length === 0) setEmploymentError(true)
-        else setEmploymentError(false)
-        if(addJobVacancies.workType.trim().length === 0) setWorkError(true)
-        else setWorkError(false)
-        if(addJobVacancies.commission.trim().length === 0 || addJobVacancies.commissionType.trim().length === 0) setCommissionError(true)
-        else setCommissionError(false)
-        if(addJobVacancies.noOfOpenings.trim().length === 0) setNoOfOpeningsError(true)
-        else setNoOfOpeningsError(false)
-        if(addJobVacancies.hiringNeed.trim().length === 0) setHiringNeedError(true)
-        else setHiringNeedError(false)
-        if(addJobVacancies.companyDetails.name.trim().length === 0) setNameError(true)
-        else setNameError(false)
-        if(!emailRegex.test(addJobVacancies.companyDetails.email)) setEmailError(true)
-        else setEmailError(false)
-        if(addJobVacancies.companyDetails.contactNo.length !== 10) setContactNoError(true)
-        else setContactNoError(false)
+        const errors = {
+          company: addJobVacancies.companyName.trim().length === 0,
+          title: addJobVacancies.jobTitle.trim().length === 0,
+          category: addJobVacancies.category.trim().length === 0,
+          description: addJobVacancies.jobDescription.split(/\s+/).length < 150,
+          location: addJobVacancies.jobLocation.trim().length === 0,
+          salary: addJobVacancies.salaryMin.trim().length === 0 || addJobVacancies.salaryMax.trim().length === 0,
+          skills: addJobVacancies.skills.length === 0,
+          employmentType: addJobVacancies.employmentType.trim().length === 0,
+          workType: addJobVacancies.workType.trim().length === 0,
+          commission: addJobVacancies.commission.trim().length === 0 || addJobVacancies.commissionType.trim().length === 0,
+          noOfOpenings: addJobVacancies.noOfOpenings.trim().length === 0,
+          hiringNeed: addJobVacancies.hiringNeed.trim().length === 0,
+          name: addJobVacancies.companyDetails.name.trim().length === 0,
+          email: !emailRegex.test(addJobVacancies.companyDetails.email),
+          contactNo: addJobVacancies.companyDetails.contactNo.length !== 10,
 
+        };
+      
+        // Set errors in state
+        setCompanyError(errors.company);
+        setTitleError(errors.title);
+        setCategoryError(errors.category);
+        setDescriptionError(errors.description);
+        setLocationError(errors.location);
+        setSalaryError(errors.salary);
+        setSkillsError(errors.skills);
+        setEmploymentError(errors.employmentType);
+        setWorkError(errors.workType);
+        setCommissionError(errors.commission);
+        setNoOfOpeningsError(errors.noOfOpenings);
+        setHiringNeedError(errors.hiringNeed);
+        setNameError(errors.name);
+        setEmailError(errors.email);
+        setContactNoError(errors.contactNo);
+      
+        return !Object.values(errors).some(Boolean);
+    };
 
-        if(addJobVacancies.jobTitle.trim().length === 0) {
-            setError("*Please enter job title")
-            return
-        } else if(addJobVacancies.jobDescription.split(/\s+/).length < 150) {
-            setError("*Please enter job description minimum of 150 words")
-            return
-        } else if(addJobVacancies.jobLocation.trim().length === 0) {
-            setError("*Please enter job location")
-            return
-        } else if(addJobVacancies.skills.length === 0 && skills !== "") {
-            setError("*Please enter skills")
-            return
-        } else if(addJobVacancies.companyDetails.name.trim().length === 0) {
-            setError("*Please enter your name")
-            return
-        } else if(!emailRegex.test(addJobVacancies.companyDetails.email)) {
-            setError("*Please enter your valid email")
-            return
-        } else if(addJobVacancies.companyDetails.contactNo.length !== 10) {
-            setError("*Please enter your valid contact no")
-            return
-        } else if(addJobVacancies.companyName.trim().length === 0) {
-            setError("*Please enter company name")
-            return
-        } 
-        setError("")
+    const handlePostJob = (e) => {
+        e.preventDefault();
+
+        const isValid = validate();
+        console.log(isValid)
+
+        if (!isValid) {
+            setError("*Please fill all the required fields");
+            return;
+        }
+
+        setError("");
 
         const newJob = {
             companyName : addJobVacancies.companyName,
@@ -247,15 +240,14 @@ const AddJobVacanciesPage = () => {
             companyDetails: addJobVacancies.companyDetails,
         }
 
+        console.log(newJob)
+        console.log('triggered')
         onSubmitToFirestore(newJob)
-
     }
-
 
     const renderJobForm = () => (
         <form className='bde-job-form' onSubmit={handlePostJob}>
             <p className='hr-form-subtitle'>( <span className='hr-form-span'>*</span> ) Indicates required field</p>
-            {/* <h1 className='bde-form-heading'>Post New Job</h1> */}
             
             <label className='bde-form-label' htmlFor='title'>Job Title<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='title' onChange={handleInputChange} value={addJobVacancies.jobTitle} name='jobTitle' type='text' placeholder='Enter Job Title' />
@@ -355,13 +347,6 @@ const AddJobVacanciesPage = () => {
                     <input className='bde-form-input emp-work-input' id='no-of-openings'  type='number' onChange={handleInputChange} value={addJobVacancies.noOfOpenings} name='noOfOpenings' placeholder='Enter No of Openings' />
                     {noOfOpeningsError && <p className='hr-error'>*Please enter no of openings</p>}
                 </div>
-            {/* <label className='bde-form-label' htmlFor='status'>Status<span className='hr-form-span'> *</span></label>
-            <select className='bde-form-input' id='status'  onChange={handleInputChange} value={addJobVacancies.status} name='status'>
-                <option value=''>Select Status</option>
-                <option value='Open'>Open</option>
-                <option value='Closed'>Closed</option>
-            </select>
-            {statusError && <p className='hr-error'>*Please select status</p>} */}
                 <div className='emp-work-sub-con'>
                     <label className='bde-form-label' htmlFor='hiring-need'>Hiring Need<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input emp-work-input' id='hiring-need'  onChange={handleInputChange} value={addJobVacancies.hiringNeed} name='hiringNeed'>
