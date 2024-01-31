@@ -3,3 +3,8 @@
   box-sizing: border-box;
   font-family: 'Roboto';
 }
+
+::selection {
+  background-color: rgb(235, 105, 76, 85%);
+  color: white;
+}
