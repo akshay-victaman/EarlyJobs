@@ -168,7 +168,7 @@ const JobsSection = () => {
 
   const getJobsCard = async () => {
     setApiStatus(apiStatusConstant.inProgress)
-    const username = Cookies.get('username')
+    const username = Cookies.get('username') 
     const email = Cookies.get('email')
     const role = Cookies.get('role')
     let apiUrl = ""
@@ -193,36 +193,20 @@ const JobsSection = () => {
       if(data.error) {
         setApiStatus(apiStatusConstant.failure)
       } else {
-        const updatedData = data.map(eachItem => ({
-          id: eachItem.id,
-          companyLogoUrl: eachItem.company_logo_url,
-          category: eachItem.category,
-          compname: eachItem.company_name,
-          packagePerAnnum: eachItem.ctc,
-          employmentType: eachItem.employment_type,
-          jobDescription: eachItem.description,
-          location: eachItem.location,
-          role: eachItem.title,
-          workType: eachItem.work_type,
-          hiringNeed: eachItem.hiring_need,
-          hiringCommision: eachItem.commission,
-          postedBy: eachItem.posted_by,
-          status: eachItem.status,
-          createdAt: eachItem.created_at,
-        }))
-        console.log('updated data',updatedData)
-      /*
+        /*
         assigned_to
         category
-        commission
+        commission_fee
+        commission_type
         company_name
         created_at
-        ctc
         description
         employment_type
         hiring_need
         id
         location
+        max_salary
+        min_salary
         no_of_openings
         posted_by
         skills
@@ -230,8 +214,29 @@ const JobsSection = () => {
         title
         updated_at
         work_type
-
-      */
+        */
+        const updatedData = data.map(eachItem => ({
+          id: eachItem.id,
+          companyLogoUrl: eachItem.company_logo_url,
+          category: eachItem.category,
+          commissionType: eachItem.commission_type,
+          commissionFee: eachItem.commission_fee,
+          compname: eachItem.company_name,
+          minSalary: eachItem.min_salary,
+          maxSalary: eachItem.max_salary,
+          noOfOpenings: eachItem.no_of_openings,
+          employmentType: eachItem.employment_type,
+          jobDescription: eachItem.description,
+          location: eachItem.location,
+          role: eachItem.title,
+          workType: eachItem.work_type,
+          hiringNeed: eachItem.hiring_need,
+          postedBy: eachItem.posted_by,
+          skills: eachItem.skills,
+          status: eachItem.status,
+          createdAt: eachItem.created_at,
+        }))
+        console.log('updated data',updatedData)
 
         setJobsList(updatedData)
         setApiStatus(apiStatusConstant.success)

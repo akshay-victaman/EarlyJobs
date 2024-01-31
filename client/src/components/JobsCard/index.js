@@ -5,21 +5,47 @@ import './style.css'
 
 const JobsCard = props => {
   const {jobsItem} = props
+
+  /*
+    id: eachItem.id,
+    companyLogoUrl: eachItem.company_logo_url,
+    category: eachItem.category,
+    commissionType: eachItem.commission_type,
+    commissionFee: eachItem.commission_fee,
+    compname: eachItem.company_name,
+    minSalary: eachItem.min_salary,
+    maxSalary: eachItem.max_salary,
+    noOfOpenings: eachItem.no_of_openings,
+    employmentType: eachItem.employment_type,
+    jobDescription: eachItem.description,
+    location: eachItem.location,
+    role: eachItem.title,
+    workType: eachItem.work_type,
+    hiringNeed: eachItem.hiring_need,
+    postedBy: eachItem.posted_by,
+    skills: eachItem.skills,
+    status: eachItem.status,
+    createdAt
+  */
   
   const {
     id,
     companyLogoUrl,
     compname,
+    commissionType,
+    commissionFee,
+    minSalary,
+    maxSalary,
+    noOfOpenings,
     employmentType,
     jobDescription,
     location,
-    packagePerAnnum,
     role,
     category,
     workType,
-    hiringCommision,
     hiringNeed,
     postedBy,
+    skills,
     status,
     createdAt,
   } = jobsItem
@@ -45,10 +71,10 @@ const JobsCard = props => {
               <p className="job-location">{employmentType}</p>
             </div>
           </div>
-          <p className="job-salary">{packagePerAnnum} LPA</p>
+          <p className="job-salary">{minSalary} - {maxSalary} LPA</p>
         </div>
         <hr className="jobs-line" />
-        <p className="job-detials">Commission: {hiringCommision}</p>
+        <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
         <p className="job-detials">Notice Period: {hiringNeed}</p>
         <p className="job-detials">Work Type: {workType}</p>
         <h1 className="job-desc-heading">Description</h1>

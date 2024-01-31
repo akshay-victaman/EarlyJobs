@@ -4,7 +4,7 @@ import { formatDistanceToNow } from 'date-fns';
 import {Oval} from 'react-loader-spinner'
 import { FaCircleCheck } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
-import { useParams, Redirect } from 'react-router-dom'
+import { useParams, Redirect, Link } from 'react-router-dom'
 import Popup from 'reactjs-popup';
 import {TiLocation} from 'react-icons/ti'
 import {BsFillBriefcaseFill} from 'react-icons/bs'
@@ -27,12 +27,10 @@ const JobDetailsPage = () => {
   const [selectedHR, setSelectedHR] = useState('')
   const [loading, setLoading] = useState(false)
   const [hrAssigned, setHrAssigned] = useState(0)
-  const [candidateName, setCandidateName] = useState('')
-  const [candidateEmail, setCandidateEmail] = useState('')
-  const [candidatePhone, setCandidatePhone] = useState('')
   const [offerStatus, setOfferStatus] = useState('')
   const [error, setError] = useState('')
   const [candidateList, setCandidateList] = useState([])
+ 
 
   useEffect(() => {
     getJobDetails()
@@ -70,16 +68,20 @@ const JobDetailsPage = () => {
           id: data.id,
           companyLogoUrl: data.company_logo_url,
           category: data.category,
+          commissionType: data.commission_type,
+          commissionFee: data.commission_fee,
           compname: data.company_name,
-          packagePerAnnum: data.ctc,
+          minSalary: data.min_salary,
+          maxSalary: data.max_salary,
+          noOfOpenings: data.no_of_openings,
           employmentType: data.employment_type,
           jobDescription: data.description,
           location: data.location,
           role: data.title,
           workType: data.work_type,
           hiringNeed: data.hiring_need,
-          hiringCommision: data.commission,
           postedBy: data.posted_by,
+          skills: data.skills,
           status: data.status,
           createdAt: data.created_at,
         }
@@ -107,10 +109,10 @@ const JobDetailsPage = () => {
       if(data.error) {
         setApiStatus(apiStatusConstant.failure)
       } else {
-        const username = Cookies.get('username')
+        const email = Cookies.get('email')
         const role = Cookies.get('role')
         if(role === 'HR') {
-          const filteredData = data.filter(eachItem => eachItem.applied_by === username)
+          const filteredData = data.filter(eachItem => eachItem.applied_by === email)
           const formattedData = filteredData.map(eachItem => ({
             candidateId: eachItem.candidate_id,
             candidateName: eachItem.name,
@@ -162,7 +164,6 @@ const JobDetailsPage = () => {
       return
     }
     setLoading(true)
-    const username = Cookies.get('username')
     const email = Cookies.get('email')
     const assingedData = {
       jobId: jobDetails.id,
@@ -192,65 +193,7 @@ const JobDetailsPage = () => {
     setLoading(false)
   }
 
-  const handleCandidateNameChange = (e) => {
-    setCandidateName(e.target.value)
-  }
 
-  const handleCandidateEmailChange = (e) => {
-    setCandidateEmail(e.target.value)
-  }
-
-  const handleCandidatePhoneChange = (e) => {
-    setCandidatePhone(e.target.value)
-  }
-
-  const handleOfferStatusChange = (e) => {
-    setOfferStatus(e.target.value)
-  }
-
-  const postCandidateDetails = async (close) => {
-    if(candidateName === '' || candidateEmail === '' || candidatePhone === '' || offerStatus === '') {
-      setError("All fields are mandatory")
-      return
-    }
-    setError("")
-    const username = Cookies.get('username')
-    const email = Cookies.get('email')
-    const candidateData = {
-      candidateName,
-      candidateEmail,
-      candidatePhone,
-      jobId: jobDetails.id,
-      email,
-      offerStatus
-    }
-    const url = 'http://localhost:5000/jobs/candidate/add'
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Cookies.get('jwt_token')}`
-        },
-        body: JSON.stringify(candidateData)
-    }
-    const response = await fetch(url, options)
-    const data = await response.json()
-    if(response.ok === true) {
-        if(data.error) {
-            setError(data.error)
-        } else {
-            setCandidateList([...candidateList, candidateData])
-            setError("")
-            setCandidateName('')
-            setCandidateEmail('')
-            setCandidatePhone('')
-            setOfferStatus('')
-            close()
-        }
-    } else {
-        setError(data.error)
-    }
-  }
 
   const handleCandidateStatusChange = (e) => {
     setOfferStatus(e.target.value)
@@ -262,7 +205,6 @@ const JobDetailsPage = () => {
       return
     }
     setError("")
-    const username = Cookies.get('username')
     const email = Cookies.get('email')
     const candidateData = {
       candidateId,
@@ -374,30 +316,13 @@ const JobDetailsPage = () => {
     </div>
   )
 
-  const renderUploadCandidaete = (close) => (
-    <div className="modal-form">
-        <label className="homepage-label" htmlFor='candidateName'>Candidate Name</label>
-        <input type="text" className="homepage-input" id='candidateName' value={candidateName} onChange={handleCandidateNameChange} />
-        <label className="homepage-label" htmlFor='candidateEmail'>Candidate Email</label>
-        <input type="text" className="homepage-input" id='candidateEmail' value={candidateEmail} onChange={handleCandidateEmailChange} />
-        <label className="homepage-label" htmlFor='candidatePhone'>Candidate Phone</label>
-        <input type="text" className="homepage-input" id='candidatePhone' value={candidatePhone} onChange={handleCandidatePhoneChange} />
-        <label className="homepage-label" htmlFor='offerStatus'>Offer Status</label>
-        <select className="homepage-input" id='offerStatus' value={offerStatus} onChange={handleOfferStatusChange}>
-        <option value=''>Select Offer Status</option>
-        <option value='Pending'>Pending</option>
-        <option value='Accepted'>Accepted</option>
-        <option value='Rejected'>Rejected</option>
-        <option value='On-hold'>On-hold</option>
-        <option value='ongoing'>Ongoing</option>
-        </select>
-        <button className="login-button" onClick={() => {postCandidateDetails(close)}}>Submit</button>
-        {error!=="" && <p className="error-message">*{error}</p>}
-    </div>
-  )
+
 
   const renderUpdateStatus = (close, candidateId) => (
     <div className="modal-form">
+        <button className="modal-close-button" onClick={close}>
+          &times;
+        </button>
         <label className="homepage-label" htmlFor='offerStatus'>Offer Status</label>
         <select className="homepage-input" id='offerStatus' value={offerStatus} onChange={handleCandidateStatusChange}>
           <option value=''>Select Offer Status</option>
@@ -414,6 +339,9 @@ const JobDetailsPage = () => {
 
   const renderArchieveJob = close => (
     <div className="modal-form">
+        <button className="modal-close-button" onClick={close}>
+          &times;
+        </button>
         <label className="homepage-label">Do you really want to archieve this job?</label>
         <div className='achieve-button-con'>
           <button className='job-details-upload-candidate-button' onClick={() => handleArchieveJob(close)}>YES</button>
@@ -422,21 +350,54 @@ const JobDetailsPage = () => {
     </div>
   )
 
+  const renderButtons = () => {
+    const userType = Cookies.get('role');
+    const {id} = jobDetails;
+    if(jobDetails.status === 'ARCHIVED') {
+      return  <p className="job-details-posted-at">This job is archived</p> 
+    } else if (userType === 'HR') {
+      return (
+        <Link to={`/jobs/${id}/upload-candidate`} className="link-item">
+          <button className="job-details-upload-candidate-button">Upload Candidate</button>
+        </Link>
+      )
+    } else if(userType === 'ADMIN') {
+      return (
+        <Popup
+          trigger={<button className='job-details-upload-candidate-button'>Archieve Job</button>}
+          modal
+        >
+          {close => (
+            <div className="modal">
+              {
+                userType === 'ADMIN' && renderArchieveJob(close)
+              }
+            </div>
+          )}
+        </Popup>
+      )
+    }
+    return null
+  }
+
   const renderJobDetails = () => {
     const {
       companyLogoUrl,
       compname,
+      commissionType,
+      commissionFee,
+      minSalary,
+      maxSalary,
+      noOfOpenings,
       employmentType,
       jobDescription,
       location,
-      packagePerAnnum,
       role,
       category,
       workType,
-      hiringCommision,
       hiringNeed,
-      companyWebsiteUrl,
       postedBy,
+      skills,
       status,
       createdAt,
     } = jobDetails
@@ -471,18 +432,22 @@ const JobDetailsPage = () => {
                 <p className="job-details-location">{employmentType}</p>
               </div>
             </div>
-            <p className="job-details-salary">{packagePerAnnum} LPA</p>
+            <p className="job-details-salary">{minSalary} - {maxSalary} LPA</p>
           </div>
           <hr className="line" />
           <p className="job-detials-misc"><span className='misc-head'>Status:</span> {status}</p>
           <p className="job-detials-misc"><span className='misc-head'>Assigned By:</span> {postedBy}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {hiringCommision}</p>
+          <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
           <p className="job-detials-misc"><span className='misc-head'>Notice Period:</span> {hiringNeed}</p>
           <p className="job-detials-misc"><span className='misc-head'>Work Type:</span> {workType}</p>
+          <p className="job-detials-misc"><span className='misc-head'>No of Openings:</span> {noOfOpenings}</p>
+
+          <p className="job-detials-misc"><span className='misc-head'>Skills:</span> {skills}</p>
+
           <div className="job-details-desc-visit-con">
             <h1 className="job-details-desc-heading">Description</h1>
             <a
-              href={companyWebsiteUrl}
+              href={companyLogoUrl}
               className="job-details-visit-con"
               target="_blank"
               rel="noreferrer"
@@ -493,28 +458,29 @@ const JobDetailsPage = () => {
           </div>
           <p className="job-details-desc">{jobDescription}</p>
           <p className="job-details-posted-at">Posted {formattedDate}</p>
-          { jobDetails.status === 'ARCHIVED' ? <p className="job-details-posted-at">This job is archived</p> 
-          :
-            (userType === 'HR' || userType === 'ADMIN') &&
-            <Popup
-              trigger={<button className='job-details-upload-candidate-button'>
-                        {userType === 'HR' ? 'Upload Candidate' : 'Archieve Job'}
-                      </button>}
-              modal
-            >
-              {close => (
-                <div className="modal">
-                  <button className="modal-close-button" onClick={close}>
-                    &times;
-                  </button>
-                  {
-                    userType === 'ADMIN' ? renderArchieveJob(close) : renderUploadCandidaete(close)
-                  }
-                </div>
-              )}
-            </Popup>
-          }
-          {/* <button className="job-details-upload-candidate-button">Archieve Job</button> */}
+          {/* { jobDetails.status === 'ARCHIVED' ? 
+              <p className="job-details-posted-at">This job is archived</p> 
+            :
+              (userType === 'HR' || userType === 'ADMIN') &&
+                (userType === 'HR') ?
+                  <Link to={`/jobs/${id}/upload-candidate`} className="link-item">
+                    <button className="job-details-upload-candidate-button">Upload Candidate</button>
+                  </Link>
+                  :
+                  <Popup
+                    trigger={<button className='job-details-upload-candidate-button'>Archieve Job</button>}
+                    modal
+                  >
+                    {close => (
+                      <div className="modal">
+                        {
+                          userType === 'ADMIN' && renderArchieveJob(close)
+                        }
+                      </div>
+                    )}
+                  </Popup>
+          } */}
+          {renderButtons()}
         </div>
       </div>
     )
@@ -586,9 +552,9 @@ const JobDetailsPage = () => {
                       >
                         {close => (
                           <div className="modal">
-                            <button className="modal-close-button" onClick={close}>
+                            {/* <button className="modal-close-button" onClick={close}>
                               &times;
-                            </button>
+                            </button> */}
                             {renderUpdateStatus(close, eachItem.candidateId)}
                           </div>
                         )}

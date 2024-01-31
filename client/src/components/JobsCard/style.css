@@ -7,7 +7,7 @@
     padding: 20px;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border: 1px solid #f9a828;
+    border: 1px solid #EB6A4D;
     /* 475569 */
   }
 
@@ -73,7 +73,7 @@
   
   .job-location-icon {
     font-size: 20px;
-    color: #f9a828;
+    color: #EB6A4D;
   }
   
   .job-location {
@@ -86,7 +86,7 @@
   
   .job-type-icon {
     font-size: 18px;
-    color: #f9a828;
+    color: #EB6A4D;
   }
   
   .job-salary {
@@ -104,7 +104,7 @@
   }
   
   .jobs-line {
-    border: 1.5px solid #f9a828;
+    border: 1.5px solid #EB6A4D;
     width: 100%;
   }
   

@@ -1,0 +1,87 @@
+.upload-candidate-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
+    margin-top: 15vh;
+    margin-bottom: 50px;
+    width: 100%;
+    padding-top: 25px;
+    min-height: 85vh;
+}
+
+.upload-candidate-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+    width: 60%;
+    border: 1px solid #EB6A4D;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.upload-candidate-sub-con {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.upload-candidate-input-con {
+    display: flex;
+    flex-direction: column;
+    width: 47%;
+}
+
+.experience-con {
+    display: flex;
+    align-items: center;
+    padding-left: 0px;
+}
+
+.experience-input {
+    width: 60px;
+    border: 0px;
+    outline: none;
+    height: 100%;
+    padding-left: 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #EB6A4D20;
+}
+
+.candidate-button {
+    align-self: flex-end;
+    width: fit-content;
+}
+
+
+@media screen and (max-width: 768px) {
+    .upload-candidate-container {
+        margin-top: 10vh;
+        padding-top: 15px;
+    }
+    .upload-candidate-form {
+        width: 90%;
+        padding: 20px 10px;
+        margin-top: 20px;
+    }
+    .upload-candidate-sub-con {
+        flex-direction: column;
+        margin-bottom: 0px;
+    }
+    
+    .upload-candidate-input-con {
+        width: 100%;
+    }
+    .candidate-button {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 450px) and (max-width: 767px) {
+    .upload-candidate-form {
+        width: 70%;
+        padding: 20px 10px;
+    }
+}

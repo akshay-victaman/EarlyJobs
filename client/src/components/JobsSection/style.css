@@ -4,7 +4,7 @@
   }
   
   .jobs-section-profile-filter-con {
-    width: 30%;
+    width: 25%;
     height: 80vh;
     overflow-y: auto;
   }
@@ -45,7 +45,7 @@
   }
   
   .job-section-search-card-con {
-    width: 70%;
+    width: 75%;
     margin-left: 30px;
     height: 80vh;
     overflow-y: auto;
@@ -88,7 +88,7 @@
   }
   
   .jobs-failure-retry-button {
-    background-color: #f9a828;
+    background-color: #EB6A4D;
     color: #ffffff;
     border: 0px;
     border-radius: 4px;
@@ -157,7 +157,7 @@
     }
     .filter-button {
       background-color: transparent;
-      color: #f9a828;
+      color: #EB6A4D;
       border: 0px;
       outline: none;
       cursor: pointer;
