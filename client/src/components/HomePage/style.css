@@ -82,6 +82,20 @@
     margin-top: 5px;
 }
 
+.homepage-quote {
+    font-size: 25px;
+    text-align: center;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #01013c;
+    margin-top: 30px;
+}
+
+.quote-span {
+    color: #EB6A4D;
+    border-bottom: 3px dotted #EB6A4D;
+}
+
 @media screen and (max-width: 768px) {
     .homepage-sub-con {
         flex-direction: column;
@@ -97,6 +111,10 @@
 
     .homepage-img {
         display: none;
+    }
+    .homepage-quote {
+        font-size: 20px;
+        margin: 20px 10px;
     }
 }
 

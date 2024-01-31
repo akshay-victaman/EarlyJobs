@@ -97,6 +97,9 @@ const HomePage = () => {
                         <button type='submit' className="login-button">Login</button>
                         <p className='error-message'>{error}</p>
                     </form>
+                    <h1 className='homepage-quote'>
+                        <span className='quote-span'>26000+</span> Openings, <span className='quote-span'>50+</span> Locations, <span className='quote-span'>30+</span> Companies, Across All Sectors
+                    </h1>
                 </div>
                 <img src='/homepage-bg.avif' className='homepage-img' alt='homepage-img'/>
             </div>

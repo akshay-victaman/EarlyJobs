@@ -32,7 +32,7 @@ const QualificationForm = (props) => {
                     <option value='PhD'>PhD</option>
                 </select>
 
-                <label htmlFor='certification' className='hr-label' >Certification<span className='hr-form-span'> *</span></label>
+                {/* <label htmlFor='certification' className='hr-label' >Certification<span className='hr-form-span'> *</span></label>
                 <div className='hr-input-list-con'>
                     {
                         qualification.certification.map((certification) => (
@@ -46,7 +46,7 @@ const QualificationForm = (props) => {
                 <div className='hr-input-con'>
                     <input type='text' placeholder="Certificate name" className='hr-input-sub' id='certification' name='certification' required={qualification.certification.length === 0} value={certification} onChange={onChangeCertification} />
                     <button type='button' className='hr-form-btn-add' onClick={handleCertificationChange}>+Add</button>
-                </div>
+                </div> */}
 
                 <label htmlFor='experience' className='hr-label' >Work Experience<span className='hr-form-span'> *</span></label>
                 <div className='hr-input-list-con'>

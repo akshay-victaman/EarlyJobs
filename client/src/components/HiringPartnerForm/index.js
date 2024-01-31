@@ -121,7 +121,7 @@ const HiringPartnerForm = () => {
 
     const [qualification, setQualification] = useState({
         highestQualification: "",
-        certification: [],
+        // certification: [],
         workExperience: []
     })
 
@@ -484,11 +484,11 @@ const HiringPartnerForm = () => {
 
     const onSubmitQualification = (e) => {
         e.preventDefault()
-        if(certification !== "" && qualification.certification.length === 0) {
-            console.log('triggered')
-            setError("*Please enter certification")
-            return
-        } else if(workExperience !== "" && qualification.workExperience.length === 0) {
+        // if(certification !== "" && qualification.certification.length === 0) {
+        //     setError("*Please enter certification")
+        //     return
+        // } else 
+        if(workExperience !== "" && qualification.workExperience.length === 0) {
             setError("*Please enter work experience")
             return
         }
