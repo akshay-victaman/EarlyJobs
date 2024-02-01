@@ -287,6 +287,7 @@ const AddJobVacanciesPage = () => {
                 <input type='text' placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
                 <button type='button' className='hr-form-btn-add' onClick={onAddSkills}>+Add</button>
             </div>
+            <p className='hr-size'>Type a Skill and click 'Add' button to add it to the list</p>
             {skillsError && <p className='hr-error'>*Please enter skills</p>}
 
             <div className='salary-container'>

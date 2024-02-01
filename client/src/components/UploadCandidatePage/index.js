@@ -276,6 +276,7 @@ const UploadCandidatePage = () => {
                         <input type='text' placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
                         <button type='button' className='hr-form-btn-add' onClick={onAddSkills}>+Add</button>
                     </div>
+                    <p className='hr-size'>Type a Skill and click 'Add' button to add it to the list</p>
                 </div>
                 <div className="upload-candidate-input-con">
                     <label className="homepage-label" htmlFor='languages'>Spoken Languages<span className='hr-form-span'> *</span></label>
@@ -293,6 +294,7 @@ const UploadCandidatePage = () => {
                         <input type='text' placeholder="Ex: English" className='hr-input-sub' id='languages' name='languages' required={candidateDetails.spokenLanguages.length === 0} value={languages} onChange={onChangeLanguage} />
                         <button type='button' className='hr-form-btn-add' onClick={handleLanguageChange}>+Add</button>
                     </div>
+                    <p className='hr-size'>Type a language and click 'Add' button to add it to the list</p>
                 </div>
             </div>
 
