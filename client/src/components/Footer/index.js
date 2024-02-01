@@ -21,17 +21,17 @@ const Footer = () => {
                 <a href="https://www.t.me/earlyjobsoffice/" className="footer-social-media-link" rel="noreferrer" target="_blank">
                     <FaTelegram className="footer-social-media-icon" />
                 </a>
-                <a href="google.com" className="footer-social-media-link" rel="noreferrer" target="_blank">
+                {/* <a href="google.com" className="footer-social-media-link" rel="noreferrer" target="_blank">
                     <FaYoutube className="footer-social-media-icon" />
-                </a>
+                </a> */}
             </div>
             <div className="footer-links">
                 <p className="footer-link-heading">© Early Jobs</p>
                 <div className="footer-link-wrapper">
-                    <a href="/RefundPolicy/index.html" className="footer-link">Refund Policy</a>
+                    {/* <a href="/RefundPolicy/index.html" className="footer-link">Refund Policy</a> */}
                     {/* <a href="" class="footer-link">Support</a> */}
-                    <a href="/TermsPage/index.html" className="footer-link">Terms</a>
-                    <a href="/PrivacyPage/index.html" className="footer-link">Privacy</a>
+                    <a href="/TermsPage/index.html" className="footer-link">Terms & Conditions</a>
+                    <a href="/PrivacyPage/index.html" className="footer-link">Privacy Policy</a>
                     <a className="footer-link" rel="noreferrer" id="contact-link">Contact</a>
                 </div>
             </div>

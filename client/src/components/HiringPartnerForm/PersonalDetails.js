@@ -90,6 +90,20 @@ const PersonalDetailsForm = (props) => {
                     <input type='text' placeholder="Ex: English" className='hr-input-sub' id='languages' name='languages' required={personalDetails.languages.length === 0} value={languages} onChange={onChangeLanguage} />
                     <button type='button' className='hr-form-btn-add' onClick={handleLanguageChange}>+Add</button>
                 </div>
+                <p className='hr-size'>Type a language and click 'Add' button to add it to the list</p>
+
+
+                <label className='hr-label'>Apply for<span className='hr-form-span'> *</span></label>
+                <div className='hr-checkbox-con hr-radio'>
+                    <label className='hr-checkbox-label hr-radio-label'>
+                        <input type="radio" className='hr-checkbox' name="applyFor" value="Freelance HR Recruiter" checked={personalDetails.applyFor === 'Freelance HR Recruiter'} onChange={handleInputChange}/>
+                        Freelance HR Recruiter
+                    </label>
+                    <label className='hr-checkbox-label hr-radio-label'>
+                        <input type="radio" className='hr-checkbox' name="applyFor" value="HR Recruiter" checked={personalDetails.applyFor === 'HR Recruiter'} onChange={handleInputChange}/>
+                        HR Recruiter
+                    </label>
+                </div>
 
                 <p className='hr-main-error'>{error}</p>
 

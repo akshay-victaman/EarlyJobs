@@ -298,6 +298,17 @@
     margin-bottom: 8px;
 }
 
+.hr-radio {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 5px;
+}
+
+.hr-radio-label {
+    margin-bottom: 6px;
+}
+
 .hr-main-error {
     text-align: center;
     color: red;

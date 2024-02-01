@@ -18,7 +18,7 @@ const QualificationForm = (props) => {
     } = props;
     return(
         <div className='hr-form-container'>
-            <h1 className='form-title'>Qualification/Certification</h1>
+            <h1 className='form-title'>Qualification</h1>
             <form className='hr-form' onSubmit={onSubmitQualification}>
                 <p className='hr-form-subtitle'>( <span className='hr-form-span'>*</span> ) Indicates required field</p>
 
@@ -48,7 +48,7 @@ const QualificationForm = (props) => {
                     <button type='button' className='hr-form-btn-add' onClick={handleCertificationChange}>+Add</button>
                 </div> */}
 
-                <label htmlFor='experience' className='hr-label' >Work Experience<span className='hr-form-span'> *</span></label>
+                <label htmlFor='experience' className='hr-label' >Work Experience</label>
                 <div className='hr-input-list-con'>
                     {
                         qualification.workExperience.map((experience) => (
@@ -60,9 +60,10 @@ const QualificationForm = (props) => {
                     }
                 </div>
                 <div className='hr-input-con'>
-                    <input type='text' placeholder="Ex: MicroSoft" className='hr-input-sub' id='experience' name='experience' required={qualification.workExperience.length === 0} value={workExperience} onChange={onChangeWorkExperience} />
+                    <input type='text' placeholder="Ex: MicroSoft" className='hr-input-sub' id='experience' name='experience' value={workExperience} onChange={onChangeWorkExperience} />
                     <button type='button' className='hr-form-btn-add' onClick={handleWorkExperienceChange}>+Add</button>
                 </div>
+                <p className='hr-size'>Type company name and click 'Add' button to add it to the list</p>
 
                 <div className='hr-submit-con'>
                     <button type='button' className='hr-form-btn' onClick={() => handleCurrentStep(0)}>Back</button>

@@ -116,7 +116,8 @@ const HiringPartnerForm = () => {
         email: "",
         currAddress: "",
         permAddress: "",
-        languages: []
+        languages: [],
+        applyFor: ""
     })
 
     const [qualification, setQualification] = useState({
@@ -474,6 +475,9 @@ const HiringPartnerForm = () => {
         } else if(languages !== "" && personalDetails.languages.length === 0) {
             setError("*Please enter languages you speak")
             return
+        } else if(personalDetails.applyFor.trim().length === 0) {
+            setError("*Please select what you want to apply for")
+            return
         }
 
         setError("")
@@ -488,11 +492,11 @@ const HiringPartnerForm = () => {
         //     setError("*Please enter certification")
         //     return
         // } else 
-        if(workExperience !== "" && qualification.workExperience.length === 0) {
-            setError("*Please enter work experience")
-            return
-        }
-        setError("")
+        // if(workExperience !== "" && qualification.workExperience.length === 0) {
+        //     setError("*Please enter work experience")
+        //     return
+        // }
+        // setError("")
         console.log(qualification)
         handleCurrentStep(2)
     }
@@ -503,11 +507,11 @@ const HiringPartnerForm = () => {
         if(about.aboutYou.split(/\s+/).length < 150) {
             setError("*Please enter 'about yourself' in minimum of 150 words")
             return
-        } else if(about.WhyJoinUs.split(/\s+/).length < 100 || about.WhyJoinUs.split(/\s+/).length > 150) {
-            setError("*Please enter 'why you want to join us' in 100-150 words")
+        } else if(about.WhyJoinUs.split(/\s+/).length < 100) {
+            setError("*Please enter 'why you want to join us' in minimum of 100 words")
             return
-        } else if(about.YourContribution.split(/\s+/).length < 100 || about.YourContribution.split(/\s+/).length > 150) {
-            setError("*Please enter 'how you can contribute to society' in 100-150 words")
+        } else if(about.YourContribution.split(/\s+/).length < 100) {
+            setError("*Please enter 'how you can contribute to society' in minimum of 100 words")
             return
         } else if(about.hours.trim().length === 0) {
             setError("*Please enter how many hours you can contribute daily")
@@ -620,7 +624,7 @@ const HiringPartnerForm = () => {
 
     const sendEmail = (formData) => {
         const languages = formData.personalDetails.languages.map((language) => language.value).join(', ')
-        const certification = formData.qualification.certification.map((certification) => certification.value).join(', ')
+        // const certification = formData.qualification.certification.map((certification) => certification.value).join(', ')
         const workExperience = formData.qualification.workExperience.map((experience) => experience.value).join(', ')
         const hiringDept = formData.about.hiringDept.join(', ')
         formData.personalDetails.languages = languages
