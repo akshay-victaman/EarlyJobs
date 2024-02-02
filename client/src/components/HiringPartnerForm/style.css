@@ -244,6 +244,7 @@
     height: 15px;
     cursor: pointer;
     width: 15px;
+    margin-right: 8px;
 }
 
 .hr-checkbox-label {

@@ -1,11 +1,13 @@
 import { useParams, useHistory } from "react-router-dom"
 import Popup from 'reactjs-popup';
+import {v4 as uuid} from 'uuid'
 import { useEffect, useState } from "react"
 import { getFirestore, collection, query, where, getDocs, addDoc, doc, deleteDoc, setDoc } from "firebase/firestore"
 import app from "../../firebase"
 import NavBar from "../NavBar"
 import './style.css'
 import Footer from "../Footer";
+import Cookie from "js-cookie";
 
 
 const HiringPartnerDetails = () => {
@@ -13,8 +15,19 @@ const HiringPartnerDetails = () => {
     const [hiringPartnerReqDetails, setHiringPartnerReqDetails] = useState({})
     const [loading, setLoading] = useState(true)
     const [rejectApproveStatus, setRejectApproveStatus] = useState(false)
+    const [error, setError] = useState('')
     const { id } = useParams()
     const history = useHistory()
+    const [signUpDetails, setSignUpDetails] = useState({
+        docId: id,
+        username: "",
+        email: "",
+        password: uuid().slice(0, 8),
+        role: 'HR',
+        industry: '',
+        hiringCTC: '',
+        location: ''
+    })
 
     useEffect(() => {
         const getHiringPartnerReqList = async () => {
@@ -29,13 +42,26 @@ const HiringPartnerDetails = () => {
             if (!querySnap.empty) {
                 const documents = querySnap.docs.map((doc) => doc.data());
                 setHiringPartnerReqDetails(documents[0])
+                
             } else {
                 console.log("No such documents!");
+                return;
             }
             setLoading(false)
         }
         getHiringPartnerReqList()
     }, [id])
+
+    useEffect(() => {
+        if(hiringPartnerReqDetails.formData) {
+            setSignUpDetails({...signUpDetails, username: hiringPartnerReqDetails.formData.personalDetails.fullName, email: hiringPartnerReqDetails.formData.personalDetails.email})
+        }
+    }, [hiringPartnerReqDetails])
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target
+        setSignUpDetails({ ...signUpDetails, [name]: value })
+    }
 
     const onClickReject = async () => {
         setRejectApproveStatus(true)
@@ -50,13 +76,126 @@ const HiringPartnerDetails = () => {
         setRejectApproveStatus(false)
     }
 
+    const updateDocId = async (docId, email) => {
+        const url = 'http://localhost:5000/api/users/update-doc-id';
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + Cookie.get('jwt_token')
+            },
+            body: JSON.stringify({docId, email})
+        }
+        const response = await fetch(url, options) // update docId in users table in DB
+        const data = await response.json()
+        if(response.ok === true) {
+            if(data.error) {
+                setError(data.error)
+                return false
+            } else if(data.success) {
+                setError("");
+                return true
+            }
+        } else {
+            setError(data.error)
+            return false
+        }
+    }
+
+    const addToFirebase = async () => {
+        const db = getFirestore(app);
+        const docRef = await addDoc(collection(db, "ApprovedHiringPartners"), { hiringPartnerReqDetails }); // add hiring partner details in ApprovedHiringPartners collection
+        const docId = docRef.id;
+        const approvedDate = new Date();
+        const isApproved = true;
+        await setDoc(doc(db, "ApprovedHiringPartners", docId), { formData: {...hiringPartnerReqDetails.formData, approvedDate, isApproved, docId} }); // update docId in ApprovedHiringPartners collection
+        return docId
+    }
+
+    const onClickApprove = async () => {
+
+        if(signUpDetails.location.trim() === "" || signUpDetails.hiringCTC === "" || signUpDetails.industry === "") {
+            setError("All fields are required")
+            return
+        }
+
+        setRejectApproveStatus(true)
+        console.log(signUpDetails)
+        const url = 'http://localhost:5000/api/users/register'
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + Cookie.get('jwt_token')
+            },
+            body: JSON.stringify(signUpDetails)
+        }
+        const response = await fetch(url, options) // create account in DB
+        const data = await response.json()
+        if(response.ok === true) {
+            if(data.error) {
+                setError(data.error)
+            } else if(data.success) {  
+                setError("");
+                const docId = await addToFirebase() // if account created successfully then add user data in to firebase in ApprovedHiringPartners collection
+                const db = getFirestore(app);
+                if(await updateDocId(docId, signUpDetails.email)) { // update docId in users table in DB
+                    await deleteDoc(doc(db, "HiringPartnerRequests", id)); // if docId updated successfully then delete the hiring partner request from HiringPartnerRequests collection from firebase
+                    history.replace('/admin/hiring-partner-requests') // redirect to hiring partner requests page
+                    setRejectApproveStatus(false)
+                }
+            }
+        } else {
+            setError(data.error)
+        }
+        setRejectApproveStatus(false)
+    }
+
     const renderRejectPopup = (close) => {
         return (
             <div className="modal-form">
+                <button className="modal-close-button" disabled={rejectApproveStatus} onClick={close}>
+                    &times;
+                </button>
                 <label className="homepage-label">Do you want to Reject {hiringPartnerReqDetails.formData.personalDetails.fullName}'s Application?</label>
                 <div className='achieve-button-con'>
                     <button className='job-details-upload-candidate-button' disabled={rejectApproveStatus} onClick={() => onClickReject(close)}>YES</button>
                     <button className='job-details-upload-candidate-button archieve-cancel-btn' disabled={rejectApproveStatus} onClick={close}>NO</button>
+                </div>
+            </div>
+        )
+    }
+
+    const renderApprovePopup = (close) => {
+        
+        return (
+            <div className="modal-form">
+                <button className="modal-close-button" disabled={rejectApproveStatus} onClick={close}>
+                    &times;
+                </button>
+                <label className="homepage-label">Create credentials for {hiringPartnerReqDetails.formData.personalDetails.fullName}'s Application?</label>
+                <label className="homepage-label">Credentials will be sent to {hiringPartnerReqDetails.formData.personalDetails.email}</label>
+                <label className="homepage-label">Login Email</label>
+                <input className="homepage-input" type="text" disabled value={signUpDetails.email} />
+                <label className="homepage-label">Login Password</label>
+                <input className="homepage-input" type="text" disabled value={signUpDetails.password} />
+
+                <label className="homepage-label" htmlFor="location">Location</label>
+                <input className="homepage-input" type="text" id="location" required name="location" value={signUpDetails.location} onChange={handleInputChange} />
+                <label className="homepage-label" htmlFor="hiringCTC">Hiring CTC</label>
+                <input className="homepage-input" type="number" id="hiringCTC" required name="hiringCTC" value={signUpDetails.hiringCTC} onChange={handleInputChange} />
+                <label className="homepage-label" htmlFor="category">Hiring Category</label>
+                <select className="homepage-input" id="category" name="industry" required value={signUpDetails.industry} onChange={handleInputChange} >
+                    <option value="">select</option>
+                    <option value="IT">IT</option>
+                    <option value="NON-IT">NON-IT</option>
+                </select>
+                <p className="error-message">{error}</p>
+                <div className='achieve-button-con'>
+                    <button className='job-details-upload-candidate-button' disabled={rejectApproveStatus} onClick={onClickApprove}>CREATE</button>
+                    <button className='job-details-upload-candidate-button archieve-cancel-btn' disabled={rejectApproveStatus} onClick={close}>CANCEL</button>
                 </div>
             </div>
         )
@@ -103,6 +242,10 @@ const HiringPartnerDetails = () => {
                             {personalDetails.languages.map((language) => language.value).join(', ')}
                         </p>
                     </div>
+                    <div className="hiring-partner-details-con">
+                        <p className="hiring-partner-label">Apply For:</p>
+                        <p className="hiring-partner-value">{personalDetails.applyFor}</p>
+                    </div>
                 </div>
 
 
@@ -114,10 +257,10 @@ const HiringPartnerDetails = () => {
                         <p className="hiring-partner-value">{qualification.highestQualification}</p>
                     </div>
                     <div className="hiring-partner-details-con">
-                        <p className="hiring-partner-label">Certifications:</p>
+                        {/* <p className="hiring-partner-label">Certifications:</p>
                         <p className="hiring-partner-value">
                             {qualification.certification.map((certification) => certification.value).join(', ')}
-                        </p>
+                        </p> */}
                     </div>
                     <div className="hiring-partner-details-con">
                         <p className="hiring-partner-label">Work Experience:</p>
@@ -348,14 +491,23 @@ const HiringPartnerDetails = () => {
                     >
                         {close => (
                         <div className="modal">
-                            <button className="modal-close-button" disabled={rejectApproveStatus} onClick={close}>
-                            &times;
-                            </button>
                             {renderRejectPopup(close)}
                         </div>
                         )}
                     </Popup>
-                    <button className="hiring-partner-btn">Approve</button>
+
+                    <Popup
+                        trigger={<button className="hiring-partner-btn">Approve</button>}
+                        modal
+                    >
+                        {close => (
+                        <div className="modal">
+                            
+                            {renderApprovePopup(close)}
+                        </div>
+                        )}
+                    </Popup>
+                    
                 </div>
             </div>
         )

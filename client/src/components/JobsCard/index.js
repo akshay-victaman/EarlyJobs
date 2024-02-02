@@ -77,8 +77,8 @@ const JobsCard = props => {
         <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
         <p className="job-detials">Notice Period: {hiringNeed}</p>
         <p className="job-detials">Work Type: {workType}</p>
-        <h1 className="job-desc-heading">Description</h1>
-        <p className="job-description">{jobDescription}</p>
+        {/* <h1 className="job-desc-heading">Description</h1>
+        <p className="job-description">{jobDescription}</p> */}
       </li>
     </Link>
   )

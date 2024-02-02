@@ -22,46 +22,46 @@ const Profile = () => {
     const [profileData, setProfileData] = useState(jobsListDummy)
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
 
-    useEffect(() => {
-        getProfileData()
-    }, [])
+    // useEffect(() => {
+    //     getProfileData()
+    // }, [])
 
-    const getProfileData = async () => {
-        setApiStatus(apiStatusConstant.inProgress)
-        const jwtToken = Cookies.get('jwt_token')
-        const apiUrl = 'https://apis.ccbp.in/profile'
-        const options = {
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${jwtToken}`,
-        },
-        }
-        const response = await fetch(apiUrl, options)
-        const data = await response.json()
-        if (response.ok === true) {
-        const updatedData = {
-            name: data.profile_details.name,
-            profileImageUrl: data.profile_details.profile_image_url,
-            shortBio: data.profile_details.short_bio,
-        }
-        setProfileData(updatedData)
-        setApiStatus(apiStatusConstant.success)
-        } else {
-        setApiStatus(apiStatusConstant.failure)
-        }
-    }
+    // const getProfileData = async () => {
+    //     setApiStatus(apiStatusConstant.inProgress)
+    //     const jwtToken = Cookies.get('jwt_token')
+    //     const apiUrl = 'https://apis.ccbp.in/profile'
+    //     const options = {
+    //     method: 'GET',
+    //     headers: {
+    //         Authorization: `Bearer ${jwtToken}`,
+    //     },
+    //     }
+    //     const response = await fetch(apiUrl, options)
+    //     const data = await response.json()
+    //     if (response.ok === true) {
+    //     const updatedData = {
+    //         name: data.profile_details.name,
+    //         profileImageUrl: data.profile_details.profile_image_url,
+    //         shortBio: data.profile_details.short_bio,
+    //     }
+    //     setProfileData(updatedData)
+    //     setApiStatus(apiStatusConstant.success)
+    //     } else {
+    //     setApiStatus(apiStatusConstant.failure)
+    //     }
+    // }
 
-    const renderFailure = () => (
-        <div className="profile-failure-con">
-        <button
-            type="button"
-            className="profile-failure-button"
-            onClick={getProfileData}
-        >
-            Retry
-        </button>
-        </div>
-    )
+    // const renderFailure = () => (
+    //     <div className="profile-failure-con">
+    //     <button
+    //         type="button"
+    //         className="profile-failure-button"
+    //         onClick={getProfileData}
+    //     >
+    //         Retry
+    //     </button>
+    //     </div>
+    // )
 
     const renderProfileDetails = () => {
         const {name, profileImageUrl, shortBio} = profileData
