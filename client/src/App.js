@@ -15,25 +15,29 @@ import AddJobVacanciesPage from './components/AddJobVacanciesPage';
 import HiringPartnerReqPage from './components/HiringPartnerReqPage';
 import HiringPartnerDetails from './components/HiringPartnerDetails';
 import UploadCandidatePage from './components/UploadCandidatePage';
+import ScrollUp from './components/ScrollUp';
 
 
 const App = () => (
-  <Switch>
-    <Route exact path="/" component={HomePage} />
-    <Route exact path="/apply-as-a-hiring-partner" component={HiringPartnerForm} />
-    <Route exact path="/add-job-vacancies" component={AddJobVacanciesPage} />
-    <ProtectedRoute exact path="/jobs" component={JobsPage} />
-    <ProtectedRoute exact path="/jobs/:id" component={JobDetailsPage} />
-    <ProtectedRoute exact path='/jobs/:id/upload-candidate' component={UploadCandidatePage} />
-    <ProtectedRoute exact path='/signup' component={SignUpPage} />
-    <ProtectedRoute exact path='/bde-portal' component={BDEPage} />
-    {/* <ProtectedRoute exact path='/account-manager-portal' component={AccountManagerPage} /> */}
-    <ProtectedRoute exact path='/admin' component={AdminPage} />
-    <ProtectedRoute exact path="/admin/users" component={UsersPage} />
-    <ProtectedRoute exact path="/admin/candidates" component={CandidatesPage} />
-    <ProtectedRoute exact path="/admin/hiring-partner-requests" component={HiringPartnerReqPage} />
-    <ProtectedRoute exact path="/admin/hiring-partner-requests/:id" component={HiringPartnerDetails} />
-  </Switch>
+  <>
+    <Switch>
+      <Route exact path="/" component={HomePage} />
+      <Route exact path="/apply-as-a-hiring-partner" component={HiringPartnerForm} />
+      <Route exact path="/add-job-vacancies" component={AddJobVacanciesPage} />
+      <ProtectedRoute exact path="/jobs" component={JobsPage} />
+      <ProtectedRoute exact path="/jobs/:id" component={JobDetailsPage} />
+      <ProtectedRoute exact path='/jobs/:id/upload-candidate' component={UploadCandidatePage} />
+      <ProtectedRoute exact path='/signup' component={SignUpPage} />
+      <ProtectedRoute exact path='/bde-portal' component={BDEPage} />
+      {/* <ProtectedRoute exact path='/account-manager-portal' component={AccountManagerPage} /> */}
+      <ProtectedRoute exact path='/admin' component={AdminPage} />
+      <ProtectedRoute exact path="/admin/users" component={UsersPage} />
+      <ProtectedRoute exact path="/admin/candidates" component={CandidatesPage} />
+      <ProtectedRoute exact path="/admin/hiring-partner-requests" component={HiringPartnerReqPage} />
+      <ProtectedRoute exact path="/admin/hiring-partner-requests/:id" component={HiringPartnerDetails} />
+    </Switch>
+  <ScrollUp />
+  </>
 )
 
 export default App;

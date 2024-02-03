@@ -55,6 +55,7 @@ const AdminPage = () => {
                     <img src='/admin-bg.jpg' alt='admin vector' className='admin-image' />
                 </div>
             </div>
+            
             <Footer />
         </div>
     )

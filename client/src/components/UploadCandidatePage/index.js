@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Cookies from "js-cookie"
 import { useParams, Redirect } from "react-router-dom"
 import { IoIosClose } from "react-icons/io";
-import { FaArrowUp } from "react-icons/fa6";
 import {Oval} from 'react-loader-spinner'
 import Footer from "../Footer"
 import NavBar from "../NavBar"
@@ -15,7 +14,6 @@ const UploadCandidatePage = () => {
     const [languages, setLanguages] = useState("")
     const [loading, setLoading] = useState(false)
     const [showForm, setShowForm] = useState(true)
-    const [isVisible, setIsVisible] = useState(false);
 
     const [candidateDetails, setCandidateDetails] = useState({
         fullName: '',
@@ -35,25 +33,6 @@ const UploadCandidatePage = () => {
         offerStatus: '',
       })
 
-      const toggleVisibility = () => {
-        if (window.scrollY > 100) {
-          setIsVisible(true);
-        } else {
-          setIsVisible(false);
-        }
-    };
-
-    const scrollToTop = () => {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-    };
-
-    useEffect(() => {
-        window.addEventListener("scroll", toggleVisibility);
-        return () => window.removeEventListener("scroll", toggleVisibility);
-    }, []);
 
     const handleCandidateInputChange = (e) => {
         const {name, value} = e.target
@@ -357,12 +336,7 @@ const UploadCandidatePage = () => {
                     showForm ? renderUploadCandidateForm() : renderSuccessMessage()
                 }
             </div>
-            {
-                isVisible && 
-                <div className='hiring-partner-go-to-top' onClick={scrollToTop}>
-                    <FaArrowUp className='hiring-partner-go-to-top-icon' />
-                </div>
-            }
+            
             <Footer />
         </div>
     )

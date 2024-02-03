@@ -31,7 +31,6 @@ const BDEPage = () => {
     const [noOfOpeningsError, setNoOfOpeningsError] = useState(false)
     const [hiringNeedError, setHiringNeedError] = useState(false)
     const [assignedToError, setAssignedToError] = useState(false)
-    const [isVisible, setIsVisible] = useState(false);
 
     const [postNewJob, setPostNewJob] = useState({
         companyName: '',
@@ -68,26 +67,6 @@ const BDEPage = () => {
         }
         fetchAccountManagers()
     }, [])
-
-    const toggleVisibility = () => {
-        if (window.scrollY > 100) {
-          setIsVisible(true);
-        } else {
-          setIsVisible(false);
-        }
-    };
-
-    const scrollToTop = () => {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-    };
-
-    useEffect(() => {
-        window.addEventListener("scroll", toggleVisibility);
-        return () => window.removeEventListener("scroll", toggleVisibility);
-    }, []);
 
 
     const handleInputChange = (e) => {
@@ -388,12 +367,7 @@ const BDEPage = () => {
                     <h1 className='bde-heading'>Welcome to <span className='head-span'>Business Development Executive</span> Portal</h1>
                     { showJobForm ? renderJobForm() : renderAnotherJobButton()}
                 </div>
-                {
-                    isVisible && 
-                    <div className='hiring-partner-go-to-top' onClick={scrollToTop}>
-                        <FaArrowUp className='hiring-partner-go-to-top-icon' />
-                    </div>
-                }
+
             </div>
             <Footer />
         </>

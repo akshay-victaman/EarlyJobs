@@ -8,6 +8,7 @@ import NavBar from "../NavBar"
 import './style.css'
 import Footer from "../Footer";
 import Cookie from "js-cookie";
+import ScrollUp from "../ScrollUp";
 
 
 const HiringPartnerDetails = () => {
@@ -524,6 +525,7 @@ const HiringPartnerDetails = () => {
                     loading ? <h1>Loading...</h1> : renderHiringPartnerReqDetails()
                 }
             </div>
+            <ScrollUp />
             <Footer />
         </div>
     )

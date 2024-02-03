@@ -12,6 +12,7 @@ import {HiOutlineExternalLink} from 'react-icons/hi'
 import {ThreeCircles} from 'react-loader-spinner'
 import NavBar from '../NavBar'
 import './style.css'
+import Footer from '../Footer';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -617,6 +618,7 @@ const JobDetailsPage = () => {
         <NavBar isLoggedIn={true} />
         {renderSwitchCase()}
         {renderCandidates()}
+        <Footer />
       </div>
     )
 }

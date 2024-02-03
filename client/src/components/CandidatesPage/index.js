@@ -7,6 +7,7 @@ import NavBar from "../NavBar"
 import { useEffect } from "react";
 import {Redirect} from 'react-router-dom';
 import CandidateItem from "../CandidateItem";
+import Footer from "../Footer";
 
 
 const CandidatesPage = () => {
@@ -109,6 +110,7 @@ const CandidatesPage = () => {
                 </div>
                 {renderCandidates()}
             </div>
+            <Footer />
         </div>
     )
 }

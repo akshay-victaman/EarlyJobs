@@ -9,6 +9,7 @@ import NavBar from '../NavBar';
 import './style.css';
 import Footer from '../Footer';
 import app from '../../firebase';
+import ScrollUp from '../ScrollUp';
 
 
 const AddJobVacanciesPage = () => {
@@ -33,8 +34,6 @@ const AddJobVacanciesPage = () => {
     const [emailError, setEmailError] = useState(false)
     const [contactNoError, setContactNoError] = useState(false)
 
-
-    const [isVisible, setIsVisible] = useState(false);
     const [addJobVacancies, setAddJobVacancies] = useState({
         companyName: '',
         jobTitle: '',
@@ -57,26 +56,6 @@ const AddJobVacanciesPage = () => {
             contactNo: ''
         },
     })
-
-    const toggleVisibility = () => {
-        if (window.scrollY > 100) {
-          setIsVisible(true);
-        } else {
-          setIsVisible(false);
-        }
-    };
-
-    const scrollToTop = () => {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-    };
-
-    useEffect(() => {
-        window.addEventListener("scroll", toggleVisibility);
-        return () => window.removeEventListener("scroll", toggleVisibility);
-    }, []);
 
 
     const handleInputChange = (e) => {
@@ -410,12 +389,7 @@ const AddJobVacanciesPage = () => {
                 { showJobForm ? renderJobForm() : renderAnotherJobButton()}
             </div>
             {/* <Footer /> */}
-            {
-                isVisible && 
-                <div className='hiring-partner-go-to-top' onClick={scrollToTop}>
-                    <FaArrowUp className='hiring-partner-go-to-top-icon' />
-                </div>
-            }
+            <ScrollUp />
         </div>
         <Footer />
         </>
