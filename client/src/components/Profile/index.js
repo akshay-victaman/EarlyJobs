@@ -17,7 +17,7 @@ const jobsListDummy = {
     shortBio: 'Software Developer at Victaman',
 }
 
-const Profile = () => {
+const Profile = ({onShowCandidateForm}) => {
 
     const [profileData, setProfileData] = useState(jobsListDummy)
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
@@ -64,12 +64,15 @@ const Profile = () => {
     // )
 
     const renderProfileDetails = () => {
+        const role = Cookies.get('role')
         const {name, profileImageUrl, shortBio} = profileData
         return (
         <div className="profile-container">
             <img src={profileImageUrl} alt="profile" className="profile-image" />
             <h1 className="profile-name">{name}</h1>
             <p className="profile-designation">{shortBio}</p>
+            {role === 'HR' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(true)}>Add Candidate</button>}
+            <button type="button" className="job-details-upload-candidate-button">View Candidates</button>
         </div>
         )
     }

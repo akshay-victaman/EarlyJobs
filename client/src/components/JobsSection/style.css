@@ -50,6 +50,11 @@
     height: 80vh;
     overflow-y: auto;
   }
+
+  .job-section-candidate {
+    overflow-y: hidden!important;
+    height: 100%;
+  }
   
   .jobs-card-list {
     padding-left: 0px;

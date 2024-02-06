@@ -2,6 +2,8 @@ import { useParams, useHistory } from "react-router-dom"
 import Popup from 'reactjs-popup';
 import {v4 as uuid} from 'uuid'
 import { useEffect, useState } from "react"
+import { IoIosClose } from "react-icons/io";
+import emailjs from '@emailjs/browser';
 import { getFirestore, collection, query, where, getDocs, addDoc, doc, deleteDoc, setDoc } from "firebase/firestore"
 import app from "../../firebase"
 import NavBar from "../NavBar"
@@ -10,6 +12,15 @@ import Footer from "../Footer";
 import Cookie from "js-cookie";
 import ScrollUp from "../ScrollUp";
 
+
+let hiringCategoryOptions = [
+    { value: 'BPO', label: 'BPO' },
+    { value: 'IT', label: 'IT' },
+    { value: 'Banking', label: 'Banking' },
+    { value: 'Insurance', label: 'Insurance' },
+    { value: 'Industry', label: 'Industry' },
+    { value: 'Others', label: 'Others' }
+];
 
 const HiringPartnerDetails = () => {
 
@@ -23,11 +34,12 @@ const HiringPartnerDetails = () => {
         docId: id,
         username: "",
         email: "",
+        phone: "",
         password: uuid().slice(0, 8),
         role: 'HR',
-        industry: '',
-        hiringCTC: '',
-        location: ''
+        hiringFor: '',
+        location: '',
+        hiringCategory: [],
     })
 
     useEffect(() => {
@@ -55,13 +67,34 @@ const HiringPartnerDetails = () => {
 
     useEffect(() => {
         if(hiringPartnerReqDetails.formData) {
-            setSignUpDetails({...signUpDetails, username: hiringPartnerReqDetails.formData.personalDetails.fullName, email: hiringPartnerReqDetails.formData.personalDetails.email})
+            setSignUpDetails({
+                ...signUpDetails, 
+                username: hiringPartnerReqDetails.formData.personalDetails.fullName, 
+                email: hiringPartnerReqDetails.formData.personalDetails.email, 
+                location: hiringPartnerReqDetails.formData.personalDetails.currAddress,
+                phone: hiringPartnerReqDetails.formData.personalDetails.phone
+            })
         }
     }, [hiringPartnerReqDetails])
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
         setSignUpDetails({ ...signUpDetails, [name]: value })
+    }
+
+    const handleAddCategory = (e) => {
+        if(e.target.value === "") return
+        const category = signUpDetails.hiringCategory
+        category.push(e.target.value)
+        setSignUpDetails({ ...signUpDetails, hiringCategory: category })
+        hiringCategoryOptions = hiringCategoryOptions.filter((option) => option.value !== e.target.value)
+    }
+
+    const handleCategoryRemove = (index, categoryLabel) => {
+        const category = signUpDetails.hiringCategory
+        category.splice(index, 1)
+        setSignUpDetails({ ...signUpDetails, hiringCategory: category })
+        hiringCategoryOptions.push({ value: categoryLabel, label: categoryLabel })
     }
 
     const onClickReject = async () => {
@@ -76,6 +109,18 @@ const HiringPartnerDetails = () => {
         history.replace('/admin/hiring-partner-requests')
         setRejectApproveStatus(false)
     }
+
+    const sendEmail = (formData) => {
+        const hiringCategory = signUpDetails.hiringCategory.join(', ')
+        const formData1 = {...formData, hiringCategory}
+
+        emailjs.send('service_fnv4y5p', 'template_op0us5b', formData1, 'KzUehMbovr5UfqKRr')
+        .then((result) => {
+            console.log(result.text);
+        }, (error) => {
+            console.log(error.text);
+        });
+    };
 
     const updateDocId = async (docId, email) => {
         const url = 'http://localhost:5000/api/users/update-doc-id';
@@ -116,7 +161,7 @@ const HiringPartnerDetails = () => {
 
     const onClickApprove = async () => {
 
-        if(signUpDetails.location.trim() === "" || signUpDetails.hiringCTC === "" || signUpDetails.industry === "") {
+        if(signUpDetails.hiringCategory === "" || signUpDetails.hiringFor === "") {
             setError("All fields are required")
             return
         }
@@ -183,15 +228,35 @@ const HiringPartnerDetails = () => {
                 <label className="homepage-label">Login Password</label>
                 <input className="homepage-input" type="text" disabled value={signUpDetails.password} />
 
-                <label className="homepage-label" htmlFor="location">Location</label>
+                {/* <label className="homepage-label" htmlFor="location">Location</label>
                 <input className="homepage-input" type="text" id="location" required name="location" value={signUpDetails.location} onChange={handleInputChange} />
                 <label className="homepage-label" htmlFor="hiringCTC">Hiring CTC</label>
-                <input className="homepage-input" type="number" id="hiringCTC" required name="hiringCTC" value={signUpDetails.hiringCTC} onChange={handleInputChange} />
-                <label className="homepage-label" htmlFor="category">Hiring Category</label>
-                <select className="homepage-input" id="category" name="industry" required value={signUpDetails.industry} onChange={handleInputChange} >
+                <input className="homepage-input" type="number" id="hiringCTC" required name="hiringCTC" value={signUpDetails.hiringCTC} onChange={handleInputChange} /> */}
+                
+                <label className="homepage-label" htmlFor="hiringFor">Hiring For</label>
+                <select className="homepage-input" id="hiringFor" name="hiringFor" required value={signUpDetails.hiringFor} onChange={handleInputChange} >
                     <option value="">select</option>
-                    <option value="IT">IT</option>
-                    <option value="NON-IT">NON-IT</option>
+                    <option value="Freelance HR Recruiter">Freelance HR Recruiter</option>
+                    <option value="HR Recruiter Intern">HR Recruiter Intern</option>
+                </select>
+                <label className="homepage-label" htmlFor="hiringCategory">Hiring Category</label>
+                <div className='hr-input-list-con'>
+                    {
+                        signUpDetails.hiringCategory.map((category, index) => (
+                            <div className='hr-input-list' key={index}>
+                                <p className='hr-input-list-item'>{category}</p>
+                                <button type='button' className='hr-remove-item-button' onClick={() => handleCategoryRemove(index, category)}><IoIosClose className='hr-close-icon' /></button>
+                            </div>
+                        ))
+                    }
+                </div>
+                <select className="homepage-input" id="hiringCategory" name="hiringCategory" required onChange={handleAddCategory} >
+                    <option value="">select</option>
+                    {
+                        hiringCategoryOptions.map((category) => (
+                            <option key={category.value} value={category.value}>{category.label}</option>
+                        ))
+                    }
                 </select>
                 <p className="error-message">{error}</p>
                 <div className='achieve-button-con'>

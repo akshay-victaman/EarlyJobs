@@ -8,6 +8,7 @@ import JobsCard from '../JobsCard'
 import FilterJobs from '../FilterJobs'
 import './style.css'
 import SalaryRangeList from '../SalaryRangeList'
+import UploadCandidatePage from '../UploadCandidatePage';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -73,6 +74,7 @@ const JobsSection = () => {
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [toggleFilter, setToggleFilter] = useState(false)
     const [archieve, setArchieve] = useState(false)
+    const [showCandidateForm, setShowCandidateForm] = useState(false)
 
 
   useEffect(() => {
@@ -86,6 +88,11 @@ const JobsSection = () => {
     } else {
       getJobsCard()
     }
+  }
+
+  const onShowCandidateForm = (status) => {
+    setShowCandidateForm(status)
+    console.log(status)
   }
 
   const onSelectArchieve = async () => {
@@ -364,12 +371,13 @@ const JobsSection = () => {
               onChangeInput={onChangeInput}
               onKeyEnter={onKeyEnter}
               onClickButton={onClickButton}
+              onShowCandidateForm={onShowCandidateForm}
             />
         </div>
           
 
         
-        <div className="job-section-search-card-con">
+        <div className={`job-section-search-card-con ${showCandidateForm && "job-section-candidate"}`}>
           {/* <div className="search-box-desk-con">
             <input
               type="search"
@@ -388,8 +396,9 @@ const JobsSection = () => {
               <BsSearch className="search-icon" />
             </button>
           </div> */}
+          {showCandidateForm ? <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> : renderAllSections()}
 
-          {renderAllSections()}
+          {/* {renderAllSections()} */}
         </div>
       </div>
     )

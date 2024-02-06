@@ -1,14 +1,12 @@
 import { useState } from "react"
 import Cookies from "js-cookie"
-import { useParams, Redirect } from "react-router-dom"
+import { Redirect } from "react-router-dom"
 import { IoIosClose } from "react-icons/io";
 import {Oval} from 'react-loader-spinner'
-import Footer from "../Footer"
-import NavBar from "../NavBar"
 import './style.css'
 
 
-const UploadCandidatePage = () => {
+const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
     const [error, setError] = useState('')
     const [skills, setSkills] = useState('');
     const [languages, setLanguages] = useState("")
@@ -16,6 +14,7 @@ const UploadCandidatePage = () => {
     const [showForm, setShowForm] = useState(true)
 
     const [candidateDetails, setCandidateDetails] = useState({
+        jobId: '',
         fullName: '',
         fatherName: '',
         email: '',
@@ -76,20 +75,21 @@ const UploadCandidatePage = () => {
         setCandidateDetails(prevState => ({ ...prevState, spokenLanguages: prevState.spokenLanguages.filter((language, index) => index !== id)}))
     }
     
-    const {id} = useParams();
 
     const postCandidateDetails = async (event) => {
         event.preventDefault()
         
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if(
-            candidateDetails.fullName === '' || 
-            candidateDetails.fatherName === '' || 
-            candidateDetails.email === '' || 
-            candidateDetails.phone === '' || 
+            candidateDetails.jobId === '' ||
+            candidateDetails.fullName.trim() === '' || 
+            candidateDetails.fatherName.trim() === '' || 
+            !emailRegex.test(candidateDetails.email) ||
+            (candidateDetails.phone.length < 10 || candidateDetails.phone.length > 10)||
             candidateDetails.dateOfBirth === '' || 
             candidateDetails.gender === '' ||
             candidateDetails.highestQualification === '' || 
-            candidateDetails.currentLocation === '' || 
+            candidateDetails.currentLocation.trim() === '' || 
             candidateDetails.skills.length === 0 || 
             candidateDetails.spokenLanguages.length === 0 || 
             candidateDetails.experienceInYears === '' || 
@@ -105,7 +105,6 @@ const UploadCandidatePage = () => {
         const hrEmail = Cookies.get('email')
         const candidateData = {
           ...candidateDetails,
-          jobId: id,
           hrEmail,
         }
         console.log(candidateData)
@@ -158,8 +157,11 @@ const UploadCandidatePage = () => {
 
     const renderSuccessMessage = () => (
         <div className='add-job-container'>
-            <h1 className='bde-heading-another-job'>🎉 Successfully Uploaded Candidate Details 🎉</h1>
-            <button className='bde-form-btn-an' onClick={toggleCandidateForm}>Upload Another Candidate</button>
+            <h1 className='bde-heading-another-job'>🎉 Successfully Added Candidate Details 🎉</h1>
+            <div className="upload-candidate-sub-con">
+                <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(false)}>Back</button>
+                <button className='bde-form-btn-an candidate-back-btn' onClick={toggleCandidateForm}>Add Another Candidate</button>
+            </div>
         </div>
     )
 
@@ -299,25 +301,37 @@ const UploadCandidatePage = () => {
                     </select>
                 </div>
             </div>
-            <button className="login-button candidate-button" type="submit" disabled={loading}>
-                {loading &&
-                    <span className='hr-oval'>
-                        <Oval
-                            visible={true}
-                            height="20"
-                            width="20"
-                            color="#ffffff"
-                            strokeWidth="4"
-                            ariaLabel="oval-loading"
-                            wrapperStyle={{}}
-                            secondaryColor="#ffffff"
-                            wrapperClass=""
-                            className='hr-oval'
-                        />
-                    </span>
+            <label className="homepage-label" htmlFor='resume'>Select Job<span className='hr-form-span'> *</span></label>
+            <select className="homepage-input" name='jobId' id='jobId' value={candidateDetails.jobId} onChange={handleCandidateInputChange}>
+                <option value=''>Select Job</option>
+                {
+                    jobsList.map(job => (
+                        <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
+                    ))
                 }
-                Submit
-            </button>
+            </select>
+            <div className="upload-candidate-sub-con">
+                <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(false)}>Back</button>
+                <button className="login-button candidate-button" type="submit" disabled={loading}>
+                    {loading &&
+                        <span className='hr-oval'>
+                            <Oval
+                                visible={true}
+                                height="20"
+                                width="20"
+                                color="#ffffff"
+                                strokeWidth="4"
+                                ariaLabel="oval-loading"
+                                wrapperStyle={{}}
+                                secondaryColor="#ffffff"
+                                wrapperClass=""
+                                className='hr-oval'
+                            />
+                        </span>
+                    }
+                    Submit
+                </button>
+            </div>
             {error!=="" && <p className="hr-main-error">*{error}</p>}
         </form>
     )
@@ -328,17 +342,12 @@ const UploadCandidatePage = () => {
     }
 
     return (
-        <div className="home-container">
-            <NavBar />
             <div className="upload-candidate-container">
-                <h1 className='bde-heading'><span className='head-span'>Upload Candidate</span></h1>
+                <h1 className='bde-heading'><span className='head-span'>Add Candidate</span></h1>
                 {
                     showForm ? renderUploadCandidateForm() : renderSuccessMessage()
                 }
             </div>
-            
-            <Footer />
-        </div>
     )
 }
 
