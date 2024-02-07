@@ -9,6 +9,7 @@ import FilterJobs from '../FilterJobs'
 import './style.css'
 import SalaryRangeList from '../SalaryRangeList'
 import UploadCandidatePage from '../UploadCandidatePage';
+import ViewCandidates from '../ViewCandidates';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -74,7 +75,7 @@ const JobsSection = () => {
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [toggleFilter, setToggleFilter] = useState(false)
     const [archieve, setArchieve] = useState(false)
-    const [showCandidateForm, setShowCandidateForm] = useState(false)
+    const [showCandidateForm, setShowCandidateForm] = useState(0)
 
 
   useEffect(() => {
@@ -396,9 +397,12 @@ const JobsSection = () => {
               <BsSearch className="search-icon" />
             </button>
           </div> */}
-          {showCandidateForm ? <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> : renderAllSections()}
+          {showCandidateForm===1 ? 
+          <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
+          : showCandidateForm===2 ? <ViewCandidates jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
+          : renderAllSections()}
 
-          {/* {renderAllSections()} */}
+          
         </div>
       </div>
     )

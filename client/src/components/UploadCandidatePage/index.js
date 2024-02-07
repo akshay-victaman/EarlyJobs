@@ -159,7 +159,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         <div className='add-job-container'>
             <h1 className='bde-heading-another-job'>🎉 Successfully Added Candidate Details 🎉</h1>
             <div className="upload-candidate-sub-con">
-                <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(false)}>Back</button>
+                <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(0)}>Back</button>
                 <button className='bde-form-btn-an candidate-back-btn' onClick={toggleCandidateForm}>Add Another Candidate</button>
             </div>
         </div>
@@ -311,7 +311,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                 }
             </select>
             <div className="upload-candidate-sub-con">
-                <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(false)}>Back</button>
+                <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(0)}>Back</button>
                 <button className="login-button candidate-button" type="submit" disabled={loading}>
                     {loading &&
                         <span className='hr-oval'>
@@ -342,12 +342,12 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
     }
 
     return (
-            <div className="upload-candidate-container">
-                <h1 className='bde-heading'><span className='head-span'>Add Candidate</span></h1>
-                {
-                    showForm ? renderUploadCandidateForm() : renderSuccessMessage()
-                }
-            </div>
+        <div className="upload-candidate-container">
+            <h1 className='bde-heading'><span className='head-span'>Add Candidate</span></h1>
+            {
+                showForm ? renderUploadCandidateForm() : renderSuccessMessage()
+            }
+        </div>
     )
 }
 

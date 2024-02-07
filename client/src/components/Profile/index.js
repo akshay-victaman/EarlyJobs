@@ -71,8 +71,8 @@ const Profile = ({onShowCandidateForm}) => {
             <img src={profileImageUrl} alt="profile" className="profile-image" />
             <h1 className="profile-name">{name}</h1>
             <p className="profile-designation">{shortBio}</p>
-            {role === 'HR' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(true)}>Add Candidate</button>}
-            <button type="button" className="job-details-upload-candidate-button">View Candidates</button>
+            {role === 'HR' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(1)}>Add Candidate</button>}
+            <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(2)}>View Candidates</button>
         </div>
         )
     }

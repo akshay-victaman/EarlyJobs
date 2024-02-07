@@ -13,6 +13,7 @@ import {ThreeCircles} from 'react-loader-spinner'
 import NavBar from '../NavBar'
 import './style.css'
 import Footer from '../Footer';
+import UpdateCandidateStatus from '../ViewCandidates/UpdateCandidateStatus';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -47,6 +48,7 @@ const JobDetailsPage = () => {
   }, [hrAssigned])
 
   const params = useParams()
+  const {id} = params
 
   const getJobDetails = async () => {
     setApiStatus(apiStatusConstant.inProgress)
@@ -317,8 +319,6 @@ const JobDetailsPage = () => {
     </div>
   )
 
-
-
   const renderUpdateStatus = (close, candidateId) => (
     <div className="modal-form">
         <button className="modal-close-button" onClick={close}>
@@ -353,15 +353,8 @@ const JobDetailsPage = () => {
 
   const renderButtons = () => {
     const userType = Cookies.get('role');
-    const {id} = jobDetails;
     if(jobDetails.status === 'ARCHIVED') {
       return  <p className="job-details-posted-at">This job is archived</p> 
-    } else if (userType === 'HR') {
-      return (
-        <Link to={`/jobs/${id}/upload-candidate`} className="link-item">
-          <button className="job-details-upload-candidate-button">Upload Candidate</button>
-        </Link>
-      )
     } else if(userType === 'ADMIN') {
       return (
         <Popup
@@ -492,7 +485,7 @@ const JobDetailsPage = () => {
       <div className="job-details-candidates-container">
         <h1 className="job-details-candidates-heading">Candidates</h1>
         <div className='table-container'>
-          <table className="job-details-candidates-table">
+          <table className={`job-details-candidates-table candidate-table-job-section ${candidateList.length === 0 && "empty-candidates"}`}>
               <tr className="job-details-candidates-table-heading">
                 <th className="job-details-candidates-table-heading-cell">
                   Name
@@ -522,8 +515,15 @@ const JobDetailsPage = () => {
                 }
                 
               </tr>
-              
+
               {
+                  candidateList.length > 0 && candidateList.map(eachItem => (
+                  
+                  <UpdateCandidateStatus key={eachItem.candidateId} candidateDetails={eachItem} jobId={id} candidateList={candidateList} setCandidateList={setCandidateList} />
+                  ))                    
+              }
+              
+              {/* {
                 candidateList.length > 0 ? candidateList.map(eachItem => (
                 <tr className="job-details-candidates-table-row">
                     <td className="job-details-candidates-table-cell">
@@ -556,7 +556,7 @@ const JobDetailsPage = () => {
                             {/* <button className="modal-close-button" onClick={close}>
                               &times;
                             </button> */}
-                            {renderUpdateStatus(close, eachItem.candidateId)}
+                            {/* {renderUpdateStatus(close, eachItem.candidateId)}
                           </div>
                         )}
                       </Popup>
@@ -566,8 +566,27 @@ const JobDetailsPage = () => {
                 ))
                 :
                 <p className='' style={{textAlign: 'center'}}>no records found!</p>
-              }
+              } */}
           </table>
+          {candidateList.length === 0 && 
+            <p className='no-candidates-error '>
+                {
+                    apiStatus === apiStatusConstant.inProgress ?
+                    <Oval
+                        visible={true}
+                        height="20"
+                        width="20"
+                        color="#EB6A4D"
+                        strokeWidth="4"
+                        ariaLabel="oval-loading"
+                        wrapperStyle={{}}
+                        secondaryColor="#EB6A4D"
+                        wrapperClass=""
+                    />
+                    :
+                    "no records found!"
+                }
+            </p>}
         </div>
       </div>
     )
@@ -614,7 +633,7 @@ const JobDetailsPage = () => {
     }
 
     return (
-      <div>
+      <div className='job-details-main-container'>
         <NavBar isLoggedIn={true} />
         {renderSwitchCase()}
         {renderCandidates()}
