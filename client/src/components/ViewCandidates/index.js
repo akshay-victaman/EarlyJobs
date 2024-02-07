@@ -15,6 +15,7 @@ const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
     const [candidateList, setCandidateList] = useState([])
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [jobId, setJobId] = useState('')
+    const [applicationStatus, setApplicationStatus] = useState('')
 
     useEffect(() => {
         if(jobId !== '') {
@@ -26,6 +27,10 @@ const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
 
     const handleJobIdChange = (event) => {
         setJobId(event.target.value)
+    }
+
+    const handleApplicationStatusChange = (event) => {
+        setApplicationStatus(event.target.value)
     }
 
     const getCandidates = async () => {
@@ -79,21 +84,40 @@ const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
         }
     }
 
+    let filteredCandidates = []
+    if(applicationStatus !== '') {
+      filteredCandidates = candidateList.filter(eachItem => eachItem.offerStatus === applicationStatus);
+    } else {
+      filteredCandidates = candidateList
+    }
 
     return (
         // offeredDate: eachItem.offered_date
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
             <h1 className='bde-heading'><span className='head-span'>Candidates</span></h1>
-            <div className="job-section-select-container">
-                <label className="homepage-label" htmlFor='resume'>Select Job<span className='hr-form-span'> *</span></label>
-                <select className="homepage-input" name='jobId' id='jobId' value={jobId} onChange={handleJobIdChange}>
-                    <option value=''>Select Job</option>
-                    {
-                        jobsList.map(job => (
-                            <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
-                        ))
-                    }
+            <div className="job-section-select-filter-container">
+              <div className="job-section-select-container"> 
+                  <label className="homepage-label" htmlFor='resume'>Select Job</label>
+                  <select className="homepage-input" name='jobId' id='jobId' value={jobId} onChange={handleJobIdChange}>
+                      <option value=''>Select Job</option>
+                      {
+                          jobsList.map(job => (
+                              <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
+                          ))
+                      }
+                  </select>
+              </div>
+              <div className="job-section-select-container"> 
+                <label className="homepage-label" htmlFor='resume'>Application Status</label>
+                <select className="homepage-input" name='jobId' id='jobId' value={applicationStatus} onChange={handleApplicationStatusChange}>
+                    <option value=''>Select Application Status</option>
+                    <option value='Pending'>Pending</option>
+                    <option value='Accepted'>Accepted</option>
+                    <option value='Rejected'>Rejected</option>
+                    <option value='On-hold'>On-hold</option>
+                    <option value='Ongoing'>Ongoing</option>
                 </select>
+              </div>
             </div>
             <div className='table-candidate-container'>
                <table className={`job-details-candidates-table candidate-table-job-section ${candidateList.length === 0 && "empty-candidates"}`}>
@@ -128,7 +152,7 @@ const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
                   </tr>
                   
                   {
-                    candidateList.length > 0 && candidateList.map(eachItem => (
+                    filteredCandidates.length > 0 && filteredCandidates.map(eachItem => (
                     
                     <UpdateCandidateStatus key={eachItem.candidateId} candidateDetails={eachItem} jobId={jobId} candidateList={candidateList} setCandidateList={setCandidateList} />
                     ))                    

@@ -6,11 +6,17 @@
     padding: 40px 0px!important;
 }
 
-.job-section-select-container {
+.job-section-select-filter-container {
     align-self: flex-start!important;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     margin-top: 20px;
+}
+
+.job-section-select-container {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
 }
 
 .candidate-input-select {
@@ -57,8 +63,13 @@
 }
 
 @media screen and (max-width: 768px) {
-    .table-candidate-container {
-        /* flex-direction: column; */
+    .job-section-select-filter-container {
+        justify-content: space-between;
+
+    }
+    .job-section-select-container {
+        width: 48%;
+        margin-right: 0px;
     }
     
 }
