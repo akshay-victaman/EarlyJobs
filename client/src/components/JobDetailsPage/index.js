@@ -383,28 +383,6 @@ const JobDetailsPage = () => {
           </div>
           <p className="job-details-desc">{jobDescription}</p>
           <p className="job-details-posted-at">Posted {formattedDate}</p>
-          {/* { jobDetails.status === 'ARCHIVED' ? 
-              <p className="job-details-posted-at">This job is archived</p> 
-            :
-              (userType === 'HR' || userType === 'ADMIN') &&
-                (userType === 'HR') ?
-                  <Link to={`/jobs/${id}/upload-candidate`} className="link-item">
-                    <button className="job-details-upload-candidate-button">Upload Candidate</button>
-                  </Link>
-                  :
-                  <Popup
-                    trigger={<button className='job-details-upload-candidate-button'>Archieve Job</button>}
-                    modal
-                  >
-                    {close => (
-                      <div className="modal">
-                        {
-                          userType === 'ADMIN' && renderArchieveJob(close)
-                        }
-                      </div>
-                    )}
-                  </Popup>
-          } */}
           {renderButtons()}
         </div>
       </div>
@@ -453,51 +431,6 @@ const JobDetailsPage = () => {
                   <UpdateCandidateStatus key={eachItem.candidateId} candidateDetails={eachItem} jobId={id} candidateList={candidateList} setCandidateList={setCandidateList} />
                   ))                    
               }
-              
-              {/* {
-                candidateList.length > 0 ? candidateList.map(eachItem => (
-                <tr className="job-details-candidates-table-row">
-                    <td className="job-details-candidates-table-cell">
-                      {eachItem.candidateName}
-                    </td>
-                    <td className="job-details-candidates-table-cell">
-                    {eachItem.candidateEmail}
-                    </td>
-                    <td className="job-details-candidates-table-cell">
-                    {eachItem.candidatePhone}
-                    </td>
-                    <td className="job-details-candidates-table-cell">
-                    {eachItem.offerStatus}
-                    </td>
-                    {
-                      Cookies.get('role') !== 'HR' &&
-                      <td className="job-details-candidates-table-cell">
-                      {eachItem.appliedBy}
-                      </td>
-                    }
-                    {
-                      Cookies.get('role') !== 'ADMIN' && (
-                    <td className="job-details-candidates-table-cell">
-                      <Popup
-                        trigger={<button className="job-details-upload-candidate-button update-button">Update</button>}
-                        modal
-                      >
-                        {close => (
-                          <div className="modal">
-                            {/* <button className="modal-close-button" onClick={close}>
-                              &times;
-                            </button> */}
-                            {/* {renderUpdateStatus(close, eachItem.candidateId)}
-                          </div>
-                        )}
-                      </Popup>
-                    </td>
-                    )}
-                  </tr>
-                ))
-                :
-                <p className='' style={{textAlign: 'center'}}>no records found!</p>
-              } */}
           </table>
           {candidateList.length === 0 && 
             <p className='no-candidates-error '>
