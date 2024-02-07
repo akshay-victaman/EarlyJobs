@@ -100,9 +100,14 @@ const PersonalDetailsForm = (props) => {
                         Freelance HR Recruiter
                     </label>
                     <label className='hr-checkbox-label hr-radio-label'>
-                        <input type="radio" className='hr-checkbox' name="applyFor" value="HR Recruiter Intern" checked={personalDetails.applyFor === 'HR Recruiter Intern'} onChange={handleInputChange}/>
-                        HR Recruiter Intern
+                        <input type="radio" className='hr-checkbox' name="applyFor" value="Intern HR Recruiter" checked={personalDetails.applyFor === 'Intern HR Recruiter'} onChange={handleInputChange}/>
+                        Intern HR Recruiter
                     </label>
+                    <label className='hr-checkbox-label hr-radio-label'>
+                        <input type="radio" className='hr-checkbox' name="applyFor" value="Fulltime HR Recruiter" checked={personalDetails.applyFor === 'Fulltime HR Recruiter'} onChange={handleInputChange}/>
+                        Fulltime HR Recruiter
+                    </label>
+
                 </div>
 
                 <p className='hr-main-error'>{error}</p>

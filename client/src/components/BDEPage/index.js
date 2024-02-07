@@ -21,6 +21,7 @@ const BDEPage = () => {
     const [companyError, setCompanyError] = useState(false)
     const [titleError, setTitleError] = useState(false)
     const [categoryError, setCategoryError] = useState(false)
+    const [shiftTimingError, setShiftTimingError] = useState(false)
     const [descriptionError, setDescriptionError] = useState(false)
     const [locationError, setLocationError] = useState(false)
     const [salaryError, setSalaryError] = useState(false)
@@ -36,6 +37,7 @@ const BDEPage = () => {
         companyName: '',
         jobTitle: '',
         category: '',
+        shiftTimings: '',
         jobDescription: '',
         jobLocation: '',
         salaryMin: '',
@@ -104,6 +106,7 @@ const BDEPage = () => {
           company: postNewJob.companyName.trim().length === 0,
           title: postNewJob.jobTitle.trim().length === 0,
           category: postNewJob.category.trim().length === 0,
+          shiftTimings: postNewJob.shiftTimings.trim().length === 0,
           description: postNewJob.jobDescription.split(/\s+/).length < 150,
           location: postNewJob.jobLocation.trim().length === 0,
           salary: postNewJob.salaryMin.trim().length === 0 || postNewJob.salaryMax.trim().length === 0,
@@ -120,6 +123,7 @@ const BDEPage = () => {
         setCompanyError(errors.company);
         setTitleError(errors.title);
         setCategoryError(errors.category);
+        setShiftTimingError(errors.shiftTimings);
         setDescriptionError(errors.description);
         setLocationError(errors.location);
         setSalaryError(errors.salary);
@@ -155,6 +159,7 @@ const BDEPage = () => {
             companyName: postNewJob.companyName,
             title: postNewJob.jobTitle,
             category: postNewJob.category,
+            shiftTimings: postNewJob.shiftTimings,
             description: postNewJob.jobDescription,
             location: postNewJob.jobLocation,
             minSalary: postNewJob.salaryMin,
@@ -171,6 +176,7 @@ const BDEPage = () => {
             assignedTo: postNewJob.assignedTo,
         }
         console.log(newJob)
+        // return
         const options = {
             method: 'POST',
             headers: {
@@ -185,6 +191,25 @@ const BDEPage = () => {
             if(data.error) {
                 alert(data.error)
             } else {
+                setPostNewJob({
+                    companyName: '',
+                    jobTitle: '',
+                    category: '',
+                    shiftTimings: '',
+                    jobDescription: '',
+                    jobLocation: '',
+                    salaryMin: '',
+                    salaryMax: '',
+                    skills: [],
+                    employmentType: '',
+                    workType: '',
+                    commission: '',
+                    commissionType: '',
+                    noOfOpenings: '',
+                    status: 'Open',
+                    hiringNeed: '',
+                    assignedTo: '',
+                })
                 setShowJobForm(false)
             }
             setLoading(false)
@@ -206,13 +231,27 @@ const BDEPage = () => {
             <input className='bde-form-input' id='title' onChange={handleInputChange} value={postNewJob.jobTitle} name='jobTitle' type='text' placeholder='Enter Job Title' />
             {titleError && <p className='hr-error'>*Please enter job title</p>}
 
-            <label className='bde-form-label' htmlFor='category'>Category<span className='hr-form-span'> *</span></label>
-            <select className='bde-form-input' id='category'  onChange={handleInputChange} value={postNewJob.category} name='category' >
-                <option value=''>Select Category</option>
-                <option value='IT'>IT</option>
-                <option value='Non-IT'>Non-IT</option>
-            </select>
-            {categoryError && <p className='hr-error'>*Please select category</p>}
+            <div className='salary-container'>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='category'>Job Category<span className='hr-form-span'> *</span></label>
+                    <select className='bde-form-input emp-work-input' id='category'  onChange={handleInputChange} value={postNewJob.category} name='category' >
+                        <option value=''>Select Category</option>
+                        <option value='IT'>IT</option>
+                        <option value='Non-IT'>Non-IT</option>
+                        <option value='BPO'>BPO</option>
+                    </select>
+                    {categoryError && <p className='hr-error'>*Please select category</p>}
+                </div>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='shiftTimings'>Shift Timings<span className='hr-form-span'> *</span></label>
+                    <select className='bde-form-input emp-work-input' id='shiftTimings'  onChange={handleInputChange} value={postNewJob.shiftTimings} name='shiftTimings'>
+                        <option value=''>Select Shift Timings</option>
+                        <option value='Day Shift'>Day Shift</option>
+                        <option value='Night Shift'>Night Shift</option>
+                    </select>
+                    {shiftTimingError && <p className='hr-error'>*Please select shift timings</p>}
+                </div>
+            </div>
 
             <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <textarea className='hr-textarea' id='description'  onChange={handleInputChange} value={postNewJob.jobDescription} name='jobDescription' placeholder='Minimum of 150 words' />
@@ -320,7 +359,7 @@ const BDEPage = () => {
             <select className='bde-form-input' name='assignedTo' onChange={handleInputChange}>
                 <option value=''>Select Account Manager</option>
                 {   accountManagers.length > 0 &&
-                    accountManagers.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.industry}</option>)
+                    accountManagers.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.hiring_category}</option>)
                 }
             </select>
             {assignedToError && <p className='hr-error'>*Please select account manager</p>}

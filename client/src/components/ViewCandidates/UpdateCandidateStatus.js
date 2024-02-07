@@ -18,7 +18,7 @@ const UpdateCandidateStatus = ({candidateDetails, jobId, candidateList, setCandi
         const candidateData = {
           candidateId,
           jobId,
-          email,
+          email: appliedBy,
           offerStatus: updateOfferStatus
         }
         console.log(candidateData)
@@ -38,6 +38,7 @@ const UpdateCandidateStatus = ({candidateDetails, jobId, candidateList, setCandi
         if(response.ok === true) {
             if(data.error) {
                 alert(data.error)
+                console.log(data.error)
             } else {
                 setCandidateList(candidateList.map(eachItem => {
                   if(eachItem.candidateId === candidateId) {

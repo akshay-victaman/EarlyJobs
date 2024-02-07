@@ -4,7 +4,7 @@ import { formatDistanceToNow } from 'date-fns';
 import {Oval} from 'react-loader-spinner'
 import { FaCircleCheck } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
-import { useParams, Redirect, Link } from 'react-router-dom'
+import { useParams, Redirect } from 'react-router-dom'
 import Popup from 'reactjs-popup';
 import {TiLocation} from 'react-icons/ti'
 import {BsFillBriefcaseFill} from 'react-icons/bs'
@@ -29,8 +29,6 @@ const JobDetailsPage = () => {
   const [selectedHR, setSelectedHR] = useState('')
   const [loading, setLoading] = useState(false)
   const [hrAssigned, setHrAssigned] = useState(0)
-  const [offerStatus, setOfferStatus] = useState('')
-  const [error, setError] = useState('')
   const [candidateList, setCandidateList] = useState([])
  
 
@@ -71,6 +69,7 @@ const JobDetailsPage = () => {
           id: data.id,
           companyLogoUrl: data.company_logo_url,
           category: data.category,
+          shiftTimings: data.shift_timings,
           commissionType: data.commission_type,
           commissionFee: data.commission_fee,
           compname: data.company_name,
@@ -196,57 +195,6 @@ const JobDetailsPage = () => {
     setLoading(false)
   }
 
-
-
-  const handleCandidateStatusChange = (e) => {
-    setOfferStatus(e.target.value)
-  }
-
-  const updateCandidateStatus = async (candidateId, close) => {
-    if(offerStatus === '') {
-      setError("All fields are mandatory")
-      return
-    }
-    setError("")
-    const email = Cookies.get('email')
-    const candidateData = {
-      candidateId,
-      jobId: jobDetails.id,
-      email,
-      offerStatus
-    }
-    const url = 'http://localhost:5000/jobs/candidate/status/update'
-    const options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Cookies.get('jwt_token')}`
-        },
-        body: JSON.stringify(candidateData)
-    }
-    const response = await fetch(url, options)
-    const data = await response.json()
-    if(response.ok === true) {
-        if(data.error) {
-            setError(data.error)
-        } else {
-            setCandidateList(candidateList.map(eachItem => {
-              if(eachItem.candidateId === candidateId) {
-                return {
-                  ...eachItem,
-                  offerStatus
-                }
-              }
-              return eachItem
-            }))
-            setOfferStatus('')
-            close()
-        }
-    } else {
-        setError(data.error)
-    }
-  }
-
   const handleArchieveJob = async (close) => {
     const url = `http://localhost:5000/admin/archive-job/${jobDetails.id}`
     const options = {
@@ -287,7 +235,7 @@ const JobDetailsPage = () => {
         <select className='job-details-select' value={selectedHR} onChange={handleHumanResourceChange}>
           <option value=''>Select HR</option>
             {   humarResources.length > 0 &&
-                humarResources.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.industry}</option>)
+                humarResources.map((eachItem, index) => <option key={index} value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.hiring_category}</option>)
             }
         </select>
       </div>
@@ -316,25 +264,6 @@ const JobDetailsPage = () => {
           {hrAssigned === 2 && "Try Again"}
         </p>
       </div>
-    </div>
-  )
-
-  const renderUpdateStatus = (close, candidateId) => (
-    <div className="modal-form">
-        <button className="modal-close-button" onClick={close}>
-          &times;
-        </button>
-        <label className="homepage-label" htmlFor='offerStatus'>Offer Status</label>
-        <select className="homepage-input" id='offerStatus' value={offerStatus} onChange={handleCandidateStatusChange}>
-          <option value=''>Select Offer Status</option>
-          <option value='Pending'>Pending</option>
-          <option value='Accepted'>Accepted</option>
-          <option value='Rejected'>Rejected</option>
-          <option value='On-hold'>On-hold</option>
-          <option value='ongoing'>Ongoing</option>
-        </select>
-        <button className="login-button" onClick={() => {updateCandidateStatus(candidateId, close)}}>Update Status</button>
-        {error!=="" && <p className="error-message">*{error}</p>}
     </div>
   )
 
@@ -388,6 +317,7 @@ const JobDetailsPage = () => {
       location,
       role,
       category,
+      shiftTimings,
       workType,
       hiringNeed,
       postedBy,
@@ -433,6 +363,7 @@ const JobDetailsPage = () => {
           <p className="job-detials-misc"><span className='misc-head'>Assigned By:</span> {postedBy}</p>
           <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
           <p className="job-detials-misc"><span className='misc-head'>Notice Period:</span> {hiringNeed}</p>
+          <p className="job-detials-misc"><span className='misc-head'>Shift Timings:</span> {shiftTimings}</p>
           <p className="job-detials-misc"><span className='misc-head'>Work Type:</span> {workType}</p>
           <p className="job-detials-misc"><span className='misc-head'>No of Openings:</span> {noOfOpenings}</p>
 

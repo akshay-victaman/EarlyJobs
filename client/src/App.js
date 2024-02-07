@@ -14,7 +14,6 @@ import {HiringPartnerForm} from './components/HiringPartnerForm';
 import AddJobVacanciesPage from './components/AddJobVacanciesPage';
 import HiringPartnerReqPage from './components/HiringPartnerReqPage';
 import HiringPartnerDetails from './components/HiringPartnerDetails';
-import UploadCandidatePage from './components/UploadCandidatePage';
 import ScrollUp from './components/ScrollUp';
 
 
@@ -26,7 +25,6 @@ const App = () => (
       <Route exact path="/add-job-vacancies" component={AddJobVacanciesPage} />
       <ProtectedRoute exact path="/jobs" component={JobsPage} />
       <ProtectedRoute exact path="/jobs/:id" component={JobDetailsPage} />
-      <ProtectedRoute exact path='/jobs/:id/upload-candidate' component={UploadCandidatePage} />
       <ProtectedRoute exact path='/signup' component={SignUpPage} />
       <ProtectedRoute exact path='/bde-portal' component={BDEPage} />
       {/* <ProtectedRoute exact path='/account-manager-portal' component={AccountManagerPage} /> */}

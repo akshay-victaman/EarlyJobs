@@ -73,6 +73,7 @@ const Profile = ({onShowCandidateForm}) => {
             <p className="profile-designation">{shortBio}</p>
             {role === 'HR' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(1)}>Add Candidate</button>}
             <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(2)}>View Candidates</button>
+            <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(0)}>Assigned Job Openings</button>
         </div>
         )
     }

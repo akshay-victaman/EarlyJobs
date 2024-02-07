@@ -21,6 +21,7 @@ const AddJobVacanciesPage = () => {
     const [companyError, setCompanyError] = useState(false)
     const [titleError, setTitleError] = useState(false)
     const [categoryError, setCategoryError] = useState(false)
+    const [shiftTimingError, setShiftTimingError] = useState(false)
     const [descriptionError, setDescriptionError] = useState(false)
     const [locationError, setLocationError] = useState(false)
     const [salaryError, setSalaryError] = useState(false)
@@ -38,6 +39,7 @@ const AddJobVacanciesPage = () => {
         companyName: '',
         jobTitle: '',
         category: '',
+        shiftTimings: '',
         jobDescription: '',
         jobLocation: '',
         salaryMin: '',
@@ -112,7 +114,8 @@ const AddJobVacanciesPage = () => {
         const db = getFirestore(app);
         const docRef = await addDoc(collection(db, "AddJobVacancies"), { newJob });
         const docId = docRef.id;
-        await setDoc(doc(db, "AddJobVacancies", docId), { docId, ...newJob });
+        const postDateTime = new Date();
+        await setDoc(doc(db, "AddJobVacancies", docId), { docId, postDateTime, ...newJob });
 
         if(docRef) {
             sendEmail(newJob)
@@ -120,6 +123,7 @@ const AddJobVacanciesPage = () => {
             setAddJobVacancies({
                 companyName: '',
                 jobTitle: '',
+                shiftTimings: '',
                 category: '',
                 jobDescription: '',
                 jobLocation: '',
@@ -152,6 +156,7 @@ const AddJobVacanciesPage = () => {
           company: addJobVacancies.companyName.trim().length === 0,
           title: addJobVacancies.jobTitle.trim().length === 0,
           category: addJobVacancies.category.trim().length === 0,
+          shiftTimings: addJobVacancies.shiftTimings.trim().length === 0,
           description: addJobVacancies.jobDescription.split(/\s+/).length < 150,
           location: addJobVacancies.jobLocation.trim().length === 0,
           salary: addJobVacancies.salaryMin.trim().length === 0 || addJobVacancies.salaryMax.trim().length === 0,
@@ -171,6 +176,7 @@ const AddJobVacanciesPage = () => {
         setCompanyError(errors.company);
         setTitleError(errors.title);
         setCategoryError(errors.category);
+        setShiftTimingError(errors.shiftTimings);
         setDescriptionError(errors.description);
         setLocationError(errors.location);
         setSalaryError(errors.salary);
@@ -204,6 +210,7 @@ const AddJobVacanciesPage = () => {
             companyName : addJobVacancies.companyName,
             title: addJobVacancies.jobTitle,
             category: addJobVacancies.category,
+            shiftTimings: addJobVacancies.shiftTimings,
             description: addJobVacancies.jobDescription,
             location: addJobVacancies.jobLocation,
             salaryMin: addJobVacancies.salaryMin,
@@ -231,13 +238,27 @@ const AddJobVacanciesPage = () => {
             <label className='bde-form-label' htmlFor='title'>Job Title<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='title' onChange={handleInputChange} value={addJobVacancies.jobTitle} name='jobTitle' type='text' placeholder='Enter Job Title' />
             {titleError && <p className='hr-error'>*Please enter job title</p>}
-            <label className='bde-form-label' htmlFor='category'>Category<span className='hr-form-span'> *</span></label>
-            <select className='bde-form-input' id='category'  onChange={handleInputChange} value={addJobVacancies.category} name='category' >
-                <option value=''>Select Category</option>
-                <option value='IT'>IT</option>
-                <option value='Non-IT'>Non-IT</option>
-            </select>
-            {categoryError && <p className='hr-error'>*Please select category</p>}
+            <div className='salary-container'>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='category'>Job Category<span className='hr-form-span'> *</span></label>
+                    <select className='bde-form-input emp-work-input' id='category'  onChange={handleInputChange} value={addJobVacancies.category} name='category' >
+                        <option value=''>Select Category</option>
+                        <option value='IT'>IT</option>
+                        <option value='Non-IT'>Non-IT</option>
+                        <option value='BPO'>BPO</option>
+                    </select>
+                    {categoryError && <p className='hr-error'>*Please select category</p>}
+                </div>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='shiftTimings'>Shift Timings<span className='hr-form-span'> *</span></label>
+                    <select className='bde-form-input emp-work-input' id='shiftTimings'  onChange={handleInputChange} value={addJobVacancies.shiftTimings} name='shiftTimings'>
+                        <option value=''>Select Shift Timings</option>
+                        <option value='Day Shift'>Day Shift</option>
+                        <option value='Night Shift'>Night Shift</option>
+                    </select>
+                    {shiftTimingError && <p className='hr-error'>*Please select shift timings</p>}
+                </div>
+            </div>
             <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <textarea className='hr-textarea' id='description'  onChange={handleInputChange} value={addJobVacancies.jobDescription} name='jobDescription' placeholder='Minimum of 150 words' />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
