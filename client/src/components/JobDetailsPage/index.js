@@ -14,6 +14,7 @@ import NavBar from '../NavBar'
 import './style.css'
 import Footer from '../Footer';
 import UpdateCandidateStatus from '../ViewCandidates/UpdateCandidateStatus';
+import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -30,7 +31,13 @@ const JobDetailsPage = () => {
   const [loading, setLoading] = useState(false)
   const [hrAssigned, setHrAssigned] = useState(0)
   const [candidateList, setCandidateList] = useState([])
- 
+  const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
+  const [candidateId, setCandidateId] = useState('')
+
+  const onShowCandidateDetails = (candidateId) => {
+    setViewCandidateDetails(!viewCandidateDetails)
+    setCandidateId(candidateId)
+  }
 
   useEffect(() => {
     getJobDetails()
@@ -428,7 +435,7 @@ const JobDetailsPage = () => {
               {
                   candidateList.length > 0 && candidateList.map(eachItem => (
                   
-                  <UpdateCandidateStatus key={eachItem.candidateId} candidateDetails={eachItem} jobId={id} candidateList={candidateList} setCandidateList={setCandidateList} />
+                  <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} candidateDetails={eachItem} jobId={id} candidateList={candidateList} setCandidateList={setCandidateList} />
                   ))                    
               }
           </table>
@@ -501,6 +508,13 @@ const JobDetailsPage = () => {
         <NavBar isLoggedIn={true} />
         {renderSwitchCase()}
         {renderCandidates()}
+        {
+          viewCandidateDetails && 
+          <div className="view-candidate-details-modal">
+            <div className='view-candidate-details-modal-overlay' onClick={onShowCandidateDetails}></div>
+            <ViewCandidateDetails onShowCandidateDetails={onShowCandidateDetails} candidateId={candidateId} />
+          </div>
+        }
         <Footer />
       </div>
     )

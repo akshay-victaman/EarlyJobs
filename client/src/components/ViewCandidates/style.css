@@ -4,6 +4,7 @@
 
 .jobs-section-candidate-container {
     padding: 0px!important;
+    /* position: relative; */
 }
 
 .job-section-select-filter-container {
@@ -62,6 +63,72 @@
     flex-direction: column;
 }
 
+.job-details-candidates-table-cell-hover:hover {
+    color: #EB6A4D;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.candidate-details-modal-con {
+    width: 50%;
+    display: flex;
+    box-shadow: 0px 0px 10px 0px #00000095;
+    flex-direction: column;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #EB6A4D;
+    position: relative;
+    /* z-index: 1000000; */
+}
+
+.candidate-details-heading {
+    font-size: 20px;
+    color: #EB6A4D;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #EB6A4D;
+}
+
+.candidate-details-sub-con {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.candidate-details-sub-heading {
+    font-size: 16px;
+    color: #02022c;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+.candidate-details-sub-text {
+    font-size: 16px;
+    color: #02022c;
+}
+
+.candidate-details-close-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0px;
+    background-color: #EB6A4D;
+    padding: 0px;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+}
+
 @media screen and (max-width: 768px) {
     .job-section-select-filter-container {
         justify-content: space-between;
@@ -71,5 +138,22 @@
         width: 48%;
         margin-right: 0px;
     }
-    
+    .candidate-details-modal-con {
+        width: 90%;
+        padding: 20px 10px;
+    }
+    .candidate-details-heading {
+        font-size: 18px;
+    }
+    .candidate-details-sub-heading {
+        font-size: 14px;
+    }
+    .candidate-details-sub-text {
+        font-size: 14px;
+    }
+    .candidate-details-close-btn {
+        height: 25px;
+        width: 25px;
+        font-size: 25px;
+    }
 }

@@ -10,6 +10,7 @@ import './style.css'
 import SalaryRangeList from '../SalaryRangeList'
 import UploadCandidatePage from '../UploadCandidatePage';
 import ViewCandidates from '../ViewCandidates';
+import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -63,7 +64,7 @@ const apiStatusConstant = {
 //   }
 // ]
 
-const JobsSection = () => {
+const JobsSection = ({onShowCandidateDetails}) => {
 
     const [jobsList, setJobsList] = useState([])
     const [employmentTypeList, setEmploymentTypeList] = useState([])
@@ -76,6 +77,7 @@ const JobsSection = () => {
     const [toggleFilter, setToggleFilter] = useState(false)
     const [archieve, setArchieve] = useState(false)
     const [showCandidateForm, setShowCandidateForm] = useState(0)
+    // const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
 
 
   useEffect(() => {
@@ -93,8 +95,11 @@ const JobsSection = () => {
 
   const onShowCandidateForm = (status) => {
     setShowCandidateForm(status)
-    console.log(status)
   }
+
+  // const onShowCandidateDetails = () => {
+  //   setViewCandidateDetails(!viewCandidateDetails)
+  // }
 
   const onSelectArchieve = async () => {
     await setArchieve(!archieve, archieveJobs())
@@ -399,11 +404,15 @@ const JobsSection = () => {
           </div> */}
           {showCandidateForm===1 ? 
           <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
-          : showCandidateForm===2 ? <ViewCandidates jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
+          : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
           : renderAllSections()}
-
-          
         </div>
+        {/* {
+          viewCandidateDetails && 
+          <div className="view-candidate-details-modal">
+            <ViewCandidateDetails />
+          </div>
+        } */}
       </div>
     )
 }

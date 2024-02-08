@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import {Oval} from 'react-loader-spinner'
 import './style.css'
 import UpdateCandidateStatus from "./UpdateCandidateStatus"
+import ViewCandidateDetails from "./ViewCandidateDetails"
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -11,7 +12,7 @@ const apiStatusConstant = {
     failure: 'FAILURE',
   }
 
-const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
+const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}) => {
     const [candidateList, setCandidateList] = useState([])
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [jobId, setJobId] = useState('')
@@ -21,7 +22,8 @@ const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
         if(jobId !== '') {
             getCandidates()
         } else {
-            setCandidateList([])
+            // setCandidateList([])
+            getAllCandidatesForHR()
         }
     }, [jobId])
 
@@ -31,6 +33,40 @@ const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
 
     const handleApplicationStatusChange = (event) => {
         setApplicationStatus(event.target.value)
+    }
+
+    const getAllCandidatesForHR = async () => {
+        setApiStatus(apiStatusConstant.inProgress)
+        const jwtToken = Cookies.get('jwt_token')
+        const email = Cookies.get('email')
+        const apiUrl = `http://localhost:5000/jobs/candidates/${email}`
+        const options = {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+        const response = await fetch(apiUrl, options)
+        const data = await response.json()
+        if (response.ok === true) {
+          if(data.error) {
+            setApiStatus(apiStatusConstant.failure)
+          } else {
+            const formattedData = data.map(eachItem => ({
+              candidateId: eachItem.candidate_id,
+              candidateName: eachItem.name,
+              candidateEmail: eachItem.email,
+              candidatePhone: eachItem.phone,
+              offerStatus: eachItem.offer_status,
+              offeredDate: eachItem.offered_date,
+              appliedBy: eachItem.applied_by
+            }))
+            setCandidateList(formattedData)
+            setApiStatus(apiStatusConstant.success)
+          }
+        } else {
+          setApiStatus(apiStatusConstant.failure)
+        }
     }
 
     const getCandidates = async () => {
@@ -110,7 +146,7 @@ const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
               <div className="job-section-select-container"> 
                 <label className="homepage-label" htmlFor='resume'>Application Status</label>
                 <select className="homepage-input" name='jobId' id='jobId' value={applicationStatus} onChange={handleApplicationStatusChange}>
-                    <option value=''>Select Application Status</option>
+                    <option value=''>All status</option>
                     <option value='Pending'>Pending</option>
                     <option value='Accepted'>Accepted</option>
                     <option value='Rejected'>Rejected</option>
@@ -154,7 +190,7 @@ const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
                   {
                     filteredCandidates.length > 0 && filteredCandidates.map(eachItem => (
                     
-                    <UpdateCandidateStatus key={eachItem.candidateId} candidateDetails={eachItem} jobId={jobId} candidateList={candidateList} setCandidateList={setCandidateList} />
+                    <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} candidateDetails={eachItem} jobId={jobId} candidateList={candidateList} setCandidateList={setCandidateList} />
                     ))                    
                   }
                 </table>
@@ -179,6 +215,9 @@ const ViewCandidates = ({jobsList, setShowCandidateForm}) => {
                     }
                 </p>}
             </div>
+            {/* <div className="view-candidate-details-modal">
+              <ViewCandidateDetails />
+            </div> */}
             <button className="login-button candidate-button" type="button" onClick={() => setShowCandidateForm(0)}>Back</button>
         </div>
     )

@@ -2,10 +2,10 @@ import Cookies from "js-cookie"
 import { useState } from "react"
 
 
-const UpdateCandidateStatus = ({candidateDetails, jobId, candidateList, setCandidateList}) => {
+const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId, candidateList, setCandidateList}) => {
     const [updateOfferStatus, setUpdateOfferStatus] = useState('');
     const [loading, setLoading] = useState(false)
-    const {candidateName, candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy} = candidateDetails
+    const {candidateName,candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy} = candidateDetails
 
     const handleCandidateStatusChange = event => {
         setUpdateOfferStatus(event.target.value)
@@ -58,7 +58,7 @@ const UpdateCandidateStatus = ({candidateDetails, jobId, candidateList, setCandi
 
     return (
         <tr className="job-details-candidates-table-row">
-            <td className="job-details-candidates-table-cell">
+            <td className="job-details-candidates-table-cell job-details-candidates-table-cell-hover" onClick={() => onShowCandidateDetails(candidateId)}>
                 {candidateName}
             </td>
             <td className="job-details-candidates-table-cell">
