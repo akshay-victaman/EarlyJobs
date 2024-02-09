@@ -1,6 +1,7 @@
 import Cookies from "js-cookie"
 import { useEffect, useState } from "react"
 import {Oval} from 'react-loader-spinner'
+import Pagination from 'rc-pagination';
 import './style.css'
 import UpdateCandidateStatus from "./UpdateCandidateStatus"
 import ViewCandidateDetails from "./ViewCandidateDetails"
@@ -17,6 +18,9 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [jobId, setJobId] = useState('')
     const [applicationStatus, setApplicationStatus] = useState('')
+    const [page, setPage] = useState(1)
+    const [totalItems, setTotalItems] = useState(0);
+
 
     useEffect(() => {
         if(jobId !== '') {
@@ -127,10 +131,49 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
       filteredCandidates = candidateList
     }
 
+    const itemsPerPage = 10; 
+
+    const handlePageChange = (page) => {
+      setPage(page)
+    };
+  
+    const itemRender = (current, type, element) => {
+      if (type === 'page') {
+        return (
+          <button className={`pagination-button ${current === page ? "activePage" : ""}`} key={current} onClick={() => handlePageChange(current)}>
+            {current}
+          </button>
+        );
+      }
+  
+      if (type === 'prev') {
+        return (
+          <button className={`pagination-button ${page === 1 ? "endPage" : ""}`} title="Previous" key="prev" onClick={() => handlePageChange(current - 1)}>
+            {'< Prev'}
+          </button>
+        );
+      }
+  
+      if (type === 'next') {
+        return (
+          <button className={`pagination-button ${totalItems/itemsPerPage <= page ? "endPage" : ""}`} title="Next" key="next" onClick={() => handlePageChange(current + 1)}>
+            {'Next >'}
+          </button>
+        );
+      }
+  
+      if (type === 'jump-prev' || type === 'jump-next') {
+        return <span className="pagination-dots" title='more'>...</span>;
+      }
+  
+      return element;
+    };
+
     return (
         // offeredDate: eachItem.offered_date
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
-            <h1 className='bde-heading'><span className='head-span'>Candidates</span></h1>
+          {/* <div> */}
+            <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>Candidates</span></h1>
             <div className="job-section-select-filter-container">
               <div className="job-section-select-container"> 
                   <label className="homepage-label" htmlFor='resume'>Select Job</label>
@@ -215,11 +258,20 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                     }
                 </p>}
             </div>
-            {/* <div className="view-candidate-details-modal">
-              <ViewCandidateDetails />
-            </div> */}
-            <button className="login-button candidate-button" type="button" onClick={() => setShowCandidateForm(0)}>Back</button>
-        </div>
+          {/* </div> */}
+            <div className="job-details-candidates-pagination-con">
+              <button className="login-button candidate-button" type="button" onClick={() => setShowCandidateForm(0)}>Back</button>
+              <Pagination
+                current={page}
+                total={filteredCandidates.length}
+                pageSize={itemsPerPage}
+                onChange={handlePageChange}
+                className="pagination-class pagination-class-candidates"
+                itemRender={itemRender}
+                showSizeChanger
+              />
+            </div>
+          </div>
     )
 }
 

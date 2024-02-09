@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import {ThreeCircles} from 'react-loader-spinner'
+import Pagination from 'rc-pagination';
 import {BsSearch} from 'react-icons/bs'
 import { FaFilter } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
@@ -10,7 +11,6 @@ import './style.css'
 import SalaryRangeList from '../SalaryRangeList'
 import UploadCandidatePage from '../UploadCandidatePage';
 import ViewCandidates from '../ViewCandidates';
-import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -19,52 +19,10 @@ const apiStatusConstant = {
   failure: 'FAILURE',
 }
 
-// const jobsListDummy = [
-//   {
-//     id: 1,
-//     companyLogoUrl: '/victaman-logo.png',
-//     compname: 'Victaman',
-//     employmentType: 'Full Time',
-//     jobDescription: "A software engineer is responsible for the design, development, and delivery of software. They work with programming languages, frameworks, databases, and servers to create software solutions that meet their company's needs. They also test software to ensure it's functioning properly, and troubleshoot problems when they arise. Software engineers may work on a variety of projects, from creating company apps to building out websites to designing software for robots.",
-//     location: 'Hyderabad',
-//     packagePerAnnum: '10 LPA',
-//     role: 'Software Developer - ReactJS',
-//     category: 'Software Development',
-//     workType: 'on-site',
-//     hiringCommision: '10%',
-//     hiringNeed: 'Immediate',
-//   },
-//   {
-//     id: 2,
-//     companyLogoUrl: '/victaman-logo.png',
-//     compname: 'Victaman',
-//     employmentType: 'Full Time',
-//     jobDescription: "A software engineer is responsible for the design, development, and delivery of software. They work with programming languages, frameworks, databases, and servers to create software solutions that meet their company's needs. They also test software to ensure it's functioning properly, and troubleshoot problems when they arise. Software engineers may work on a variety of projects, from creating company apps to building out websites to designing software for robots.",
-//     location: 'Hyderabad',
-//     packagePerAnnum: '10 LPA',
-//     role: 'Software Developer - ReactJS',
-//     category: 'Software Development',
-//     workType: 'on-site',
-//     hiringCommision: '10%',
-//     hiringNeed: 'Immediate',
-//   },
-//   {
-//     id: 3,
-//     companyLogoUrl: '/victaman-logo.png',
-//     compname: 'Victaman',
-//     employmentType: 'Full Time',
-//     jobDescription: "A software engineer is responsible for the design, development, and delivery of software. They work with programming languages, frameworks, databases, and servers to create software solutions that meet their company's needs. They also test software to ensure it's functioning properly, and troubleshoot problems when they arise. Software engineers may work on a variety of projects, from creating company apps to building out websites to designing software for robots.",
-//     location: 'Hyderabad',
-//     packagePerAnnum: '10 LPA',
-//     role: 'Software Developer - ReactJS',
-//     category: 'Software Development',
-//     workType: 'on-site',
-//     hiringCommision: '10%',
-//     hiringNeed: 'Immediate',
-//   }
-// ]
 
 const JobsSection = ({onShowCandidateDetails}) => {
+
+    const initialPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
 
     const [jobsList, setJobsList] = useState([])
     const [employmentTypeList, setEmploymentTypeList] = useState([])
@@ -77,12 +35,14 @@ const JobsSection = ({onShowCandidateDetails}) => {
     const [toggleFilter, setToggleFilter] = useState(false)
     const [archieve, setArchieve] = useState(false)
     const [showCandidateForm, setShowCandidateForm] = useState(0)
-    // const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
+    const [page, setPage] = useState(initialPage)
+    const [totalItems, setTotalItems] = useState(0);
 
 
   useEffect(() => {
     getJobsCard()
-    }, [employmentTypeList, minimumPackageList])
+    updateUrl(page);
+    }, [employmentTypeList, minimumPackageList, page])
 
   const archieveJobs = () => {
     console.log(archieve)
@@ -96,10 +56,6 @@ const JobsSection = ({onShowCandidateDetails}) => {
   const onShowCandidateForm = (status) => {
     setShowCandidateForm(status)
   }
-
-  // const onShowCandidateDetails = () => {
-  //   setViewCandidateDetails(!viewCandidateDetails)
-  // }
 
   const onSelectArchieve = async () => {
     await setArchieve(!archieve, archieveJobs())
@@ -186,11 +142,11 @@ const JobsSection = ({onShowCandidateDetails}) => {
     const role = Cookies.get('role')
     let apiUrl = ""
     if (role === 'AC') {
-      apiUrl = `http://localhost:5000/jobs/account-manager/${email}`
+      apiUrl = `http://localhost:5000/jobs/account-manager/${email}/?page=${page}`
     } else if (role === 'HR') {
-      apiUrl = `http://localhost:5000/jobs/hr/${email}`
+      apiUrl = `http://localhost:5000/jobs/hr/${email}/?page=${page}`
     } else {
-      apiUrl = `http://localhost:5000/admin/get-jobs/all`
+      apiUrl = `http://localhost:5000/admin/get-jobs/all/?page=${page}`
     }
     const jwtToken = Cookies.get('jwt_token')
     const options = {
@@ -228,7 +184,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
         updated_at
         work_type
         */
-        const updatedData = data.map(eachItem => ({
+        const updatedData = data.jobs.map(eachItem => ({
           id: eachItem.id,
           companyLogoUrl: eachItem.company_logo_url,
           category: eachItem.category,
@@ -252,6 +208,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
         console.log('updated data',updatedData)
 
         setJobsList(updatedData)
+        setTotalItems(data.count)
         setApiStatus(apiStatusConstant.success)
       }
     } else {
@@ -259,21 +216,76 @@ const JobsSection = ({onShowCandidateDetails}) => {
     }
   }
 
+  const itemsPerPage = 10; 
+
+  const handlePageChange = (page) => {
+    setPage(page)
+  };
+
+  const itemRender = (current, type, element) => {
+    if (type === 'page') {
+      return (
+        <button className={`pagination-button ${current === page ? "activePage" : ""}`} key={current} onClick={() => handlePageChange(current)}>
+          {current}
+        </button>
+      );
+    }
+
+    if (type === 'prev') {
+      return (
+        <button className={`pagination-button ${page === 1 ? "endPage" : ""}`} title="Previous" key="prev" onClick={() => handlePageChange(current - 1)}>
+          {'< Prev'}
+        </button>
+      );
+    }
+
+    if (type === 'next') {
+      return (
+        <button className={`pagination-button ${totalItems/itemsPerPage <= page ? "endPage" : ""}`} title="Next" key="next" onClick={() => handlePageChange(current + 1)}>
+          {'Next >'}
+        </button>
+      );
+    }
+
+    if (type === 'jump-prev' || type === 'jump-next') {
+      return <span className="pagination-dots" title='more'>...</span>;
+    }
+
+    return element;
+  };
+
+  const updateUrl = (page) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', page);
+    window.history.pushState({}, '', url);
+  };
+
   const renderJobsCards = () => {
     const noJobs = jobsList.length === 0
 
     return (
-      <div className="jobs-section-container">
-        {noJobs ? (
-          renderNoJobFound()
-        ) : (
-          <ul className="jobs-card-list">
-            {jobsList.map(eachJob => (
-              <JobsCard key={eachJob.id} jobsItem={eachJob} />
-            ))}
-          </ul>
-        )}
-      </div>
+      <>
+        <div className="jobs-section-container">
+          {noJobs ? (
+            renderNoJobFound()
+          ) : (
+            <ul className="jobs-card-list">
+              {jobsList.map(eachJob => (
+                <JobsCard key={eachJob.id} jobsItem={eachJob} />
+              ))}
+            </ul>
+          )}
+        </div>
+        <Pagination
+          current={page}
+          total={totalItems}
+          pageSize={itemsPerPage}
+          onChange={handlePageChange}
+          className="pagination-class"
+          itemRender={itemRender}
+          showSizeChanger
+        />
+      </>
     )
   }
 
@@ -383,7 +395,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
           
 
         
-        <div className={`job-section-search-card-con ${showCandidateForm && "job-section-candidate"}`}>
+        <div className={`job-section-search-card-con ${showCandidateForm === 1 ? "job-section-candidate": ""}`}>
           {/* <div className="search-box-desk-con">
             <input
               type="search"
@@ -407,12 +419,6 @@ const JobsSection = ({onShowCandidateDetails}) => {
           : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
           : renderAllSections()}
         </div>
-        {/* {
-          viewCandidateDetails && 
-          <div className="view-candidate-details-modal">
-            <ViewCandidateDetails />
-          </div>
-        } */}
       </div>
     )
 }
