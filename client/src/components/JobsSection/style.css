@@ -8,6 +8,7 @@
     width: 25%;
     height: 80vh;
     overflow-y: auto;
+    position: relative;
   }
   
   .search-box-desk-con {
@@ -158,7 +159,29 @@
     font-weight: 600;
     color: #EB6A4D;
   }
+
   
+.filter-icon {
+  font-size: 20px;
+  margin-right: 10px;
+  color: #EB6A4D;
+  margin-right: 5px;
+}
+
+.filter-text-btn {
+  font-size: 15px;
+  font-weight: 600;
+  color: #EB6A4D;
+}
+
+.job-section-filter-button {
+    display: none;
+}
+
+.job-section-filter-close-button {
+  display: none;
+}
+
   @media screen and (max-width: 768px) {
     .jobs-section-container {
       flex-direction: column;
@@ -170,6 +193,16 @@
       margin-top: 10px;
       height: 100%;
       overflow-y: hidden;
+    }
+    .job-section-filter-button {
+      background-color: transparent;
+      border: 1px solid #EB6A4D;
+      outline: none;
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      border-radius: 5px;
+      padding: 4px 10px;
     }
     .jobs-card-list {
       margin-top: 25px;
@@ -230,5 +263,53 @@
     .close-icon {
       font-size: 25px;
       margin-left: 10px;
+    }
+    .jobs-section-filter-mobile {
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      /* justify-content: center; */
+      align-items: flex-start;
+      width: 85%;
+      height: 90vh;
+      overflow-y: auto;
+      position: fixed;
+      bottom: 0;
+      left: 0%;
+      background-color: white;
+      box-shadow: -5px 0px 10px 0px #00000035;
+      z-index: 100;
+      transition: transform 0.5s ease;
+    }
+    .jobs-section-filter-mobile-hidden {
+      transform: translateX(-100%);
+    }
+    .jobs-section-filter-mobile-overlay {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 90vh;
+      width: 100%;
+      z-index: 1;
+      background-color: #00000020;
+      backdrop-filter: blur(1px);
+    }
+    .job-section-filter-close-button {
+      position: fixed;
+      right: 4%;
+      top: 50%;
+      background-color: #EB6A4D;
+      color: white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      padding: 0px;
+      border: 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .job-section-filter-close-icon {
+      font-size: 22px;
     }
   }

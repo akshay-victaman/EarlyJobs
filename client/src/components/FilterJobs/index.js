@@ -115,6 +115,7 @@ const FilterJobs = props => {
     onChangeInput,
     onClickButton,
     onShowCandidateForm,
+    onClickFilter,
   } = props
   return (
     <div className="profile-filters-container">

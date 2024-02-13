@@ -2,9 +2,11 @@ import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import {ThreeCircles} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
+import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import {BsSearch} from 'react-icons/bs'
 import { FaFilter } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
+import { IoFilter } from "react-icons/io5";
 import JobsCard from '../JobsCard'
 import FilterJobs from '../FilterJobs'
 import './style.css'
@@ -39,6 +41,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
     const [showCandidateForm, setShowCandidateForm] = useState(0)
     const [page, setPage] = useState(initialPage)
     const [totalItems, setTotalItems] = useState(0);
+    const [showFilter, setShowFilter] = useState(false)
 
 
   useEffect(() => {
@@ -57,6 +60,10 @@ const JobsSection = ({onShowCandidateDetails}) => {
 
   const onShowCandidateForm = (status) => {
     setShowCandidateForm(status)
+  }
+
+  const onClickFilter = () => {
+    setShowFilter(!showFilter)
   }
 
   const onSelectArchieve = async () => {
@@ -379,7 +386,9 @@ const JobsSection = ({onShowCandidateDetails}) => {
             ""
           )
         } */}
-        <div className="jobs-section-profile-filter-con">
+
+        <div className={`jobs-section-filter-mobile-overlay ${showFilter===false ? "jobs-section-filter-mobile-hidden" : ""}`} onClick={onClickFilter}></div>
+        <div className={`jobs-section-profile-filter-con jobs-section-filter-mobile ${showFilter===false ? "jobs-section-filter-mobile-hidden" : ""}`}>
               <FilterJobs
               onSelectArchieve={onSelectArchieve}
               archieve={archieve}
@@ -393,9 +402,13 @@ const JobsSection = ({onShowCandidateDetails}) => {
               onClickButton={onClickButton}
               onShowCandidateForm={onShowCandidateForm}
             />
+            <button type='button' className='job-section-filter-close-button' onClick={onClickFilter}><MdKeyboardDoubleArrowLeft className='job-section-filter-close-icon' /></button>
         </div>
           
-
+        <button type='button' className='job-section-filter-button' onClick={onClickFilter}>
+          <IoFilter className='filter-icon' />
+          <span className='filter-text-btn'>Filter Jobs</span>
+        </button>
         
         <div className={`job-section-search-card-con ${showCandidateForm === 1 ? "job-section-candidate": ""}`}>
           {/* <div className="search-box-desk-con">
