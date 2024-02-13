@@ -22,7 +22,8 @@ const getAllCandidates = async (req, res) => {
 
 const getAllJobs = async (req, res) => {
   try {
-    const jobs = await adminService.getAllJobs();
+    const page = parseInt(req.query.page) || 1;
+    const jobs = await adminService.getAllJobs(page);
     res.json(jobs);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,8 +42,8 @@ const archiveJob = async (req, res) => {
 
 const blockUser = async (req, res) => {
   try {
-    const username = req.params.username;
-    const users = await adminService.blockUser(username);
+    const email = req.params.email;
+    const users = await adminService.blockUser(email);
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -51,8 +52,8 @@ const blockUser = async (req, res) => {
 
 const unblockUser = async (req, res) => {
   try {
-    const username = req.params.username;
-    const users = await adminService.unblockUser(username);
+    const email = req.params.email;
+    const users = await adminService.unblockUser(email);
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });

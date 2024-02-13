@@ -9,10 +9,10 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUserByNameEmail = async (req, res) => {
+const getUserByEmail = async (req, res) => {
   const username = req.params.username;
   try {
-    const user = await userService.getUserByNameEmail(username);
+    const user = await userService.getUserByEmail(username);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -27,6 +27,16 @@ const createUser = async (req, res) => {
     try {
       const newUser = await userService.createUser(user);
       res.json(newUser);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const updateDocId = async (req, res) => {
+    const user = req.body;
+    try {
+      const updatedUser = await userService.updateDocId(user);
+      res.json(updatedUser);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -62,8 +72,9 @@ const getAllHRs = async (req, res) => {
 
 module.exports = {
   getAllUsers,
-  getUserByNameEmail,
+  getUserByEmail,
   createUser,
+  updateDocId,
   loginUser,
   getAllAccountManagers,
   getAllHRs

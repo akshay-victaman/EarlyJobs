@@ -123,7 +123,8 @@ const HiringPartnerDetails = () => {
     };
 
     const updateDocId = async (docId, email) => {
-        const url = 'http://localhost:5000/api/users/update-doc-id';
+        const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+        const url = `${backendUrl}/api/users/update-doc-id`;
         const options = {
             method: 'PUT',
             headers: {
@@ -168,7 +169,8 @@ const HiringPartnerDetails = () => {
 
         setRejectApproveStatus(true)
         console.log(signUpDetails)
-        const url = 'http://localhost:5000/api/users/register'
+        const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+        const url = `${backendUrl}/api/users/register`
         const options = {
             method: 'POST',
             headers: {
@@ -237,7 +239,8 @@ const HiringPartnerDetails = () => {
                 <select className="homepage-input" id="hiringFor" name="hiringFor" required value={signUpDetails.hiringFor} onChange={handleInputChange} >
                     <option value="">select</option>
                     <option value="Freelance HR Recruiter">Freelance HR Recruiter</option>
-                    <option value="HR Recruiter Intern">HR Recruiter Intern</option>
+                    <option value="Intern HR Recruiter">Intern HR Recruiter</option> 
+                    <option value="Fulltime HR Recruiter">Fulltime HR Recruiter</option> 
                 </select>
                 <label className="homepage-label" htmlFor="hiringCategory">Hiring Category</label>
                 <div className='hr-input-list-con'>

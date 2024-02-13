@@ -25,7 +25,8 @@ const CandidatesPage = () => {
     }
 
     const getAllCandidates = async () => {
-        const url = `http://localhost:5000/admin/get-candidates/all`;
+        const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+        const url = `${backendUrl}/admin/get-candidates/all`;
         const options = {
             method: 'GET',
             headers: { 
@@ -60,7 +61,7 @@ const CandidatesPage = () => {
             <div className="job-details-candidates-container">
                 <h1 className="job-details-candidates-heading">Candidates</h1>
                 <div className='table-container'>
-                <table className="job-details-candidates-table">
+                <table className="job-details-candidates-table" style={{width: "100%"}}>
                     <tr className="job-details-candidates-table-heading">
                         <th className="job-details-candidates-table-heading-cell">
                         Name

@@ -55,7 +55,8 @@ const HomePage = () => {
             },
             body: JSON.stringify(credentials)
         }
-        const response = await fetch('http://localhost:5000/api/users/login', options)
+        const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+        const response = await fetch(`${backendUrl}/api/users/login`, options)
         const data = await response.json()
         console.log(data)
         if(response.ok === true) {

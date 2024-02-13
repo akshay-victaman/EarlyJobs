@@ -8,7 +8,7 @@ GET https://job-backend-c3ah.onrender.com/
 ###
 
 // Get user by username
-GET http://localhost:5000/api/users/AksHay
+GET http://localhost:5000/api/users/AksHay@gmail.com
 
 ###
 
@@ -17,13 +17,15 @@ POST http://localhost:5000/api/users/register
 Content-Type: application/json
 
 {
-    "username": "likki",
-    "password": "likki123",
-    "email": "likki@gmail.com",
-    "role": "BDE",
-    "location": "Mumbai",
-    "hiringCtc": 6,
-    "industry": "IT"
+    "docId": "1001",
+    "username": "Ram",
+    "email": "ram@gmail.com",
+    "phone": "7410852096",
+    "password": "ram",
+    "role": "HR",
+    "hiringFor": "Freelance HR Recruiter",
+    "location": "Banglore",
+    "hiringCategory": ["IT", "BPO"],
 }
 
 ###
@@ -33,8 +35,8 @@ POST http://localhost:5000/api/users/login
 Content-Type: application/json
     
 {
-    "username": "akshay",
-    "password": "akshay123"
+    "email": "sai@gmail.com",
+    "password": "sai123"
 }
 
 ###
@@ -62,22 +64,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc
     "category": "IT",
     "description": "Software Engineer",
     "location": "Bangalore",
-    "ctc": 10,
+    "minSalary": 10,
+    "maxSalary": 20,
     "skills": "Java, Python, C++",
     "employmentType": "Full Time",
     "workType": "Work From Home",
-    "commission": "10%",
+    "commissionFee": 10,
+    "commissionType": "Percentage",
     "noOfOpenings": 10,
     "status": "Open",
     "hiringNeed": "Urgent",
-    "postedBy": "Prashobh",
-    "assignedTo": "Akshay"
+    "postedBy": "likki@gmail.com",
+    "assignedTo": "nahed@gmail.com"
 }
 
 ###
 
 // Get jobs Details
-GET http://localhost:5000/jobs/details/1e49bd38-57c0-4110-ae8a-6a56fd223582
+GET http://localhost:5000/jobs/details/5523d08b-8da5-48c9-b341-c3a50f3c44d8
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
@@ -89,22 +93,22 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
     
 {
-    "jobId": "1e49bd38-57c0-4110-ae8a-6a56fd223582",
-    "assignedTo": "Yashwanth",
-    "assignedBy": "Prashobh"
+    "jobId": "5523d08b-8da5-48c9-b341-c3a50f3c44d8",
+    "assignedTo": "yash@gmail.com",
+    "assignedBy": "nahed@gmail.com"
 }
 
 ###
 
 // Get all jobs for Account Manager
-GET http://localhost:5000/jobs/account-manager/sAi
+GET http://localhost:5000/jobs/account-manager/nahed@gmail.com
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
 ###
 
 // Get all jobs for HR
-GET http://localhost:5000/jobs/hr/Yashwanth
+GET http://localhost:5000/jobs/hr/yash@gmail.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
 ###
@@ -115,18 +119,29 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
 {
-    "candidateName": "santhosh",
-    "candidateEmail": "santhosh123@gmail.com",
-    "candidatePhone": "9874563210",
-    "jobId": "38993740-f3d8-4749-871f-9dab5dfafce7",
-    "username": "Akshay",
-    "offerStatus": "Pending"
+    "fullName": "akshay",
+    "fatherName": "raj kumar",
+    "email": "akshay@gmail.com",
+    "phone": "7410852096",
+    "dateOfBirth": "04-02-2001",
+    "gender": "Male",
+    "aadharNumber": "12",
+    "highestQualification": "Graduation",
+    "currentLocation": "Bangalore",
+    "spokenLanguages": ["English", "Telugu", "Hindi"],
+    "experienceInYears": 2,
+    "experienceInMonths": 5,
+    "skills": ["Java", "Python", "C++", "C"],
+    "jobCategory": "IT",
+    "offerStatus": "Pending",
+    "jobId": "2e13f0bd-ea6e-41d8-867f-600496742c58",
+    "hrEmail": "yash@gmail.com",
 }
 
 ###
 
 // Get all candidates for Job
-GET http://localhost:5000/jobs/candidate/38993740-f3d8-4749-871f-9dab5dfafce7
+GET http://localhost:5000/jobs/candidate/2e13f0bd-ea6e-41d8-867f-600496742c58
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
 ###
@@ -137,16 +152,29 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
 {
-    "candidateId": "d51e4560-5ad3-4025-9878-f4b6b48e80a3",
-    "jobId": "38993740-f3d8-4749-871f-9dab5dfafce7",
-    "username": "Akshay",
+    "candidateId": "307581df-2a67-42d2-92e9-cc6774e1e9e6",
+    "jobId": "5523d08b-8da5-48c9-b341-c3a50f3c44d8",
+    "email": "yash@gmail.com",
     "offerStatus": "Selected"
 }
 
 ###
 
+// Get all candidates for HR
+GET http://localhost:5000/jobs/candidates/yash@gmail.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
+// Get candidate details
+GET http://localhost:5000/jobs/candidate/details/e73204a9-6b95-49e1-a1b3-fe9c1e9bc780
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
+
+###
+
 // Get all users for Admin
-GET http://localhost:5000/admin/get-users/all
+GET http://localhost:5000/admin/get-users/all?role=null&isBlocked=null
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
 ###
@@ -164,18 +192,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc
 ###
 
 // Update a Job to Archive
-PUT http://localhost:5000/admin/archive-job/c6ecbe67-5ee1-4bbc-91db-a6bc781f81a0
+PUT http://localhost:5000/admin/archive-job/5523d08b-8da5-48c9-b341-c3a50f3c44d8
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
 ###
 
 // Block a user
-PUT http://localhost:5000/admin/block-user/John Doe
+PUT http://localhost:5000/admin/block-user/prashob@gmail.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
 ###
 
 // Unblock a user
-PUT http://localhost:5000/admin/unblock-user/John Doe
+PUT http://localhost:5000/admin/unblock-user/prashob@gmail.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 

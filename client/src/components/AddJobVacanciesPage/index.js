@@ -99,7 +99,7 @@ const AddJobVacanciesPage = () => {
     const sendEmail = (newJob) => {
         const skills = newJob.skills.map(skill => skill.value).join(', ')
         newJob.skills = skills
-        emailjs.send('service_fnv4y5p', 'template_izuh8cm', newJob, 'KzUehMbovr5UfqKRr')
+        emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE_ID, process.env.REACT_APP_EMAILJS_TEMPLATE_ID_2, newJob, process.env.REACT_APP_EMAILJS_USER_ID)
         .then((result) => {
             console.log(result.text);
         }, (error) => {

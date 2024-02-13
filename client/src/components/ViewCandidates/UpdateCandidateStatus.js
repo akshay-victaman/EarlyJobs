@@ -7,6 +7,8 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId,
     const [loading, setLoading] = useState(false)
     const {candidateName,candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy} = candidateDetails
 
+    const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+
     const handleCandidateStatusChange = event => {
         setUpdateOfferStatus(event.target.value)
         const updateOfferStatus = event.target.value;
@@ -24,7 +26,7 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId,
         console.log(candidateData)
         // return;
         setLoading(true)
-        const url = 'http://localhost:5000/jobs/candidate/status/update'
+        const url = `${backendUrl}/jobs/candidate/status/update`
         const options = {
             method: 'PUT',
             headers: {

@@ -16,6 +16,8 @@ const UsersPage = () => {
     const [userType, setUserType] = useState(null);
     const [userStatus, setUserStatus] = useState(null);
 
+    const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+
     useEffect(() => {
         getAllUsers();
     }, [userType, userStatus])
@@ -39,7 +41,7 @@ const UsersPage = () => {
     }
 
     const getAllUsers = async () => {
-        const url = `http://localhost:5000/admin/get-users/all?role=${userType}&isBlocked=${userStatus}`;
+        const url = `${backendUrl}/admin/get-users/all?role=${userType}&isBlocked=${userStatus}`;
         const options = {
             method: 'GET',
             headers: { 
@@ -69,7 +71,7 @@ const UsersPage = () => {
     }
 
     const blockUser = async (close, email) => {
-        const url = `http://localhost:5000/admin/block-user/${email}`;
+        const url = `${backendUrl}/admin/block-user/${email}`;
         const options = {
             method: 'PUT',
             headers: { 
@@ -99,7 +101,7 @@ const UsersPage = () => {
     }
 
     const unblockUser = async (close, email) => {
-        const url = `http://localhost:5000/admin/unblock-user/${email}`;
+        const url = `${backendUrl}/admin/unblock-user/${email}`;
         const options = {
             method: 'PUT',
             headers: { 
@@ -191,9 +193,9 @@ const UsersPage = () => {
                         onChange={handleChangeUserType}
                         aria-label="Platform"
                         sx={{
-                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root.Mui-selected': {backgroundColor: '#fcf1d1', color: '#ffbb00', fontWeight: 'bold'},
-                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root.Mui-selected:hover': {backgroundColor: '#fcf1d1', color: '#ffbb00', fontWeight: 'bold'},
-                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root' : {border: '1px solid #ffbb00', paddingX: '11px', height: '40px'},
+                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root.Mui-selected': {backgroundColor: '#ee958040', color: '#EB6A4D', fontWeight: 'bold'},
+                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root.Mui-selected:hover': {backgroundColor: '#ee958040', color: '#EB6A4D', fontWeight: 'bold'},
+                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root' : {border: '1px solid #EB6A4D', paddingX: '11px', height: '40px'},
                             marginRight: '15px',
                             marginBottom: '10px'
                         }}
@@ -209,9 +211,9 @@ const UsersPage = () => {
                         onChange={handleChangeUserStatus}
                         aria-label="Platform"
                         sx={{marginBottom: '10px',
-                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root.Mui-selected': {backgroundColor: '#fcf1d1', color: '#ffbb00', fontWeight: 'bold'},
-                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root.Mui-selected:hover': {backgroundColor: '#fcf1d1', color: '#ffbb00', fontWeight: 'bold'},
-                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root' : {border: '1px solid #ffbb00', paddingX: '11px', height: '40px'}
+                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root.Mui-selected': {backgroundColor: '#ee958040', color: '#EB6A4D', fontWeight: 'bold'},
+                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root.Mui-selected:hover': {backgroundColor: '#ee958040', color: '#EB6A4D', fontWeight: 'bold'},
+                            '& .css-d9c359-MuiButtonBase-root-MuiToggleButton-root' : {border: '1px solid #EB6A4D', paddingX: '11px', height: '40px'}
                         }}
                     >
                         <ToggleButton value={1}>Blocked</ToggleButton>

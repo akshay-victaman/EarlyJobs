@@ -39,6 +39,8 @@ const JobDetailsPage = () => {
     setCandidateId(candidateId)
   }
 
+  const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+
   useEffect(() => {
     getJobDetails()
     fetchHumarResources()
@@ -59,7 +61,7 @@ const JobDetailsPage = () => {
     setApiStatus(apiStatusConstant.inProgress)
     const {id} = params
     const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `http://localhost:5000/jobs/details/${id}`
+    const apiUrl = `${backendUrl}/jobs/details/${id}`
     const options = {
       method: 'GET',
       headers: {
@@ -105,7 +107,7 @@ const JobDetailsPage = () => {
   const getCandidates = async () => {
     const {id} = params
     const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `http://localhost:5000/jobs/candidate/${id}`
+    const apiUrl = `${backendUrl}/jobs/candidate/${id}`
     const options = {
       method: 'GET',
       headers: {
@@ -159,7 +161,7 @@ const JobDetailsPage = () => {
             Authorization: `Bearer ${Cookies.get('jwt_token')}`
         },
     }
-    const response = await fetch('http://localhost:5000/api/users/all/hr', options)
+    const response = await fetch(`${backendUrl}/api/users/all/hr`, options)
     const data = await response.json()
     setHumarResources(data)
   }
@@ -187,7 +189,7 @@ const JobDetailsPage = () => {
         },
         body: JSON.stringify(assingedData)
     }
-    const response = await fetch('http://localhost:5000/jobs/assign', options)
+    const response = await fetch(`${backendUrl}/jobs/assign`, options)
     const data = await response.json()
     if(response.ok === true) {
         if(data.error) {
@@ -203,7 +205,7 @@ const JobDetailsPage = () => {
   }
 
   const handleArchieveJob = async (close) => {
-    const url = `http://localhost:5000/admin/archive-job/${jobDetails.id}`
+    const url = `${backendUrl}/admin/archive-job/${jobDetails.id}`
     const options = {
         method: 'PUT',
         headers: {

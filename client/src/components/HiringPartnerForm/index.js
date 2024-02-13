@@ -611,7 +611,7 @@ const HiringPartnerForm = () => {
         formData.qualification.certification = certification
         formData.qualification.workExperience = workExperience
         formData.about.hiringDept = hiringDept
-        emailjs.send('service_fnv4y5p', 'template_op0us5b', formData, 'KzUehMbovr5UfqKRr')
+        emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE_ID, process.env.REACT_APP_EMAILJS_TEMPLATE_ID, formData, process.env.REACT_APP_EMAILJS_USER_ID)
         .then((result) => {
             console.log(result.text);
         }, (error) => {

@@ -62,7 +62,8 @@ const BDEPage = () => {
                     Authorization: `Bearer ${Cookies.get('jwt_token')}`
                 },
             }
-            const response = await fetch('http://localhost:5000/api/users/all/account-managers', options)
+            const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+            const response = await fetch(`${backendUrl}/api/users/all/account-managers`, options)
             const data = await response.json()
             setAccountManagers(data)
             console.log(data)
@@ -185,7 +186,8 @@ const BDEPage = () => {
             },
             body: JSON.stringify(newJob)
         }
-        const response = await fetch('http://localhost:5000/jobs/add/new', options)
+        const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+        const response = await fetch(`${backendUrl}/jobs/add/new`, options)
         const data = await response.json()
         if(response.ok === true) {
             if(data.error) {

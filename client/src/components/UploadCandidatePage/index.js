@@ -13,6 +13,8 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
     const [loading, setLoading] = useState(false)
     const [showForm, setShowForm] = useState(true)
 
+    const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+
     const [candidateDetails, setCandidateDetails] = useState({
         jobId: '',
         fullName: '',
@@ -109,7 +111,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         }
         console.log(candidateData)
         // return;
-        const url = 'http://localhost:5000/jobs/candidate/add'
+        const url = `${backendUrl}/jobs/candidate/add`
         const options = {
             method: 'POST',
             headers: {

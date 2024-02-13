@@ -21,7 +21,6 @@ const addJobDetials = async (req, res) => {
 
 const getJobDetails = async (req, res) => {
     const jobId = req.params.jobId;
-    console.log(jobId)
     try {
       const job = await jobService.getJobDetails(jobId);
       res.json(job);
@@ -42,9 +41,10 @@ const assignJobToHrByAccountManager = async (req, res) => {
 }
 
 const getAccountManagerJobs = async (req, res) => {
-    const username = req.params.username;
+    const email = req.params.email;
+    const page = parseInt(req.query.page) || 1;
     try {
-      const jobs = await jobService.getAccountManagerJobs(username);
+      const jobs = await jobService.getAccountManagerJobs(email, page);
       res.json(jobs);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -52,9 +52,10 @@ const getAccountManagerJobs = async (req, res) => {
 }
 
 const getHRJobs = async (req, res) => {
-    const username = req.params.username;
+    const email = req.params.email;
+    const page = parseInt(req.query.page) || 1;
     try {
-      const jobs = await jobService.getHRJobs(username);
+      const jobs = await jobService.getHRJobs(email, page);
       res.json(jobs);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -92,6 +93,26 @@ const updateCandidateOfferStatus = async (req, res) => {
 
 }
 
+const getAllCandidatesForHR = async (req, res) => {
+    const email = req.params.email;
+    try {
+      const candidates = await jobService.getAllCandidatesForHR(email);
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getCandidateDetails = async (req, res) => {
+    const candidateId = req.params.candidateId;
+    try {
+      const candidate = await jobService.getCandidateDetails(candidateId);
+      res.json(candidate);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getAllJobs,
     addJobDetials,
@@ -101,5 +122,7 @@ module.exports = {
     getHRJobs,
     addCandidateDetailsForJob,
     getJobCandidates,
-    updateCandidateOfferStatus
+    updateCandidateOfferStatus,
+    getAllCandidatesForHR,
+    getCandidateDetails
 }

@@ -21,6 +21,7 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
     const [page, setPage] = useState(1)
     const [totalItems, setTotalItems] = useState(0);
 
+    const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
 
     useEffect(() => {
         if(jobId !== '') {
@@ -43,7 +44,7 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
         setApiStatus(apiStatusConstant.inProgress)
         const jwtToken = Cookies.get('jwt_token')
         const email = Cookies.get('email')
-        const apiUrl = `http://localhost:5000/jobs/candidates/${email}`
+        const apiUrl = `${backendUrl}/jobs/candidates/${email}`
         const options = {
           method: 'GET',
           headers: {
@@ -58,6 +59,7 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
           } else {
             const formattedData = data.map(eachItem => ({
               candidateId: eachItem.candidate_id,
+              jobId: eachItem.job_id,
               candidateName: eachItem.name,
               candidateEmail: eachItem.email,
               candidatePhone: eachItem.phone,
@@ -76,7 +78,7 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
     const getCandidates = async () => {
         setApiStatus(apiStatusConstant.inProgress)
         const jwtToken = Cookies.get('jwt_token')
-        const apiUrl = `http://localhost:5000/jobs/candidate/${jobId}`
+        const apiUrl = `${backendUrl}/jobs/candidate/${jobId}`
         const options = {
           method: 'GET',
           headers: {
@@ -169,6 +171,26 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
       return element;
     };
 
+    const renderNoCandidates = () => {
+      if (apiStatus === apiStatusConstant.inProgress) {
+        return (
+          <Oval
+            visible={true}
+            height="20"
+            width="20"
+            color="#EB6A4D"
+            strokeWidth="4"
+            ariaLabel="oval-loading"
+            wrapperStyle={{}}
+            secondaryColor="#EB6A4D"
+            wrapperClass=""
+          />
+        )
+      } 
+       if(jobId === "") return "Select a job to view candidates"
+        else return "no records found!"
+    }
+
     return (
         // offeredDate: eachItem.offered_date
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
@@ -231,32 +253,35 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                   </tr>
                   
                   {
-                    filteredCandidates.length > 0 && filteredCandidates.map(eachItem => (
-                    
-                    <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} candidateDetails={eachItem} jobId={jobId} candidateList={candidateList} setCandidateList={setCandidateList} />
-                    ))                    
+                    filteredCandidates.length > 0 && filteredCandidates.map(eachItem => {
+                      const jobId1 = jobId==='' ? eachItem.jobId : jobId;
+                    return(
+                        <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} candidateDetails={eachItem}  jobId={jobId1} candidateList={candidateList} setCandidateList={setCandidateList} />
+                    )})               
                   }
                 </table>
-                {candidateList.length === 0 && 
+                {candidateList.length === 0 &&
                 <p className='no-candidates-error'>
                     {
-                        apiStatus === apiStatusConstant.inProgress ?
-                        <Oval
-                            visible={true}
-                            height="20"
-                            width="20"
-                            color="#EB6A4D"
-                            strokeWidth="4"
-                            ariaLabel="oval-loading"
-                            wrapperStyle={{}}
-                            secondaryColor="#EB6A4D"
-                            wrapperClass=""
-                        />
-                        :
-                        jobId === '' ? "Select a job to view candidates" :
-                        "no records found!"
+                        // apiStatus === apiStatusConstant.inProgress ?
+                        // <Oval
+                        //     visible={true}
+                        //     height="20"
+                        //     width="20"
+                        //     color="#EB6A4D"
+                        //     strokeWidth="4"
+                        //     ariaLabel="oval-loading"
+                        //     wrapperStyle={{}}
+                        //     secondaryColor="#EB6A4D"
+                        //     wrapperClass=""
+                        // />
+                        // :
+                        // (jobId === '' ) ? "Select a job to view candidates" :
+                        // "no records found!"
+                        renderNoCandidates()
                     }
                 </p>}
+                {/* {renderNoCandidates()} */}
             </div>
           {/* </div> */}
             <div className="job-details-candidates-pagination-con">

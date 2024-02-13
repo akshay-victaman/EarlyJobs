@@ -5,21 +5,26 @@ const db = require('../config/database');
 const jwt = require('jsonwebtoken');
 
 const getAllUsers = async (role, isBlocked) => {
-    const query = `SELECT * FROM users where role != 'ADMIN' ${role !== 'null' ? `AND role = '${role}'` : ''} ${isBlocked !== 'null' ? `AND is_blocked = ${parseInt(isBlocked)}` : ''}`;
+    const query = `SELECT * FROM users where role != 'ADMIN' ${role !== 'null' ? `AND role = '${role}'` : ''} ${isBlocked !== 'null' ? `AND is_blocked = ${parseInt(isBlocked)}` : ''} order by username asc;`;
     const result = await db.query(query);
     return result[0];
 }
 
 const getAllCandidates = async () => {
-    const query = `SELECT * FROM candidates`;
+    const query = `SELECT * FROM candidates order by name asc;`;
     const result = await db.query(query);
     return result[0];
 }
 
-const getAllJobs = async () => {
-    const query = `SELECT * FROM jobs`;
-    const result = await db.query(query);
-    return result[0];
+const getAllJobs = async (page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const query = `SELECT * FROM jobs order by created_at desc Limit ? offset ?;`;
+    const countQuery = 'SELECT count(*) as count FROM jobs';
+    const result = await db.query(query, [endIndex, startIndex]);
+    const countResult = await db.query(countQuery);
+    return {jobs: result[0], count: countResult[0][0].count};
 }
 
 const archiveJob = async (jobId) => {
@@ -32,9 +37,9 @@ const archiveJob = async (jobId) => {
     }
 }
 
-const blockUser = async (username) => {
-    const query = `UPDATE users SET is_blocked = 1 WHERE username = ?`;
-    const result = await db.query(query, [username]);
+const blockUser = async (email) => {
+    const query = `UPDATE users SET is_blocked = 1 WHERE email = ?`;
+    const result = await db.query(query, [email]);
     if (result[0].affectedRows === 0) {
         return {error: 'User not found.'};
     } else {
@@ -42,9 +47,9 @@ const blockUser = async (username) => {
     }
 }
 
-const unblockUser = async (username) => {
-    const query = `UPDATE users SET is_blocked = 0 WHERE username = ?`;
-    const result = await db.query(query, [username]);
+const unblockUser = async (email) => {
+    const query = `UPDATE users SET is_blocked = 0 WHERE email = ?`;
+    const result = await db.query(query, [email]);
     if (result[0].affectedRows === 0) {
         return {error: 'User not found.'};
     } else {

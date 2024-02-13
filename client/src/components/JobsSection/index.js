@@ -22,6 +22,8 @@ const apiStatusConstant = {
 
 const JobsSection = ({onShowCandidateDetails}) => {
 
+    const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+
     const initialPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
 
     const [jobsList, setJobsList] = useState([])
@@ -142,11 +144,11 @@ const JobsSection = ({onShowCandidateDetails}) => {
     const role = Cookies.get('role')
     let apiUrl = ""
     if (role === 'AC') {
-      apiUrl = `http://localhost:5000/jobs/account-manager/${email}/?page=${page}`
+      apiUrl = `${backendUrl}/jobs/account-manager/${email}/?page=${page}`
     } else if (role === 'HR') {
-      apiUrl = `http://localhost:5000/jobs/hr/${email}/?page=${page}`
+      apiUrl = `${backendUrl}/jobs/hr/${email}/?page=${page}`
     } else {
-      apiUrl = `http://localhost:5000/admin/get-jobs/all/?page=${page}`
+      apiUrl = `${backendUrl}/admin/get-jobs/all/?page=${page}`
     }
     const jwtToken = Cookies.get('jwt_token')
     const options = {

@@ -7,6 +7,7 @@ import { parseISO, format } from 'date-fns';
 const ViewCandidateDetails = (props) => {
     const { onShowCandidateDetails, candidateId } = props;
     const [candidateDetails, setCandidateDetails] = useState({})
+    const backendUrl = process.env.REACT_APP_BACKEND_API_URL
     useEffect(() => {
         if(candidateId !== '') {
             getCandidateDetails();
@@ -14,7 +15,7 @@ const ViewCandidateDetails = (props) => {
     }, [candidateId])
 
     const getCandidateDetails = async () => {
-        const url = `http://localhost:5000/jobs/candidate/details/${candidateId}`
+        const url = `${backendUrl}/jobs/candidate/details/${candidateId}`
         const options = {
             method: 'GET',
             headers: {
