@@ -286,9 +286,9 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                     <label className="homepage-label" htmlFor='experience'>Experience<span className='hr-form-span'> *</span></label>
                     <div className="homepage-input experience-con">
                         <input type="number" name='experienceInYears' className="experience-input" placeholder="Ex: 2" id='experience' onChange={handleCandidateInputChange} />
-                        <label htmlFor='experienceInYears'>Years</label>
+                        <label htmlFor='experienceInYears' className="experience-label">Years</label>
                         <input type="number" name='experienceInMonths' className="experience-input" placeholder="Ex: 5" id='experience' onChange={handleCandidateInputChange}/>
-                        <label htmlFor='experienceInMonths'>Months</label>
+                        <label htmlFor='experienceInMonths' className="experience-label">Months</label>
                     </div>
                 </div>
                 <div className="upload-candidate-input-con">

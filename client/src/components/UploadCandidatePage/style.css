@@ -59,6 +59,11 @@
     margin-left: 15px;
 }
 
+.experience-label {
+    margin: 0px 8px;
+    font-size: 14px;
+    color: #EB6A4D;
+}
 
 @media screen and (max-width: 768px) {
     .upload-candidate-container {

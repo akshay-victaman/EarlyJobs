@@ -136,7 +136,7 @@ const FilterJobs = props => {
           <BsSearch className="search-icon" />
         </button>
       </div> */}
-      <Profile onShowCandidateForm={onShowCandidateForm} />
+      <Profile onShowCandidateForm={onShowCandidateForm} onClickFilter={onClickFilter} />
       <hr className="line" />
       <h1 className="filter-jobs-heading">Archieve</h1>
       <ul className="filter-jobs-employment-type-list">

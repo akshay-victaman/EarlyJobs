@@ -2,11 +2,19 @@ import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { useState } from "react";
 import { parseISO, format } from 'date-fns';
+import { ThreeCircles } from 'react-loader-spinner'
 
+const apiStatusConstant = {
+    initial: 'INITIAL',
+    inProgress: 'IN_PROGRESS',
+    success: 'SUCCESS',
+    failure: 'FAILURE',
+}
 
 const ViewCandidateDetails = (props) => {
     const { onShowCandidateDetails, candidateId } = props;
     const [candidateDetails, setCandidateDetails] = useState({})
+    const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
     useEffect(() => {
         if(candidateId !== '') {
@@ -15,6 +23,7 @@ const ViewCandidateDetails = (props) => {
     }, [candidateId])
 
     const getCandidateDetails = async () => {
+        setApiStatus(apiStatusConstant.inProgress)
         const url = `${backendUrl}/jobs/candidate/details/${candidateId}`
         const options = {
             method: 'GET',
@@ -30,6 +39,7 @@ const ViewCandidateDetails = (props) => {
             if(data.error) {
                 alert(data.error)
                 console.log(data.error)
+                setApiStatus(apiStatusConstant.failure)
             } else {
                 const formattedData = {
                     candidateId: data.id,
@@ -50,9 +60,11 @@ const ViewCandidateDetails = (props) => {
                     spokenLanguages: data.spoken_languages,
                 }
                 setCandidateDetails(formattedData)
+                setApiStatus(apiStatusConstant.success)
             }
         } else {
             alert(data.error)
+            setApiStatus(apiStatusConstant.failure)
         }
     }
 
@@ -68,10 +80,8 @@ const ViewCandidateDetails = (props) => {
         formattedCreatedAt = format(date2, 'MMM dd yyyy - hh:mm:ss a');
     }
 
-
-    return (
-        <div className="candidate-details-modal-con">
-            <h1 className="candidate-details-heading">Candidate Details</h1>
+    const renderCandidateDetails = () => (
+        <>
             <div className="candidate-details-sub-con">
                 <p className="candidate-details-sub-heading">Full Name: </p>
                 <p className="candidate-details-sub-text">{name}</p>
@@ -131,6 +141,42 @@ const ViewCandidateDetails = (props) => {
             <button className="candidate-details-close-btn" onClick={onShowCandidateDetails}>
                 &times;
             </button>
+        </>
+    )
+
+    const renderFailure = () => (
+        <div className="candidate-failure-con">
+            <p className="candidate-failure-text">Something went wrong!</p>
+            <button className="candidate-try-agian-btn" onClick={getCandidateDetails}>Try Again</button>
+            <button className="candidate-details-close-btn" onClick={onShowCandidateDetails}>
+                &times;
+            </button>
+        </div>
+    )
+
+    const renderInProgress = () => (
+        <div data-testid="loader" className="candidate-loader-container">
+            <ThreeCircles type="ThreeDots" color="#EB6A4D" height="50" width="50" />
+        </div>
+    )
+
+    const renderSwitchCase = () => {
+        switch(apiStatus) {
+            case apiStatusConstant.inProgress:
+                return renderInProgress();
+            case apiStatusConstant.success:
+                return renderCandidateDetails();
+            case apiStatusConstant.failure:
+                return renderFailure();
+            default:
+                return null;
+        }
+    }
+
+    return (
+        <div className="candidate-details-modal-con">
+            <h1 className="candidate-details-heading">Candidate Details</h1>
+            {renderSwitchCase()}
         </div>
     );
 }
