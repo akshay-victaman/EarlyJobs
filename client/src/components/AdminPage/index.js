@@ -28,9 +28,9 @@ const AdminPage = () => {
                                 <p className="button-text"> View All Users </p>
                             </Link>
                         </button>
-                        
+
                         <button className='admin-btn'>
-                            <Link to='/jobs' className="admin-link">
+                            <Link to='/jobs' className="admin-link">                          
                                 <BsBriefcaseFill className='admin-icon' />
                                 <p className="button-text"> View All Jobs </p>
                             </Link>

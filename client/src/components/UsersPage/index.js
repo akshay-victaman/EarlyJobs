@@ -4,10 +4,12 @@ import { IoSearchSharp } from "react-icons/io5";
 import { format, parseISO } from 'date-fns';
 import Cookies from 'js-cookie';
 import { Redirect } from 'react-router-dom';
+import { Oval } from 'react-loader-spinner';
 import NavBar from "../NavBar"
 import './style.css'
 import { useState, useEffect } from 'react';
 import UsersItem from '../UsersItem';
+import Footer from '../Footer';
 
 
 const UsersPage = () => {
@@ -15,6 +17,7 @@ const UsersPage = () => {
     const [searchInput, setSearchInput] = useState('');
     const [userType, setUserType] = useState(null);
     const [userStatus, setUserStatus] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -165,6 +168,24 @@ const UsersPage = () => {
                                 <UsersItem key={eachItem.id} userDetails={eachItem} renderBlockUnblockPopup={renderBlockUnblockPopup} />
                         ))}
                 </table>
+                {
+                    filteredUsers.length === 0 && 
+                    <p className='user-view-table-no-data'>
+                        {loading ? 
+                        <Oval
+                        visible={true}
+                        height="20"
+                        width="20"
+                        color="#EB6A4D"
+                        strokeWidth="4"
+                        ariaLabel="oval-loading"
+                        wrapperStyle={{}}
+                        secondaryColor="#fff"
+                        wrapperClass=""
+                      /> : 
+                      'No data available'}
+                    </p>
+                }
             </div>
         )
     }
@@ -184,7 +205,7 @@ const UsersPage = () => {
                         <div className="user-view-search-button">
                             <IoSearchSharp className="search-icon" />
                         </div>
-                        <input className="user-view-search-input" type="text" value={searchInput} onChange={handleChangeSearchInput} placeholder="Search" />
+                        <input className="user-view-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} placeholder="Search" />
                     </div>
                     <ToggleButtonGroup
                         color="primary"
@@ -222,6 +243,7 @@ const UsersPage = () => {
                 </div>
                 {renderGetUsers()}
             </div>
+            <Footer />
         </div>
     )
 }

@@ -126,6 +126,16 @@
     padding: 0px 15px;
 }
 
+.user-view-table-no-data {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0px;
+    background-color: #e9b7ab;
+    border: 1px solid #EB6A4D;
+}
+
 @media screen and (max-width: 768px) {
     .user-view-container {
         margin-top: 10vh;
