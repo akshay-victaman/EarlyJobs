@@ -1,7 +1,7 @@
 import Popup from 'reactjs-popup';
 
 
-const UsersItem = ({userDetails, blockStatus, renderBlockUnblockPopup}) => {
+const UsersItem = ({userDetails, renderBlockUnblockPopup}) => {
     const {username, email, role, location, hiringCtc, industry, createdAt, isBlocked} = userDetails;
     return (
         <tr className="users-table-data-row">
@@ -19,9 +19,6 @@ const UsersItem = ({userDetails, blockStatus, renderBlockUnblockPopup}) => {
             >
                 {close => (
                 <div className="modal">
-                    <button className="modal-close-button" disabled={blockStatus} onClick={close}>
-                    &times;
-                    </button>
                     {renderBlockUnblockPopup(close, email, isBlocked)}
                 </div>
                 )}
