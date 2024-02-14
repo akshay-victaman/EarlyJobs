@@ -142,6 +142,7 @@ const UsersPage = () => {
 
     const renderBlockUnblockPopup = (close, email, isBlocked) => (
         <div className="modal-form">
+            <button className="modal-close-button" disabled={blockStatus} onClick={close}>&times;</button>
             <label className="homepage-label">Do you want to {isBlocked === 0 ? "Block" : "Unblock"} this user?</label>
             <div className='achieve-button-con'>
             {
@@ -172,7 +173,7 @@ const UsersPage = () => {
                         </tr>
                         {
                             filteredUsers.map(eachItem => (
-                                <UsersItem key={eachItem.id} blockStatus={blockStatus} userDetails={eachItem} renderBlockUnblockPopup={renderBlockUnblockPopup} />
+                                <UsersItem key={eachItem.id} userDetails={eachItem} renderBlockUnblockPopup={renderBlockUnblockPopup} />
                         ))}
                 </table>
                 {
