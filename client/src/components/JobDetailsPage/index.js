@@ -233,7 +233,7 @@ const JobDetailsPage = () => {
 
   const renderLoader = () => (
     <div data-testid="loader" className="loader-container-job-details">
-      <ThreeCircles type="ThreeDots" color="#f9a828" height="50" width="50" />
+      <ThreeCircles type="ThreeDots" color="#EB6A4D" height="50" width="50" />
     </div>
   )
 

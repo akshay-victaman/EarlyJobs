@@ -190,6 +190,8 @@
   font-size: 10px;
   font-family: 'Roboto';
   margin-top: 13px;
+  cursor: pointer;
+  outline: none;
 }
 
 .job-detials-misc {
