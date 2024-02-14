@@ -144,6 +144,40 @@
     margin: 0px;
 }
 
+.candidate-loader-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.candidate-failure-con {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.candidate-try-agian-btn {
+    background-color: #EB6A4D;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 13px;
+    border: 0px;
+    outline: none;
+}
+
+.candidate-failure-text {
+    color: gray;
+    font-size: 14px;
+}
+
 @media screen and (max-width: 768px) {
     .job-section-select-filter-container {
         justify-content: space-between;

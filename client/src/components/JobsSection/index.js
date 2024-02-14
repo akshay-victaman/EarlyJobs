@@ -335,7 +335,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
 
   const renderLoader = () => (
     <div data-testid="loader" className="loader-container">
-      <ThreeCircles type="ThreeDots" color="#f9a828" height="50" width="50" />
+      <ThreeCircles type="ThreeDots" color="#EB6A4D" height="50" width="50" />
     </div>
   )
 
@@ -401,6 +401,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
               onKeyEnter={onKeyEnter}
               onClickButton={onClickButton}
               onShowCandidateForm={onShowCandidateForm}
+              onClickFilter={onClickFilter}
             />
             <button type='button' className='job-section-filter-close-button' onClick={onClickFilter}><MdKeyboardDoubleArrowLeft className='job-section-filter-close-icon' /></button>
         </div>
@@ -433,6 +434,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
           <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
           : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
           : renderAllSections()}
+
         </div>
       </div>
     )

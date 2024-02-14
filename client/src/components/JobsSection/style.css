@@ -203,12 +203,10 @@
       align-items: center;
       border-radius: 5px;
       padding: 4px 10px;
+      cursor: pointer;
     }
     .jobs-card-list {
       margin-top: 25px;
-    }
-    .loader-container {
-      height: 100%;
     }
     .job-section-search-card-con {
       width: 100%;

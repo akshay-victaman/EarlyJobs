@@ -17,7 +17,7 @@ const jobsListDummy = {
     shortBio: 'Software Developer at Victaman',
 }
 
-const Profile = ({onShowCandidateForm}) => {
+const Profile = ({onShowCandidateForm, onClickFilter}) => {
 
     const [profileData, setProfileData] = useState(jobsListDummy)
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
@@ -63,6 +63,11 @@ const Profile = ({onShowCandidateForm}) => {
     //     </div>
     // )
 
+    const onClickButtons = (view) => {
+        onShowCandidateForm(view)
+        onClickFilter()
+    }
+
     const renderProfileDetails = () => {
         const role = Cookies.get('role')
         const {name, profileImageUrl, shortBio} = profileData
@@ -71,9 +76,9 @@ const Profile = ({onShowCandidateForm}) => {
             <img src={profileImageUrl} alt="profile" className="profile-image" />
             <h1 className="profile-name">{name}</h1>
             <p className="profile-designation">{shortBio}</p>
-            {role === 'HR' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(1)}>Add Candidate</button>}
-            <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(2)}>View Candidates</button>
-            <button type="button" className="job-details-upload-candidate-button" onClick={() => onShowCandidateForm(0)}>Assigned Job Openings</button>
+            {role === 'HR' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(1)}>Add Candidate</button>}
+            <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(2)}>View Candidates</button>
+            <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
         </div>
         )
     }
