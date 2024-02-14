@@ -18,6 +18,7 @@ const UsersPage = () => {
     const [userType, setUserType] = useState(null);
     const [userStatus, setUserStatus] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [blockStatus, setBlockStatus] = useState(false);
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -44,6 +45,7 @@ const UsersPage = () => {
     }
 
     const getAllUsers = async () => {
+        setLoading(true);
         const url = `${backendUrl}/admin/get-users/all?role=${userType}&isBlocked=${userStatus}`;
         const options = {
             method: 'GET',
@@ -71,9 +73,11 @@ const UsersPage = () => {
         } else {
             alert(data.error);
         }
+        setLoading(false);
     }
 
     const blockUser = async (close, email) => {
+        setBlockStatus(true);
         const url = `${backendUrl}/admin/block-user/${email}`;
         const options = {
             method: 'PUT',
@@ -101,9 +105,11 @@ const UsersPage = () => {
         } else {
             alert(data.error);
         }
+        setBlockStatus(false);
     }
 
     const unblockUser = async (close, email) => {
+        setBlockStatus(true);
         const url = `${backendUrl}/admin/unblock-user/${email}`;
         const options = {
             method: 'PUT',
@@ -131,6 +137,7 @@ const UsersPage = () => {
         } else {
             alert(data.error);
         }
+        setBlockStatus(false);
     }
 
     const renderBlockUnblockPopup = (close, email, isBlocked) => (
@@ -139,11 +146,11 @@ const UsersPage = () => {
             <div className='achieve-button-con'>
             {
                 isBlocked === 0 ?
-                <button className='job-details-upload-candidate-button' onClick={() => blockUser(close, email)}>YES</button>
+                <button className='job-details-upload-candidate-button' disabled={blockStatus} onClick={() => blockUser(close, email)}>YES</button>
                 :
-                <button className='job-details-upload-candidate-button' onClick={() => unblockUser(close, email)}>YES</button>
+                <button className='job-details-upload-candidate-button' disabled={blockStatus} onClick={() => unblockUser(close, email)}>YES</button>
             }
-            <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>NO</button>
+            <button className='job-details-upload-candidate-button archieve-cancel-btn' disabled={blockStatus} onClick={close}>NO</button>
             </div>
         </div>
     )
@@ -165,7 +172,7 @@ const UsersPage = () => {
                         </tr>
                         {
                             filteredUsers.map(eachItem => (
-                                <UsersItem key={eachItem.id} userDetails={eachItem} renderBlockUnblockPopup={renderBlockUnblockPopup} />
+                                <UsersItem key={eachItem.id} blockStatus={blockStatus} userDetails={eachItem} renderBlockUnblockPopup={renderBlockUnblockPopup} />
                         ))}
                 </table>
                 {
