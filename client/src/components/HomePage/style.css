@@ -96,6 +96,12 @@
     border-bottom: 3px dotted #EB6A4D;
 }
 
+.login-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 @media screen and (max-width: 768px) {
     .homepage-sub-con {
         flex-direction: column;

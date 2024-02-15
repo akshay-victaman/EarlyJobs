@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useHistory, Redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Oval } from 'react-loader-spinner';
 import NavBar from '../NavBar';
 import './style.css'
 import Footer from '../Footer';
@@ -10,6 +11,7 @@ const HomePage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const history = useHistory();
 
@@ -55,6 +57,7 @@ const HomePage = () => {
             },
             body: JSON.stringify(credentials)
         }
+        setLoading(true)
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
         const response = await fetch(`${backendUrl}/api/users/login`, options)
         const data = await response.json()
@@ -71,6 +74,7 @@ const HomePage = () => {
         } else {
             setError(data.error)
         }
+        setLoading(false)
     }
 
     if(Cookies.get('jwt_token') !== undefined) {
@@ -95,7 +99,23 @@ const HomePage = () => {
                         <input type="email" className="homepage-input" id='email' value={email} onChange={handleEmailChange} placeholder='Enter email'/>
                         <label className="homepage-label" id='password'>PASSWORD</label>
                         <input type="password" className="homepage-input" id='password' value={password} onChange={handlePasswordChange} placeholder='Enter password'/>
-                        <button type='submit' className="login-button">Login</button>
+                        <button type='submit' disabled={loading} className="login-button login-loader">
+                        {loading ?
+                            <Oval
+                                visible={true}
+                                height="20"
+                                width="20"
+                                color="#ffffff"
+                                strokeWidth="4"
+                                ariaLabel="oval-loading"
+                                wrapperStyle={{}}
+                                secondaryColor="#ffffff"
+                                wrapperClass=""
+                            />
+                            :
+                            "Login"
+                        }
+                        </button>
                         <p className='error-message'>{error}</p>
                     </form>
                     <h1 className='homepage-quote'>
