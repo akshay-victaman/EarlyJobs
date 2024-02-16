@@ -6,6 +6,8 @@
 /client/.env
 /server/.env
 /client/.pnp
+/server/app.http
+/server/.serverless
 .pnp.js
 
 # testing
