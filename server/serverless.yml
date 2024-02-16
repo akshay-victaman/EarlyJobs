@@ -1,9 +1,26 @@
-service: my-service
+service: earlyjobs
+
+frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: nodejs20.x
+  stage: prod
+  region: ap-south-1
+  environment:
 
+functions:
+  app:
+    handler: app.server
+    events:
+      - http:
+          path: /
+          method: any
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
 
 plugins:
   - serverless-offline
@@ -11,3 +28,7 @@ plugins:
 custom:
   serverless-offline:
     httpPort: 5000
+  apigwBinary:
+    types:
+      - "application/json"
+      - "application/javascript"
