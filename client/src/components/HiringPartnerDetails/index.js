@@ -261,8 +261,8 @@ const HiringPartnerDetails = () => {
                         ))
                     }
                 </select>
-                <p className="error-message">{error}</p>
-                <div className='achieve-button-con'>
+                {error && <p className="error-message">{error}</p>}
+                <div className='achieve-button-con create-user-btn-con'>
                     <button className='job-details-upload-candidate-button' disabled={rejectApproveStatus} onClick={onClickApprove}>CREATE</button>
                     <button className='job-details-upload-candidate-button archieve-cancel-btn' disabled={rejectApproveStatus} onClick={close}>CANCEL</button>
                 </div>
@@ -570,7 +570,7 @@ const HiringPartnerDetails = () => {
                         modal
                     >
                         {close => (
-                        <div className="modal">
+                        <div className="modal create-user-modal">
                             
                             {renderApprovePopup(close)}
                         </div>

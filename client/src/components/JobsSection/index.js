@@ -13,6 +13,8 @@ import './style.css'
 import SalaryRangeList from '../SalaryRangeList'
 import UploadCandidatePage from '../UploadCandidatePage';
 import ViewCandidates from '../ViewCandidates';
+import Footer from '../Footer';
+import { HiringManagerDetailsForm } from '../HiringManagerDetailsForm';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -352,6 +354,8 @@ const JobsSection = ({onShowCandidateDetails}) => {
     }
   }
 
+    const role = Cookies.get('role')
+    const userDetailsId = Cookies.get('user_details_id')
     return (
       <div className="jobs-section-container">
         {/* <div className='filter-button-con'>
@@ -430,11 +434,16 @@ const JobsSection = ({onShowCandidateDetails}) => {
               <BsSearch className="search-icon" />
             </button>
           </div> */}
-          {showCandidateForm===1 ? 
-          <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
-          : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
-          : renderAllSections()}
-
+          {
+            userDetailsId === 'TBF' ?
+            <HiringManagerDetailsForm />
+            :
+            showCandidateForm===1 ? 
+            <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
+            : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
+            : renderAllSections()
+          }
+          {/* <Footer /> */}
         </div>
       </div>
     )

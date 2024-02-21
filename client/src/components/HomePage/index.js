@@ -23,11 +23,14 @@ const HomePage = () => {
         setPassword(e.target.value)
     }
 
-    const onSubmitSuccess = (jwtToken, username, role, email) => {
+    const onSubmitSuccess = (jwtToken, username, role, email, userDetailsId) => {
         Cookies.set('jwt_token', jwtToken, {expires: 30})
         Cookies.set('email', email, {expires: 30})
         Cookies.set('username', username, {expires: 30})
         Cookies.set('role', role, {expires: 30})
+        if(userDetailsId === "TBF") {
+            Cookies.set('user_details_id', userDetailsId, {expires: 5})
+        }
         if(role === 'ADMIN') {
             history.replace('/admin')
             return
@@ -68,7 +71,7 @@ const HomePage = () => {
             } else if(data.isBlocked === 1) {
                 setError("Your account has been blocked. Please contact the admin.")
             } else {
-                onSubmitSuccess(data.jwtToken, data.username, data.role, data.email,)
+                onSubmitSuccess(data.jwtToken, data.username, data.role, data.email, data.userDetailsId)
                 setError("")
             }
         } else {

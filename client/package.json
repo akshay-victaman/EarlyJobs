@@ -30,6 +30,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "sync": "aws s3 sync build/ s3://earlyjobs.in/",
+    "invalidate": "aws cloudfront --region 'ap-south-1' create-invalidation --distribution-id EM4HKWQK2Y8M6 --paths '/*'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
