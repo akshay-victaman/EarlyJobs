@@ -48,6 +48,30 @@ const createUser = async (user) => {
     }
 }
 
+const updateUser = async (user) => {
+    const {docId, email, location, password} = user;
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const query = 'UPDATE users SET user_details_id = ?, location = ?, password = ? WHERE email = ?';
+    const result = await db.query(query, [docId, location, hashedPassword, email]);
+    if (result[0].affectedRows > 0) {
+        return {success: 'User updated successfully'};
+    }
+    return {error: 'User update failed'};
+}
+    
+
+const updatePassword = async (user) => {
+    const {email, password} = user;
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const query = 'UPDATE users SET password = ? WHERE email = ?';
+    const result = await db.query(query, [hashedPassword, email]);
+    if (result[0].affectedRows > 0) {
+        return {success: 'Password updated successfully'};
+    }
+    return {error: 'Password update failed'};
+}
+
+
 const updateDocId = async (user) => {
     const {docId, email} = user;
     const query = 'UPDATE users SET user_details_id = ? WHERE email = ?';
@@ -60,13 +84,15 @@ const updateDocId = async (user) => {
 
 const loginUser = async (user) => {
     const {email, password} = user;
+    console.log(user)
     // const dbUser = await getUserByNameEmail(email, email);
     const dbUser = await getUserByEmail(email);
+    console.log(dbUser)
     if (dbUser.length > 0) {
         const match = bcrypt.compareSync(password, dbUser[0].password);
         if (match) {
             const jwtToken = jwt.sign({email: dbUser[0].email}, 'jobbyApp');
-            return {username: dbUser[0].username, email, jwtToken, role: dbUser[0].role, isBlocked: dbUser[0].is_blocked};
+            return {username: dbUser[0].username, userDetailsId: dbUser[0].user_details_id, email, jwtToken, role: dbUser[0].role, isBlocked: dbUser[0].is_blocked};
         } else {
             return {error: 'Invalid Password'};
         }
@@ -91,6 +117,8 @@ module.exports = {
   getAllUsers,
   getUserByEmail,
   createUser,
+  updateUser,
+  updatePassword,
   updateDocId,
   loginUser,
   getAllAccountManagers,
