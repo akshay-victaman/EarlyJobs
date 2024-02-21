@@ -21,7 +21,7 @@ const App = () => (
   <>
     <Switch>
       <Route exact path="/" component={HomePage} />
-      <Route exact path="/apply-as-a-hiring-partner" component={HiringPartnerForm} />
+      <Route exact path="/apply-as-a-recruiter" component={HiringPartnerForm} />
       <Route exact path="/add-job-vacancies" component={AddJobVacanciesPage} />
       <ProtectedRoute exact path="/jobs" component={JobsPage} />
       <ProtectedRoute exact path="/jobs/:id" component={JobDetailsPage} />

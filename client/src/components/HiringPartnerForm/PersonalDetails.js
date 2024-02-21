@@ -1,5 +1,6 @@
 import { IoIosClose } from "react-icons/io";
 import React, { useState } from 'react';
+import Cookies from "js-cookie";
 import Select from 'react-select';
 import { customStyles } from ".";
 
@@ -30,6 +31,8 @@ const PersonalDetailsForm = (props) => {
     //     setSelectedOption(option.value);
     // };
 
+    const userDetailsId = Cookies.get('user_details_id');
+
     return(
         <div className='hr-form-container'>
             <h1 className='form-title'>Personal Details</h1>
@@ -37,7 +40,7 @@ const PersonalDetailsForm = (props) => {
                 <p className='hr-form-subtitle'>( <span className='hr-form-span'>*</span> ) Indicates required field</p>
 
                 <label htmlFor='fullname' className='hr-label'>Full Name<span className='hr-form-span'> *</span></label>
-                <input type='text' placeholder="Ex: John Doe" onChange={handleInputChange} value={personalDetails.fullName} required className='hr-input' id='fullname' name='fullName' />
+                <input type='text' placeholder="Ex: John Doe" disabled={userDetailsId === "TBF"} onChange={handleInputChange} value={personalDetails.fullName} required className='hr-input' id='fullname' name='fullName' />
 
                 <label htmlFor='date-of-birth' className='hr-label'>Date of Birth<span className='hr-form-span'> *</span></label>
                 <input type='date' onChange={handleInputChange} value={personalDetails.dob} required className='hr-input' id='date-of-birth' name='dob' />
@@ -52,7 +55,7 @@ const PersonalDetailsForm = (props) => {
                         // onChange={handleInputChange}
                         styles={customStyles}
                     />
-                    <input type='number' placeholder="Ex: 9876543210" onChange={handleInputChange} value={personalDetails.phone} required className='hr-input-select' id='phone-number' name='phone' />
+                    <input type='number' placeholder="Ex: 9876543210" disabled={userDetailsId === "TBF"} onChange={handleInputChange} value={personalDetails.phone} required className='hr-input-select' id='phone-number' name='phone' />
                 </div>
 
                 <label htmlFor='whatsapp-number' className='hr-label'>Whatsapp Number<span className='hr-form-span'> *</span></label>
@@ -67,7 +70,19 @@ const PersonalDetailsForm = (props) => {
                     <input type='number' placeholder="Ex: 9876543210" onChange={handleInputChange} value={personalDetails.wtspNum} required className='hr-input-select' id='whatsapp-number' name='wtspNum' />
                 </div>
                 <label htmlFor='email' className='hr-label'>Email<span className='hr-form-span'> *</span></label>
-                <input type='email' placeholder="Ex: hr@earlyjobs.in" onChange={handleInputChange} value={personalDetails.email} required className='hr-input' id='email' name='email' />
+                <input type='email' placeholder="Ex: hr@earlyjobs.in" disabled={userDetailsId === "TBF"} onChange={handleInputChange} value={personalDetails.email} required className='hr-input' id='email' name='email' />
+
+                {
+                    userDetailsId === "TBF" ?
+                    <>
+                        <label htmlFor='password' className='hr-label'>New Password<span className='hr-form-span'> *</span></label>
+                        <input type='password' placeholder="New password" onChange={handleInputChange} value={personalDetails.password} required className='hr-input' id='password' name='password' />
+                        
+                        <label htmlFor='confirm-password' className='hr-label'>Confirm Password<span className='hr-form-span'> *</span></label>
+                        <input type='password' placeholder="Confirm password" onChange={handleInputChange} value={personalDetails.confirmPassword} required className='hr-input' id='confirm-password' name='confirmPassword' />
+                    </>
+                : null
+                }
                 
                 <label htmlFor='current-address' className='hr-label'>Current Address<span className='hr-form-span'> *</span></label>
                 <input type='text' placeholder="Address" onChange={handleInputChange} value={personalDetails.currAddress} required className='hr-input' id='current-address' name='currAddress' />
@@ -93,22 +108,27 @@ const PersonalDetailsForm = (props) => {
                 <p className='hr-size'>Type a language and click 'Add' button to add it to the list</p>
 
 
-                <label className='hr-label'>Apply for<span className='hr-form-span'> *</span></label>
-                <div className='hr-checkbox-con hr-radio'>
-                    <label className='hr-checkbox-label hr-radio-label'>
-                        <input type="radio" className='hr-checkbox' name="applyFor" value="Freelance HR Recruiter" checked={personalDetails.applyFor === 'Freelance HR Recruiter'} onChange={handleInputChange}/>
-                        Freelance HR Recruiter
-                    </label>
-                    <label className='hr-checkbox-label hr-radio-label'>
-                        <input type="radio" className='hr-checkbox' name="applyFor" value="Intern HR Recruiter" checked={personalDetails.applyFor === 'Intern HR Recruiter'} onChange={handleInputChange}/>
-                        Intern HR Recruiter
-                    </label>
-                    <label className='hr-checkbox-label hr-radio-label'>
-                        <input type="radio" className='hr-checkbox' name="applyFor" value="Fulltime HR Recruiter" checked={personalDetails.applyFor === 'Fulltime HR Recruiter'} onChange={handleInputChange}/>
-                        Fulltime HR Recruiter
-                    </label>
-
-                </div>
+                {
+                    userDetailsId === undefined ? 
+                    <>
+                        <label className='hr-label'>Apply for<span className='hr-form-span'> *</span></label>
+                        <div className='hr-checkbox-con hr-radio'>
+                            <label className='hr-checkbox-label hr-radio-label'>
+                                <input type="radio" className='hr-checkbox' name="applyFor" value="Freelance HR Recruiter" checked={personalDetails.applyFor === 'Freelance HR Recruiter'} onChange={handleInputChange}/>
+                                Freelance HR Recruiter
+                            </label>
+                            <label className='hr-checkbox-label hr-radio-label'>
+                                <input type="radio" className='hr-checkbox' name="applyFor" value="Intern HR Recruiter" checked={personalDetails.applyFor === 'Intern HR Recruiter'} onChange={handleInputChange}/>
+                                Intern HR Recruiter
+                            </label>
+                            <label className='hr-checkbox-label hr-radio-label'>
+                                <input type="radio" className='hr-checkbox' name="applyFor" value="Fulltime HR Recruiter" checked={personalDetails.applyFor === 'Fulltime HR Recruiter'} onChange={handleInputChange}/>
+                                Fulltime HR Recruiter
+                            </label>
+                        </div>
+                    </>
+                    : null
+                }
 
                 <p className='hr-main-error'>{error}</p>
 

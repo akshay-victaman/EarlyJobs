@@ -19,6 +19,7 @@ const NavBar = ({isLoggedIn}) => {
         Cookies.remove('role');
         Cookies.remove('username')
         Cookies.remove('email')
+        Cookies.remove('userDetailsId')
         history.replace('/');
     }
 
@@ -59,8 +60,8 @@ const NavBar = ({isLoggedIn}) => {
                         </li>
                         :
                         <li className='nav-item'>
-                            <Link to='/apply-as-a-hiring-partner' className='nav-link'>
-                                <button type='button' className='signup-button'>Apply as a hiring partner</button>
+                            <Link to='/apply-as-a-recruiter' className='nav-link'>
+                                <button type='button' className='signup-button'>Apply as a Recruiter</button>
                             </Link>
                         </li>
                     }
@@ -108,8 +109,8 @@ const NavBar = ({isLoggedIn}) => {
                                 jwtToken !== undefined ?
                                 <button type='button' className='signup-button' onClick={onClickLogout}>Logout</button>
                                 :
-                                <Link to='/apply-as-a-hiring-partner' className='nav-link'>
-                                    <button type='button' className='signup-button'>Apply as a hiring partner</button>
+                                <Link to='/apply-as-a-recruiter' className='nav-link'>
+                                    <button type='button' className='signup-button'>Apply as a Recruiter</button>
                                 </Link>
                             }
                             {/* <Link to={isLoggedIn ? '/' : '/apply-as-a-hiring-partner'} className='nav-link'>
