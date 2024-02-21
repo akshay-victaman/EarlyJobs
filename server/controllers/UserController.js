@@ -32,6 +32,26 @@ const createUser = async (req, res) => {
     }
 }
 
+const updateUser = async (req, res) => {
+    const user = req.body;
+    try {
+      const updatedUser = await userService.updateUser(user);
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const updatePassword = async (req, res) => {
+    const user = req.body;
+    try {
+      const updatedUser = await userService.updatePassword(user);
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const updateDocId = async (req, res) => {
     const user = req.body;
     try {
@@ -74,6 +94,8 @@ module.exports = {
   getAllUsers,
   getUserByEmail,
   createUser,
+  updateUser,
+  updatePassword,
   updateDocId,
   loginUser,
   getAllAccountManagers,
