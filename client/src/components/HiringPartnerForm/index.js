@@ -1,4 +1,5 @@
 import Stepper from 'react-stepper-horizontal';
+import { Redirect } from 'react-router-dom';
 import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {v4 as uuidv4} from 'uuid';
@@ -13,6 +14,7 @@ import ReferencesForm from './ReferencesForm';
 import app from '../../firebase';
 import './style.css'
 import Footer from '../Footer';
+import Cookies from 'js-cookie';
 
 const customStyles = {
     control: (provided, state) => ({
@@ -427,7 +429,20 @@ const HiringPartnerForm = () => {
 
     // Form Submit Events
 
-    const onSubmitPersonalDetails = (e) => {
+    const checkIsUserExists = async (email, phone) => {
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/v1/${email}/${phone}`
+        const response = await fetch(url);
+        const data = await response.json();
+        if(response.ok === true) {
+            if(data.length > 0) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
+    const onSubmitPersonalDetails = async (e) => {
         e.preventDefault()
         
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -460,8 +475,14 @@ const HiringPartnerForm = () => {
             return
         }
 
+        const isUserExists = await checkIsUserExists(personalDetails.email, personalDetails.phone)
+        if(isUserExists) {
+            setError("*User already exists with this email or phone number")
+            return
+        }
         setError("")
         console.log(personalDetails)
+        console.log(isUserExists)
         
         handleCurrentStep(1)
     }
@@ -484,8 +505,8 @@ const HiringPartnerForm = () => {
     const onSubmitAbout = (e) => {
         e.preventDefault()
         console.log(about)
-        if(about.aboutYou.split(/\s+/).length < 150) {
-            setError("*Please enter 'about yourself' in minimum of 150 words")
+        if(about.aboutYou.split(/\s+/).length < 100) {
+            setError("*Please enter 'about yourself' in minimum of 100 words")
             return
         } else if(about.WhyJoinUs.split(/\s+/).length < 100) {
             setError("*Please enter 'why you want to join us' in minimum of 100 words")
@@ -755,6 +776,10 @@ const HiringPartnerForm = () => {
             case 5: return renderSuccess();
             default: return null;
         }
+    }
+
+    if(Cookies.get('jwt_token')) {
+        return <Redirect to='/' />
     }
 
     return (

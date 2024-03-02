@@ -63,7 +63,7 @@ const HiringPartnerReqPage = () => {
         <div className='homepage-container'>
             <NavBar />
             <div className='hiring-partner-req-page-content-con'>
-                <h1 className='hiring-partner-req-heading'>Hiring Partner Requests</h1>
+                <h1 className='hiring-partner-req-heading'>Recruiter Requests</h1>
                 <div className='hiring-partner-req-page-content'>
                     <table className='users-table hiring-partner-req-table'>
                         <thead>
@@ -85,7 +85,7 @@ const HiringPartnerReqPage = () => {
                                             <td data-cell='Phone' className="users-table-data">{hiringPartnerReq.formData.personalDetails.phone}</td>
                                             <td data-cell='Applied Date' className="users-table-data">{hiringPartnerReq.formattedDate}</td>
                                             <td data-cell='More Details' className="users-table-data">
-                                                <Link to={`/admin/hiring-partner-requests/${hiringPartnerReq.formData.docId}`} className='link'>
+                                                <Link to={`/admin/recruiter-requests/${hiringPartnerReq.formData.docId}`} className='link'>
                                                     <button className='hiring-partner-req-btn hrp-button'>View</button>
                                                 </Link>
                                             </td>

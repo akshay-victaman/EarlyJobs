@@ -5,6 +5,7 @@ const authenticateToken = require('../middleware/authenticationMiddleware');
 const router = express.Router();
 
 router.get('/users', userController.getAllUsers);
+router.get('/users/v1/:email/:phone', userController.getUserByEmailPhone);
 router.get('/users/:username', authenticateToken, userController.getUserByEmail);
 router.get('/users/all/account-managers', authenticateToken, userController.getAllAccountManagers);
 router.get('/users/all/hr', authenticateToken, userController.getAllHRs);

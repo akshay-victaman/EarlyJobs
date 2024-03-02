@@ -31,8 +31,8 @@ const App = () => (
       <ProtectedRoute exact path='/admin' component={AdminPage} />
       <ProtectedRoute exact path="/admin/users" component={UsersPage} />
       <ProtectedRoute exact path="/admin/candidates" component={CandidatesPage} />
-      <ProtectedRoute exact path="/admin/hiring-partner-requests" component={HiringPartnerReqPage} />
-      <ProtectedRoute exact path="/admin/hiring-partner-requests/:id" component={HiringPartnerDetails} />
+      <ProtectedRoute exact path="/admin/recruiter-requests" component={HiringPartnerReqPage} />
+      <ProtectedRoute exact path="/admin/recruiter-requests/:id" component={HiringPartnerDetails} />
     </Switch>
   <ScrollUp />
   </>

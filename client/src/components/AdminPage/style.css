@@ -58,6 +58,30 @@
     width: 40%;
 }
 
+.overflow-modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 95vh;
+}
+
+.create-user-modal::-webkit-scrollbar {
+    width: 5px;
+}
+
+.create-user-modal::-webkit-scrollbar-thumb {
+    background-color: #EB6A4D;
+    border-radius: 10px;
+}
+
+.create-user-modal::-webkit-scrollbar-track {
+    background: #EB6A4D30; /* color of the tracking area */
+    padding: 4px 0; /* padding makes the track "thinner" */
+}
+
+.create-user-modal::-webkit-scrollbar-thumb:hover {
+    background-color: #EB6A4D70;
+}
+
 .create-user-btn-con {
     margin-top: 0px!important;
 }

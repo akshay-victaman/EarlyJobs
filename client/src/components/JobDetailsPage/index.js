@@ -5,6 +5,7 @@ import {Oval} from 'react-loader-spinner'
 import { FaCircleCheck } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useParams, Redirect } from 'react-router-dom'
+import {IoIosClose} from 'react-icons/io'
 import Popup from 'reactjs-popup';
 import {TiLocation} from 'react-icons/ti'
 import {BsFillBriefcaseFill} from 'react-icons/bs'
@@ -26,8 +27,8 @@ const apiStatusConstant = {
 const JobDetailsPage = () => {
   const [jobDetails, setJobDetails] = useState({})
   const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
-  const [humarResources, setHumarResources] = useState([])
-  const [selectedHR, setSelectedHR] = useState('')
+  const [humanResources, setHumanResources] = useState([])
+  const [selectedHR, setSelectedHR] = useState([])
   const [loading, setLoading] = useState(false)
   const [hrAssigned, setHrAssigned] = useState(0)
   const [candidateList, setCandidateList] = useState([])
@@ -43,7 +44,7 @@ const JobDetailsPage = () => {
 
   useEffect(() => {
     getJobDetails()
-    fetchHumarResources()
+    fetchHumanResources()
     getCandidates()
   }, [])
 
@@ -153,7 +154,7 @@ const JobDetailsPage = () => {
     }
   }
 
-  const fetchHumarResources = async () => {
+  const fetchHumanResources = async () => {
     const options = {
         method: 'GET',
         headers: {
@@ -163,17 +164,31 @@ const JobDetailsPage = () => {
     }
     const response = await fetch(`${backendUrl}/api/users/all/hr`, options)
     const data = await response.json()
-    setHumarResources(data)
+    setHumanResources(data)
   }
 
   const handleHumanResourceChange = (e) => {
     setSelectedHR(e.target.value)
   }
 
+  const handleAddHR = (e) => {
+    if(e.target.value === "") return
+    if(selectedHR.includes(e.target.value)) return;
+    const hrRecruiter = [...selectedHR]
+    hrRecruiter.push(e.target.value)
+    setSelectedHR(hrRecruiter)
+  }
+
+  const handleRemoveHR = (email) => {
+    const hrRecruiter = selectedHR.filter(item => item !== email)
+    setSelectedHR(hrRecruiter)
+  }
+
   const assignJobToHR = async () => {
-    if(selectedHR === '') {
+    if(selectedHR.length === 0) {
       return
     }
+    
     setLoading(true)
     const email = Cookies.get('email')
     const assingedData = {
@@ -193,7 +208,11 @@ const JobDetailsPage = () => {
     const data = await response.json()
     if(response.ok === true) {
         if(data.error) {
-            alert(data.error)
+            const hrEmails = data.hrEmails.map(item => {
+              const hrName = humanResources.find(hr => hr.email === item)
+              return hrName.username
+            })
+            alert(`Job already assigned to ${hrEmails.join(', ')} HRs. Please remove them and try again.`)
             setHrAssigned(2)
         } else {
             setHrAssigned(1)
@@ -238,42 +257,57 @@ const JobDetailsPage = () => {
   )
 
   const renderAssignToHR = () => (
-    <div className='job-details-assign-con'>
-      <div className='job-details-assign-sub-con'>
-        <label className='job-details-assign'>Assign to HR: </label>
-        <select className='job-details-select' value={selectedHR} onChange={handleHumanResourceChange}>
-          <option value=''>Select HR</option>
-            {   humarResources.length > 0 &&
-                humarResources.map((eachItem, index) => <option key={index} value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.hiring_category}</option>)
+    <>
+      <div className='job-details-assign-con'>
+        <div className='job-details-assign-sub-con'>
+          <label className='job-details-assign'>Assign to HR: </label>
+          <select className='job-details-select' value={selectedHR} onChange={handleAddHR}>
+            <option value=''>Select HR</option>
+              {   humanResources.length > 0 &&
+                  humanResources.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_category}</option>)
+              }
+          </select>
+        </div>
+        <div className='job-details-assign-sub-con'>
+          <button className='job-details-assign-button' disabled={loading} onClick={assignJobToHR} >
+            {loading ? 
+              <Oval
+                  height={16}
+                  width={16}
+                  color="#ffffff"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                  ariaLabel='oval-loading'
+                  secondaryColor="#ffffff"
+                  strokeWidth={3}
+                  strokeWidthSecondary={3}
+              />
+              :
+              "Assign"
             }
-        </select>
+          </button>
+          <p className='job-details-assign-status'>
+            {hrAssigned === 1 && <FaCircleCheck className='check-icon' /> }
+            {hrAssigned === 2 && <IoIosCloseCircle className='cross-circle-icon' /> }
+            {hrAssigned === 2 && "Try Again"}
+          </p>
+        </div>
       </div>
-      <div className='job-details-assign-sub-con'>
-        <button className='job-details-assign-button' disabled={loading} onClick={assignJobToHR} >
-          {loading ? 
-            <Oval
-                height={16}
-                width={16}
-                color="#ffffff"
-                wrapperStyle={{}}
-                wrapperClass=""
-                visible={true}
-                ariaLabel='oval-loading'
-                secondaryColor="#ffffff"
-                strokeWidth={3}
-                strokeWidthSecondary={3}
-            />
-            :
-            "Assign"
-          }
-        </button>
-        <p className='job-details-assign-status'>
-          {hrAssigned === 1 && <FaCircleCheck className='check-icon' /> }
-          {hrAssigned === 2 && <IoIosCloseCircle className='cross-circle-icon' /> }
-          {hrAssigned === 2 && "Try Again"}
-        </p>
+      <div style={{marginTop: '12px'}} className='hr-input-list-con'>
+            {
+                selectedHR.map((email, index) => {
+                    const hrName = humanResources.find(item => item.email === email) 
+                    return (
+                        <div className='hr-input-list' key={index}>
+                            <p className='hr-input-list-item'>{hrName.username}</p>
+                            <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveHR(email)}><IoIosClose className='hr-close-icon' /></button>
+                        </div>
+                    )}
+                )
+            }
       </div>
-    </div>
+    </>
   )
 
   const renderArchieveJob = close => (

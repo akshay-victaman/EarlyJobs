@@ -19,7 +19,7 @@ const NavBar = ({isLoggedIn}) => {
         Cookies.remove('role');
         Cookies.remove('username')
         Cookies.remove('email')
-        Cookies.remove('userDetailsId')
+        Cookies.remove('user_details_id')
         history.replace('/');
     }
 
@@ -39,9 +39,9 @@ const NavBar = ({isLoggedIn}) => {
                             <li className='nav-item'>
                                 <Link to='/' className='nav-link'>Home</Link>
                             </li>
-                            <li className='nav-item'>
+                            {/* <li className='nav-item'>
                                 <Link to='/jobs' className='nav-link'>My Earnings</Link>
-                            </li>
+                            </li> */}
                             <li className='nav-item'>
                                 <Link to='/jobs' className='nav-link'>Jobs</Link>
                             </li>
@@ -90,9 +90,9 @@ const NavBar = ({isLoggedIn}) => {
                                 <li className='nav-item-mobile'>
                                     <Link to='/' className='nav-link'>Home</Link>
                                 </li>
-                                <li className='nav-item-mobile'>
+                                {/* <li className='nav-item-mobile'>
                                     <Link to='/jobs' className='nav-link'>My Earnings</Link>
-                                </li>
+                                </li> */}
                                 <li className='nav-item-mobile'>
                                     <Link to='/jobs' className='nav-link'>Jobs</Link>
                                 </li>

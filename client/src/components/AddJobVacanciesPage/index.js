@@ -102,10 +102,57 @@ const AddJobVacanciesPage = () => {
         emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE_ID, process.env.REACT_APP_EMAILJS_TEMPLATE_ID_2, newJob, process.env.REACT_APP_EMAILJS_USER_ID)
         .then((result) => {
             console.log(result.text);
+            sendEmail2()
         }, (error) => {
             console.log(error.text);
         });
     };
+
+    const sendEmail2 = async () => {
+        const content = `
+            Hi ${addJobVacancies.companyDetails.name},<br><br> 
+            Your application was successfully sent to us. We will get back to you soon.<br><br> 
+            Here is what you have submitted:<br><br> <b>Job Title:</b> ${addJobVacancies.jobTitle}<br> 
+            <b>Category:</b> ${addJobVacancies.category}<br> 
+            <b>Shift Timings:</b> ${addJobVacancies.shiftTimings}<br> 
+            <b>Job Description:</b> ${addJobVacancies.jobDescription}<br> 
+            <b>Job Location:</b> ${addJobVacancies.jobLocation}<br> 
+            <b>Salary:</b> ${addJobVacancies.salaryMin} - ${addJobVacancies.salaryMax} LPA<br> 
+            <b>Skills:</b> ${addJobVacancies.skills.map(skill => skill.value).join(', ')}<br> 
+            <b>Employment Type:</b> ${addJobVacancies.employmentType}<br> 
+            <b>Work Type:</b> ${addJobVacancies.workType}<br> 
+            <b>Commission:</b> ${addJobVacancies.commission} ${addJobVacancies.commissionType}<br> 
+            <b>No of Openings:</b> ${addJobVacancies.noOfOpenings}<br> 
+            <b>Status:</b> ${addJobVacancies.status}<br> 
+            <b>Hiring Need:</b> ${addJobVacancies.hiringNeed}<br> 
+            <b style="border-left: 2px solid green; padding-left: 15px">Company Details:</b><br> 
+            <b>Company Name:</b> ${addJobVacancies.companyName}<br> 
+            <b>HR Name:</b> ${addJobVacancies.companyDetails.name}<br> 
+            <b>HR Email:</b> ${addJobVacancies.companyDetails.email}<br> 
+            <b>HR Contact No:</b> ${addJobVacancies.companyDetails.contactNo}<br><br> 
+            Thank you,<br> Regards,<br> earlyjobs.in team
+        `
+        const encodedContent = encodeURIComponent(content)
+        const queryParameters = {
+            method: 'EMS_POST_CAMPAIGN',
+            userid: '2000702445',
+            password: 'LEP9yt',
+            v: '1.1',
+            contentType: 'text/html',
+            name: 'EarlyJobs Job Application Received',
+            fromEmailId: 'no-reply@earlyjobs.in',
+            subject: `Successfully posted job vacancy for ${addJobVacancies.companyName}`,
+            recipients: `${addJobVacancies.companyDetails.email},akshay@victaman.com`,
+            content: encodedContent,
+            replyToEmailID: 'no-reply@earlyjobs.in'
+        }
+        const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`
+        const response = await fetch(url)
+        const data = await response.json()
+        if(response.ok === true) {
+            console.log(data)
+        }
+    }
 
     
     const onSubmitToFirestore = async (newJob) => {

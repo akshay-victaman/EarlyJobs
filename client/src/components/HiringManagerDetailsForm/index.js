@@ -479,8 +479,8 @@ const HiringManagerDetailsForm = () => {
     const onSubmitAbout = (e) => {
         e.preventDefault()
         console.log(about)
-        if(about.aboutYou.split(/\s+/).length < 150) {
-            setError("*Please enter 'about yourself' in minimum of 150 words")
+        if(about.aboutYou.split(/\s+/).length < 100) {
+            setError("*Please enter 'about yourself' in minimum of 100 words")
             return
         } else if(about.WhyJoinUs.split(/\s+/).length < 100) {
             setError("*Please enter 'why you want to join us' in minimum of 100 words")
@@ -646,9 +646,8 @@ const HiringManagerDetailsForm = () => {
         const db = getFirestore(app);
         const docRef = await addDoc(collection(db, "HiringManagerDetails"), { formData });
         const docId = docRef.id;
-        const isApproved = false;
         const UpdatedDateTime = new Date();
-        await setDoc(doc(db, "HiringManagerDetails", docId), { formData: {...formData, isApproved, UpdatedDateTime, docId} });
+        await setDoc(doc(db, "HiringManagerDetails", docId), { formData: {...formData, UpdatedDateTime, docId} });
 
         console.log(docRef)
         if(docRef) {

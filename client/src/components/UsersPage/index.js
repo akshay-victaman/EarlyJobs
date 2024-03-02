@@ -60,9 +60,11 @@ const UsersPage = () => {
             const formattedData = data.map(eachItem => ({
                 createdAt: formatDate(eachItem.created_at),
                 email: eachItem.email,
+                phone: eachItem.phone,
                 hiringCtc: eachItem.hiring_ctc,
+                hiringFor: eachItem.hiring_for,
                 id: eachItem.id,
-                industry: eachItem.industry,
+                hiringCategory: eachItem.hiring_category,
                 isBlocked: eachItem.is_blocked,
                 location: eachItem.location,
                 role: eachItem.role,
@@ -164,10 +166,11 @@ const UsersPage = () => {
                         <tr className="users-table-heading-row">
                             <th className="users-table-heading">Username</th>
                             <th className="users-table-heading">Email</th>
+                            <th className="users-table-heading">Phone</th>
                             <th className="users-table-heading">Role</th>
+                            <th className="users-table-heading">Hiring For</th>
                             <th className="users-table-heading">Location</th>
-                            <th className="users-table-heading">Hiring CTC</th>
-                            <th className="users-table-heading">Industry</th>
+                            <th className="users-table-heading">Hiring Category</th>
                             <th className="users-table-heading">Created At</th>
                             <th className="users-table-heading">Block/Unblock User</th>
                         </tr>

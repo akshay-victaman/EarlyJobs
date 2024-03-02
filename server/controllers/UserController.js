@@ -9,6 +9,20 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getUserByEmailPhone = async (req, res) => {
+  const email = req.params.email;
+  const phone = req.params.phone;
+  try {
+    const user = await userService.getUserByEmailPhone(email, phone);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const getUserByEmail = async (req, res) => {
   const username = req.params.username;
   try {
@@ -73,6 +87,7 @@ const loginUser = async (req, res) => {
 }
 
 const getAllAccountManagers = async (req, res) => {
+  console.log('triggered controller')
     try {
       const users = await userService.getAllAccountManagers();
       res.json(users);
@@ -92,6 +107,7 @@ const getAllHRs = async (req, res) => {
 
 module.exports = {
   getAllUsers,
+  getUserByEmailPhone,
   getUserByEmail,
   createUser,
   updateUser,

@@ -18,8 +18,10 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [jobId, setJobId] = useState('')
     const [applicationStatus, setApplicationStatus] = useState('')
+    const [selectHr, setSelectHr] = useState('')
     const [page, setPage] = useState(1)
     const [totalItems, setTotalItems] = useState(0);
+    const [hrList, setHrList] = useState([])
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -38,6 +40,10 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
 
     const handleApplicationStatusChange = (event) => {
         setApplicationStatus(event.target.value)
+    }
+
+    const handleSelectHrChange = (event) => {
+      setSelectHr(event.target.value)
     }
 
     const getAllCandidatesForHR = async () => {
@@ -67,6 +73,9 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
               offeredDate: eachItem.offered_date,
               appliedBy: eachItem.applied_by
             }))
+            const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
+            setHrList(hrList)
+            console.log(hrList)
             setCandidateList(formattedData)
             setApiStatus(apiStatusConstant.success)
           }
@@ -104,6 +113,9 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                 offeredDate: eachItem.offered_date,
                 appliedBy: eachItem.applied_by
               }))
+              const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
+              setHrList(hrList)
+              console.log(hrList)
 
               setCandidateList(formattedData)
             } else {
@@ -116,6 +128,9 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                 offeredDate: eachItem.offered_date,
                 appliedBy: eachItem.applied_by
               }))
+              const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
+              setHrList(hrList)
+              console.log(hrList)
               setCandidateList(formattedData)
             }
             console.log(data)
@@ -127,8 +142,12 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
     }
 
     let filteredCandidates = []
-    if(applicationStatus !== '') {
+    if(applicationStatus !== '' && selectHr !== '') {
+      filteredCandidates = candidateList.filter(eachItem => eachItem.offerStatus === applicationStatus && eachItem.appliedBy === selectHr);
+    } else if(applicationStatus !== '') {
       filteredCandidates = candidateList.filter(eachItem => eachItem.offerStatus === applicationStatus);
+    } else if(selectHr !== '') {
+      filteredCandidates = candidateList.filter(eachItem => eachItem.appliedBy === selectHr);
     } else {
       filteredCandidates = candidateList
     }
@@ -219,6 +238,21 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                     <option value='Ongoing'>Ongoing</option>
                 </select>
               </div>
+              {
+                Cookies.get('role') !== 'HR' && (
+                  <div className="job-section-select-container"> 
+                    <label className="homepage-label" htmlFor='resume'>Filter By Recruiter</label>
+                    <select className="homepage-input" name='jobId' id='jobId' value={selectHr} onChange={handleSelectHrChange}>
+                        <option value=''>Select HR</option>
+                        {
+                          hrList.map(hr => (
+                              <option key={hr.hrEmail} value={hr.hrEmail}>{hr.hrName}</option>
+                          ))
+                        }
+                    </select>
+                  </div>
+                )
+              }
             </div>
             <div className='table-candidate-container'>
                <table className={`job-details-candidates-table candidate-table-job-section ${candidateList.length === 0 && "empty-candidates"}`}>

@@ -57,11 +57,53 @@ const unblockUser = async (email) => {
     }
 }
 
+const offerLetterCount = async (date) => {
+    try {
+        const query = 'SELECT count FROM offer_letter_ref_count WHERE date = ?';
+        const result = await db.query(query, [date]);
+        return result[0][0];
+    } catch (error) {
+        console.error('Error in offerLetterCount:', error);
+        throw new Error('Error fetching offer letter count.');
+    }
+};
+
+const updateOrInsertOfferLetterCount = async (date) => {
+    try {
+        const currentCount = await offerLetterCount(date);
+        console.log(currentCount)
+        if (currentCount === undefined) {
+            const insertQuery = 'INSERT INTO offer_letter_ref_count (date, count) VALUES (?, 1)';
+            const insertResult = await db.query(insertQuery, [date]);
+
+            if (insertResult[0].affectedRows === 0) {
+                return { error: 'Error inserting new date for offer letter.' };
+            }
+
+            return { message: 'Offer letter new date row inserted.' };
+        }
+
+        const updateQuery = 'UPDATE offer_letter_ref_count SET count = ? WHERE date = ?';
+        const updateResult = await db.query(updateQuery, [currentCount.count + 1, date]);
+
+        if (updateResult[0].affectedRows === 0) {
+            return { error: 'Error updating offer letter count.' };
+        }
+
+        return { message: 'Offer letter count updated.' };
+    } catch (error) {
+        console.error('Error in updateOrInsertOfferLetterCount:', error);
+        throw new Error('Error updating or inserting offer letter count.');
+    }
+};
+
 module.exports = {
   getAllUsers,
   getAllCandidates,
   getAllJobs,
   archiveJob,
   blockUser,
-  unblockUser
+  unblockUser,
+  offerLetterCount,
+  updateOrInsertOfferLetterCount
 };

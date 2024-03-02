@@ -19,21 +19,33 @@ const getAllUsers = async  () => {
 //   return result[0];
 // };
 
+const getUserByEmailPhone = async (email, phone) => {
+    const query = 'SELECT * FROM users WHERE email LIKE ? or phone LIKE ?';
+    const result = await db.query(query, [email, phone]);
+    return result[0];
+};
+
 const getUserByEmail = async (email) => {
     const query = 'SELECT * FROM users WHERE email LIKE ?';
     let email1 = "%"+email;
-    const result = await db.query(query, [email1]);
+    const result = await db.query(query, [email]);
     return result[0];
-  };
+};
+
+const hrAssignedHm = async (email, hrEmail) => {
+    const query = 'INSERT INTO hrassignedhm (hr_email, hm_email) VALUES (?, ?)';
+    const result = await db.query(query, [email, hrEmail]);
+    return result[0].affectedRows > 0;
+}
 
 const createUser = async (user) => {
     console.log(user)
-    const {docId, username, email, phone, password, role, hiringFor, location, hiringCategory} = user;
+    const {docId, username, email, phone, password, role, hiringFor, assignHM, location, hiringCategory} = user;
     const hiringCategory1 = hiringCategory.join(', ');
     const id = uuidv4();
     const hashedPassword = bcrypt.hashSync(password, 10)
     // const dbUser = await getUserByNameEmail(username, email);
-    const dbUser = await getUserByEmail(email);
+    const dbUser = await getUserByEmailPhone(email, phone);
     console.log(dbUser)
     if (dbUser.length > 0) {
         return {error: 'User already exists'};
@@ -41,8 +53,11 @@ const createUser = async (user) => {
         const query = 'INSERT INTO users (id, user_details_id, username, email, phone, password, role, hiring_for, location, hiring_category, is_blocked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const result = await db.query(query, [id, docId, username, email, phone, hashedPassword, role, hiringFor, location, hiringCategory1, 0]);
         if (result[0].affectedRows > 0) {
+            if(role === 'HR') {
+                hrAssignedHm(email, assignHM);
+            }
             return {success: 'User created successfully'};
-        } else {         
+        } else {
             return {error: 'User creation failed'};
         }
     }
@@ -102,8 +117,10 @@ const loginUser = async (user) => {
 }
 
 const getAllAccountManagers = async () => {
-    const query = 'SELECT username, email, location, hiring_ctc, hiring_category FROM users WHERE role = ? order by username asc';
+    console.log('triggered')
+    const query = 'SELECT username, email, phone, location, hiring_ctc, hiring_category FROM users WHERE role = ? order by username asc';
     const result = await db.query(query, ['AC']);
+    console.log(result)
     return result[0]; 
 }
 
@@ -115,6 +132,7 @@ const getAllHRs = async () => {
 
 module.exports = {
   getAllUsers,
+  getUserByEmailPhone,
   getUserByEmail,
   createUser,
   updateUser,

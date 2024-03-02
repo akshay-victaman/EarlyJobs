@@ -3,14 +3,17 @@ import Popup from 'reactjs-popup';
 import {v4 as uuid} from 'uuid'
 import { useEffect, useState } from "react"
 import { IoIosClose } from "react-icons/io";
-import emailjs from '@emailjs/browser';
+import {addDays, format} from 'date-fns'
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 import { getFirestore, collection, query, where, getDocs, addDoc, doc, deleteDoc, setDoc } from "firebase/firestore"
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import app from "../../firebase"
 import NavBar from "../NavBar"
 import './style.css'
 import Footer from "../Footer";
 import Cookie from "js-cookie";
 import ScrollUp from "../ScrollUp";
+import Victaman_intern_offer_letter from "../../assets/Victaman_intern_offer_letter.pdf"
 
 
 let hiringCategoryOptions = [
@@ -30,6 +33,7 @@ const HiringPartnerDetails = () => {
     const [error, setError] = useState('')
     const { id } = useParams()
     const history = useHistory()
+    const [hiringManagersList, setHiringManagersList] = useState([])
     const [signUpDetails, setSignUpDetails] = useState({
         docId: id,
         username: "",
@@ -38,6 +42,7 @@ const HiringPartnerDetails = () => {
         password: uuid().slice(0, 8),
         role: 'HR',
         hiringFor: '',
+        assignHM: '',
         location: '',
         hiringCategory: [],
     })
@@ -77,6 +82,86 @@ const HiringPartnerDetails = () => {
         }
     }, [hiringPartnerReqDetails])
 
+    useEffect(() => {
+        fetchHiringManagers();
+    }, [])
+
+    const fetchHiringManagers = async () => {
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/all/account-managers`
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                Authorization: 'Bearer ' + Cookie.get('jwt_token')
+            }
+        }
+        const response = await fetch(url, options)
+        const data = await response.json()
+        console.log(data)
+        if(response.ok === true) {
+            setHiringManagersList(data)
+        }
+    }
+
+    const getOfferLetterCount = async () => {
+        const date = format(new Date(), 'yyyy-MM-dd')
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/admin/offer-letter-count/${date}`
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                Authorization: 'Bearer ' + Cookie.get('jwt_token')
+            }
+        }
+        const response = await fetch(url, options)
+        const data = await response.json()
+        console.log(data)
+        console.log(Object.keys(data).length === 0)
+        let count = 0;
+        if(response.ok === true) {
+            if(Object.keys(data).length === 0) {
+                count = 0
+            } else {
+                count = data.count.count
+            }
+            return count
+        } else {
+            setError(data.error)
+            return false
+        }
+    }
+
+    const updateOfferLetterCount = async () => {
+        const date = format(new Date(), 'yyyy-MM-dd')
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/admin/offer-letter-count/update/${date}`
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                Authorization: 'Bearer ' + Cookie.get('jwt_token')
+            }
+        }
+        const response = await fetch(url, options)
+        const data = await response.json()
+        console.log(data)
+        if(response.ok === true) {
+            if(data.error) {
+                setError(data.error)
+                return false
+            } else {
+                setError("")
+                console.log(data.message)
+                return true
+            }
+        } else {
+            setError(data.error)
+            return false
+        }
+    }
+
     const handleInputChange = (e) => {
         const { name, value } = e.target
         setSignUpDetails({ ...signUpDetails, [name]: value })
@@ -110,16 +195,141 @@ const HiringPartnerDetails = () => {
         setRejectApproveStatus(false)
     }
 
-    const sendEmail = (formData) => {
-        const hiringCategory = signUpDetails.hiringCategory.join(', ')
-        const formData1 = {...formData, hiringCategory}
-
-        emailjs.send('service_fnv4y5p', 'template_op0us5b', formData1, 'KzUehMbovr5UfqKRr')
-        .then((result) => {
-            console.log(result.text);
-        }, (error) => {
-            console.log(error.text);
+    const uploadPdf = async (pdfFile) => {
+        const result = await updateOfferLetterCount();
+        if(!result) return;
+        const storage = getStorage(app);
+        const storageRef = ref(storage, `HROfferLetters/${hiringPartnerReqDetails.formData.personalDetails.fullName}_${Date()}.pdf`);
+        const uploadTask = uploadBytesResumable(storageRef, pdfFile);
+        let pdfURL = '';
+      
+        // Create a new promise to handle the upload task
+        const promise = new Promise((resolve, reject) => {
+          uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+              var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log('Upload is ' + progress + '% done');
+            },
+            (error) => {
+              console.log(error);
+              reject(error);
+            },
+            async () => {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              console.log('File available at', downloadURL);
+              pdfURL = downloadURL;
+              resolve(pdfURL);
+            }
+          );
         });
+      
+        return promise;
+    };      
+
+    const generatePDF = async () => {
+        const count = await getOfferLetterCount();
+        console.log("count inside pdf function" ,count)
+        if(count === false) return;
+        console.log("triggered")
+        try {
+            // Load the existing PDF
+            const response = await fetch(Victaman_intern_offer_letter); // Load the PDF bytes using your preferred method
+            const arrayBuffer = await response.arrayBuffer();
+            const existingPdfBytes = new Uint8Array(arrayBuffer);
+      
+            // Load the PDF document
+            const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      
+            // Modify the PDF content as needed
+            // Example: Add text to the first page
+            const currDate = new Date();
+            const day = currDate.getDate();
+            const month = currDate.getMonth() + 1;
+            const year = currDate.getFullYear();
+            const currDateStr = `${day < 10 ? "0"+day : day}- ${month < 10 ? "0"+month : month}- ${year}`;
+            const dateRefCount = `Vic/${format(currDate, 'yy/MMM/dd')}/${(count+1).toString()}`;
+            const dateAfter3Days = addDays(currDate, 3);
+            const lastJoiningDate = format(dateAfter3Days, 'MMMM dd, yyyy');
+            const pdfDate = pdfDoc.getPages()[0];
+            pdfDate.drawText(currDateStr, {
+                x: 82, 
+                y: 743,
+                size: 10,
+            });
+            const pdfRef = pdfDoc.getPages()[0];
+            pdfRef.drawText(dateRefCount, {
+                x: 478, 
+                y: 743,
+                size: 10.5,
+            });
+            const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+            const pdfName = pdfDoc.getPages()[0];
+            pdfName.drawText(hiringPartnerReqDetails.formData.personalDetails.fullName, { 
+                x: 81,
+                y: 717,
+                size: 12,
+                font: timesRomanFont,
+            });
+            const pdfAddress = pdfDoc.getPages()[0];
+            pdfAddress.drawText(hiringPartnerReqDetails.formData.personalDetails.currAddress, { 
+                x: 92, 
+                y: 703,
+                size: 12,
+                font: timesRomanFont,
+            });
+            const pdfJoiningDate = pdfDoc.getPages()[0];
+            pdfJoiningDate.drawText(`${lastJoiningDate}`, { 
+                x: 430, 
+                y: 597,
+                size: 11,
+            });
+      
+            // Save the modified PDF
+            const modifiedPdfBytes = await pdfDoc.save();
+      
+            // Perform further actions (e.g., send the modified PDF to the server, download, etc.)
+            console.log('PDF Modified:', modifiedPdfBytes);
+            
+            try {
+                await uploadPdf(modifiedPdfBytes);
+                return modifiedPdfBytes;
+            } catch (error) {
+                console.error('Error uploading PDF:', error);
+            }
+
+          } catch (error) {
+            console.error('Error modifying PDF:', error);
+          }
+    }
+
+    const sendEmail = async () => {
+        const assignHMDetails = hiringManagersList.filter((hm) => hm.email === signUpDetails.assignHM)[0]
+        const content = `Hi ${signUpDetails.username},<br><br> your application for ${signUpDetails.hiringFor} has been approved.<br> You can log in to the earlyjobs.in portal using the below credentials. <br> Your hiring manager is ${assignHMDetails.username} and the contact number is ${assignHMDetails.phone}. Please contact for the further process. <br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
+        const pdfFile = await generatePDF();
+
+        const queryParameters = {
+            method: 'EMS_POST_CAMPAIGN',
+            userid: '2000702445',
+            password: 'LEP9yt',
+            v: '1.1',
+            contentType: 'text/html',
+            name: 'EarlyJobs Application Approved',
+            fromEmailId: 'no-reply@earlyjobs.in',
+            subject: `Successfully approved your application as a ${signUpDetails.hiringFor} in Earlyjobs.in portal`,
+            recipients: `hr@earlyjobs.in,akshay@victaman.com,info.prashob@gmail.com`,
+            content,
+            replyToEmailID: 'no-reply@earlyjobs.in',
+            // attachment1: pdfFile
+        }
+        console.log(queryParameters)
+        const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}&attachment1=${queryParameters.attachment1}`
+
+        const response = await fetch(url)
+        const data = await response.json()
+        if(response.ok === true) {
+            console.log(data)
+        }
     };
 
     const updateDocId = async (docId, email) => {
@@ -161,12 +371,13 @@ const HiringPartnerDetails = () => {
     }
 
     const onClickApprove = async () => {
-
-        if(signUpDetails.hiringCategory === "" || signUpDetails.hiringFor === "") {
+        // generatePDF();
+        // return;
+        if(signUpDetails.hiringCategory.length === 0 || signUpDetails.hiringFor === "" || signUpDetails.assignHM === "") {
             setError("All fields are required")
             return
         }
-
+        setError("");
         setRejectApproveStatus(true)
         console.log(signUpDetails)
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
@@ -191,7 +402,8 @@ const HiringPartnerDetails = () => {
                 const db = getFirestore(app);
                 if(await updateDocId(docId, signUpDetails.email)) { // update docId in users table in DB
                     await deleteDoc(doc(db, "HiringPartnerRequests", id)); // if docId updated successfully then delete the hiring partner request from HiringPartnerRequests collection from firebase
-                    history.replace('/admin/hiring-partner-requests') // redirect to hiring partner requests page
+                    sendEmail();
+                    history.replace('/admin/recruiter-requests') // redirect to hiring partner requests page
                     setRejectApproveStatus(false)
                 }
             }
@@ -242,6 +454,17 @@ const HiringPartnerDetails = () => {
                     <option value="Intern HR Recruiter">Intern HR Recruiter</option> 
                     <option value="Fulltime HR Recruiter">Fulltime HR Recruiter</option> 
                 </select>
+
+                <label className="homepage-label" htmlFor="assignHM">Assign Hiring Manager</label>
+                <select className="homepage-input" id="assignHM" name="assignHM" required value={signUpDetails.assignHM} onChange={handleInputChange} >
+                    <option value="">select</option>
+                    {
+                        hiringManagersList.map((hm) => (
+                            <option key={hm.email} value={hm.email}>{hm.username} - {hm.phone}</option>
+                        ))
+                    }
+                </select>
+                
                 <label className="homepage-label" htmlFor="hiringCategory">Hiring Category</label>
                 <div className='hr-input-list-con'>
                     {
@@ -588,7 +811,7 @@ const HiringPartnerDetails = () => {
         <div className="homepage-container">
             <NavBar />
             <div className="job-details-container hrp-details-con">
-                <h1 className='hiring-partner-req-heading'>Hiring Partner Details</h1>
+                <h1 className='hiring-partner-req-heading'>Recruiter Details</h1>
                 {
                     loading ? <h1>Loading...</h1> : renderHiringPartnerReqDetails()
                 }

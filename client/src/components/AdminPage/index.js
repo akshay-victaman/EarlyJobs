@@ -10,7 +10,7 @@ import NavBar from '../NavBar'
 import './style.css'
 import { Link, Redirect } from "react-router-dom";
 import Footer from "../Footer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 let hiringCategoryOptions = [
     { value: 'BPO', label: 'BPO' },
@@ -24,6 +24,7 @@ let hiringCategoryOptions = [
 const AdminPage = () => {
     const [createStatus, setCreateStatus] = useState(false)
     const [error, setError] = useState('')
+    const [hiringManagersList, setHiringManagersList] = useState([])
     // const [signUpDetails, setSignUpDetails] = useState({
     //     email: '',
     //     password: '',
@@ -35,11 +36,40 @@ const AdminPage = () => {
         email: "",
         phone: "",
         password: uuid().slice(0, 8),
-        role: 'AC',
-        hiringFor: 'Fulltime Account Manager',
+        role: '',
+        hiringFor: '',
         location: 'TBF',
+        assignHM: '',
         hiringCategory: [],
     })
+
+    useEffect(() => {
+        const hiringFor = signUpDetails.role === 'AC' ? 'Fulltime Hiring Manager' : signUpDetails.role === 'HR' ? '' : signUpDetails.role === 'ADMIN' ? 'Admin' : signUpDetails.role === 'BDE' ? 'BDE' : ''
+        const docId = signUpDetails.role !== 'ADMIN' ? "TBF" : "";
+        setSignUpDetails({ ...signUpDetails, hiringFor, docId })
+    }, [signUpDetails.role])
+
+    useEffect(() => {
+        fetchHiringManagers()
+    }, [])
+
+    const fetchHiringManagers = async () => {
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/all/account-managers`
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                Authorization: 'Bearer ' + Cookie.get('jwt_token')
+            }
+        }
+        const response = await fetch(url, options)
+        const data = await response.json()
+        console.log(data)
+        if(response.ok === true) {
+            setHiringManagersList(data)
+        }
+    }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -61,9 +91,39 @@ const AdminPage = () => {
         hiringCategoryOptions.push({ value: categoryLabel, label: categoryLabel })
     }
 
+    const sendEmail = async () => {
+        const assignHMDetails = hiringManagersList.filter((hm) => hm.email === signUpDetails.assignHM)[0]
+        const hrContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials. <br> Your hiring manager is ${assignHMDetails.username} and the contact number is ${assignHMDetails.phone}. Please contact for the further process. <br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
+        const allContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials.<br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
+
+        const queryParameters = {
+            method: 'EMS_POST_CAMPAIGN',
+            userid: '2000702445',
+            password: 'LEP9yt',
+            v: '1.1',
+            contentType: 'text/html',
+            name: 'EarlyJobs Signup',
+            fromEmailId: 'no-reply@earlyjobs.in',
+            subject: `Successfully created an account as a ${signUpDetails.hiringFor} in Earlyjobs.in portal`,
+            recipients: `${signUpDetails.email},hr@earlyjobs.in,akshay@victaman.com`,
+            content: signUpDetails.role === 'HR' ? hrContent : allContent,
+            replyToEmailID: 'no-reply@earlyjobs.in'
+        }
+        const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`
+
+        const response = await fetch(url)
+        const data = await response.json()
+        if(response.ok === true) {
+            console.log(data)
+        }
+    }
 
     const onClickCreate = async (close) => {
         const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if(signUpDetails.role === "") {
+            setError('*Role is required')
+            return
+        }
         if(signUpDetails.username.trim() === "") {
             setError('*Username is required')
             return
@@ -74,6 +134,14 @@ const AdminPage = () => {
         }
         if(signUpDetails.phone.length < 10 || signUpDetails.phone.length > 10) {
             setError('*Valid Phone Number is required')
+            return
+        }
+        if(signUpDetails.hiringFor === "") {
+            setError('*Hiring For is required')
+            return
+        }
+        if(signUpDetails.assignHM === "" && signUpDetails.role === 'HR') {
+            setError('*Assign Hiring Manager is required')
             return
         }
         if(signUpDetails.hiringCategory.length === 0) {
@@ -96,12 +164,16 @@ const AdminPage = () => {
             },
             body: JSON.stringify(signUpDetails)
         }
+        // await sendEmail()
+        // return;
         const response = await fetch(url, options) // create account in DB
         const data = await response.json()
         if(response.ok === true) {
             if(data.error) {
                 setError(data.error)
             } else {
+                close()
+                sendEmail()
                 alert(data.success)
                 setSignUpDetails({
                     docId: "TBF",
@@ -109,12 +181,12 @@ const AdminPage = () => {
                     email: "",
                     phone: "",
                     password: uuid().slice(0, 8),
-                    role: 'AC',
-                    hiringFor: 'Fulltime Account Manager',
+                    role: '',
+                    hiringFor: 'Fulltime Hiring Manager',
                     location: 'TBF',
+                    assignHM: '',
                     hiringCategory: [],
                 })
-                close()
             }
         }
         setCreateStatus(false)
@@ -124,11 +196,19 @@ const AdminPage = () => {
         
         return (
             <div className="modal-form">
-                <button className="modal-close-button" disabled={createStatus} onClick={close}>
+                <button className="modal-close-button" style={{right: '10px', top: '10px'}} disabled={createStatus} onClick={close}>
                     &times;
                 </button>
-                <label className="homepage-label">Create new account for Account Manager</label>
+                <label className="homepage-label">Create new account for {signUpDetails.role === 'AC' ? "Hiring Manager" : signUpDetails.role === 'HR' ? "HR Recruiter" : signUpDetails.role === 'BDE' ? "BDE" : signUpDetails.role === "ADMIN" ? "Admin" : "User type"}</label>
                 <label className="homepage-label">Credentials will be sent to {signUpDetails.email}</label>
+                <label className="homepage-label" style={{marginTop: "10px"}}>User Type (Role)</label>
+                <select className="homepage-input" id="role" name="role" required value={signUpDetails.role} onChange={handleInputChange} >
+                    <option value="">select</option>
+                    <option value="AC">Hiring Manager</option>
+                    <option value="HR">HR Recruiter</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="BDE">BDE</option>
+                </select>
                 <label className="homepage-label">Username</label>
                 <input className="homepage-input" type="text" required name="username" value={signUpDetails.username} onChange={handleInputChange} />
                 <label className="homepage-label">Login Email</label>
@@ -150,6 +230,29 @@ const AdminPage = () => {
                     <option value="Intern HR Recruiter">Intern HR Recruiter</option> 
                     <option value="Fulltime HR Recruiter">Fulltime HR Recruiter</option> 
                 </select> */}
+                {
+                    signUpDetails.role === 'HR' && (
+                    <>
+                        <label className="homepage-label" htmlFor="hiringFor">Hiring For</label>
+                        <select className="homepage-input" id="hiringFor" name="hiringFor" required value={signUpDetails.hiringFor} onChange={handleInputChange} >
+                            <option value="">select</option>
+                            <option value="Fulltime HR Recruiter">Fulltime HR Recruiter</option>
+                            <option value="Freelance HR Recruiter">Freelance HR Recruiter</option>
+                            <option value="Intern HR Recruiter">Intern HR Recruiter</option>
+                        </select>
+                        <label className="homepage-label" htmlFor="assignHM">Assign Hiring Manager</label>
+                        <select className="homepage-input" id="assignHM" name="assignHM" required value={signUpDetails.assignHM} onChange={handleInputChange} >
+                            <option value="">select</option>
+                            {
+                                hiringManagersList.map((hm) => (
+                                    <option key={hm.email} value={hm.email}>{hm.username} - {hm.phone}</option>
+                                ))
+                            }
+                        </select>
+                    </>
+                    )
+                }
+
                 <label className="homepage-label" htmlFor="hiringCategory">Hiring Category</label>
                 <div className='hr-input-list-con'>
                     {
@@ -212,9 +315,9 @@ const AdminPage = () => {
                         </button>
 
                         <button className='admin-btn'>
-                            <Link to='/admin/hiring-partner-requests' className="admin-link">
+                            <Link to='/admin/recruiter-requests' className="admin-link">
                                 <FaFileCircleQuestion className='admin-icon' />
-                                <p className="button-text"> Hiring Partner Requests </p>
+                                <p className="button-text">Recruiter Requests </p>
                             </Link>
                         </button>
 
@@ -237,7 +340,7 @@ const AdminPage = () => {
                             modal
                         >
                             {close => (
-                            <div className="modal create-user-modal">
+                            <div className="modal create-user-modal overflow-modal">
                                 
                                 {renderCreateUserPopup(close)}
                             </div>

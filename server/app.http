@@ -11,6 +11,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc
 
 // Get user by username
 GET http://localhost:5000/api/users/AksHay@gmail.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY
 
 ###
 
@@ -19,15 +20,16 @@ POST http://localhost:5000/api/users/register
 Content-Type: application/json
 
 {
-    "docId": "1001",
-    "username": "Ram",
-    "email": "ram@gmail.com",
-    "phone": "7410852096",
-    "password": "ram",
-    "role": "HR",
-    "hiringFor": "Freelance HR Recruiter",
+    "docId": "1002",
+    "username": "nahed",
+    "email": "nahed@gmail.com",
+    "phone": "3333333333",
+    "password": "nahed",
+    "role": "AC",
+    "hiringFor": "Full time HR Manager",
+    "assignHM": "",
     "location": "Banglore",
-    "hiringCategory": ["IT", "BPO"],
+    "hiringCategory": ["IT"]
 }
 
 ###
@@ -77,7 +79,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc
     "status": "Open",
     "hiringNeed": "Urgent",
     "postedBy": "likki@gmail.com",
-    "assignedTo": "nahed@gmail.com"
+    "assignedTo": ["nahed@gmail.com", "akkiakshay440@gmail.com"],
+    "shiftTimings": "morning"
 }
 
 ###

@@ -2,9 +2,61 @@ import { useState } from "react"
 import Cookies from "js-cookie"
 import { Redirect } from "react-router-dom"
 import { IoIosClose } from "react-icons/io";
+import Select from 'react-select';
 import {Oval} from 'react-loader-spinner'
 import './style.css'
 
+let languageOptions = [
+    { value: 'English', label: 'English' },
+    { value: 'Hindi', label: 'Hindi' },
+    { value: 'Tamil', label: 'Tamil' },
+    { value: 'Kannada', label: 'Kannada' },
+    { value: 'Malayalam', label: 'Malayalam' },
+    { value: 'Telugu', label: 'Telugu' },
+    { value: 'Marathi', label: 'Marathi' },
+    { value: 'Gujarati', label: 'Gujarati' },
+    { value: 'Bengali', label: 'Bengali' },
+    { value: 'Punjabi', label: 'Punjabi' },
+    { value: 'Odia', label: 'Odia' }
+];
+
+const customStyles = {
+    control: (provided, state) => ({
+        ...provided,
+        border: '1px solid #EB6A4D',
+        borderRadius: '5px',
+        boxShadow: null,
+        '&:hover': {
+            borderColor: '#EB6A4D',
+        },
+        marginBottom: '16px',
+        width: '100%',
+        height: '35px',
+        minHeight: '35px',
+        fontSize: '14px'
+    }),
+    menu: (provided, state) => ({
+        ...provided,
+        marginTop: '0px',
+        paddingTop: '0px',
+    }),
+    dropdownIndicator: (provided) => ({
+        ...provided,
+        color: '#EB6A4D',
+        '&:hover': {
+            color: '#EB6A4D',
+        },
+        width: '15px',
+        padding: '0px',
+        margin: '0px',
+        border: '0px',
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isSelected ? '#EB6A4D' : null,
+        color: state.isSelected ? 'white' : 'black',
+    }),
+};
 
 const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
     const [error, setError] = useState('')
@@ -31,7 +83,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         experienceInMonths: '',
         skills: [],
         jobCategory: '',
-        offerStatus: '',
+        offerStatus: 'Ongoing',
       })
 
 
@@ -60,27 +112,25 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         setCandidateDetails({ ...candidateDetails, skills: candidateDetails.skills.filter((skill, index) => index !== id)})
     }
 
-    const onChangeLanguage = (event) => {
-        setLanguages(event.target.value)
+    const handleAddLanguage = (e) => {
+        if(e.value === "") return
+        const languages = candidateDetails.spokenLanguages
+        languages.push(e.value)
+        setCandidateDetails({ ...candidateDetails, spokenLanguages: languages })
+        languageOptions = languageOptions.filter((option) => option.value !== e.value)
     }
 
-    const handleLanguageChange = () => {
-        const trimmedLanguage = languages.trim()
-        if(trimmedLanguage === "") {
-            return
-        }
-        setCandidateDetails(prevState => ({ ...prevState, spokenLanguages: [...prevState.spokenLanguages, trimmedLanguage]}))
-        setLanguages("")
+    const handleRemoveLanguage = (index, languageLabel) => {
+        const languages = candidateDetails.spokenLanguages
+        languages.splice(index, 1)
+        setCandidateDetails({ ...candidateDetails, spokenLanguages: languages })
+        languageOptions.push({ value: languageLabel, label: languageLabel })
     }
-
-    const handleLanguageRemove = (id) => {
-        setCandidateDetails(prevState => ({ ...prevState, spokenLanguages: prevState.spokenLanguages.filter((language, index) => index !== id)}))
-    }
-    
 
     const postCandidateDetails = async (event) => {
         event.preventDefault()
-        
+        console.log(candidateDetails)
+        // return
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if(
             candidateDetails.jobId === '' ||
@@ -94,8 +144,10 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
             candidateDetails.currentLocation.trim() === '' || 
             candidateDetails.skills.length === 0 || 
             candidateDetails.spokenLanguages.length === 0 || 
-            candidateDetails.experienceInYears === '' || 
-            candidateDetails.experienceInMonths === '' || 
+            candidateDetails.experienceInYears < 0 || 
+            candidateDetails.experienceInYears === "" ||
+            candidateDetails.experienceInMonths < 0 || 
+            candidateDetails.experienceInMonths === "" ||
             candidateDetails.offerStatus === '' ||
             candidateDetails.jobCategory === ''
         ) {
@@ -143,7 +195,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                     experienceInMonths: '',
                     skills: [],
                     jobCategory: '',
-                    offerStatus: '',
+                    offerStatus: 'Ongoing',
                 })
                 setShowForm(false)
             }
@@ -268,17 +320,28 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                             candidateDetails.spokenLanguages.map((language, index) => (
                                 <div className='hr-input-list' key={index}>
                                     <p className='hr-input-list-item'>{language}</p>
-                                    <button type='button' className='hr-remove-item-button' onClick={() => handleLanguageRemove(index)}><IoIosClose className='hr-close-icon' /></button>
+                                    <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveLanguage(index, language)}><IoIosClose className='hr-close-icon' /></button>
                                 </div>
                             ))
                         }
                     </div>
-                    <div className='hr-input-con'>
-                        <input type='text' placeholder="Ex: English" className='hr-input-sub' id='languages' name='languages' required={candidateDetails.spokenLanguages.length === 0} value={languages} onChange={onChangeLanguage} />
-                        <button type='button' className='hr-form-btn-add' onClick={handleLanguageChange}>+Add</button>
-                    </div>
-                    <p className='hr-size'>Type a language and click 'Add' button to add it to the list</p>
+                    {/* <select className="homepage-input" id="hiringCategory" name="hiringCategory" required onChange={handleAddLanguage} >
+                        <option value="">select</option>
+                        {
+                            languageOptions.map((category) => (
+                                <option key={category.value} value={category.value}>{category.label}</option>
+                            ))
+                        }
+                    </select> */}
+                    <Select
+                        options={languageOptions}
+                        defaultValue={languageOptions.length !== 0 && { label: languageOptions[0].label }}
+                        isSearchable={true}
+                        onChange={handleAddLanguage}
+                        styles={customStyles}
+                    />
                 </div>
+                
             </div>
 
             <div className="upload-candidate-sub-con">
@@ -291,7 +354,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                         <label htmlFor='experienceInMonths' className="experience-label">Months</label>
                     </div>
                 </div>
-                <div className="upload-candidate-input-con">
+                {/* <div className="upload-candidate-input-con">
                     <label className="homepage-label" htmlFor='offerStatus'>Offer Status<span className='hr-form-span'> *</span></label>
                     <select className="homepage-input" name='offerStatus' id='offerStatus' value={candidateDetails.offerStatus} onChange={handleCandidateInputChange}>
                         <option value=''>Select Offer Status</option>
@@ -301,17 +364,19 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                         <option value='On-hold'>On-hold</option>
                         <option value='ongoing'>Ongoing</option>
                     </select>
+                </div> */}
+                <div className="upload-candidate-input-con">
+                    <label className="homepage-label" htmlFor='resume'>Select Job<span className='hr-form-span'> *</span></label>
+                    <select className="homepage-input" name='jobId' id='jobId' value={candidateDetails.jobId} onChange={handleCandidateInputChange}>
+                        <option value=''>Select Job</option>
+                        {
+                            jobsList.map(job => (
+                                <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
+                            ))
+                        }
+                    </select>
                 </div>
             </div>
-            <label className="homepage-label" htmlFor='resume'>Select Job<span className='hr-form-span'> *</span></label>
-            <select className="homepage-input" name='jobId' id='jobId' value={candidateDetails.jobId} onChange={handleCandidateInputChange}>
-                <option value=''>Select Job</option>
-                {
-                    jobsList.map(job => (
-                        <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
-                    ))
-                }
-            </select>
             <div className="upload-candidate-sub-con">
                 <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(0)}>Back</button>
                 <button className="login-button candidate-button" type="submit" disabled={loading}>
@@ -338,10 +403,10 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         </form>
     )
 
-    const role = Cookies.get('role')
-    if(role !== 'HR') {
-      return <Redirect to='/' />
-    }
+    // const role = Cookies.get('role')
+    // if(role !== 'HR') {
+    //   return <Redirect to='/' />
+    // }
 
     return (
         <div className="upload-candidate-container">
