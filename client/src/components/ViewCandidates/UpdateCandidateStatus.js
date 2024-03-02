@@ -10,6 +10,7 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId,
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const handleCandidateStatusChange = event => {
+        if(event.target.value === '') return;
         setUpdateOfferStatus(event.target.value)
         const updateOfferStatus = event.target.value;
         updateCandidateStatus(candidateId, jobId, updateOfferStatus)

@@ -19,8 +19,8 @@ const AboutForm = (props) => {
             <form className='hr-form' onSubmit={onSubmitAbout}>
                 <p className='hr-form-subtitle'>( <span className='hr-form-span'>*</span> ) Indicates required field</p>
 
-                <label htmlFor='about' className='hr-label'>Tell us about yourself (minimum 150 words)<span className='hr-form-span'> *</span></label>
-                <textarea type='text' className='hr-textarea' required value={about.aboutYou} onChange={handleAboutInputChange} id='about' name='aboutYou' placeholder='Minimum of 150 words' ></textarea>
+                <label htmlFor='about' className='hr-label'>Tell us about yourself (minimum 100 words)<span className='hr-form-span'> *</span></label>
+                <textarea type='text' className='hr-textarea' required value={about.aboutYou} onChange={handleAboutInputChange} id='about' name='aboutYou' placeholder='Minimum of 100 words' ></textarea>
 
                 <label htmlFor='joinus' className='hr-label'>Why you want to join us as a {userDetailsId === "TBF" ? "Hiring Manager" : "HR Recruiter"} (minimum 100 Words)<span className='hr-form-span'> *</span></label>
                 <textarea type='text' className='hr-textarea' required value={about.WhyJoinUs} onChange={handleAboutInputChange} id='joinus' name='WhyJoinUs' placeholder='Minimum of 100 words' ></textarea>

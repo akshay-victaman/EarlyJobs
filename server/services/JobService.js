@@ -1,6 +1,21 @@
 const { v4: uuidv4 } = require('uuid');
 const db = require('../config/database');
 
+const assignJobToHMByBDE = async (jobId, assignedTo) => {
+    const assingmentQuery = 'INSERT INTO job_assigned_by_bde (job_id, hm_email) VALUES ';
+    let multiAssingmentQuery = '';
+    for (let i = 0; i < assignedTo.length; i++) {
+        multiAssingmentQuery += `('${jobId}', '${assignedTo[i]}'),`;
+    }
+    const query = assingmentQuery + multiAssingmentQuery.slice(0, -1);
+    const result = await db.query(query);
+    if (result[0].affectedRows > 0) {
+        return {success: 'Job assigned successfully to HM'};
+    } else {
+        return {error: 'Job assignment failed'};
+    }
+}
+
 const addJobDetials = async (job) => {
     const {
         companyName, 
@@ -20,7 +35,8 @@ const addJobDetials = async (job) => {
         status, 
         hiringNeed, 
         postedBy, 
-        assignedTo} = job;
+        assignedTo
+    } = job;
     const id = uuidv4();
     const query = `
     INSERT INTO jobs (
@@ -41,12 +57,13 @@ const addJobDetials = async (job) => {
         no_of_openings, 
         status, 
         hiring_need, 
-        posted_by, 
-        assigned_to
-        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?)`;
-    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, postedBy, assignedTo]);
+        posted_by
+        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?)`;
+    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, postedBy]);
+    console.log('tried to add job')
+
     if (result[0].affectedRows > 0) {
-        return {success: 'Job created successfully'};
+        return assignJobToHMByBDE(id, assignedTo);
     } else {         
         return {error: 'Job creation failed'};
     }
@@ -64,14 +81,22 @@ const getJobDetails = async (jobId) => {
 
 const assignJobToHrByAccountManager = async (jobAssignment) => {
     const {jobId, assignedTo, assignedBy} = jobAssignment;
-    const assingmentQuery = 'SELECT * FROM jobassignments WHERE job_id = ? AND assigned_to = ?';
-    const assingmentResult = await db.query(assingmentQuery, [jobId, assignedTo]);
-    if (assingmentResult[0].length > 0) {
-        return {error: 'Job already assigned to HR'};
+    const assingmentQuery = 'SELECT * FROM jobassignments WHERE job_id = ? AND assigned_to IN (?)';
+    
+    const assignmentResult = await db.query(assingmentQuery, [jobId, assignedTo]);
+    if (assignmentResult[0].length > 0) {
+        const hrEmails = assignmentResult[0].map(assignment => assignment.assigned_to);
+        return {error: `Job already assigned to ${hrEmails.join(', ')} selcted HRs`, hrEmails: assignmentResult[0].map(assignment => assignment.assigned_to)};
     }
-    const id = uuidv4();
-    const query = 'INSERT INTO jobassignments (id, job_id, assigned_to, assigned_by) VALUES (?, ?, ?, ?)';
-    const result = await db.query(query, [id, jobId, assignedTo, assignedBy]);
+    
+    const insertQuery = 'INSERT INTO jobassignments (id, job_id, assigned_to, assigned_by) VALUES ';
+    let multiInsertQuery = '';
+    for (let i = 0; i < assignedTo.length; i++) {
+        const id = uuidv4();
+        multiInsertQuery += `('${id}', '${jobId}', '${assignedTo[i]}', '${assignedBy}'),`;
+    }
+    const query = insertQuery + multiInsertQuery.slice(0, -1);
+    const result = await db.query(query);
     if (result[0].affectedRows > 0) {
         return {success: 'Job assigned successfully to HR'};
     } else {
@@ -83,7 +108,7 @@ const getAccountManagerJobs = async (email, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    const query = 'SELECT * FROM jobs WHERE assigned_to = ? order by created_at desc Limit ? offset ?;';
+    const query = 'SELECT jobs.* FROM jobs INNER JOIN job_assigned_by_bde ON job_assigned_by_bde.job_id = jobs.id WHERE hm_email = ? order by created_at desc Limit ? offset ?;';
     const countQuery = 'SELECT count(*) as count FROM jobs WHERE assigned_to = ?';
     const result = await db.query(query, [email, endIndex, startIndex]);
     const countResult = await db.query(countQuery, [email]);
@@ -195,21 +220,43 @@ const addCandidateDetailsForJob = async (candidate) => {
     }
 }
 
+// const getJobCandidates = async (jobId) => {
+//     const query = `
+//     SELECT 
+//         candidates.id as candidate_id,
+//         name,
+//         email,
+//         phone,
+//         offer_status,
+//         offered_date,
+//         applied_by
+//     FROM candidates 
+//     INNER JOIN applications ON 
+//     candidates.id = applications.candidate_id 
+//     WHERE applications.job_id = ? order by created_at desc;`;
+//     const result = await db.query(query, [jobId]);
+//     return result[0];
+// }
+
 const getJobCandidates = async (jobId) => {
     const query = `
     SELECT 
         candidates.id as candidate_id,
-        name,
-        email,
-        phone,
+        users.username as hr_name,
+        candidates.name as name,
+        candidates.email as email,
+        candidates.phone as phone,
         offer_status,
         offered_date,
         applied_by
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
-    WHERE applications.job_id = ? order by created_at desc;`;
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    WHERE applications.job_id = ? order by candidates.created_at desc`;
     const result = await db.query(query, [jobId]);
+    console.log(result[0])
     return result[0];
 }
 

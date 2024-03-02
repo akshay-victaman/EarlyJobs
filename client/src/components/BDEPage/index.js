@@ -9,6 +9,14 @@ import NavBar from '../NavBar';
 import './style.css';
 import Footer from '../Footer';
 
+let hiringCategoryOptions = [
+    { value: 'BPO', label: 'BPO' },
+    { value: 'IT', label: 'IT' },
+    { value: 'Banking', label: 'Banking' },
+    { value: 'Insurance', label: 'Insurance' },
+    { value: 'Industry', label: 'Industry' },
+    { value: 'Others', label: 'Others' }
+];
 
 const BDEPage = () => {
 
@@ -50,7 +58,7 @@ const BDEPage = () => {
         noOfOpenings: '',
         status: 'Open',
         hiringNeed: '',
-        assignedTo: '',
+        assignedTo: [],
     })
 
     useEffect(() => {
@@ -98,6 +106,19 @@ const BDEPage = () => {
         setPostNewJob({ ...postNewJob, skills: postNewJob.skills.filter(skill => skill.id !== id)})
     }
 
+    const handleAddHiringManager = (e) => {
+        if(e.target.value === "") return
+        if(postNewJob.assignedTo.includes(e.target.value)) return;
+        const hiringManagers = postNewJob.assignedTo
+        hiringManagers.push(e.target.value)
+        setPostNewJob({ ...postNewJob, assignedTo: hiringManagers })
+    }
+
+    const handleRemoveHiringManager = (email) => {
+        const hiringManagers = postNewJob.assignedTo.filter(item => item !== email)
+        setPostNewJob({ ...postNewJob, assignedTo: hiringManagers })
+    }
+
     const toggleJobForm = () => {
         setShowJobForm(!showJobForm)
     }
@@ -117,7 +138,7 @@ const BDEPage = () => {
           commission: postNewJob.commission.trim().length === 0 || postNewJob.commissionType.trim().length === 0,
           noOfOpenings: postNewJob.noOfOpenings.trim().length === 0,
           hiringNeed: postNewJob.hiringNeed.trim().length === 0,
-          assignedTo: postNewJob.assignedTo.trim().length === 0,
+          assignedTo: postNewJob.assignedTo.length === 0,
         };
       
         // Set errors in state
@@ -142,6 +163,7 @@ const BDEPage = () => {
 
     const handlePostJob = async (e) => {
         e.preventDefault();
+        
 
         const isValid = validate();
         console.log(isValid)
@@ -152,8 +174,6 @@ const BDEPage = () => {
         }
 
         setError("");
-
-        
         setLoading(true)
         const email = Cookies.get('email')
         const newJob = {
@@ -210,7 +230,7 @@ const BDEPage = () => {
                     noOfOpenings: '',
                     status: 'Open',
                     hiringNeed: '',
-                    assignedTo: '',
+                    assignedTo: [],
                 })
                 setShowJobForm(false)
             }
@@ -358,7 +378,20 @@ const BDEPage = () => {
             </div>
 
             <label className='bde-form-label'>Assign To Account Manager<span className='hr-form-span'> *</span></label>
-            <select className='bde-form-input' name='assignedTo' onChange={handleInputChange}>
+            <div className='hr-input-list-con'>
+                {
+                    postNewJob.assignedTo.map((email, index) => {
+                        const hiringManagerName = accountManagers.find(item => item.email === email) 
+                        return (
+                            <div className='hr-input-list' key={index}>
+                                <p className='hr-input-list-item'>{hiringManagerName.username}</p>
+                                <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveHiringManager(email)}><IoIosClose className='hr-close-icon' /></button>
+                            </div>
+                        )}
+                    )
+                }
+            </div>
+            <select className='bde-form-input' name='assignedTo' value={postNewJob.assignedTo} onChange={handleAddHiringManager}>
                 <option value=''>Select Account Manager</option>
                 {   accountManagers.length > 0 &&
                     accountManagers.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_ctc + ' LPA - ' + eachItem.hiring_category}</option>)

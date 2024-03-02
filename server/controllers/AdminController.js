@@ -60,11 +60,33 @@ const unblockUser = async (req, res) => {
   }
 }
 
+const offerLetterCount = async (req, res) => {
+  try {
+    const date = req.params.date;
+    const count = await adminService.offerLetterCount(date);
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const updateOrInsertOfferLetterCount = async (req, res) => {
+  try {
+    const date = req.params.date;
+    const count = await adminService.updateOrInsertOfferLetterCount(date);
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = {
   getAllUsers,
   getAllCandidates,
   getAllJobs,
   archiveJob,
   blockUser,
-  unblockUser
+  unblockUser,
+  offerLetterCount,
+  updateOrInsertOfferLetterCount
 };

@@ -13,6 +13,7 @@
     "date-fns": "^3.0.0",
     "firebase": "^10.7.2",
     "js-cookie": "^3.0.5",
+    "pdf-lib": "^1.17.1",
     "rc-pagination": "^4.0.4",
     "react": "^18.2.0",
     "react-custom-flag-select": "^3.1.0",
@@ -31,7 +32,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "sync": "aws s3 sync build/ s3://earlyjobs.in/",
-    "invalidate": "aws cloudfront --region 'ap-south-1' create-invalidation --distribution-id EM4HKWQK2Y8M6 --paths '/*'",
+    "syncw": "aws s3 sync build/ s3://www.earlyjobs.in/",
+    "invalidate": "aws cloudfront --region ap-south-1 create-invalidation --distribution-id E32IIMP3A02W5M --paths /*",
+    "invalidatew": "aws cloudfront --region ap-south-1 create-invalidation --distribution-id E1EDJJVYWIRJGA --paths /*",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

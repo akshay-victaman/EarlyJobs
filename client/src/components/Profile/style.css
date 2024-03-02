@@ -43,13 +43,15 @@
   }
   
   .profile-failure-button {
-    background-color: #f9a828;
+    background-color: #EB6A4D;
     color: #ffffff;
     border: 0px;
     border-radius: 4px;
     padding: 10px 25px;
     font-size: 10px;
     font-family: 'Roboto';
+    cursor: pointer;
+    outline: none;
   }
   
   @media screen and (max-width: 768px) {
