@@ -70,6 +70,17 @@ const offerLetterCount = async (req, res) => {
   }
 }
 
+const changePassword = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+    const users = await adminService.changePassword(email, password);
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 const updateOrInsertOfferLetterCount = async (req, res) => {
   try {
     const date = req.params.date;
@@ -87,6 +98,7 @@ module.exports = {
   archiveJob,
   blockUser,
   unblockUser,
+  changePassword,
   offerLetterCount,
   updateOrInsertOfferLetterCount
 };

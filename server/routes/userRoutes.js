@@ -8,7 +8,7 @@ router.get('/users', userController.getAllUsers);
 router.get('/users/v1/:email/:phone', userController.getUserByEmailPhone);
 router.get('/users/:username', authenticateToken, userController.getUserByEmail);
 router.get('/users/all/account-managers', authenticateToken, userController.getAllAccountManagers);
-router.get('/users/all/hr', authenticateToken, userController.getAllHRs);
+router.get('/users/all/hr/:email', authenticateToken, userController.getAllHRs);
 router.post('/users/register', userController.createUser);
 router.put('/users/update', userController.updateUser);
 router.put('/users/update-password', userController.updatePassword);

@@ -98,7 +98,8 @@ const getAllAccountManagers = async (req, res) => {
 
 const getAllHRs = async (req, res) => {
     try {
-      const users = await userService.getAllHRs();
+      const email = req.params.email;
+      const users = await userService.getAllHRs(email);
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });

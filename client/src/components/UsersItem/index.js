@@ -1,7 +1,7 @@
 import Popup from 'reactjs-popup';
 
 
-const UsersItem = ({userDetails, renderBlockUnblockPopup}) => {
+const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPopup}) => {
     const {username, email, role, location, phone, hiringFor, hiringCategory, createdAt, isBlocked} = userDetails;
     return (
         <tr className="users-table-data-row">
@@ -13,17 +13,29 @@ const UsersItem = ({userDetails, renderBlockUnblockPopup}) => {
             <td data-cell='location' className="users-table-data">{location}</td>
             <td data-cell='industry' className="users-table-data">{hiringCategory}</td>
             <td data-cell='created At' className="users-table-data">{createdAt}</td>
+            <td data-cell='change password' className="users-table-data">
+                <Popup
+                    trigger={<button className="block-user-button">Change</button>}
+                    modal
+                >
+                    {close => (
+                    <div className="modal">
+                        {renderChangePasswordPopup(close, email)}
+                    </div>
+                    )}
+                </Popup>
+            </td>
             <td data-cell='block/Unblock' className="users-table-data">
-            <Popup
-                trigger={<button className="block-user-button">{isBlocked === 0 ? "Block" : "Unblock"}</button>}
-                modal
-            >
-                {close => (
-                <div className="modal">
-                    {renderBlockUnblockPopup(close, email, isBlocked)}
-                </div>
-                )}
-            </Popup>
+                <Popup
+                    trigger={<button className="block-user-button">{isBlocked === 0 ? "Block" : "Unblock"}</button>}
+                    modal
+                >
+                    {close => (
+                    <div className="modal">
+                        {renderBlockUnblockPopup(close, email, isBlocked)}
+                    </div>
+                    )}
+                </Popup>
             </td>
         </tr>
     )
