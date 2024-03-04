@@ -124,10 +124,16 @@ const getAllAccountManagers = async () => {
     return result[0]; 
 }
 
-const getAllHRs = async () => {
-    const query = 'SELECT username, email, location, hiring_ctc, hiring_category FROM users WHERE role = ? order by username asc';
-    const result = await db.query(query, ['HR']);
-    return result[0];
+const getAllHRs = async (email) => {
+    const query = `
+        SELECT username, email, location, hiring_ctc, hiring_category 
+        FROM users INNER JOIN hrassignedhm ON 
+        users.email=hrassignedhm.hr_email 
+        WHERE role = ? AND hm_email = ? 
+        order by username asc
+    `;
+    const result = await db.query(query, ['HR', email]);
+    return result[0]; 
 }
 
 module.exports = {

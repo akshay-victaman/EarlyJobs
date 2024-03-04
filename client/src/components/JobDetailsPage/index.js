@@ -155,6 +155,8 @@ const JobDetailsPage = () => {
   }
 
   const fetchHumanResources = async () => {
+    const email = Cookies.get('email')
+    console.log(email)
     const options = {
         method: 'GET',
         headers: {
@@ -162,13 +164,10 @@ const JobDetailsPage = () => {
             Authorization: `Bearer ${Cookies.get('jwt_token')}`
         },
     }
-    const response = await fetch(`${backendUrl}/api/users/all/hr`, options)
+    const response = await fetch(`${backendUrl}/api/users/all/hr/${email}`, options)
     const data = await response.json()
+    console.log('hrs', data)
     setHumanResources(data)
-  }
-
-  const handleHumanResourceChange = (e) => {
-    setSelectedHR(e.target.value)
   }
 
   const handleAddHR = (e) => {

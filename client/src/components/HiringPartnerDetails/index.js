@@ -191,7 +191,7 @@ const HiringPartnerDetails = () => {
         await setDoc(doc(db, "RejectedHiringPartnerReq", docId), { formData: {...hiringPartnerReqDetails.formData, RejectedDate, docId} });
 
         await deleteDoc(doc(db, "HiringPartnerRequests", id));
-        history.replace('/admin/hiring-partner-requests')
+        history.replace('/admin/recruiter-requests')
         setRejectApproveStatus(false)
     }
 

@@ -57,6 +57,25 @@ const unblockUser = async (email) => {
     }
 }
 
+const changePassword = async (email, password) => {
+    const userQuery = `SELECT * FROM users WHERE email = ?`;
+    const userResult = await db.query(userQuery, [email]);
+    const userPassword = userResult[0][0].password;
+    const match = await bcrypt.compare(password, userPassword);
+    if (match) {
+        return {error: 'New password cannot be the same as old password.'};
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const query = `UPDATE users SET password = ? WHERE email = ?`;
+    const result = await db.query(query, [hashedPassword, email]);
+    if (result[0].affectedRows === 0) {
+        return {error: 'User not found.'};
+    } else {
+        return {message: 'Password changed.'};
+    }
+}
+
 const offerLetterCount = async (date) => {
     try {
         const query = 'SELECT count FROM offer_letter_ref_count WHERE date = ?';
@@ -104,6 +123,7 @@ module.exports = {
   archiveJob,
   blockUser,
   unblockUser,
+  changePassword,
   offerLetterCount,
   updateOrInsertOfferLetterCount
 };
