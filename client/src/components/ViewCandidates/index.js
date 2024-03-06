@@ -4,7 +4,6 @@ import {Oval} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
 import './style.css'
 import UpdateCandidateStatus from "./UpdateCandidateStatus"
-import ViewCandidateDetails from "./ViewCandidateDetails"
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -211,9 +210,7 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
     }
 
     return (
-        // offeredDate: eachItem.offered_date
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
-          {/* <div> */}
             <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>Candidates</span></h1>
             <div className="job-section-select-filter-container">
               <div className="job-section-select-container"> 
@@ -296,28 +293,9 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                 </table>
                 {candidateList.length === 0 &&
                 <p className='no-candidates-error'>
-                    {
-                        // apiStatus === apiStatusConstant.inProgress ?
-                        // <Oval
-                        //     visible={true}
-                        //     height="20"
-                        //     width="20"
-                        //     color="#EB6A4D"
-                        //     strokeWidth="4"
-                        //     ariaLabel="oval-loading"
-                        //     wrapperStyle={{}}
-                        //     secondaryColor="#EB6A4D"
-                        //     wrapperClass=""
-                        // />
-                        // :
-                        // (jobId === '' ) ? "Select a job to view candidates" :
-                        // "no records found!"
-                        renderNoCandidates()
-                    }
+                    { renderNoCandidates() }
                 </p>}
-                {/* {renderNoCandidates()} */}
             </div>
-          {/* </div> */}
             <div className="job-details-candidates-pagination-con">
               <button className="login-button candidate-button" type="button" onClick={() => setShowCandidateForm(0)}>Back</button>
               <Pagination

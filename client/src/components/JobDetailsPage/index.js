@@ -166,7 +166,6 @@ const JobDetailsPage = () => {
     }
     const response = await fetch(`${backendUrl}/api/users/all/hr/${email}`, options)
     const data = await response.json()
-    console.log('hrs', data)
     setHumanResources(data)
   }
 
@@ -263,7 +262,7 @@ const JobDetailsPage = () => {
           <select className='job-details-select' value={selectedHR} onChange={handleAddHR}>
             <option value=''>Select HR</option>
               {   humanResources.length > 0 &&
-                  humanResources.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.location + ' - ' + eachItem.hiring_category}</option>)
+                  humanResources.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.hiring_category}</option>)
               }
           </select>
         </div>
