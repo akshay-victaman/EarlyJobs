@@ -106,6 +106,17 @@ const getAllHRs = async (req, res) => {
     }
 }
 
+const getAllHRsForHiringManager = async (req, res) => {
+    try {
+      const email = req.params.email;
+      const hiringFor = req.query.hiringFor;
+      const users = await userService.getAllHRsForHiringManager(email, hiringFor);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmailPhone,
@@ -116,5 +127,6 @@ module.exports = {
   updateDocId,
   loginUser,
   getAllAccountManagers,
-  getAllHRs
+  getAllHRs,
+  getAllHRsForHiringManager
 };

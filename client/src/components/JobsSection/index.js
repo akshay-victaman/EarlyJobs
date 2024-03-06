@@ -15,6 +15,7 @@ import UploadCandidatePage from '../UploadCandidatePage';
 import ViewCandidates from '../ViewCandidates';
 import Footer from '../Footer';
 import { HiringManagerDetailsForm } from '../HiringManagerDetailsForm';
+import MyHrRecruiters from '../MyHrRecruiters';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -441,6 +442,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
             showCandidateForm===1 ? 
             <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
             : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
+            : showCandidateForm===3 ? <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
             : renderAllSections()
           }
           {/* <Footer /> */}

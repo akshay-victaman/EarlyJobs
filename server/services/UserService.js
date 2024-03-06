@@ -136,6 +136,21 @@ const getAllHRs = async (email) => {
     return result[0]; 
 }
 
+const getAllHRsForHiringManager = async (email, hiringFor) => {
+    let query = `
+        SELECT username, email, hiring_category, phone, created_at, hiring_for
+        FROM users INNER JOIN hrassignedhm ON 
+        users.email=hrassignedhm.hr_email 
+        WHERE hm_email = ? 
+    `;
+    if(hiringFor !== '') { 
+        query += ` AND hiring_for = ?`;
+    }
+    query += ` order by created_at desc, username asc`;
+    const result = await db.query(query, [email, hiringFor]);
+    return result[0]; 
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmailPhone,
@@ -146,5 +161,6 @@ module.exports = {
   updateDocId,
   loginUser,
   getAllAccountManagers,
-  getAllHRs
+  getAllHRs,
+  getAllHRsForHiringManager
 };
