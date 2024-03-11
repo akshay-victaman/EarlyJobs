@@ -1,6 +1,7 @@
 import { query, where, collection, getFirestore, getDocs, orderBy, Timestamp } from "firebase/firestore";
 import app from "../../firebase";
 import { useEffect, useState } from "react";
+import { IoSearchSharp } from 'react-icons/io5'
 import NavBar from '../NavBar'
 import './style.css'
 import { Link } from "react-router-dom";
@@ -9,6 +10,7 @@ import Footer from "../Footer";
 const HiringPartnerReqPage = () => {
 
     const [hiringPartnerReqList, setHiringPartnerReqList] = useState([])
+    const [searchInput, setSearchInput] = useState('')
 
     useEffect(() => {
         const getHiringPartnerReqList = async () => {
@@ -59,11 +61,27 @@ const HiringPartnerReqPage = () => {
         getHiringPartnerReqList()
     }, [])
 
+    const handleChangeSearchInput = (e) => {
+        setSearchInput(e.target.value)
+    }
+
+    const filteredHrList = hiringPartnerReqList.filter(eachItem => 
+        eachItem.formData.personalDetails.fullName.toLowerCase().includes(searchInput.toLowerCase()) || 
+        eachItem.formData.personalDetails.email.toLowerCase().includes(searchInput.toLowerCase()) ||
+        eachItem.formData.personalDetails.phone.toLowerCase().includes(searchInput.toLowerCase())
+    );
+
     return (
         <div className='homepage-container'>
             <NavBar />
             <div className='hiring-partner-req-page-content-con'>
                 <h1 className='hiring-partner-req-heading'>Recruiter Requests</h1>
+                <div className="user-view-search-con" style={{marginBottom: "20px"}}>
+                    <div className="user-view-search-button">
+                        <IoSearchSharp className="search-icon" />
+                    </div>
+                    <input className="user-view-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} placeholder="Search by name, email, or phone" />
+                </div>
                 <div className='hiring-partner-req-page-content'>
                     <table className='users-table hiring-partner-req-table'>
                         <thead>
@@ -77,7 +95,7 @@ const HiringPartnerReqPage = () => {
                         </thead>
                         <tbody>
                             {
-                                hiringPartnerReqList.map((hiringPartnerReq) => {
+                                filteredHrList.map((hiringPartnerReq) => {
                                     return (
                                         <tr className="users-table-data-row" key={hiringPartnerReq.formData.docId}>
                                             <td data-cell='Name' className="users-table-data">{hiringPartnerReq.formData.personalDetails.fullName}</td>

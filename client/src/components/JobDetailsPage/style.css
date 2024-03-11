@@ -36,11 +36,38 @@
 
 .job-details-logo-title-con {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.job-details-logo-title-con-2 {
+  display: flex;
+  align-items: center;
+}
+
+.edit-icon {
+  font-size: 15px;
+  margin-right: 5px;
+}
+
+.edit-job-button {
+  background-color: #EB6A4D;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
   align-items: center;
 }
 
 .job-details-logo {
-  width: 60px;
+  font-size: 60px;
+  color: #bababa;
 }
 
 .job-details-title-rating-con {
@@ -480,7 +507,7 @@
     margin-top: 6px;
   }
   .job-details-logo {
-    width: 50px;
+    font-size: 35px;
   }
   .job-details-location-type-salary-con {
     margin-top: 20px;

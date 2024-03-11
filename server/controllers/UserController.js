@@ -56,6 +56,16 @@ const updateUser = async (req, res) => {
     }
 }
 
+const getHrResumes = async (req, res) => {
+    const email = req.params.email;
+    try {
+      const users = await userService.getHrResumes(email);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const updatePassword = async (req, res) => {
     const user = req.body;
     try {
@@ -123,6 +133,7 @@ module.exports = {
   getUserByEmail,
   createUser,
   updateUser,
+  getHrResumes,
   updatePassword,
   updateDocId,
   loginUser,

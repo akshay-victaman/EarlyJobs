@@ -21,7 +21,8 @@
   }
   
   .jobs-logo {
-    width: 50px;
+    font-size: 50px;
+    color: #bababa;
   }
   
   .jobs-title-con {
@@ -126,7 +127,7 @@
   
   @media screen and (max-width: 768px) {
     .jobs-logo {
-      width: 40px;
+      font-size: 30px;
     }
     .jobs-list-item-container {
       padding: 10px;

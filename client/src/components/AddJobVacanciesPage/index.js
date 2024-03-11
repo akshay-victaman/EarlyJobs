@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { IoIosClose } from "react-icons/io";
 import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore";
 import {v4 as uuidv4} from 'uuid';
-import { FaArrowUp } from "react-icons/fa6";
+import Select from 'react-select';
 import emailjs from '@emailjs/browser';
 import {Oval} from 'react-loader-spinner'
 import NavBar from '../NavBar';
@@ -11,6 +11,57 @@ import Footer from '../Footer';
 import app from '../../firebase';
 import ScrollUp from '../ScrollUp';
 
+let languageOptions = [
+    { value: 'English', label: 'English' },
+    { value: 'Hindi', label: 'Hindi' },
+    { value: 'Tamil', label: 'Tamil' },
+    { value: 'Kannada', label: 'Kannada' },
+    { value: 'Malayalam', label: 'Malayalam' },
+    { value: 'Telugu', label: 'Telugu' },
+    { value: 'Marathi', label: 'Marathi' },
+    { value: 'Gujarati', label: 'Gujarati' },
+    { value: 'Bengali', label: 'Bengali' },
+    { value: 'Punjabi', label: 'Punjabi' },
+    { value: 'Odia', label: 'Odia' }
+];
+
+const customStyles = {
+    control: (provided, state) => ({
+        ...provided,
+        border: '1px solid #EB6A4D',
+        borderRadius: '5px',
+        boxShadow: null,
+        '&:hover': {
+            borderColor: '#EB6A4D',
+        },
+        marginBottom: '16px',
+        width: '100%',
+        height: '35px',
+        minHeight: '35px',
+        fontSize: '14px'
+    }),
+    menu: (provided, state) => ({
+        ...provided,
+        marginTop: '0px',
+        paddingTop: '0px',
+    }),
+    dropdownIndicator: (provided) => ({
+        ...provided,
+        color: '#EB6A4D',
+        '&:hover': {
+            color: '#EB6A4D',
+        },
+        width: '15px',
+        padding: '0px',
+        margin: '0px',
+        border: '0px',
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isSelected ? '#EB6A4D' : null,
+        color: state.isSelected ? 'white' : 'black',
+    }),
+};
 
 const AddJobVacanciesPage = () => {
 
@@ -26,6 +77,7 @@ const AddJobVacanciesPage = () => {
     const [locationError, setLocationError] = useState(false)
     const [salaryError, setSalaryError] = useState(false)
     const [skillsError, setSkillsError] = useState(false)
+    const [languageError, setLanguageError] = useState(false)
     const [employmentError, setEmploymentError] = useState(false)
     const [workError, setWorkError] = useState(false)
     const [commissionError, setCommissionError] = useState(false)
@@ -45,6 +97,7 @@ const AddJobVacanciesPage = () => {
         salaryMin: '',
         salaryMax: '',
         skills: [],
+        language: [],
         employmentType: '',
         workType: '',
         commission: '',
@@ -91,6 +144,20 @@ const AddJobVacanciesPage = () => {
         setAddJobVacancies({ ...addJobVacancies, skills: addJobVacancies.skills.filter(skill => skill.id !== id)})
     }
 
+    const handleAddLanguage = (e) => {
+        if(e.value === "") return
+        const languages = addJobVacancies.language
+        languages.push(e.value)
+        setAddJobVacancies({ ...addJobVacancies, language: languages })
+        languageOptions = languageOptions.filter((option) => option.value !== e.value)
+    }
+
+    const handleRemoveLanguage = (index, languageLabel) => {
+        const languages = addJobVacancies.language
+        languages.splice(index, 1)
+        setAddJobVacancies({ ...addJobVacancies, language: languages })
+        languageOptions.push({ value: languageLabel, label: languageLabel })
+    }
 
     const toggleJobForm = () => {
         setShowJobForm(!showJobForm)
@@ -142,15 +209,15 @@ const AddJobVacanciesPage = () => {
             name: 'EarlyJobs Job Application Received',
             fromEmailId: 'no-reply@earlyjobs.in',
             subject: `Successfully posted job vacancy for ${addJobVacancies.companyName}`,
-            recipients: `${addJobVacancies.companyDetails.email},akshay@victaman.com`,
+            recipients: `${addJobVacancies.companyDetails.email},hr@earlyjobs.in,no-reply@earlyjobs.in`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'
         }
         const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`
-        const response = await fetch(url)
-        const data = await response.json()
+        const response = await fetch(url, { method: 'GET', mode: 'no-cors' })
+        // const data = await response.json()
         if(response.ok === true) {
-            console.log(data)
+            // console.log(data)
         }
     }
 
@@ -177,6 +244,7 @@ const AddJobVacanciesPage = () => {
                 salaryMin: '',
                 salaryMax: '',
                 skills: [],
+                language: [],
                 employmentType: '',
                 workType: '',
                 commission: '',
@@ -208,6 +276,7 @@ const AddJobVacanciesPage = () => {
           location: addJobVacancies.jobLocation.trim().length === 0,
           salary: addJobVacancies.salaryMin.trim().length === 0 || addJobVacancies.salaryMax.trim().length === 0,
           skills: addJobVacancies.skills.length === 0,
+          language: addJobVacancies.language.length === 0,
           employmentType: addJobVacancies.employmentType.trim().length === 0,
           workType: addJobVacancies.workType.trim().length === 0,
           commission: addJobVacancies.commission.trim().length === 0 || addJobVacancies.commissionType.trim().length === 0,
@@ -228,6 +297,7 @@ const AddJobVacanciesPage = () => {
         setLocationError(errors.location);
         setSalaryError(errors.salary);
         setSkillsError(errors.skills);
+        setLanguageError(errors.language);
         setEmploymentError(errors.employmentType);
         setWorkError(errors.workType);
         setCommissionError(errors.commission);
@@ -263,6 +333,7 @@ const AddJobVacanciesPage = () => {
             salaryMin: addJobVacancies.salaryMin,
             salaryMax: addJobVacancies.salaryMax,
             skills: addJobVacancies.skills,
+            language: addJobVacancies.language.join(', '),
             employmentType: addJobVacancies.employmentType,
             workType: addJobVacancies.workType,
             commission: addJobVacancies.commission,
@@ -319,7 +390,7 @@ const AddJobVacanciesPage = () => {
             </div>
             {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary</p>}
 
-            <label htmlFor='skills' className='hr-label'>Skills<span className='hr-form-span'> *</span></label>
+            {/* <label htmlFor='skills' className='hr-label'>Skills<span className='hr-form-span'> *</span></label>
             <div className='hr-input-list-con'>
                 {
                     addJobVacancies.skills.map((skill) => (
@@ -335,7 +406,51 @@ const AddJobVacanciesPage = () => {
                 <button type='button' className='hr-form-btn-add' onClick={onAddSkills}>+Add</button>
             </div>
             <p className='hr-size'>Type a Skill and click 'Add' button to add it to the list</p>
-            {skillsError && <p className='hr-error'>*Please enter skills</p>}
+            {skillsError && <p className='hr-error'>*Please enter skills</p>} */}
+
+<div className="upload-candidate-sub-con">
+                <div className="upload-candidate-input-con salary-input">
+                    <label htmlFor='skills' className='hr-label'>Skills<span className='hr-form-span'> *</span></label>
+                    <div className='hr-input-list-con'>
+                        {
+                            addJobVacancies.skills.map((skill) => (
+                                <div className='hr-input-list' key={skill.id}>
+                                    <p className='hr-input-list-item'>{skill.value}</p>
+                                    <button type='button' className='hr-remove-item-button' onClick={() => onRemoveSkills(skill.id)}><IoIosClose className='hr-close-icon' /></button>
+                                </div>
+                            ))
+                        }
+                    </div>
+                    <div className='hr-input-con'>
+                        <input type='text' placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
+                        <button type='button' className='hr-form-btn-add' onClick={onAddSkills}>+Add</button>
+                    </div>
+                    <p className='hr-size'>Type a Skill and click 'Add' button to add it to the list</p>
+                    {skillsError && <p className='hr-error'>*Please enter skills</p>}
+                </div>
+
+                <div className="upload-candidate-input-con salary-input">
+                    <label className="homepage-label" htmlFor='languages'>Spoken Languages<span className='hr-form-span'> *</span></label>
+                    <div className='hr-input-list-con'>
+                        {
+                            addJobVacancies.language.map((language, index) => (
+                                <div className='hr-input-list' key={index}>
+                                    <p className='hr-input-list-item'>{language}</p>
+                                    <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveLanguage(index, language)}><IoIosClose className='hr-close-icon' /></button>
+                                </div>
+                            ))
+                        }
+                    </div>
+                    <Select
+                        options={languageOptions}
+                        defaultValue={languageOptions.length !== 0 && { label: languageOptions[0].label }}
+                        isSearchable={true}
+                        onChange={handleAddLanguage}
+                        styles={customStyles}
+                    />
+                    {languageError && <p className='hr-error'>*Please select language</p> }
+                </div>
+            </div>
 
             <div className='salary-container'>
                 <div className='emp-work-sub-con'>
