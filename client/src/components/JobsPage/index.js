@@ -18,9 +18,9 @@ const JobsPage = () => {
 
   const role = Cookies.get('role')
 
-  if (role === 'BDE') {
-    return <Redirect to="/bde-portal" />
-  }
+  // if (role === 'BDE') {
+  //   return <Redirect to="/bde-portal" />
+  // }
 
   return (
     <>

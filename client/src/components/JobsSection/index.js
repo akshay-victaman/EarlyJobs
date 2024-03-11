@@ -157,6 +157,8 @@ const JobsSection = ({onShowCandidateDetails}) => {
       apiUrl = `${backendUrl}/jobs/account-manager/${email}/?page=${page}`
     } else if (role === 'HR') {
       apiUrl = `${backendUrl}/jobs/hr/${email}/?page=${page}`
+    } else if (role === 'BDE') {
+      apiUrl = `${backendUrl}/jobs/bde/${email}/?page=${page}`
     } else {
       apiUrl = `${backendUrl}/admin/get-jobs/all/?page=${page}`
     }

@@ -272,7 +272,10 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                         <option value=''>Select Highest Qualification</option>
                         <option value="10th">10th</option>
                         <option value="12th">12th</option>
-                        <option value="Graduation">Graduation</option>
+                        <option value="ITI">ITI</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Graduation (10 + 2 + 3)">Graduation (10 + 2 + 3)</option>
+                        <option value="Graduation (10 + 2 + 4)">Graduation (10 + 2 + 4)</option>
                         <option value="Post Graduation">Post Graduation</option>
                         <option value="PhD">PhD</option>
                     </select>

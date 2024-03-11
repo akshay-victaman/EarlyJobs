@@ -218,7 +218,11 @@ const UsersPage = () => {
     )
 
     const renderGetUsers = () => { 
-        const filteredUsers = users.filter(eachItem => eachItem.username.toLowerCase().includes(searchInput.toLowerCase()));
+        const filteredUsers = users.filter(eachItem => 
+            eachItem.username.toLowerCase().includes(searchInput.toLowerCase()) || 
+            eachItem.email.toLowerCase().includes(searchInput.toLowerCase()) ||
+            eachItem.phone.toLowerCase().includes(searchInput.toLowerCase())
+        );
         return (
             <div className="user-view-table">
                 <table className="users-table">
@@ -276,7 +280,7 @@ const UsersPage = () => {
                         <div className="user-view-search-button">
                             <IoSearchSharp className="search-icon" />
                         </div>
-                        <input className="user-view-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} placeholder="Search" />
+                        <input className="user-view-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} placeholder="Search by name, email, or phone" />
                     </div>
                     <ToggleButtonGroup
                         color="primary"

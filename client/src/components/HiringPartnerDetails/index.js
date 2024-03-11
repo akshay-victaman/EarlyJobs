@@ -45,6 +45,7 @@ const HiringPartnerDetails = () => {
         assignHM: '',
         location: '',
         hiringCategory: [],
+        resumeUrl: ''
     })
 
     useEffect(() => {
@@ -77,7 +78,8 @@ const HiringPartnerDetails = () => {
                 username: hiringPartnerReqDetails.formData.personalDetails.fullName, 
                 email: hiringPartnerReqDetails.formData.personalDetails.email, 
                 location: hiringPartnerReqDetails.formData.personalDetails.currAddress,
-                phone: hiringPartnerReqDetails.formData.personalDetails.phone
+                phone: hiringPartnerReqDetails.formData.personalDetails.phone,
+                hiringFor: hiringPartnerReqDetails.formData.personalDetails.applyFor
             })
         }
     }, [hiringPartnerReqDetails])
@@ -182,6 +184,31 @@ const HiringPartnerDetails = () => {
         hiringCategoryOptions.push({ value: categoryLabel, label: categoryLabel })
     }
 
+    const sendRejectionMail = async () => {
+        const content = `Hi ${signUpDetails.username}, <br><br> We are sorry to inform you that your application for ${signUpDetails.hiringFor} has been rejected. <br> If you have any queries, please contact hr@earlyjobs.in team. <br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
+        const queryParameters = {
+            method: 'EMS_POST_CAMPAIGN',
+            userid: '2000702445',
+            password: 'LEP9yt',
+            v: '1.1',
+            contentType: 'text/html',
+            name: 'EarlyJobs Application Update',
+            fromEmailId: 'no-reply@earlyjobs.in',
+            subject: `Status of your application as a ${signUpDetails.hiringFor} in Earlyjobs`,
+            recipients: `${signUpDetails.email},hr@earlyjobs.in,no-reply@earlyjobs.in`,
+            content: encodeURIComponent(content),
+            replyToEmailID: 'no-reply@earlyjobs.in'
+        }
+        console.log(queryParameters)
+        const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}&attachment1=${queryParameters.attachment1}`
+
+        const response = await fetch(url, {method: "GET", mode: "no-cors"})
+        // const data = await response.json()
+        if(response.ok === true) {
+            // console.log(data)
+        }
+    };
+
     const onClickReject = async () => {
         setRejectApproveStatus(true)
         const db = getFirestore(app);
@@ -191,6 +218,7 @@ const HiringPartnerDetails = () => {
         await setDoc(doc(db, "RejectedHiringPartnerReq", docId), { formData: {...hiringPartnerReqDetails.formData, RejectedDate, docId} });
 
         await deleteDoc(doc(db, "HiringPartnerRequests", id));
+        sendRejectionMail();
         history.replace('/admin/recruiter-requests')
         setRejectApproveStatus(false)
     }
@@ -292,8 +320,10 @@ const HiringPartnerDetails = () => {
             console.log('PDF Modified:', modifiedPdfBytes);
             
             try {
-                await uploadPdf(modifiedPdfBytes);
-                return modifiedPdfBytes;
+                const pdfURL = await uploadPdf(modifiedPdfBytes);
+                // setSignUpDetails({ ...signUpDetails, resumeUrl: pdfURL })
+                // return modifiedPdfBytes;
+                return pdfURL;
             } catch (error) {
                 console.error('Error uploading PDF:', error);
             }
@@ -306,8 +336,8 @@ const HiringPartnerDetails = () => {
     const sendEmail = async () => {
         const assignHMDetails = hiringManagersList.filter((hm) => hm.email === signUpDetails.assignHM)[0]
         const content = `Hi ${signUpDetails.username},<br><br> your application for ${signUpDetails.hiringFor} has been approved.<br> You can log in to the earlyjobs.in portal using the below credentials. <br> Your hiring manager is ${assignHMDetails.username} and the contact number is ${assignHMDetails.phone}. Please contact for the further process. <br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
-        const pdfFile = await generatePDF();
-
+        // const pdfURL = await generatePDF();
+        console.log(signUpDetails)
         const queryParameters = {
             method: 'EMS_POST_CAMPAIGN',
             userid: '2000702445',
@@ -317,18 +347,18 @@ const HiringPartnerDetails = () => {
             name: 'EarlyJobs Application Approved',
             fromEmailId: 'no-reply@earlyjobs.in',
             subject: `Successfully approved your application as a ${signUpDetails.hiringFor} in Earlyjobs.in portal`,
-            recipients: `hr@earlyjobs.in,akshay@victaman.com,info.prashob@gmail.com`,
-            content,
+            recipients: `${signUpDetails.email},hr@earlyjobs.in,no-reply@earlyjobs.in`,
+            content: encodeURIComponent(content),
             replyToEmailID: 'no-reply@earlyjobs.in',
             // attachment1: pdfFile
         }
         console.log(queryParameters)
         const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}&attachment1=${queryParameters.attachment1}`
 
-        const response = await fetch(url)
-        const data = await response.json()
+        const response = await fetch(url, {method: "GET", mode: "no-cors"})
+        // const data = await response.json()
         if(response.ok === true) {
-            console.log(data)
+            // console.log(data)
         }
     };
 
@@ -371,7 +401,7 @@ const HiringPartnerDetails = () => {
     }
 
     const onClickApprove = async () => {
-        // generatePDF();
+        const pdfURL = await generatePDF();
         // return;
         if(signUpDetails.hiringCategory.length === 0 || signUpDetails.hiringFor === "" || signUpDetails.assignHM === "") {
             setError("All fields are required")
@@ -389,7 +419,7 @@ const HiringPartnerDetails = () => {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + Cookie.get('jwt_token')
             },
-            body: JSON.stringify(signUpDetails)
+            body: JSON.stringify({...signUpDetails, resumeUrl: pdfURL})
         }
         const response = await fetch(url, options) // create account in DB
         const data = await response.json()
@@ -522,7 +552,7 @@ const HiringPartnerDetails = () => {
                     </div>
                     <div className="hiring-partner-details-con">
                         <p className="hiring-partner-label">Current Address:</p>
-                        <p className="hiring-partner-value">{personalDetails.currAddress}a</p>
+                        <p className="hiring-partner-value">{personalDetails.currAddress}</p>
                     </div>
                     <div className="hiring-partner-details-con">
                         <p className="hiring-partner-label">Permanent Address:</p>

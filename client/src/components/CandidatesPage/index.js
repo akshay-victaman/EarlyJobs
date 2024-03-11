@@ -56,7 +56,11 @@ const CandidatesPage = () => {
     }
 
     const renderCandidates = () => {
-        const filterCandidates = candidateList.filter(eachItem => eachItem.name.toLowerCase().includes(searchInput.toLowerCase()));
+        const filterCandidates = candidateList.filter(eachItem => 
+            eachItem.name.toLowerCase().includes(searchInput.toLowerCase()) || 
+            eachItem.email.toLowerCase().includes(searchInput.toLowerCase()) ||
+            eachItem.phone.toLowerCase().includes(searchInput.toLowerCase())
+        );
         return (
             <div className="job-details-candidates-container">
                 {/* <h1 className="job-details-candidates-heading">Candidates</h1> */}
@@ -105,7 +109,7 @@ const CandidatesPage = () => {
                         <div className="user-view-search-button">
                             <IoSearchSharp className="search-icon" />
                         </div>
-                        <input className="user-view-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} placeholder="Search" />
+                        <input className="user-view-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} placeholder="Search by name, email, or phone" />
                     </div>
                     
                 </div>

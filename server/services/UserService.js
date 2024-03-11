@@ -11,14 +11,6 @@ const getAllUsers = async  () => {
   return result[0];
 };
 
-// const getUserByNameEmail = async (username, email) => {
-//   const query = 'SELECT * FROM users WHERE username LIKE ? or email LIKE ?';
-//   let username1 = "%"+username;
-//   let email1 = "%"+email;
-//   const result = await db.query(query, [username1, email1]);
-//   return result[0];
-// };
-
 const getUserByEmailPhone = async (email, phone) => {
     const query = 'SELECT * FROM users WHERE email LIKE ? or phone LIKE ?';
     const result = await db.query(query, [email, phone]);
@@ -38,9 +30,15 @@ const hrAssignedHm = async (email, hrEmail) => {
     return result[0].affectedRows > 0;
 }
 
+const hrResumes = async (hrEmail, resumeUrl) => {
+    const query = 'INSERT INTO hr_resume (hr_email, resume_url) VALUES (?, ?)';
+    const result = await db.query(query, [hrEmail, resumeUrl]);
+    return result[0].affectedRows > 0;
+}
+
 const createUser = async (user) => {
     console.log(user)
-    const {docId, username, email, phone, password, role, hiringFor, assignHM, location, hiringCategory} = user;
+    const {docId, username, email, phone, password, role, hiringFor, assignHM, location, hiringCategory, resumeUrl} = user;
     const hiringCategory1 = hiringCategory.join(', ');
     const id = uuidv4();
     const hashedPassword = bcrypt.hashSync(password, 10)
@@ -55,6 +53,7 @@ const createUser = async (user) => {
         if (result[0].affectedRows > 0) {
             if(role === 'HR') {
                 hrAssignedHm(email, assignHM);
+                hrResumes(email, resumeUrl);
             }
             return {success: 'User created successfully'};
         } else {
@@ -74,6 +73,11 @@ const updateUser = async (user) => {
     return {error: 'User update failed'};
 }
     
+const getHrResumes = async (hrEmail) => {
+    const query = 'SELECT resume_url FROM hr_resume WHERE hr_email = ?';
+    const result = await db.query(query, [hrEmail]);
+    return result[0];
+}
 
 const updatePassword = async (user) => {
     const {email, password} = user;
@@ -157,6 +161,7 @@ module.exports = {
   getUserByEmail,
   createUser,
   updateUser,
+  getHrResumes,
   updatePassword,
   updateDocId,
   loginUser,

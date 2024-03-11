@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Cookies from 'js-cookie'
+import { Link } from 'react-router-dom'
 import { ThreeCircles } from 'react-loader-spinner'
 import './style.css'
 
@@ -14,9 +15,13 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
 
     const [profileData, setProfileData] = useState({})
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
+    const [resumeUrl, setResumeUrl] = useState('')
 
     useEffect(() => {
         getProfileData()
+        if(Cookies.get('role') === 'HR') {
+            getHrResumes()
+        }
     }, [])
 
     const getProfileData = async () => {
@@ -51,6 +56,29 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
             setApiStatus(apiStatusConstant.failure)
         } else {
             setApiStatus(apiStatusConstant.failure)
+        }
+    }
+
+    const getHrResumes = async () => {
+        const jwtToken = Cookies.get('jwt_token')
+        const email = Cookies.get('email')
+        const apiUrl = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/hr-resumes/${email}`
+        const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwtToken}`,
+        },
+        }
+        const response = await fetch(apiUrl, options)
+        const data = await response.json()
+        console.log(data)
+        if (response.ok === true) {
+            if(data.error) {
+                return
+            } else if(data.length > 0){
+                setResumeUrl(data[0].resume_url)
+            }
         }
     }
 
@@ -105,13 +133,25 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
     return (
         <div className="profile-container">
             {renderSwitch()}
-            {/* {userRole === 'HR' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(1)}>Add Candidate</button>} */}
-                <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(1)}>Add Candidate</button>
+            {
+                userRole !== 'BDE' ?
+            <>
+                {
+                    userRole !== 'ADMIN' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(1)}>Add Candidate</button>
+                }
+                {/* <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(1)}>Add Candidate</button> */}
                 <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(2)}>View Candidates</button>
                 {
                     userRole === 'AC' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(3)}>My HR Recruiters</button>
                 }
+                {
+                    (userRole === 'HR' && resumeUrl !== '') && <a href={resumeUrl} style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Resume</a>
+                }
                 <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
+            </>
+            : 
+                <Link to="/bde-portal" style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button">Post New Job</Link>
+            }
         </div>
     )
 }

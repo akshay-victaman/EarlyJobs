@@ -5,8 +5,11 @@ const authenticateToken = require('../middleware/authenticationMiddleware');
 const router = express.Router();
 
 router.post('/add/new', authenticateToken, addJobController.addJobDetials);
+router.put('/edit', authenticateToken, addJobController.editJobDetials);
+router.get('/assigned-hm/:jobId', authenticateToken, addJobController.getAssignedHMsForJob);
 router.get('/details/:jobId', authenticateToken, addJobController.getJobDetails);
 router.post('/assign', authenticateToken, addJobController.assignJobToHrByAccountManager);
+router.get('/bde/:email', authenticateToken, addJobController.getJobsForBDE);
 router.get('/account-manager/:email', authenticateToken, addJobController.getAccountManagerJobs);
 router.get('/hr/:email', authenticateToken, addJobController.getHRJobs);
 router.post('/candidate/add', authenticateToken, addJobController.addCandidateDetailsForJob);

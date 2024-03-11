@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react'
 import { formatDistanceToNow } from 'date-fns';
 import {Oval} from 'react-loader-spinner'
 import { FaCircleCheck } from "react-icons/fa6";
+import { FiBriefcase, FiEdit } from "react-icons/fi";
 import { IoIosCloseCircle } from "react-icons/io";
-import { useParams, Redirect } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import {IoIosClose} from 'react-icons/io'
 import Popup from 'reactjs-popup';
 import {TiLocation} from 'react-icons/ti'
@@ -16,6 +17,7 @@ import './style.css'
 import Footer from '../Footer';
 import UpdateCandidateStatus from '../ViewCandidates/UpdateCandidateStatus';
 import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails';
+import EditJobDetails from '../EditJobDetails';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -34,6 +36,7 @@ const JobDetailsPage = () => {
   const [candidateList, setCandidateList] = useState([])
   const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
   const [candidateId, setCandidateId] = useState('')
+  const [isEditJob, setIsEditJob] = useState(false)
 
   const onShowCandidateDetails = (candidateId) => {
     setViewCandidateDetails(!viewCandidateDetails)
@@ -44,8 +47,12 @@ const JobDetailsPage = () => {
 
   useEffect(() => {
     getJobDetails()
-    fetchHumanResources()
-    getCandidates()
+    if(Cookies.get('role') === 'AC') {
+      fetchHumanResources()
+    }
+    if(Cookies.get('role') !== 'BDE') {
+      getCandidates()
+    }
   }, [])
 
   useEffect(() => {
@@ -77,7 +84,6 @@ const JobDetailsPage = () => {
       } else {
         const formattedData = {
           id: data.id,
-          companyLogoUrl: data.company_logo_url,
           category: data.category,
           shiftTimings: data.shift_timings,
           commissionType: data.commission_type,
@@ -94,9 +100,11 @@ const JobDetailsPage = () => {
           hiringNeed: data.hiring_need,
           postedBy: data.posted_by,
           skills: data.skills,
+          language: data.language,
           status: data.status,
           createdAt: data.created_at,
         }
+        console.log(formattedData)
         setJobDetails(formattedData)
         setApiStatus(apiStatusConstant.success)
       }
@@ -180,6 +188,52 @@ const JobDetailsPage = () => {
   const handleRemoveHR = (email) => {
     const hrRecruiter = selectedHR.filter(item => item !== email)
     setSelectedHR(hrRecruiter)
+  }
+
+  const updateJobDetails = (updatedData) => {
+    const {jobId,
+            companyName,
+            title,
+            category,
+            shiftTimings,
+            description,
+            location,
+            minSalary,
+            maxSalary,
+            skills,
+            language,
+            employmentType,
+            workType,
+            commissionFee,
+            commissionType,
+            noOfOpenings,
+            status,
+            hiringNeed,
+            } = updatedData
+    setJobDetails({
+      ...jobDetails, 
+        id: jobId,
+        category: category,
+        shiftTimings: shiftTimings,
+        commissionType: commissionType,
+        commissionFee: commissionFee,
+        compname: companyName,
+        minSalary: minSalary,
+        maxSalary: maxSalary,
+        noOfOpenings: noOfOpenings,
+        employmentType: employmentType,
+        jobDescription: description,
+        location: location,
+        role: title,
+        workType: workType,
+        hiringNeed: hiringNeed,
+        postedBy: jobDetails.postedBy,
+        skills: skills,
+        language: language,
+        status: status,
+        createdAt: jobDetails.createdAt,
+      }
+    )
   }
 
   const assignJobToHR = async () => {
@@ -374,16 +428,21 @@ const JobDetailsPage = () => {
       <div className="job-details-container">
         <div className="job-details-card">
           <div className="job-details-logo-title-con">
-            <img
-              src={companyLogoUrl}
-              alt="job details company logo"
-              className="job-details-logo"
-            />
-            <div className="job-details-title-rating-con">
-              <h1 className="job-details-title">{compname}</h1>
-              <h1 className="job-details-title">{role}</h1>
-              <p className="job-details-rating">{category}</p>
+            <div className='job-details-logo-title-con-2'>
+              <FiBriefcase className="job-details-logo" />
+              <div className="job-details-title-rating-con">
+                <h1 className="job-details-title">{compname}</h1>
+                <h1 className="job-details-title">{role}</h1>
+                <p className="job-details-rating">{category}</p>
+              </div>
             </div>
+            {
+              (userType === 'ADMIN' || userType === 'BDE') && 
+            
+              <button className='edit-job-button' onClick={() => setIsEditJob(true)}>
+                <FiEdit className='edit-icon' /> Edit
+              </button>
+            }
           </div>
           {userType === 'AC' && renderAssignToHR()}
           <div className="job-details-location-type-salary-con">
@@ -407,7 +466,7 @@ const JobDetailsPage = () => {
           <p className="job-detials-misc"><span className='misc-head'>Shift Timings:</span> {shiftTimings}</p>
           <p className="job-detials-misc"><span className='misc-head'>Work Type:</span> {workType}</p>
           <p className="job-detials-misc"><span className='misc-head'>No of Openings:</span> {noOfOpenings}</p>
-
+          <p className="job-detials-misc"><span className='misc-head'>Language:</span> {jobDetails.language}</p>
           <p className="job-detials-misc"><span className='misc-head'>Skills:</span> {skills}</p>
 
           <div className="job-details-desc-visit-con">
@@ -533,15 +592,17 @@ const JobDetailsPage = () => {
   }
 
     const role = Cookies.get('role')
-    if(role === 'BDE') {
-      return <Redirect to='/bde-portal' />
-    }
 
     return (
       <div className='job-details-main-container'>
         <NavBar isLoggedIn={true} />
-        {renderSwitchCase()}
-        {renderCandidates()}
+        {
+          isEditJob ? 
+          <EditJobDetails updateJobDetails={updateJobDetails} jobDetails={jobDetails} setIsEditJob={setIsEditJob} />
+          : renderSwitchCase()
+        }
+
+        {role !== 'BDE' && renderCandidates()}
         {
           viewCandidateDetails && 
           <div className="view-candidate-details-modal">

@@ -25,11 +25,7 @@ const AdminPage = () => {
     const [createStatus, setCreateStatus] = useState(false)
     const [error, setError] = useState('')
     const [hiringManagersList, setHiringManagersList] = useState([])
-    // const [signUpDetails, setSignUpDetails] = useState({
-    //     email: '',
-    //     password: '',
-    //     hiringCategory: []
-    // })
+
     const [signUpDetails, setSignUpDetails] = useState({
         docId: "TBF",
         username: "",
@@ -65,7 +61,6 @@ const AdminPage = () => {
         }
         const response = await fetch(url, options)
         const data = await response.json()
-        console.log(data)
         if(response.ok === true) {
             setHiringManagersList(data)
         }
@@ -93,9 +88,13 @@ const AdminPage = () => {
 
     const sendEmail = async () => {
         const assignHMDetails = hiringManagersList.filter((hm) => hm.email === signUpDetails.assignHM)[0]
-        const hrContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials. <br> Your hiring manager is ${assignHMDetails.username} and the contact number is ${assignHMDetails.phone}. Please contact for the further process. <br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
-        const allContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials.<br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
-
+        let emailContent = ''
+        if(signUpDetails.role === 'HR') {
+            emailContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials. <br> Your hiring manager is ${assignHMDetails.username} and the contact number is ${assignHMDetails.phone}. Please contact for the further process. <br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
+        } else {
+            emailContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials.<br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
+        }
+        const encodedContent = encodeURIComponent(emailContent)
         const queryParameters = {
             method: 'EMS_POST_CAMPAIGN',
             userid: '2000702445',
@@ -105,16 +104,16 @@ const AdminPage = () => {
             name: 'EarlyJobs Signup',
             fromEmailId: 'no-reply@earlyjobs.in',
             subject: `Successfully created an account as a ${signUpDetails.hiringFor} in Earlyjobs.in portal`,
-            recipients: `${signUpDetails.email},hr@earlyjobs.in,akshay@victaman.com`,
-            content: signUpDetails.role === 'HR' ? hrContent : allContent,
+            recipients: `${signUpDetails.email},hr@earlyjobs.in,no-reply@earlyjobs.in`,
+            content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'
         }
         const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`
 
-        const response = await fetch(url)
-        const data = await response.json()
+        const response = await fetch(url, {method: "GET", mode: "no-cors"})
+        // const data = await response.json()
         if(response.ok === true) {
-            console.log(data)
+            // console.log(data)
         }
     }
 
@@ -149,10 +148,7 @@ const AdminPage = () => {
             return
         }
         setError('')
-        console.log(signUpDetails)
-
         setCreateStatus(true)
-        console.log(signUpDetails)
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
         const url = `${backendUrl}/api/users/register`
         const options = {
@@ -164,8 +160,6 @@ const AdminPage = () => {
             },
             body: JSON.stringify(signUpDetails)
         }
-        // await sendEmail()
-        // return;
         const response = await fetch(url, options) // create account in DB
         const data = await response.json()
         if(response.ok === true) {
@@ -185,7 +179,7 @@ const AdminPage = () => {
                     hiringFor: 'Fulltime Hiring Manager',
                     location: 'TBF',
                     assignHM: '',
-                    hiringCategory: [],
+                    hiringCategory: signUpDetails.hiringCategory,
                 })
             }
         }

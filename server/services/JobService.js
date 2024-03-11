@@ -27,6 +27,7 @@ const addJobDetials = async (job) => {
         minSalary, 
         maxSalary, 
         skills, 
+        language,
         employmentType, 
         workType, 
         commissionFee,
@@ -50,6 +51,7 @@ const addJobDetials = async (job) => {
         min_salary, 
         max_salary, 
         skills, 
+        language, 
         employment_type, 
         work_type, 
         commission_fee, 
@@ -58,8 +60,8 @@ const addJobDetials = async (job) => {
         status, 
         hiring_need, 
         posted_by
-        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?)`;
-    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, postedBy]);
+        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?)`;
+    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, postedBy]);
     console.log('tried to add job')
 
     if (result[0].affectedRows > 0) {
@@ -68,6 +70,75 @@ const addJobDetials = async (job) => {
         return {error: 'Job creation failed'};
     }
 }
+
+const updateJobAssignmentByBde = async (jobId, assignedTo) => {
+    const deleteQuery = 'DELETE FROM job_assigned_by_bde WHERE job_id = ?';
+    const deleteResult = await db.query(deleteQuery, [jobId]);
+    if (deleteResult[0].affectedRows > 0) {
+        return assignJobToHMByBDE(jobId, assignedTo);
+    } else {
+        return {error: 'Job updation failed'};
+    }
+}
+
+
+const editJobDetials = async (job) => {
+    const {
+        companyName,
+        title,
+        category,
+        shiftTimings,
+        description,
+        location,
+        minSalary,
+        maxSalary,
+        skills,
+        language,
+        employmentType,
+        workType,
+        commissionFee,
+        commissionType,
+        noOfOpenings,
+        status,
+        hiringNeed,
+        assignedTo,
+        jobId
+    } = job;
+    const query = `
+    UPDATE jobs SET
+        company_name = ?,
+        title = ?,
+        category = ?,
+        shift_timings = ?,
+        description = ?,
+        location = ?,
+        min_salary = ?,
+        max_salary = ?,
+        skills = ?,
+        language = ?,
+        employment_type = ?,
+        work_type = ?,
+        commission_fee = ?,
+        commission_type = ?,
+        no_of_openings = ?,
+        status = ?,
+        hiring_need = ?
+    WHERE id = ?`;
+    const result = await db.query(query, [companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, jobId]);
+    if (result[0].affectedRows > 0) {
+        await updateJobAssignmentByBde(jobId, assignedTo);
+        return {success: 'Job updated successfully'};
+    } else {
+        return {error: 'Job updation failed'};
+    }
+}
+
+const getAssignedHMsForJob = async (jobId) => {
+    const query = 'SELECT * FROM job_assigned_by_bde WHERE job_id = ?';
+    const result = await db.query(query, [jobId]);
+    return result[0];
+}
+        
 
 const getJobDetails = async (jobId) => {
     const query = 'SELECT * FROM jobs WHERE id = ?';
@@ -102,6 +173,17 @@ const assignJobToHrByAccountManager = async (jobAssignment) => {
     } else {
         return {error: 'Job assignment failed'};
     }
+}
+
+const getJobsForBDE = async (email, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const query = 'SELECT * FROM jobs WHERE posted_by = ? order by created_at desc Limit ? offset ?;';
+    const countQuery = 'SELECT count(*) as count FROM jobs WHERE posted_by = ?';
+    const result = await db.query(query, [email, endIndex, startIndex]);
+    const countResult = await db.query(countQuery, [email]);
+    return {jobs: result[0], count: countResult[0][0].count};
 }
 
 const getAccountManagerJobs = async (email, page) => {
@@ -220,24 +302,6 @@ const addCandidateDetailsForJob = async (candidate) => {
     }
 }
 
-// const getJobCandidates = async (jobId) => {
-//     const query = `
-//     SELECT 
-//         candidates.id as candidate_id,
-//         name,
-//         email,
-//         phone,
-//         offer_status,
-//         offered_date,
-//         applied_by
-//     FROM candidates 
-//     INNER JOIN applications ON 
-//     candidates.id = applications.candidate_id 
-//     WHERE applications.job_id = ? order by created_at desc;`;
-//     const result = await db.query(query, [jobId]);
-//     return result[0];
-// }
-
 const getJobCandidates = async (jobId) => {
     const query = `
     SELECT 
@@ -305,8 +369,11 @@ const getCandidateDetails = async (candidateId) => {
 
 module.exports = {
     addJobDetials,
+    editJobDetials,
+    getAssignedHMsForJob,
     getJobDetails,
     assignJobToHrByAccountManager,
+    getJobsForBDE,
     getAccountManagerJobs,
     getHRJobs,
     addCandidateDetailsForJob,

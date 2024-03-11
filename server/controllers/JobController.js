@@ -19,6 +19,26 @@ const addJobDetials = async (req, res) => {
     }
 }
 
+const editJobDetials = async (req, res) => {
+    const job = req.body;
+    try {
+      const updatedJob = await jobService.editJobDetials(job);
+      res.json(updatedJob);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getAssignedHMsForJob = async (req, res) => {
+    const jobId = req.params.jobId;
+    try {
+      const assignedHMs = await jobService.getAssignedHMsForJob(jobId);
+      res.json(assignedHMs);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const getJobDetails = async (req, res) => {
     const jobId = req.params.jobId;
     try {
@@ -35,6 +55,17 @@ const assignJobToHrByAccountManager = async (req, res) => {
     try {
       const jobAssigned = await jobService.assignJobToHrByAccountManager(jobAssignment);
       res.json(jobAssigned);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getJobsForBDE = async (req, res) => {
+    const email = req.params.email;
+    const page = parseInt(req.query.page) || 1;
+    try {
+      const jobs = await jobService.getJobsForBDE(email, page);
+      res.json(jobs);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -116,8 +147,11 @@ const getCandidateDetails = async (req, res) => {
 module.exports = {
     getAllJobs,
     addJobDetials,
+    editJobDetials,
+    getAssignedHMsForJob,
     getJobDetails,
     assignJobToHrByAccountManager,
+    getJobsForBDE,
     getAccountManagerJobs,
     getHRJobs,
     addCandidateDetailsForJob,

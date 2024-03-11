@@ -1,6 +1,7 @@
 import {TiLocation} from 'react-icons/ti'
 import {Link} from 'react-router-dom'
 import {BsFillBriefcaseFill} from 'react-icons/bs'
+import { FiBriefcase } from "react-icons/fi";
 import './style.css'
 
 const JobsCard = props => {
@@ -53,7 +54,7 @@ const JobsCard = props => {
     <Link to={`/jobs/${id}`} className="link-item">
       <li className="jobs-list-item-container">
         <div className="jobs-logo-name-con">
-          <img src={companyLogoUrl} alt="company logo" className="jobs-logo" />
+          <FiBriefcase className="jobs-logo" />
           <div className="jobs-title-con">
             <h1 className="job-title">{compname}</h1>
             <h1 className="job-title">{role}</h1>
