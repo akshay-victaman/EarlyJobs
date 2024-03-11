@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import './App.css';
 import JobsPage from './components/JobsPage';
@@ -15,6 +15,7 @@ import AddJobVacanciesPage from './components/AddJobVacanciesPage';
 import HiringPartnerReqPage from './components/HiringPartnerReqPage';
 import HiringPartnerDetails from './components/HiringPartnerDetails';
 import ScrollUp from './components/ScrollUp';
+import NotFoundPage from './components/NotFoundPage';
 
 
 const App = () => (
@@ -33,6 +34,8 @@ const App = () => (
       <ProtectedRoute exact path="/admin/candidates" component={CandidatesPage} />
       <ProtectedRoute exact path="/admin/recruiter-requests" component={HiringPartnerReqPage} />
       <ProtectedRoute exact path="/admin/recruiter-requests/:id" component={HiringPartnerDetails} />
+      <Route path="/not-found" component={NotFoundPage} />
+      <Redirect to="/not-found" />
     </Switch>
   <ScrollUp />
   </>
