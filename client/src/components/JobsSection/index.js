@@ -16,6 +16,8 @@ import ViewCandidates from '../ViewCandidates';
 import Footer from '../Footer';
 import { HiringManagerDetailsForm } from '../HiringManagerDetailsForm';
 import MyHrRecruiters from '../MyHrRecruiters';
+import CollegeAgency from '../CollegeAgencyForm/CollegeAgency';
+import CollegeAgencyForm from '../CollegeAgencyForm';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -438,11 +440,9 @@ const JobsSection = ({onShowCandidateDetails}) => {
             </button>
           </div> */}
           {
-            userDetailsId === 'TBF' ?
-            <HiringManagerDetailsForm />
-            :
-            showCandidateForm===1 ? 
-            <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
+            userDetailsId === 'TBF' ? <HiringManagerDetailsForm />
+            : (userDetailsId === 'CLG' || userDetailsId === 'AGY') ? <CollegeAgencyForm />
+            : showCandidateForm===1 ? <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
             : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
             : showCandidateForm===3 ? <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
             : renderAllSections()

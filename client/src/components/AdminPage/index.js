@@ -135,7 +135,7 @@ const AdminPage = () => {
             setError('*Valid Phone Number is required')
             return
         }
-        if(signUpDetails.hiringFor === "") {
+        if(signUpDetails.hiringFor === "" && signUpDetails.role === 'HR') {
             setError('*Hiring For is required')
             return
         }
@@ -148,6 +148,18 @@ const AdminPage = () => {
             return
         }
         setError('')
+        
+        let updatedSignUpDetails = signUpDetails
+        if(signUpDetails.role === "AGENCY" || signUpDetails.role === "COLLEGE") {
+            updatedSignUpDetails = { ...signUpDetails, role: 'AC', hiringFor: 'Fulltime Hiring Manager'}
+        }
+        if(signUpDetails.role === "AGENCY") {
+            updatedSignUpDetails = { ...updatedSignUpDetails, docId: "AGY" }
+        }
+        if(signUpDetails.role === "COLLEGE") {
+            updatedSignUpDetails = { ...updatedSignUpDetails, docId: "CLG" }
+        }
+        console.log(updatedSignUpDetails)
         setCreateStatus(true)
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
         const url = `${backendUrl}/api/users/register`
@@ -158,7 +170,7 @@ const AdminPage = () => {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + Cookie.get('jwt_token')
             },
-            body: JSON.stringify(signUpDetails)
+            body: JSON.stringify(updatedSignUpDetails)
         }
         const response = await fetch(url, options) // create account in DB
         const data = await response.json()
@@ -202,12 +214,14 @@ const AdminPage = () => {
                     <option value="HR">HR Recruiter</option>
                     <option value="ADMIN">Admin</option>
                     <option value="BDE">BDE</option>
+                    <option value="COLLEGE">College</option>
+                    <option value="AGENCY">Agency</option>
                 </select>
-                <label className="homepage-label">Username</label>
+                <label className="homepage-label">{signUpDetails.role === 'AGENCY' ? 'Agency Name' : signUpDetails.role === 'COLLEGE' ? "College Name" : "Username"}</label>
                 <input className="homepage-input" type="text" required name="username" value={signUpDetails.username} onChange={handleInputChange} />
                 <label className="homepage-label">Login Email</label>
                 <input className="homepage-input" type="text" name="email" value={signUpDetails.email} onChange={handleInputChange} />
-                <label className="homepage-label">Phone</label>
+                <label className="homepage-label">{(signUpDetails.role === 'AGENCY' || signUpDetails.role === 'COLLEGE') ? 'Office Phone' : "Phone"}</label>
                 <input className="homepage-input" type="number" required name="phone" value={signUpDetails.phone} onChange={handleInputChange} />
                 <label className="homepage-label">Login Password</label>
                 <input className="homepage-input" type="text" disabled value={signUpDetails.password} />

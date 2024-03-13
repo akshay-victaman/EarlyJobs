@@ -6,12 +6,19 @@ import NavBar from '../NavBar';
 import './style.css'
 import Footer from '../Footer';
 
+const loginTypes = {
+    user: 'User',
+    college: 'College',
+    agency: 'Agency'
+}
+
 const HomePage = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [loginType, setLoginType] = useState(loginTypes.user);
 
     const history = useHistory();
 
@@ -23,13 +30,17 @@ const HomePage = () => {
         setPassword(e.target.value)
     }
 
+    const handleLoginTypeChange = (type) => {
+        setLoginType(type)
+    }
+
     const onSubmitSuccess = (jwtToken, username, role, email, userDetailsId) => {
         Cookies.set('jwt_token', jwtToken, {expires: 30})
         Cookies.set('email', email, {expires: 30})
         Cookies.set('username', username, {expires: 30})
         Cookies.set('role', role, {expires: 30})
-        if(userDetailsId === "TBF") {
-            Cookies.set('user_details_id', userDetailsId, {expires: 5})
+        if(userDetailsId === "TBF" || userDetailsId === "AGY" || userDetailsId === "CLG") {
+            Cookies.set('user_details_id', userDetailsId, {expires: 30})
         }
         if(role === 'ADMIN') {
             history.replace('/admin')
@@ -96,8 +107,13 @@ const HomePage = () => {
             <NavBar isLoggedIn={false} />
             <div className="homepage-sub-con">
                 <div className="homepage-card">
+                    <div className='login-type-con'>
+                        <button className={`login-type-button ${loginTypes.user === loginType ? 'active-login-btn' : ''}`} onClick={() => handleLoginTypeChange(loginTypes.user)}>User Login</button>
+                        <button className={`login-type-button ${loginTypes.college === loginType ? 'active-login-btn' : ''}`} onClick={() => handleLoginTypeChange(loginTypes.college)}>College Login</button>
+                        <button className={`login-type-button ${loginTypes.agency === loginType ? 'active-login-btn' : ''}`} onClick={() => handleLoginTypeChange(loginTypes.agency)} style={{borderRight: '0px'}}>Agency Login</button>
+                    </div>
                     <form onSubmit={handleLogin} className="login-form">
-                        <h1 className="homepage-title">Login</h1>
+                        <h1 className="homepage-title">{loginType} Login</h1>
                         <label className="homepage-label" id='email'>EMAIL</label>
                         <input type="email" className="homepage-input" id='email' value={email} onChange={handleEmailChange} placeholder='Enter email'/>
                         <label className="homepage-label" id='password'>PASSWORD</label>

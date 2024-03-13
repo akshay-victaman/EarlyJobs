@@ -11,7 +11,6 @@ import QualificationForm from '../HiringPartnerForm/QualificationForm';
 import AboutForm from '../HiringPartnerForm/AboutForm';
 import ReferencesForm from '../HiringPartnerForm/ReferencesForm';
 import app from '../../firebase';
-import './style.css'
 
 const customStyles = {
     control: (provided, state) => ({
@@ -659,7 +658,6 @@ const HiringManagerDetailsForm = () => {
         e.preventDefault()
 
         console.log('triggered')
-
         setLoading(true)
 
         const newIdentityProof = { ...identityProof };
