@@ -102,6 +102,37 @@
     align-items: center;
 }
 
+.login-type-con {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border: 1px solid #EB6A4D;
+    height: 35px;
+    border-radius: 5px;
+}
+
+.login-type-button {
+    background-color: transparent;
+    color: #EB6A4D;
+    border: 0px;
+    border-right: 1px solid #EB6A4D;
+    padding: 0px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    font-weight: 500;
+    height: 100%;
+}
+
+.login-type-button:hover {
+    background-color: #EB6A4D10;
+}
+
+.active-login-btn {
+    background-color: #EB6A4D30;
+    font-weight: 600;
+}
+
 @media screen and (max-width: 768px) {
     .homepage-sub-con {
         flex-direction: column;
@@ -121,6 +152,14 @@
     .homepage-quote {
         font-size: 20px;
         margin: 20px 15px;
+    }
+    .login-type-con {
+        width: 90%;
+    }
+    .login-type-button {
+        padding: 0px 10px;
+        font-size: 12px;
+        width: 33.33%;
     }
 }
 
