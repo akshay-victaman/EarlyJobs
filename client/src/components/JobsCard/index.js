@@ -3,52 +3,28 @@ import {Link} from 'react-router-dom'
 import {BsFillBriefcaseFill} from 'react-icons/bs'
 import { FiBriefcase } from "react-icons/fi";
 import './style.css'
+import Cookies from 'js-cookie';
 
 const JobsCard = props => {
   const {jobsItem} = props
 
-  /*
-    id: eachItem.id,
-    companyLogoUrl: eachItem.company_logo_url,
-    category: eachItem.category,
-    commissionType: eachItem.commission_type,
-    commissionFee: eachItem.commission_fee,
-    compname: eachItem.company_name,
-    minSalary: eachItem.min_salary,
-    maxSalary: eachItem.max_salary,
-    noOfOpenings: eachItem.no_of_openings,
-    employmentType: eachItem.employment_type,
-    jobDescription: eachItem.description,
-    location: eachItem.location,
-    role: eachItem.title,
-    workType: eachItem.work_type,
-    hiringNeed: eachItem.hiring_need,
-    postedBy: eachItem.posted_by,
-    skills: eachItem.skills,
-    status: eachItem.status,
-    createdAt
-  */
+  const hiringFor = Cookies.get('hiring_for')
+  const userRole = Cookies.get('role')
+  console.log(hiringFor)
   
   const {
     id,
-    companyLogoUrl,
     compname,
     commissionType,
     commissionFee,
     minSalary,
     maxSalary,
-    noOfOpenings,
     employmentType,
-    jobDescription,
     location,
     role,
     category,
     workType,
     hiringNeed,
-    postedBy,
-    skills,
-    status,
-    createdAt,
   } = jobsItem
   return (
     <Link to={`/jobs/${id}`} className="link-item">
@@ -75,7 +51,10 @@ const JobsCard = props => {
           <p className="job-salary">{minSalary} - {maxSalary} LPA</p>
         </div>
         <hr className="jobs-line" />
-        <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
+        {
+          (hiringFor === "Freelance HR Recruiter" || userRole !== "HR") && <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
+        }
+        
         <p className="job-detials">Notice Period: {hiringNeed}</p>
         <p className="job-detials">Work Type: {workType}</p>
         {/* <h1 className="job-desc-heading">Description</h1>

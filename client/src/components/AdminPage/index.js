@@ -37,6 +37,7 @@ const AdminPage = () => {
         location: 'TBF',
         assignHM: '',
         hiringCategory: [],
+        hmType: ''
     })
 
     useEffect(() => {
@@ -151,16 +152,17 @@ const AdminPage = () => {
         
         let updatedSignUpDetails = signUpDetails
         if(signUpDetails.role === "AGENCY" || signUpDetails.role === "COLLEGE") {
-            updatedSignUpDetails = { ...signUpDetails, role: 'AC', hiringFor: 'Fulltime Hiring Manager'}
+            updatedSignUpDetails = { ...signUpDetails, role: 'AC', hiringFor: 'Fulltime Hiring Manager', hmType: '' }
         }
         if(signUpDetails.role === "AGENCY") {
-            updatedSignUpDetails = { ...updatedSignUpDetails, docId: "AGY" }
+            updatedSignUpDetails = { ...updatedSignUpDetails, docId: "AGY", hmType: 'AGY' }
         }
         if(signUpDetails.role === "COLLEGE") {
-            updatedSignUpDetails = { ...updatedSignUpDetails, docId: "CLG" }
+            updatedSignUpDetails = { ...updatedSignUpDetails, docId: "CLG", hmType: 'CLG'}
         }
         console.log(updatedSignUpDetails)
         setCreateStatus(true)
+        
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
         const url = `${backendUrl}/api/users/register`
         const options = {

@@ -94,7 +94,7 @@ const CollegeAgency = ({handleInputChange, collegeAgencyDetails, handleCurrentSt
                             <input type='text' placeholder="Ex: AAAAA1111A" onChange={handleInputChange} value={collegeAgencyDetails.panNum} required className='hr-input' id='panNum' name='panNum' />
                             
                             <label htmlFor='GSTNum' className='hr-label'>GST Number</label>
-                            <input type='text' placeholder="Enter GST Number" onChange={handleInputChange} value={collegeAgencyDetails.GSTNum} required className='hr-input' id='GSTNum' name='GSTNum' />
+                            <input type='text' placeholder="Enter GST Number" onChange={handleInputChange} value={collegeAgencyDetails.GSTNum} className='hr-input' id='GSTNum' name='GSTNum' />
                         </>
                     : null
                     }

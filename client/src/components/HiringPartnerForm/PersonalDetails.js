@@ -87,8 +87,14 @@ const PersonalDetailsForm = (props) => {
                 <label htmlFor='current-address' className='hr-label'>Current Address<span className='hr-form-span'> *</span></label>
                 <input type='text' placeholder="Address" onChange={handleInputChange} value={personalDetails.currAddress} required className='hr-input' id='current-address' name='currAddress' />
 
+                <label htmlFor='currPincode' className='hr-label'>Current Address Pincode<span className='hr-form-span'> *</span></label>
+                <input type='text' placeholder="Ex: 123456" onChange={handleInputChange} value={personalDetails.currPincode} required className='hr-input' id='currPincode' name='currPincode' />
+
                 <label htmlFor='permanent-address' className='hr-label'>Permanent Address<span className='hr-form-span'> *</span></label>
                 <input type='text' placeholder="Address" onChange={handleInputChange} value={personalDetails.permAddress} required className='hr-input' id='permanent-address' name='permAddress' />
+
+                <label htmlFor='permPincode' className='hr-label'>Permanent Address Pincode<span className='hr-form-span'> *</span></label>
+                <input type='text' placeholder="Ex: 123456" onChange={handleInputChange} value={personalDetails.permPincode} required className='hr-input' id='permPincode' name='permPincode' />
                 
                 <label htmlFor='languages' className='hr-label'>Languages you speak<span className='hr-form-span'> *</span></label>
                 <div className='hr-input-list-con'>

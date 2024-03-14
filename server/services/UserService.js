@@ -38,7 +38,7 @@ const hrResumes = async (hrEmail, resumeUrl) => {
 
 const createUser = async (user) => {
     console.log(user)
-    const {docId, username, email, phone, password, role, hiringFor, assignHM, location, hiringCategory, resumeUrl} = user;
+    const {docId, username, email, phone, password, role, hiringFor, assignHM, location, hiringCategory, resumeUrl, hmType} = user;
     const hiringCategory1 = hiringCategory.join(', ');
     const id = uuidv4();
     const hashedPassword = bcrypt.hashSync(password, 10)
@@ -48,8 +48,8 @@ const createUser = async (user) => {
     if (dbUser.length > 0) {
         return {error: 'User already exists'};
     } else {
-        const query = 'INSERT INTO users (id, user_details_id, username, email, phone, password, role, hiring_for, location, hiring_category, is_blocked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        const result = await db.query(query, [id, docId, username, email, phone, hashedPassword, role, hiringFor, location, hiringCategory1, 0]);
+        const query = 'INSERT INTO users (id, user_details_id, username, email, phone, password, role, hiring_for, location, hiring_category, is_blocked, hm_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const result = await db.query(query, [id, docId, username, email, phone, hashedPassword, role, hiringFor, location, hiringCategory1, 0, hmType]);
         if (result[0].affectedRows > 0) {
             if(role === 'HR') {
                 hrAssignedHm(email, assignHM);
@@ -111,7 +111,7 @@ const loginUser = async (user) => {
         const match = bcrypt.compareSync(password, dbUser[0].password);
         if (match) {
             const jwtToken = jwt.sign({email: dbUser[0].email}, 'jobbyApp');
-            return {username: dbUser[0].username, userDetailsId: dbUser[0].user_details_id, email, jwtToken, role: dbUser[0].role, isBlocked: dbUser[0].is_blocked};
+            return {username: dbUser[0].username, userDetailsId: dbUser[0].user_details_id, email, jwtToken, role: dbUser[0].role, isBlocked: dbUser[0].is_blocked, hiringFor: dbUser[0].hiring_for, hmType: dbUser[0].hm_type};
         } else {
             return {error: 'Invalid Password'};
         }

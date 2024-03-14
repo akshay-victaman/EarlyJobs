@@ -88,7 +88,9 @@ const HiringManagerDetailsForm = () => {
         password: "",
         confirmPassword: "",
         currAddress: "",
+        currPincode: "",
         permAddress: "",
+        permPincode: "",
         languages: [],
         applyFor: ""
     })
@@ -423,13 +425,23 @@ const HiringManagerDetailsForm = () => {
 
     const onSubmitPersonalDetails = (e) => {
         e.preventDefault()
+
+        const dob = new Date(personalDetails.dob);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+
+        // Adjust the age if the birthday for this year hasn't occurred yet
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
         
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(personalDetails.fullName.trim().length === 0) {
             setError("*Please enter full name")
             return
-        } else if(personalDetails.dob.trim().length === 0) {
-            setError("*Please select date of birth")
+        } else if(personalDetails.dob.trim().length === 0 || age < 18) {
+            setError("*Please select date of birth and age should be greater than or equal to 18 years")
             return
         } else if(personalDetails.phone.trim().length < 10 || personalDetails.phone.trim().length > 10) {
             setError("*Please enter valid phone number")
@@ -446,8 +458,14 @@ const HiringManagerDetailsForm = () => {
         } else if(personalDetails.currAddress.trim().length === 0) {
             setError("*Please enter current address")
             return
+        } else if(personalDetails.currPincode.trim().length === 0) {
+            setError("*Please enter current address pincode")
+            return
         } else if(personalDetails.permAddress.trim().length === 0) {
             setError("*Please enter permanent address")
+            return
+        } else if(personalDetails.permPincode.trim().length === 0) {
+            setError("*Please enter permanent address pincode")
             return
         } else if(languages !== "" && personalDetails.languages.length === 0) {
             setError("*Please enter languages you speak")
