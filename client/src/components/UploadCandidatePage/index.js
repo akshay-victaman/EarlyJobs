@@ -84,6 +84,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         skills: [],
         jobCategory: '',
         offerStatus: 'Ongoing',
+        interviewDate: ''
       })
 
 
@@ -127,9 +128,23 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         languageOptions.push({ value: languageLabel, label: languageLabel })
     }
 
+    const today = new Date();
+    const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+
     const postCandidateDetails = async (event) => {
         event.preventDefault()
         console.log(candidateDetails)
+
+        const dob = new Date(candidateDetails.dateOfBirth);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+
+        // Adjust the age if the birthday for this year hasn't occurred yet
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
         // return
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if(
@@ -138,7 +153,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
             candidateDetails.fatherName.trim() === '' || 
             !emailRegex.test(candidateDetails.email) ||
             (candidateDetails.phone.length < 10 || candidateDetails.phone.length > 10)||
-            candidateDetails.dateOfBirth === '' || 
+            candidateDetails.dateOfBirth === '' || age < 18 ||
             candidateDetails.gender === '' ||
             candidateDetails.highestQualification === '' || 
             candidateDetails.currentLocation.trim() === '' || 
@@ -149,7 +164,8 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
             candidateDetails.experienceInMonths < 0 || 
             candidateDetails.experienceInMonths === "" ||
             candidateDetails.offerStatus === '' ||
-            candidateDetails.jobCategory === ''
+            candidateDetails.jobCategory === '' ||
+            candidateDetails.interviewDate === ''
         ) {
             setError("Please fill all the details")
             return
@@ -196,6 +212,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                     skills: [],
                     jobCategory: '',
                     offerStatus: 'Ongoing',
+                    interviewDate: ''
                 })
                 setShowForm(false)
             }
@@ -379,6 +396,10 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                         }
                     </select>
                 </div>
+            </div>
+            <div className="upload-candidate-input-con">
+                <label className="homepage-label" htmlFor='interviewDate'>Schedule Interveiw Date<span className='hr-form-span'> *</span></label>
+                <input type="date" name='interviewDate' className="homepage-input" id='interviewDate' min={dateString} onChange={handleCandidateInputChange} />
             </div>
             <div className="upload-candidate-sub-con">
                 <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(0)}>Back</button>

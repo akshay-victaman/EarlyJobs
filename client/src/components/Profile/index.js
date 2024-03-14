@@ -130,6 +130,7 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
     }
 
     const userRole = Cookies.get('role')
+    const hmType = Cookies.get('hm_type')
     return (
         <div className="profile-container">
             {renderSwitch()}
@@ -142,10 +143,10 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
                 {/* <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(1)}>Add Candidate</button> */}
                 <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(2)}>View Candidates</button>
                 {
-                    userRole === 'AC' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(3)}>My HR Recruiters</button>
+                    userRole === 'AC' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(3)}>My {hmType === "CLG" ? "Interns" : "HR Recruiters"}</button>
                 }
                 {
-                    (userRole === 'HR' && resumeUrl !== '') && <a href={resumeUrl} style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Resume</a>
+                    (userRole === 'HR' && resumeUrl !== '') && <a href={resumeUrl} style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Joining Letter</a>
                 }
                 <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
             </>

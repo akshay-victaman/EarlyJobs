@@ -20,6 +20,8 @@ const NavBar = ({isLoggedIn}) => {
         Cookies.remove('username')
         Cookies.remove('email')
         Cookies.remove('user_details_id')
+        Cookies.remove('hiring_for')
+        Cookies.remove('hm_type')
         history.replace('/');
     }
 

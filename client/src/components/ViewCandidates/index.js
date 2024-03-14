@@ -2,6 +2,7 @@ import Cookies from "js-cookie"
 import { useEffect, useState } from "react"
 import {Oval} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
+import { format, parseISO } from 'date-fns'
 import './style.css'
 import UpdateCandidateStatus from "./UpdateCandidateStatus"
 
@@ -45,6 +46,12 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
       setSelectHr(event.target.value)
     }
 
+    const formatDate = (date) => {
+      const dbDate = parseISO(date);
+      const formattedDate = format(dbDate, 'dd-MMM-yyyy hh:mm a');
+      return formattedDate;
+  }
+
     const getAllCandidatesForHR = async () => {
         setApiStatus(apiStatusConstant.inProgress)
         const jwtToken = Cookies.get('jwt_token')
@@ -70,11 +77,13 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
               candidatePhone: eachItem.phone,
               offerStatus: eachItem.offer_status,
               offeredDate: eachItem.offered_date,
-              appliedBy: eachItem.applied_by
+              appliedBy: eachItem.applied_by,
+              interviewDate: formatDate(eachItem.interview_date)
             }))
             const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
             setHrList(hrList)
             console.log(hrList)
+            console.log(formattedData)
             setCandidateList(formattedData)
             setApiStatus(apiStatusConstant.success)
           }
@@ -110,12 +119,12 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                 candidatePhone: eachItem.phone,
                 offerStatus: eachItem.offer_status,
                 offeredDate: eachItem.offered_date,
-                appliedBy: eachItem.applied_by
+                appliedBy: eachItem.applied_by,
+                interviewDate: formatDate(eachItem.interview_date)
               }))
               const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
               setHrList(hrList)
-              console.log(hrList)
-
+              console.log(formattedData)
               setCandidateList(formattedData)
             } else {
               const formattedData = data.map(eachItem => ({
@@ -125,14 +134,14 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                 candidatePhone: eachItem.phone,
                 offerStatus: eachItem.offer_status,
                 offeredDate: eachItem.offered_date,
-                appliedBy: eachItem.applied_by
+                appliedBy: eachItem.applied_by,
+                interviewDate: formatDate(eachItem.interview_date)
               }))
               const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
               setHrList(hrList)
-              console.log(hrList)
+              console.log(formattedData)
               setCandidateList(formattedData)
             }
-            console.log(data)
             setApiStatus(apiStatusConstant.success)
           }
         } else {
@@ -272,6 +281,9 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                         Shortlisted By
                       </th>
                     }
+                    <th className="job-details-candidates-table-heading-cell">
+                      Interveiw Date
+                    </th>
                     
                     {
                       Cookies.get('role') !== 'ADMIN' && (

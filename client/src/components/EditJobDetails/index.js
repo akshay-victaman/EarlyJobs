@@ -89,7 +89,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         salaryMin: jobDetails.minSalary,
         salaryMax: jobDetails.maxSalary,
         skills: jobDetails.skills.split(',').map(skill => ({id: uuidv4(), value: skill})),
-        language: jobDetails.language ? jobDetails.language : [],
+        language: jobDetails.language ? jobDetails.language.split(',') : [],
         employmentType: jobDetails.employmentType,
         workType: jobDetails.workType,
         commission: jobDetails.commissionFee,

@@ -66,10 +66,11 @@
     flex-direction: column;
 }
 
-.job-details-candidates-table-cell-hover:hover {
-    color: #EB6A4D;
+.job-details-candidates-table-cell-hover {
+    color: #EB6A4D!important;
     font-weight: 600;
     cursor: pointer;
+    text-decoration: underline;
 }
 
 .candidate-details-modal-con {

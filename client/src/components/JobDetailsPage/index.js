@@ -398,6 +398,7 @@ const JobDetailsPage = () => {
     return null
   }
 
+
   const renderJobDetails = () => {
     const {
       companyLogoUrl,
@@ -423,6 +424,7 @@ const JobDetailsPage = () => {
     const formattedDate = formatDistanceToNow(createdAt, { addSuffix: true });
 
     const userType = Cookies.get('role')
+    const hiringFor = Cookies.get('hiring_for')
 
     return (
       <div className="job-details-container">
@@ -461,7 +463,10 @@ const JobDetailsPage = () => {
           <hr className="line" />
           <p className="job-detials-misc"><span className='misc-head'>Status:</span> {status}</p>
           <p className="job-detials-misc"><span className='misc-head'>Assigned By:</span> {postedBy}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
+          {
+            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
+          }
+          {/* <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p> */}
           <p className="job-detials-misc"><span className='misc-head'>Notice Period:</span> {hiringNeed}</p>
           <p className="job-detials-misc"><span className='misc-head'>Shift Timings:</span> {shiftTimings}</p>
           <p className="job-detials-misc"><span className='misc-head'>Work Type:</span> {workType}</p>

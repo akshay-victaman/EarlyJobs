@@ -5,7 +5,7 @@ import { useState } from "react"
 const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId, candidateList, setCandidateList}) => {
     const [updateOfferStatus, setUpdateOfferStatus] = useState('');
     const [loading, setLoading] = useState(false)
-    const {candidateName,candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy} = candidateDetails
+    const {candidateName,candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy, interviewDate} = candidateDetails
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
@@ -79,13 +79,16 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId,
                 {appliedBy}
                 </td>
             }
+            <td className="job-details-candidates-table-cell">
+                {interviewDate}
+            </td>
             {
                 Cookies.get('role') !== 'ADMIN' && (
                 <td className="job-details-candidates-table-cell">
                     {
                         !loading ? 
                         (
-                            <select className="homepage-input candidate-input-select" id='offerStatus' value={updateOfferStatus} onChange={handleCandidateStatusChange}>
+                            <select className="homepage-input candidate-input-select" id='offerStatus' disabled={offerStatus === 'Accepted' || offerStatus === 'Rejected'} value={updateOfferStatus} onChange={handleCandidateStatusChange}>
                                 <option value=''>Select Offer Status</option>
                                 <option value='Pending'>Pending</option>
                                 <option value='Accepted'>Accepted</option>

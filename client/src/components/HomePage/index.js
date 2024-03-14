@@ -7,18 +7,20 @@ import './style.css'
 import Footer from '../Footer';
 
 const loginTypes = {
-    user: 'User',
+    user: 'Recruiter',
     college: 'College',
     agency: 'Agency'
 }
 
 const HomePage = () => {
 
+    const loginTypeFromLocalStorage = localStorage.getItem('loginType');
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [loginType, setLoginType] = useState(loginTypes.user);
+    const [loginType, setLoginType] = useState(loginTypeFromLocalStorage ? loginTypeFromLocalStorage : loginTypes.user);
 
     const history = useHistory();
 
@@ -31,16 +33,23 @@ const HomePage = () => {
     }
 
     const handleLoginTypeChange = (type) => {
+        localStorage.setItem('loginType', type)
         setLoginType(type)
     }
 
-    const onSubmitSuccess = (jwtToken, username, role, email, userDetailsId) => {
+    const onSubmitSuccess = (jwtToken, username, role, email, userDetailsId, hiringFor, hmType) => {
         Cookies.set('jwt_token', jwtToken, {expires: 30})
         Cookies.set('email', email, {expires: 30})
         Cookies.set('username', username, {expires: 30})
         Cookies.set('role', role, {expires: 30})
         if(userDetailsId === "TBF" || userDetailsId === "AGY" || userDetailsId === "CLG") {
             Cookies.set('user_details_id', userDetailsId, {expires: 30})
+        }
+        if(role === 'HR') {
+            Cookies.set('hiring_for', hiringFor, {expires: 30})
+        }
+        if(hmType === 'CLG' || hmType === 'AGY') {
+            Cookies.set('hm_type', hmType, {expires: 30})
         }
         if(role === 'ADMIN') {
             history.replace('/admin')
@@ -82,7 +91,7 @@ const HomePage = () => {
             } else if(data.isBlocked === 1) {
                 setError("Your account has been blocked. Please contact the admin.")
             } else {
-                onSubmitSuccess(data.jwtToken, data.username, data.role, data.email, data.userDetailsId)
+                onSubmitSuccess(data.jwtToken, data.username, data.role, data.email, data.userDetailsId, data.hiringFor, data.hmType)
                 setError("")
             }
         } else {
@@ -108,7 +117,7 @@ const HomePage = () => {
             <div className="homepage-sub-con">
                 <div className="homepage-card">
                     <div className='login-type-con'>
-                        <button className={`login-type-button ${loginTypes.user === loginType ? 'active-login-btn' : ''}`} onClick={() => handleLoginTypeChange(loginTypes.user)}>User Login</button>
+                        <button className={`login-type-button ${loginTypes.user === loginType ? 'active-login-btn' : ''}`} onClick={() => handleLoginTypeChange(loginTypes.user)}>Recruiter Login</button>
                         <button className={`login-type-button ${loginTypes.college === loginType ? 'active-login-btn' : ''}`} onClick={() => handleLoginTypeChange(loginTypes.college)}>College Login</button>
                         <button className={`login-type-button ${loginTypes.agency === loginType ? 'active-login-btn' : ''}`} onClick={() => handleLoginTypeChange(loginTypes.agency)} style={{borderRight: '0px'}}>Agency Login</button>
                     </div>
@@ -145,7 +154,7 @@ const HomePage = () => {
                          Across All <span className='quote-span'>Sectors</span>
                     </h1>
                 </div>
-                <img src='/homepage-bg.avif' className='homepage-img' alt='homepage-img'/>
+                <img src='/homepage-bg.png' className='homepage-img' alt='homepage-img'/>
             </div>
             <Footer />
         </div>

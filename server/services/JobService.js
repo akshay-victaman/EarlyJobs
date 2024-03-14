@@ -233,15 +233,15 @@ const getHRJobs = async (email, page) => {
     return {jobs: result[0], count: countResult[0][0].count};
 }
 
-const addApplication = async (jobId, cId, hrEmail, offerStatus) => {
+const addApplication = async (jobId, cId, hrEmail, offerStatus, interviewDate) => {
     const applicationQuery = 'SELECT * FROM applications WHERE job_id = ? AND candidate_id = ? AND applied_by = ?';
     const applicationResult = await db.query(applicationQuery, [jobId, cId, hrEmail]);
     if (applicationResult[0].length > 0) {
         return {error: 'Application already exists for this candidate'};
     }
     const id = uuidv4();
-    const query = 'INSERT INTO applications (id, job_id, candidate_id, applied_by, offer_status) VALUES (?, ?, ?, ?, ?)';
-    const result = await db.query(query, [id, jobId, cId, hrEmail, offerStatus]);
+    const query = 'INSERT INTO applications (id, job_id, candidate_id, applied_by, offer_status, interview_date) VALUES (?, ?, ?, ?, ?, ?)';
+    const result = await db.query(query, [id, jobId, cId, hrEmail, offerStatus, interviewDate]);
     if (result[0].affectedRows > 0) {
         return {success: 'Candidate added successfully'};
     } else {         
@@ -267,7 +267,8 @@ const addCandidateDetailsForJob = async (candidate) => {
         jobCategory,
         offerStatus,
         jobId,
-        hrEmail
+        hrEmail,
+        interviewDate
     } = candidate;
     const candidateQuery = 'SELECT * FROM candidates WHERE email = ? OR phone = ?';
     const candidateResult = await db.query(candidateQuery, [email, phone]);
@@ -293,12 +294,12 @@ const addCandidateDetailsForJob = async (candidate) => {
             ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,?)`;
         const result = await db.query(query, [cId, fullName, email, phone, fatherName, dateOfBirth, gender, aadharNumber, highestQualification, currentLocation, spokenLanguages.join(','), experienceInYears, experienceInMonths, jobCategory, skills.join(',')]);
         if (result[0].affectedRows > 0) {
-            return addApplication(jobId, cId, hrEmail, offerStatus);
+            return addApplication(jobId, cId, hrEmail, offerStatus, interviewDate);
         } else {
             return {error: 'Candidate addition failed'};
         }
     } else {
-        return addApplication(jobId, candidateResult[0][0].id, hrEmail, offerStatus);
+        return addApplication(jobId, candidateResult[0][0].id, hrEmail, offerStatus, interviewDate);
     }
 }
 
@@ -312,7 +313,8 @@ const getJobCandidates = async (jobId) => {
         candidates.phone as phone,
         offer_status,
         offered_date,
-        applied_by
+        applied_by,
+        interview_date
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
@@ -320,7 +322,6 @@ const getJobCandidates = async (jobId) => {
     users.email = applications.applied_by 
     WHERE applications.job_id = ? order by candidates.created_at desc`;
     const result = await db.query(query, [jobId]);
-    console.log(result[0])
     return result[0];
 }
 
@@ -348,7 +349,8 @@ const getAllCandidatesForHR = async (email) => {
         phone,
         offer_status,
         offered_date,
-        applied_by
+        applied_by,
+        interview_date
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
