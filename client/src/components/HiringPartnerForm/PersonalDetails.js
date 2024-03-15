@@ -33,6 +33,12 @@ const PersonalDetailsForm = (props) => {
 
     const userDetailsId = Cookies.get('user_details_id');
 
+    const today = new Date();
+    const validYear = today.getFullYear() - 18;
+    const validMonth = String(today.getMonth() + 1).padStart(2, '0');
+    const validDate = String(today.getDate()).padStart(2, '0');
+    const validDateString = `${validYear}-${validMonth}-${validDate}`;
+
     return(
         <div className='hr-form-container'>
             <h1 className='form-title'>Personal Details</h1>
@@ -43,7 +49,7 @@ const PersonalDetailsForm = (props) => {
                 <input type='text' placeholder="Ex: John Doe" disabled={userDetailsId === "TBF"} onChange={handleInputChange} value={personalDetails.fullName} required className='hr-input' id='fullname' name='fullName' />
 
                 <label htmlFor='date-of-birth' className='hr-label'>Date of Birth<span className='hr-form-span'> *</span></label>
-                <input type='date' onChange={handleInputChange} value={personalDetails.dob} required className='hr-input' id='date-of-birth' name='dob' />
+                <input type='date' onChange={handleInputChange} max={validDateString} value={personalDetails.dob} required className='hr-input' id='date-of-birth' name='dob' />
                 
                 <label htmlFor='phone-number' className='hr-label'>Phone Number<span className='hr-form-span'> *</span></label>
 

@@ -20,16 +20,18 @@ POST http://localhost:5000/api/users/register
 Content-Type: application/json
 
 {
-    "docId": "1002",
-    "username": "nahed",
-    "email": "nahed@gmail.com",
-    "phone": "3333333333",
-    "password": "nahed",
-    "role": "AC",
-    "hiringFor": "Full time HR Manager",
+    "docId": "1000",
+    "username": "akshay",
+    "email": "akshay@gmail.com",
+    "phone": "6305332474",
+    "password": "akshay123",
+    "role": "ADMIN",
+    "hiringFor": "Admin",
     "assignHM": "",
-    "location": "Banglore",
-    "hiringCategory": ["IT"]
+    "location": "Hanamkonda, Telangana",
+    "hiringCategory": ["IT"],
+    "resumeUrl": "",
+    "hmType": ""
 }
 
 ###
