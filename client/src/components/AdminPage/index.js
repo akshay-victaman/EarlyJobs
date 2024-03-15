@@ -42,7 +42,7 @@ const AdminPage = () => {
 
     useEffect(() => {
         const hiringFor = signUpDetails.role === 'AC' ? 'Fulltime Hiring Manager' : signUpDetails.role === 'HR' ? '' : signUpDetails.role === 'ADMIN' ? 'Admin' : signUpDetails.role === 'BDE' ? 'BDE' : ''
-        const docId = signUpDetails.role !== 'ADMIN' ? "TBF" : "";
+        const docId = (signUpDetails.role !== 'ADMIN' && signUpDetails.role !== 'BDE') ? "TBF" : "";
         setSignUpDetails({ ...signUpDetails, hiringFor, docId })
     }, [signUpDetails.role])
 

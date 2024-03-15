@@ -276,7 +276,7 @@ const HiringPartnerDetails = () => {
             const month = currDate.getMonth() + 1;
             const year = currDate.getFullYear();
             const currDateStr = `${day < 10 ? "0"+day : day}- ${month < 10 ? "0"+month : month}- ${year}`;
-            const dateRefCount = `Vic/${format(currDate, 'yy/MMM/dd')}/${(count+1).toString()}`;
+            const dateRefCount = `- Vic/${format(currDate, 'yy/MMM/dd')}/${(count+1).toString()}`;
             const dateAfter3Days = addDays(currDate, 3);
             const lastJoiningDate = format(dateAfter3Days, 'MMMM dd, yyyy');
             const pdfDate = pdfDoc.getPages()[0];
@@ -287,7 +287,7 @@ const HiringPartnerDetails = () => {
             });
             const pdfRef = pdfDoc.getPages()[0];
             pdfRef.drawText(dateRefCount, {
-                x: 478, 
+                x: 472, 
                 y: 743,
                 size: 10.5,
             });
@@ -309,7 +309,7 @@ const HiringPartnerDetails = () => {
             const pdfJoiningDate = pdfDoc.getPages()[0];
             pdfJoiningDate.drawText(`${lastJoiningDate}`, { 
                 x: 430, 
-                y: 597,
+                y: 603,
                 size: 11,
             });
       

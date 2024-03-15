@@ -131,6 +131,10 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
     const today = new Date();
     const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
+    const validYear = today.getFullYear() - 18;
+    const validMonth = String(today.getMonth() + 1).padStart(2, '0');
+    const validDate = String(today.getDate()).padStart(2, '0');
+    const validDateString = `${validYear}-${validMonth}-${validDate}`;
 
     const postCandidateDetails = async (event) => {
         event.preventDefault()
@@ -265,7 +269,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
             <div className="upload-candidate-sub-con">
                 <div className="upload-candidate-input-con">
                     <label className="homepage-label" htmlFor='dateOfBirth'>Date of Birth<span className='hr-form-span'> *</span></label>
-                    <input type="date" name='dateOfBirth' className="homepage-input" id='dateOfBirth' onChange={handleCandidateInputChange} />
+                    <input type="date" name='dateOfBirth' max={validDateString} className="homepage-input" id='dateOfBirth' onChange={handleCandidateInputChange} />
                 </div>
                 <div className="upload-candidate-input-con">
                     <label className="homepage-label" htmlFor='gender'>Gender</label>

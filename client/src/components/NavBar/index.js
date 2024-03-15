@@ -26,6 +26,7 @@ const NavBar = ({isLoggedIn}) => {
     }
 
     const jwtToken = Cookies.get('jwt_token');
+    const role = Cookies.get('role');
 
     return (
         <>
@@ -50,11 +51,15 @@ const NavBar = ({isLoggedIn}) => {
                         </>
                     }
 
-                    <li className='nav-item'>
-                        <Link to='/add-job-vacancies' className='nav-link'>
-                            <button type='button' className='signup-button'>Add Job Vacancies</button>
-                        </Link>
-                    </li>
+                    {
+                        role !== 'BDE' &&
+                        <li className='nav-item'>
+                            <Link to='/add-job-vacancies' className='nav-link'>
+                                <button type='button' className='signup-button'>Add Job Vacancies</button>
+                            </Link>
+                        </li>
+                    }
+
                     {
                         jwtToken !== undefined ?
                         <li className='nav-item'>
