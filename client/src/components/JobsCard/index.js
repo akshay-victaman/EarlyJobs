@@ -10,7 +10,6 @@ const JobsCard = props => {
 
   const hiringFor = Cookies.get('hiring_for')
   const userRole = Cookies.get('role')
-  console.log(hiringFor)
   
   const {
     id,

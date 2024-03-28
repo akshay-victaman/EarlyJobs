@@ -84,6 +84,9 @@ const BDEPage = () => {
     const [noOfOpeningsError, setNoOfOpeningsError] = useState(false)
     const [hiringNeedError, setHiringNeedError] = useState(false)
     const [assignedToError, setAssignedToError] = useState(false)
+    const [qualificationError, setQualificationError] = useState(false)
+    const [experienceError, setExperienceError] = useState(false)
+    const [ageError, setAgeError] = useState(false)
 
     const [postNewJob, setPostNewJob] = useState({
         companyName: '',
@@ -104,6 +107,9 @@ const BDEPage = () => {
         status: 'Open',
         hiringNeed: '',
         assignedTo: [],
+        qualification: '',
+        experience: '',
+        age: ''
     })
 
     useEffect(() => {
@@ -200,6 +206,9 @@ const BDEPage = () => {
           noOfOpenings: postNewJob.noOfOpenings.trim().length === 0,
           hiringNeed: postNewJob.hiringNeed.trim().length === 0,
           assignedTo: postNewJob.assignedTo.length === 0,
+          qualification: postNewJob.qualification.trim().length === 0,
+          experience: postNewJob.experience.trim().length === 0,
+          age: postNewJob.age < 18
         };
       
         // Set errors in state
@@ -218,6 +227,9 @@ const BDEPage = () => {
         setNoOfOpeningsError(errors.noOfOpenings);
         setHiringNeedError(errors.hiringNeed);
         setAssignedToError(errors.assignedTo);
+        setQualificationError(errors.qualification);
+        setExperienceError(errors.experience);
+        setAgeError(errors.age);
       
         return !Object.values(errors).some(Boolean);
       };
@@ -258,6 +270,9 @@ const BDEPage = () => {
             hiringNeed: postNewJob.hiringNeed,
             postedBy: email,
             assignedTo: postNewJob.assignedTo,
+            qualification: postNewJob.qualification,
+            experience: postNewJob.experience,
+            age: postNewJob.age
         }
         console.log(newJob)
         // return
@@ -295,6 +310,9 @@ const BDEPage = () => {
                     status: 'Open',
                     hiringNeed: '',
                     assignedTo: [],
+                    qualification: '',
+                    experience: '',
+                    age: ''
                 })
                 setShowJobForm(false)
             }
@@ -368,7 +386,23 @@ const BDEPage = () => {
                         }
                     </div>
                     <div className='hr-input-con'>
-                        <input type='text' placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
+                        <input type='text' list='skills-data' placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
+                        <datalist id="skills-data">
+                            <option value="Basic Computer Knowledge">Basic Computer Knowledge</option>
+                            <option value="MS Office">MS Office</option>
+                            <option value="Data Entry">Data Entry</option>
+                            <option value="Tally">Tally</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Customer Support">Customer Support</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Digital Marketing">Digital Marketing</option>
+                            <option value="Social Media Marketing">Social Media Marketing</option>
+                            <option value="Content Writing">Content Writing</option>
+                            <option value="SEO">SEO</option>
+                            <option value="Graphic Designing">Graphic Designing</option>
+                            <option value="Communication">Communication</option>
+                        </datalist>
                         <button type='button' className='hr-form-btn-add' onClick={onAddSkills}>+Add</button>
                     </div>
                     <p className='hr-size'>Type a Skill and click 'Add' button to add it to the list</p>
@@ -466,6 +500,24 @@ const BDEPage = () => {
                     {hiringNeedError && <p className='hr-error'>*Please select hiring need</p>}
                 </div>
             </div>
+
+            <div className='salary-container'>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='min-qual'>Minimum Qualification<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='min-qual'  type='text' onChange={handleInputChange} value={postNewJob.qualification} name='qualification' placeholder='Ex: Graduate' />
+                    {qualificationError && <p className='hr-error'>*Please enter Minimum Qualification</p>}
+                </div>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='experience'>Minimum Experience (In years)<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='experience'  type='number' onChange={handleInputChange} value={postNewJob.experience} name='experience' placeholder='Ex: 2' />
+                    {experienceError && <p className='hr-error'>*Please enter Minimum Experience</p>}
+                </div>
+            </div>
+
+            <label className='bde-form-label' htmlFor='age'>Age<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' type='number' id='age' name='age' value={postNewJob.age} onChange={handleInputChange} placeholder='Ex: 25' />
+            {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
+                
 
             <label className='bde-form-label'>Assign To Account Manager<span className='hr-form-span'> *</span></label>
             <div className='hr-input-list-con'>

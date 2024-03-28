@@ -13,7 +13,7 @@ const apiStatusConstant = {
     failure: 'FAILURE',
   }
 
-const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}) => {
+const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, jobsList, setShowCandidateForm}) => {
     const [candidateList, setCandidateList] = useState([])
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [jobId, setJobId] = useState('')
@@ -35,6 +35,9 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
     }, [jobId])
 
     const handleJobIdChange = (event) => {
+        if(jobId === '') {
+          setHrList([])
+        }
         setJobId(event.target.value)
     }
 
@@ -50,7 +53,7 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
       const dbDate = parseISO(date);
       const formattedDate = format(dbDate, 'dd-MMM-yyyy hh:mm a');
       return formattedDate;
-  }
+    }
 
     const getAllCandidatesForHR = async () => {
         setApiStatus(apiStatusConstant.inProgress)
@@ -80,9 +83,11 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
               appliedBy: eachItem.applied_by,
               interviewDate: formatDate(eachItem.interview_date)
             }))
-            const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
-            setHrList(hrList)
-            console.log(hrList)
+            if(jobId !== "") {
+              const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
+              setHrList(hrList)
+              console.log(hrList)
+            }
             console.log(formattedData)
             setCandidateList(formattedData)
             setApiStatus(apiStatusConstant.success)
@@ -123,6 +128,10 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                 interviewDate: formatDate(eachItem.interview_date)
               }))
               const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
+              // const filterHrList = data.map(eachItem => {
+              //   if(hrList.find(hr => hr.hrEmail === eachItem.applied_by)) return null
+              //   else return {hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}
+              // })
               setHrList(hrList)
               console.log(formattedData)
               setCandidateList(formattedData)
@@ -137,9 +146,14 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                 appliedBy: eachItem.applied_by,
                 interviewDate: formatDate(eachItem.interview_date)
               }))
-              const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
+              // const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
+              const hrList = []
+              const filterHrList = data.map(eachItem => {
+                if(hrList.find(hr => hr.hrEmail === eachItem.applied_by)) return null
+                else return hrList.push({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name})
+              })
               setHrList(hrList)
-              console.log(formattedData)
+              console.log(filterHrList)
               setCandidateList(formattedData)
             }
             setApiStatus(apiStatusConstant.success)
@@ -223,8 +237,8 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
             <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>Candidates</span></h1>
             <div className="job-section-select-filter-container">
               <div className="job-section-select-container"> 
-                  <label className="homepage-label" htmlFor='resume'>Select Job</label>
-                  <select className="homepage-input" name='jobId' id='jobId' value={jobId} onChange={handleJobIdChange}>
+                  <label className="homepage-label view-candidates-label" htmlFor='resume'>Select Job</label>
+                  <select className="homepage-input view-candidates-select" name='jobId' id='jobId' value={jobId} onChange={handleJobIdChange}>
                       <option value=''>Select Job</option>
                       {
                           jobsList.map(job => (
@@ -234,21 +248,21 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                   </select>
               </div>
               <div className="job-section-select-container"> 
-                <label className="homepage-label" htmlFor='resume'>Application Status</label>
-                <select className="homepage-input" name='jobId' id='jobId' value={applicationStatus} onChange={handleApplicationStatusChange}>
+                <label className="homepage-label view-candidates-label" htmlFor='resume'>Application Status</label>
+                <select className="homepage-input view-candidates-select" name='jobId' id='jobId' value={applicationStatus} onChange={handleApplicationStatusChange}>
                     <option value=''>All status</option>
-                    <option value='Pending'>Pending</option>
                     <option value='Accepted'>Accepted</option>
                     <option value='Rejected'>Rejected</option>
-                    <option value='On-hold'>On-hold</option>
                     <option value='Ongoing'>Ongoing</option>
+                    <option value='ReScheduled'>ReScheduled</option>
+                    <option value='Joined'>Joined</option>
                 </select>
               </div>
               {
                 Cookies.get('role') !== 'HR' && (
                   <div className="job-section-select-container"> 
-                    <label className="homepage-label" htmlFor='resume'>Filter By Recruiter</label>
-                    <select className="homepage-input" name='jobId' id='jobId' value={selectHr} onChange={handleSelectHrChange}>
+                    <label className="homepage-label view-candidates-label" htmlFor='resume'>Filter By Recruiter</label>
+                    <select className="homepage-input view-candidates-select" name='jobId' id='jobId' value={selectHr} onChange={handleSelectHrChange}>
                         <option value=''>Select HR</option>
                         {
                           hrList.map(hr => (
@@ -267,7 +281,7 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                       Name
                     </th>
                     <th className="job-details-candidates-table-heading-cell">
-                      Email
+                      Company Name
                     </th>
                     <th className="job-details-candidates-table-heading-cell">
                       Phone
@@ -299,7 +313,7 @@ const ViewCandidates = ({onShowCandidateDetails, jobsList, setShowCandidateForm}
                     filteredCandidates.length > 0 && filteredCandidates.map(eachItem => {
                       const jobId1 = jobId==='' ? eachItem.jobId : jobId;
                     return(
-                        <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} candidateDetails={eachItem}  jobId={jobId1} candidateList={candidateList} setCandidateList={setCandidateList} />
+                        <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem}  jobId={jobId1} jobsList={jobsList} candidateList={candidateList} setCandidateList={setCandidateList} />
                     )})               
                   }
                 </table>

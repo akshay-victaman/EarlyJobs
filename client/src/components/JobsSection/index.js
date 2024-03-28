@@ -13,10 +13,8 @@ import './style.css'
 import SalaryRangeList from '../SalaryRangeList'
 import UploadCandidatePage from '../UploadCandidatePage';
 import ViewCandidates from '../ViewCandidates';
-import Footer from '../Footer';
 import { HiringManagerDetailsForm } from '../HiringManagerDetailsForm';
 import MyHrRecruiters from '../MyHrRecruiters';
-import CollegeAgency from '../CollegeAgencyForm/CollegeAgency';
 import CollegeAgencyForm from '../CollegeAgencyForm';
 
 const apiStatusConstant = {
@@ -27,7 +25,7 @@ const apiStatusConstant = {
 }
 
 
-const JobsSection = ({onShowCandidateDetails}) => {
+const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => {
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
@@ -151,7 +149,6 @@ const JobsSection = ({onShowCandidateDetails}) => {
 
   const getJobsCard = async () => {
     setApiStatus(apiStatusConstant.inProgress)
-    const username = Cookies.get('username') 
     const email = Cookies.get('email')
     const role = Cookies.get('role')
     let apiUrl = ""
@@ -174,6 +171,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
     const response = await fetch(apiUrl, options)
     const data = await response.json()
     console.log('api data', data)
+    
     if (response.ok === true) {
       if(data.error) {
         setApiStatus(apiStatusConstant.failure)
@@ -420,7 +418,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
           <span className='filter-text-btn'>Filter Jobs</span>
         </button>
         
-        <div className={`job-section-search-card-con ${showCandidateForm === 1 ? "job-section-candidate": ""}`}>
+        <div className={`job-section-search-card-con ${(showCandidateForm === 2 || showCandidateForm === 3) ? "job-section-view-candidate-con" : ""} ${showCandidateForm === 1 ? "job-section-candidate": ""}`}>
           {/* <div className="search-box-desk-con">
             <input
               type="search"
@@ -443,7 +441,7 @@ const JobsSection = ({onShowCandidateDetails}) => {
             userDetailsId === 'TBF' ? <HiringManagerDetailsForm />
             : (userDetailsId === 'CLG' || userDetailsId === 'AGY') ? <CollegeAgencyForm />
             : showCandidateForm===1 ? <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
-            : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
+            : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
             : showCandidateForm===3 ? <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
             : renderAllSections()
           }

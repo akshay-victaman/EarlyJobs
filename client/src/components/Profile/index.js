@@ -15,12 +15,12 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
 
     const [profileData, setProfileData] = useState({})
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
-    const [resumeUrl, setResumeUrl] = useState('')
+    const [offerLetterURL, setOfferLetterURL] = useState('')
 
     useEffect(() => {
         getProfileData()
         if(Cookies.get('role') === 'HR') {
-            getHrResumes()
+            getHrOfferLetter()
         }
     }, [])
 
@@ -59,10 +59,10 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
         }
     }
 
-    const getHrResumes = async () => {
+    const getHrOfferLetter = async () => {
         const jwtToken = Cookies.get('jwt_token')
         const email = Cookies.get('email')
-        const apiUrl = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/hr-resumes/${email}`
+        const apiUrl = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/hr-offer-letter/${email}`
         const options = {
         method: 'GET',
         headers: {
@@ -77,7 +77,7 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
             if(data.error) {
                 return
             } else if(data.length > 0){
-                setResumeUrl(data[0].resume_url)
+                setOfferLetterURL(data[0].resume_url)
             }
         }
     }
@@ -146,7 +146,7 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
                     userRole === 'AC' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(3)}>My {hmType === "CLG" ? "Interns" : "HR Recruiters"}</button>
                 }
                 {
-                    (userRole === 'HR' && resumeUrl !== '') && <a href={resumeUrl} style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Joining Letter</a>
+                    (userRole === 'HR' && offerLetterURL !== '') && <a href={offerLetterURL} style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Joining Letter</a>
                 }
                 <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
             </>

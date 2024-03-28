@@ -86,6 +86,9 @@ const AddJobVacanciesPage = () => {
     const [nameError, setNameError] = useState(false)
     const [emailError, setEmailError] = useState(false)
     const [contactNoError, setContactNoError] = useState(false)
+    const [qualificationError, setQualificationError] = useState(false)
+    const [experienceError, setExperienceError] = useState(false)
+    const [ageError, setAgeError] = useState(false)
 
     const [addJobVacancies, setAddJobVacancies] = useState({
         companyName: '',
@@ -105,6 +108,9 @@ const AddJobVacanciesPage = () => {
         noOfOpenings: '',
         status: 'Open',
         hiringNeed: '',
+        qualification: '',
+        experience: '',
+        age: '',
         companyDetails: {
             name: '',
             email: '',
@@ -252,6 +258,9 @@ const AddJobVacanciesPage = () => {
                 noOfOpenings: '',
                 status: 'Open',
                 hiringNeed: '',
+                qualification: '',
+                experience: '',
+                age: '',
                 companyDetails: {
                     name: '',
                     email: '',
@@ -285,7 +294,9 @@ const AddJobVacanciesPage = () => {
           name: addJobVacancies.companyDetails.name.trim().length === 0,
           email: !emailRegex.test(addJobVacancies.companyDetails.email),
           contactNo: addJobVacancies.companyDetails.contactNo.length !== 10,
-
+          qualification: addJobVacancies.qualification.trim().length === 0,
+          experience: addJobVacancies.experience.trim().length === 0,
+          age: addJobVacancies.age < 18
         };
       
         // Set errors in state
@@ -306,6 +317,9 @@ const AddJobVacanciesPage = () => {
         setNameError(errors.name);
         setEmailError(errors.email);
         setContactNoError(errors.contactNo);
+        setQualificationError(errors.qualification);
+        setExperienceError(errors.experience);
+        setAgeError(errors.age);
       
         return !Object.values(errors).some(Boolean);
     };
@@ -342,6 +356,9 @@ const AddJobVacanciesPage = () => {
             status: addJobVacancies.status,
             hiringNeed: addJobVacancies.hiringNeed,
             companyDetails: addJobVacancies.companyDetails,
+            qualification: addJobVacancies.qualification,
+            experience: addJobVacancies.experience,
+            age: addJobVacancies.age
         }
 
         console.log(newJob)
@@ -408,7 +425,7 @@ const AddJobVacanciesPage = () => {
             <p className='hr-size'>Type a Skill and click 'Add' button to add it to the list</p>
             {skillsError && <p className='hr-error'>*Please enter skills</p>} */}
 
-<div className="upload-candidate-sub-con">
+            <div className="upload-candidate-sub-con">
                 <div className="upload-candidate-input-con salary-input">
                     <label htmlFor='skills' className='hr-label'>Skills<span className='hr-form-span'> *</span></label>
                     <div className='hr-input-list-con'>
@@ -422,7 +439,23 @@ const AddJobVacanciesPage = () => {
                         }
                     </div>
                     <div className='hr-input-con'>
-                        <input type='text' placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
+                        <input type='text' list='skills-data' placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
+                        <datalist id="skills-data">
+                            <option value="Basic Computer Knowledge">Basic Computer Knowledge</option>
+                            <option value="MS Office">MS Office</option>
+                            <option value="Data Entry">Data Entry</option>
+                            <option value="Tally">Tally</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Customer Support">Customer Support</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Digital Marketing">Digital Marketing</option>
+                            <option value="Social Media Marketing">Social Media Marketing</option>
+                            <option value="Content Writing">Content Writing</option>
+                            <option value="SEO">SEO</option>
+                            <option value="Graphic Designing">Graphic Designing</option>
+                            <option value="Communication">Communication</option>
+                        </datalist>
                         <button type='button' className='hr-form-btn-add' onClick={onAddSkills}>+Add</button>
                     </div>
                     <p className='hr-size'>Type a Skill and click 'Add' button to add it to the list</p>
@@ -520,6 +553,23 @@ const AddJobVacanciesPage = () => {
                     {hiringNeedError && <p className='hr-error'>*Please select hiring need</p>}
                 </div>
             </div>
+
+            <div className='salary-container'>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='min-qual'>Minimum Qualification<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='min-qual'  type='text' onChange={handleInputChange} value={addJobVacancies.qualification} name='qualification' placeholder='Ex: Graduate' />
+                    {qualificationError && <p className='hr-error'>*Please enter Minimum Qualification</p>}
+                </div>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='experience'>Minimum Experience (In years)<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='experience'  type='number' onChange={handleInputChange} value={addJobVacancies.experience} name='experience' placeholder='Ex: 2' />
+                    {experienceError && <p className='hr-error'>*Please enter Minimum Experience</p>}
+                </div>
+            </div>
+
+            <label className='bde-form-label' htmlFor='age'>Age<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' type='number' id='age' name='age' value={addJobVacancies.age} onChange={handleInputChange} placeholder='Ex: 25' />
+            {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
 
             <label className='bde-form-label spoc-label'>Your Company Details<span className='hr-form-span'> *</span></label>
             <label className='bde-form-label' htmlFor='company'>Comapany Name<span className='hr-form-span'> *</span></label>

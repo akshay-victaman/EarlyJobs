@@ -1,12 +1,12 @@
 import Cookies from "js-cookie"
 import { useState } from "react"
+import { MdOutlineEditCalendar } from "react-icons/md";
 
 
-const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId, candidateList, setCandidateList}) => {
+const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewPopup, candidateDetails, jobId, jobsList, candidateList, setCandidateList}) => {
     const [updateOfferStatus, setUpdateOfferStatus] = useState('');
     const [loading, setLoading] = useState(false)
     const {candidateName,candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy, interviewDate} = candidateDetails
-
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const handleCandidateStatusChange = event => {
@@ -59,13 +59,15 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId,
         setLoading(false)
     }
 
+    // console.log(jobsList.filter(eachJob => eachJob.id === jobId)[0].compname)
+    // const companyName = jobsList.filter(eachJob => eachJob.id === jobId)[0].compname
     return (
         <tr className="job-details-candidates-table-row">
             <td className="job-details-candidates-table-cell job-details-candidates-table-cell-hover" onClick={() => onShowCandidateDetails(candidateId)}>
                 {candidateName}
             </td>
             <td className="job-details-candidates-table-cell">
-            {candidateEmail}
+            {/* {companyName} */}
             </td>
             <td className="job-details-candidates-table-cell">
             {candidatePhone}
@@ -79,8 +81,13 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId,
                 {appliedBy}
                 </td>
             }
-            <td className="job-details-candidates-table-cell">
+            <td className="job-details-candidates-table-cell" style={{display: "flex"}} >
                 {interviewDate}
+                {Cookies.get('role') !== 'ADMIN' &&
+                    <button type="button" className="shedule-interview-button" onClick={() => onShowScheduleInterviewPopup(jobId, candidateDetails, setCandidateList, candidateList)} >
+                        <MdOutlineEditCalendar className="shedule-icon" />
+                    </button>
+                }
             </td>
             {
                 Cookies.get('role') !== 'ADMIN' && (
@@ -90,11 +97,11 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, candidateDetails, jobId,
                         (
                             <select className="homepage-input candidate-input-select" id='offerStatus' disabled={offerStatus === 'Accepted' || offerStatus === 'Rejected'} value={updateOfferStatus} onChange={handleCandidateStatusChange}>
                                 <option value=''>Select Offer Status</option>
-                                <option value='Pending'>Pending</option>
                                 <option value='Accepted'>Accepted</option>
                                 <option value='Rejected'>Rejected</option>
-                                <option value='On-hold'>On-hold</option>
                                 <option value='Ongoing'>Ongoing</option>
+                                <option value='ReScheduled'>ReScheduled</option>
+                                <option value='Joined'>Joined</option>
                             </select>
                         )
                         :
