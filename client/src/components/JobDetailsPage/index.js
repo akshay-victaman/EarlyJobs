@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, parseISO, format } from 'date-fns';
 import {Oval} from 'react-loader-spinner'
 import { FaCircleCheck } from "react-icons/fa6";
 import { FiBriefcase, FiEdit } from "react-icons/fi";
@@ -18,6 +18,7 @@ import Footer from '../Footer';
 import UpdateCandidateStatus from '../ViewCandidates/UpdateCandidateStatus';
 import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails';
 import EditJobDetails from '../EditJobDetails';
+import ScheduleInterview from '../ViewCandidates/ScheduleInterview';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -35,12 +36,24 @@ const JobDetailsPage = () => {
   const [hrAssigned, setHrAssigned] = useState(0)
   const [candidateList, setCandidateList] = useState([])
   const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
+  const [viewScheduleInterviewPopup, setViewScheduleInterviewPopup] = useState(false)
+  const [interviewDetails, setInterviewDetails] = useState({})
   const [candidateId, setCandidateId] = useState('')
   const [isEditJob, setIsEditJob] = useState(false)
 
   const onShowCandidateDetails = (candidateId) => {
     setViewCandidateDetails(!viewCandidateDetails)
     setCandidateId(candidateId)
+  }
+
+  const onShowScheduleInterviewPopup = (jobId, candidateDetails, setCandidateList, candidateList) => {
+    setViewScheduleInterviewPopup(!viewScheduleInterviewPopup)
+    setInterviewDetails({
+      jobId,
+      candidateDetails,
+      setCandidateList,
+      candidateList
+    })
   }
 
   const backendUrl = process.env.REACT_APP_BACKEND_API_URL
@@ -103,6 +116,9 @@ const JobDetailsPage = () => {
           language: data.language,
           status: data.status,
           createdAt: data.created_at,
+          experience: data.experience,
+          qualification: data.qualification,
+          age: data.age
         }
         console.log(formattedData)
         setJobDetails(formattedData)
@@ -111,6 +127,12 @@ const JobDetailsPage = () => {
     } else {
       setApiStatus(apiStatusConstant.failure)
     }
+  }
+
+  const formatDate = (date) => {
+    const dbDate = parseISO(date);
+    const formattedDate = format(dbDate, 'dd-MMM-yyyy hh:mm a');
+    return formattedDate;
   }
 
   const getCandidates = async () => {
@@ -140,7 +162,8 @@ const JobDetailsPage = () => {
             candidatePhone: eachItem.phone,
             offerStatus: eachItem.offer_status,
             offeredDate: eachItem.offered_date,
-            appliedBy: eachItem.applied_by
+            appliedBy: eachItem.applied_by,
+            interviewDate: formatDate(eachItem.interview_date)
           }))
           setCandidateList(formattedData)
         } else {
@@ -151,11 +174,11 @@ const JobDetailsPage = () => {
             candidatePhone: eachItem.phone,
             offerStatus: eachItem.offer_status,
             offeredDate: eachItem.offered_date,
-            appliedBy: eachItem.applied_by
+            appliedBy: eachItem.applied_by,
+            interviewDate: formatDate(eachItem.interview_date)
           }))
           setCandidateList(formattedData)
         }
-        console.log(data)
       }
     } else {
       setApiStatus(apiStatusConstant.failure)
@@ -209,6 +232,9 @@ const JobDetailsPage = () => {
             noOfOpenings,
             status,
             hiringNeed,
+            experience,
+            qualification,
+            age
             } = updatedData
     setJobDetails({
       ...jobDetails, 
@@ -232,6 +258,9 @@ const JobDetailsPage = () => {
         language: language,
         status: status,
         createdAt: jobDetails.createdAt,
+        experience: experience,
+        qualification: qualification,
+        age: age
       }
     )
   }
@@ -420,6 +449,9 @@ const JobDetailsPage = () => {
       skills,
       status,
       createdAt,
+      experience,
+      qualification,
+      age
     } = jobDetails
     const formattedDate = formatDistanceToNow(createdAt, { addSuffix: true });
 
@@ -473,7 +505,9 @@ const JobDetailsPage = () => {
           <p className="job-detials-misc"><span className='misc-head'>No of Openings:</span> {noOfOpenings}</p>
           <p className="job-detials-misc"><span className='misc-head'>Language:</span> {jobDetails.language}</p>
           <p className="job-detials-misc"><span className='misc-head'>Skills:</span> {skills}</p>
-
+          <p className="job-detials-misc"><span className='misc-head'>Experience:</span> {experience} years</p>
+          <p className="job-detials-misc"><span className='misc-head'>Qualification:</span> {qualification}</p>
+          <p className="job-detials-misc"><span className='misc-head'>Age:</span> {age}</p>
           <div className="job-details-desc-visit-con">
             <h1 className="job-details-desc-heading">Description</h1>
             <a
@@ -505,7 +539,7 @@ const JobDetailsPage = () => {
                   Name
                 </th>
                 <th className="job-details-candidates-table-heading-cell">
-                  Email
+                  Company Name
                 </th>
                 <th className="job-details-candidates-table-heading-cell">
                   Phone
@@ -519,6 +553,10 @@ const JobDetailsPage = () => {
                     Shortlisted By
                   </th>
                 }
+
+                  <th className="job-details-candidates-table-heading-cell">
+                    Interveiw Date
+                  </th>
                 
                 {
                   Cookies.get('role') !== 'ADMIN' && (
@@ -533,7 +571,7 @@ const JobDetailsPage = () => {
               {
                   candidateList.length > 0 && candidateList.map(eachItem => (
                   
-                  <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} candidateDetails={eachItem} jobId={id} candidateList={candidateList} setCandidateList={setCandidateList} />
+                  <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem} jobId={id} jobsList={[jobDetails]} candidateList={candidateList} setCandidateList={setCandidateList} />
                   ))                    
               }
           </table>
@@ -613,6 +651,14 @@ const JobDetailsPage = () => {
           <div className="view-candidate-details-modal">
             <div className='view-candidate-details-modal-overlay' onClick={onShowCandidateDetails}></div>
             <ViewCandidateDetails onShowCandidateDetails={onShowCandidateDetails} candidateId={candidateId} />
+          </div>
+        }
+
+        {
+          viewScheduleInterviewPopup && 
+          <div className="view-candidate-details-modal">
+            <div className='view-candidate-details-modal-overlay' onClick={onShowScheduleInterviewPopup}></div>
+            <ScheduleInterview onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} interviewDetails={interviewDetails} />
           </div>
         }
         <Footer />

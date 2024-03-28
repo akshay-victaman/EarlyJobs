@@ -60,6 +60,10 @@
     overflow-y: hidden!important;
     height: 100%;
   }
+
+  .job-section-view-candidate-con {
+    display: block;
+  }
   
   .jobs-card-list {
     padding-left: 0px;

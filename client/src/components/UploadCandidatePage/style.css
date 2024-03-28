@@ -65,6 +65,21 @@
     color: #EB6A4D;
 }
 
+.interview-input-con {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.interview-input {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    height: 100%;
+    padding-right: 5px;
+}
+
 @media screen and (max-width: 768px) {
     .upload-candidate-container {
         /* margin-top: 10vh; */

@@ -6,32 +6,46 @@ import './style.css'
 import Footer from '../Footer'
 import { useState } from 'react'
 import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails'
+import ScheduleInterview from '../ViewCandidates/ScheduleInterview'
 
 const JobsPage = () => {
   const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
+  const [viewScheduleInterviewPopup, setViewScheduleInterviewPopup] = useState(false)
   const [candidateId, setCandidateId] = useState('')
+  const [interviewDetails, setInterviewDetails] = useState({})
 
   const onShowCandidateDetails = (candidateId) => {
     setViewCandidateDetails(!viewCandidateDetails)
     setCandidateId(candidateId)
   }
 
-  const role = Cookies.get('role')
-
-  // if (role === 'BDE') {
-  //   return <Redirect to="/bde-portal" />
-  // }
+  const onShowScheduleInterviewPopup = (jobId, candidateDetails, setCandidateList, candidateList) => {
+    setViewScheduleInterviewPopup(!viewScheduleInterviewPopup)
+    setInterviewDetails({
+      jobId,
+      candidateDetails,
+      setCandidateList,
+      candidateList
+    })
+  }
 
   return (
     <>
       <NavBar isLoggedIn={true} />
       <div className="jobs-container">
-        <JobsSection onShowCandidateDetails={onShowCandidateDetails} />
+        <JobsSection onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup}/>
         {
           viewCandidateDetails && 
           <div className="view-candidate-details-modal">
             <div className='view-candidate-details-modal-overlay' onClick={onShowCandidateDetails}></div>
             <ViewCandidateDetails onShowCandidateDetails={onShowCandidateDetails} candidateId={candidateId} />
+          </div>
+        }
+        {
+          viewScheduleInterviewPopup && 
+          <div className="view-candidate-details-modal">
+            <div className='view-candidate-details-modal-overlay' onClick={onShowScheduleInterviewPopup}></div>
+            <ScheduleInterview onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} interviewDetails={interviewDetails} />
           </div>
         }
       </div>

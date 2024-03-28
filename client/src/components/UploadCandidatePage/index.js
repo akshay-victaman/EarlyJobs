@@ -1,9 +1,9 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Cookies from "js-cookie"
-import { Redirect } from "react-router-dom"
 import { IoIosClose } from "react-icons/io";
 import Select from 'react-select';
 import {Oval} from 'react-loader-spinner'
+import { formatISO, differenceInDays, parseISO, sub, parse, format } from 'date-fns';
 import './style.css'
 
 let languageOptions = [
@@ -61,10 +61,9 @@ const customStyles = {
 const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
     const [error, setError] = useState('')
     const [skills, setSkills] = useState('');
-    const [languages, setLanguages] = useState("")
     const [loading, setLoading] = useState(false)
     const [showForm, setShowForm] = useState(true)
-
+    const [hmHrData, setHmHrData] = useState([])
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const [candidateDetails, setCandidateDetails] = useState({
@@ -84,9 +83,13 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         skills: [],
         jobCategory: '',
         offerStatus: 'Ongoing',
-        interviewDate: ''
+        interviewDate: '',
+        interviewTime: ''
       })
 
+    useEffect(() => {
+        getHrAssignedHm()
+    }, [])
 
     const handleCandidateInputChange = (e) => {
         const {name, value} = e.target
@@ -128,6 +131,28 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         languageOptions.push({ value: languageLabel, label: languageLabel })
     }
 
+    const getHrAssignedHm = async () => {
+        const url = `${backendUrl}/api/users/hr-assigned-hm/${Cookies.get('email')}?role=${Cookies.get('role')}`
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            }
+        }
+        const response = await fetch(url, options)
+        const data = await response.json()
+        if(response.ok === true) {
+            if(data.error) {
+                setError(data.error)
+            } else {
+                setHmHrData(data)
+            }
+        } else {
+            setError(data.error)
+        }
+    }
+
     const today = new Date();
     const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
@@ -136,9 +161,166 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
     const validDate = String(today.getDate()).padStart(2, '0');
     const validDateString = `${validYear}-${validMonth}-${validDate}`;
 
+    const sendEmailAck = async () => {
+        const username = Cookies.get('username')
+        const jobName = jobsList.find(job => job.id === candidateDetails.jobId).role
+        const companyName = jobsList.find(job => job.id === candidateDetails.jobId).compname
+        const location = jobsList.find(job => job.id === candidateDetails.jobId).location
+        // const interviewDateTime = new Date(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
+        const interviewDateTime = parse(`${candidateDetails.interviewDate} ${candidateDetails.interviewTime}`, "yyyy-M-d HH:mm", new Date());
+        const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
+
+        let emailContent = `
+            Hi ${candidateDetails.fullName},
+            <br>
+            <br>
+            Your interview for the position of ${jobName} with ${companyName} is scheduled for <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
+            <br>
+            <br>
+            If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username} Victaman, at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
+            <br>
+            <br>
+            Early Jobs <br>
+            Victaman Services Pvt. Ltd.
+        `
+        const encodedContent = encodeURIComponent(emailContent)
+        const queryParameters = {
+            method: 'EMS_POST_CAMPAIGN',
+            userid: '2000702445',
+            password: 'LEP9yt',
+            v: '1.1',
+            contentType: 'text/html',
+            name: 'Interview Scheduled Acknowledgement Mail',
+            fromEmailId: 'no-reply@earlyjobs.in',
+            subject: `Your interview was scheduled for position ${jobName} with ${companyName} by ${username}`,
+            recipients: `${candidateDetails.email}`,
+            content: encodedContent,
+            replyToEmailID: 'no-reply@earlyjobs.in'
+        }
+        const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`
+
+        const response = await fetch(url, {method: "GET", mode: "no-cors"})
+        // const data = await response.json()
+        if(response.ok === true) {
+            // console.log(data)
+        }
+    }
+
+    const sendEmailDayBeforeRem = async () => {
+        const username = Cookies.get('username')
+        const jobName = jobsList.find(job => job.id === candidateDetails.jobId).role
+        const companyName = jobsList.find(job => job.id === candidateDetails.jobId).compname
+        const location = jobsList.find(job => job.id === candidateDetails.jobId).location
+        const interviewDateTime = new Date(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
+        const yesterday = sub(interviewDateTime, { days: 1 });
+        const yesterdayDate = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+
+        const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
+        let emailContent = `
+            Hi ${candidateDetails.fullName},
+            <br>
+            <br>
+            Just a friendly reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for tomorrow, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
+            <br>
+            <br>
+            If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username}, Victaman at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
+            <br>
+            <br>
+            Early Jobs <br>
+            Victaman Services Pvt. Ltd.
+        `
+        const encodedContent = encodeURIComponent(emailContent)
+        const queryParameters = {
+            method: 'EMS_POST_CAMPAIGN',
+            userid: '2000702445',
+            password: 'LEP9yt',
+            v: '1.1',
+            contentType: 'text/html',
+            name: 'EarlyJobs Signup',
+            fromEmailId: 'no-reply@earlyjobs.in',
+            subject: `A reminder about our interview scheduled for position ${jobName} with ${companyName} by ${username}`,
+            recipients: `${candidateDetails.email}`,
+            content: encodedContent,
+            replyToEmailID: 'no-reply@earlyjobs.in',
+            scheduledAt: encodeURIComponent(yesterdayDate + '18:00:00')
+        }
+        const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}&scheduled_at=${queryParameters.scheduledAt}`
+
+        const response = await fetch(url, {method: "GET", mode: "no-cors"})
+        // const data = await response.json()
+        if(response.ok === true) {
+            // console.log(data)
+        }
+    }
+
+    const sendEmailOnDay = async () => {
+        const username = Cookies.get('username')
+        const jobName = jobsList.find(job => job.id === candidateDetails.jobId).role
+        const companyName = jobsList.find(job => job.id === candidateDetails.jobId).compname
+        const location = jobsList.find(job => job.id === candidateDetails.jobId).location
+        const interviewDateTime = new Date(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
+
+        // const interviewDateTime = parse(`${candidateDetails.interviewDate} ${candidateDetails.interviewTime}`, new Date());
+        const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
+
+        let emailContent = `
+            Good morning ${candidateDetails.fullName},
+            <br>
+            <br>
+            This is a gentle reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for today, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
+            <br>
+            <br>
+            If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username}, Victaman at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
+            <br>
+            <br>
+            Early Jobs <br>
+            Victaman Services Pvt. Ltd.
+        `
+        const encodedContent = encodeURIComponent(emailContent)
+        const queryParameters = {
+            method: 'EMS_POST_CAMPAIGN',
+            userid: '2000702445',
+            password: 'LEP9yt',
+            v: '1.1',
+            contentType: 'text/html',
+            name: 'EarlyJobs Signup',
+            fromEmailId: 'no-reply@earlyjobs.in',
+            subject: `A reminder about our interview scheduled for position ${jobName} with ${companyName} by ${username}`,
+            recipients: `${candidateDetails.email}`,
+            content: encodedContent,
+            replyToEmailID: 'no-reply@earlyjobs.in',
+            scheduledAt: encodeURIComponent(candidateDetails.interviewDate + '07:00:00')
+        }
+        const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}&scheduled_at=${queryParameters.scheduledAt}`
+
+        const response = await fetch(url, {method: "GET", mode: "no-cors"})
+        // const data = await response.json()
+        if(response.ok === true) {
+            // console.log(data)
+        }
+    }
+
+    const sendInterviewEmails = async () => {
+        const currentDateTime = new Date();
+        const interviewDateTime = new Date(candidateDetails.interviewDate);
+        const currentDate = `${currentDateTime.getFullYear()}-${String(currentDateTime.getMonth() + 1).padStart(2, '0')}-${String(currentDateTime.getDate()).padStart(2, '0')}`;
+        const interviewDate = `${interviewDateTime.getFullYear()}-${String(interviewDateTime.getMonth() + 1).padStart(2, '0')}-${String(interviewDateTime.getDate()).padStart(2, '0')}`;
+        const diff = differenceInDays(parseISO(interviewDate), parseISO(currentDate));
+        if(diff === 0) {
+            sendEmailAck()
+        } else if(diff === 1) {
+            sendEmailAck()
+            sendEmailOnDay()
+        } else if(diff >= 2) {
+            sendEmailAck()
+            sendEmailDayBeforeRem()
+            sendEmailOnDay()
+        }
+    }
+
+
     const postCandidateDetails = async (event) => {
         event.preventDefault()
-        console.log(candidateDetails)
 
         const dob = new Date(candidateDetails.dateOfBirth);
         const today = new Date();
@@ -149,7 +331,6 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
             age--;
         }
-        // return
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if(
             candidateDetails.jobId === '' ||
@@ -169,19 +350,24 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
             candidateDetails.experienceInMonths === "" ||
             candidateDetails.offerStatus === '' ||
             candidateDetails.jobCategory === '' ||
-            candidateDetails.interviewDate === ''
+            candidateDetails.interviewDate === '' ||
+            candidateDetails.interviewTime === ''
         ) {
             setError("Please fill all the details")
             return
         }
         setError("")
         setLoading(true)
+        
+        const interviewDateTime = new Date(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
+        const formattedDateTime = formatISO(interviewDateTime);
+
         const hrEmail = Cookies.get('email')
         const candidateData = {
           ...candidateDetails,
           hrEmail,
+          interviewDate: formattedDateTime
         }
-        console.log(candidateData)
         // return;
         const url = `${backendUrl}/jobs/candidate/add`
         const options = {
@@ -194,7 +380,6 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         }
         const response = await fetch(url, options)
         const data = await response.json()
-        console.log(data)
         if(response.ok === true) {
             if(data.error) {
                 setError(data.error)
@@ -210,14 +395,16 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                     aadharNumber: '',
                     highestQualification: '',
                     currentLocation: '',
-                    spokenLanguages: [],
+                    spokenLanguages: candidateDetails.spokenLanguages,
                     experienceInYears: '',
                     experienceInMonths: '',
                     skills: [],
                     jobCategory: '',
                     offerStatus: 'Ongoing',
-                    interviewDate: ''
+                    interviewDate: '',
+                    interviewTime: ''
                 })
+                sendInterviewEmails()
                 setShowForm(false)
             }
         } else {
@@ -332,7 +519,23 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                         }
                     </div>
                     <div className='hr-input-con'>
-                        <input type='text' placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
+                        <input type='text' list="skills-data" placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
+                        <datalist id="skills-data">
+                            <option value="Basic Computer Knowledge">Basic Computer Knowledge</option>
+                            <option value="MS Office">MS Office</option>
+                            <option value="Data Entry">Data Entry</option>
+                            <option value="Tally">Tally</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="Customer Support">Customer Support</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Digital Marketing">Digital Marketing</option>
+                            <option value="Social Media Marketing">Social Media Marketing</option>
+                            <option value="Content Writing">Content Writing</option>
+                            <option value="SEO">SEO</option>
+                            <option value="Graphic Designing">Graphic Designing</option>
+                            <option value="Communication">Communication</option>
+                        </datalist>
                         <button type='button' className='hr-form-btn-add' onClick={onAddSkills}>+Add</button>
                     </div>
                     <p className='hr-size'>Type a Skill and click 'Add' button to add it to the list</p>
@@ -378,17 +581,6 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                         <label htmlFor='experienceInMonths' className="experience-label">Months</label>
                     </div>
                 </div>
-                {/* <div className="upload-candidate-input-con">
-                    <label className="homepage-label" htmlFor='offerStatus'>Offer Status<span className='hr-form-span'> *</span></label>
-                    <select className="homepage-input" name='offerStatus' id='offerStatus' value={candidateDetails.offerStatus} onChange={handleCandidateInputChange}>
-                        <option value=''>Select Offer Status</option>
-                        <option value='Pending'>Pending</option>
-                        <option value='Accepted'>Accepted</option>
-                        <option value='Rejected'>Rejected</option>
-                        <option value='On-hold'>On-hold</option>
-                        <option value='ongoing'>Ongoing</option>
-                    </select>
-                </div> */}
                 <div className="upload-candidate-input-con">
                     <label className="homepage-label" htmlFor='resume'>Select Job<span className='hr-form-span'> *</span></label>
                     <select className="homepage-input" name='jobId' id='jobId' value={candidateDetails.jobId} onChange={handleCandidateInputChange}>
@@ -402,8 +594,11 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                 </div>
             </div>
             <div className="upload-candidate-input-con">
-                <label className="homepage-label" htmlFor='interviewDate'>Schedule Interveiw Date<span className='hr-form-span'> *</span></label>
-                <input type="date" name='interviewDate' className="homepage-input" id='interviewDate' min={dateString} onChange={handleCandidateInputChange} />
+                <label className="homepage-label" htmlFor='interviewDate'>Schedule Interveiw Date time<span className='hr-form-span'> *</span></label>
+                <div className="interview-input-con homepage-input">
+                    <input type="date" name='interviewDate' className="homepage-input interview-input" id='interviewDate' min={dateString} value={candidateDetails.interviewDate} onChange={handleCandidateInputChange} />
+                    <input type="time" name='interviewTime' className="homepage-input interview-input" id='interviewDate' value={candidateDetails.interviewTime} onChange={handleCandidateInputChange} />
+                </div>
             </div>
             <div className="upload-candidate-sub-con">
                 <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(0)}>Back</button>
