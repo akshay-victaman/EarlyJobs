@@ -36,7 +36,10 @@ const addJobDetials = async (job) => {
         status, 
         hiringNeed, 
         postedBy, 
-        assignedTo
+        assignedTo,
+        qualification,
+        experience,
+        age
     } = job;
     const id = uuidv4();
     const query = `
@@ -59,9 +62,12 @@ const addJobDetials = async (job) => {
         no_of_openings, 
         status, 
         hiring_need, 
-        posted_by
-        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?)`;
-    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, postedBy]);
+        posted_by,
+        qualification,
+        experience,
+        age
+        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?)`;
+    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, postedBy, qualification, experience, age]);
     console.log('tried to add job')
 
     if (result[0].affectedRows > 0) {
@@ -102,7 +108,10 @@ const editJobDetials = async (job) => {
         status,
         hiringNeed,
         assignedTo,
-        jobId
+        jobId,
+        qualification,
+        experience,
+        age
     } = job;
     const query = `
     UPDATE jobs SET
@@ -122,9 +131,12 @@ const editJobDetials = async (job) => {
         commission_type = ?,
         no_of_openings = ?,
         status = ?,
-        hiring_need = ?
+        hiring_need = ?,
+        qualification = ?,
+        experience = ?,
+        age = ?
     WHERE id = ?`;
-    const result = await db.query(query, [companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, jobId]);
+    const result = await db.query(query, [companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, qualification, experience, age, jobId]);
     if (result[0].affectedRows > 0) {
         await updateJobAssignmentByBde(jobId, assignedTo);
         return {success: 'Job updated successfully'};
@@ -191,7 +203,7 @@ const getAccountManagerJobs = async (email, page) => {
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const query = 'SELECT jobs.* FROM jobs INNER JOIN job_assigned_by_bde ON job_assigned_by_bde.job_id = jobs.id WHERE hm_email = ? order by created_at desc Limit ? offset ?;';
-    const countQuery = 'SELECT count(*) as count FROM jobs WHERE assigned_to = ?';
+    const countQuery = 'SELECT count(*) as count FROM job_assigned_by_bde WHERE hm_email = ?';
     const result = await db.query(query, [email, endIndex, startIndex]);
     const countResult = await db.query(countQuery, [email]);
     return {jobs: result[0], count: countResult[0][0].count};
@@ -303,6 +315,17 @@ const addCandidateDetailsForJob = async (candidate) => {
     }
 }
 
+const updateInterviewDate = async (candidate) => {
+    const {candidateId, jobId, interviewDate} = candidate;
+    const query = 'UPDATE applications SET interview_date = ? WHERE job_id = ? AND candidate_id = ?';
+    const result = await db.query(query, [interviewDate, jobId, candidateId]);
+    if (result[0].affectedRows > 0) {
+        return {success: 'Candidate interview date updated successfully'};
+    } else {         
+        return {error: 'Candidate interview date updation failed'};
+    }
+}
+
 const getJobCandidates = async (jobId) => {
     const query = `
     SELECT 
@@ -382,5 +405,6 @@ module.exports = {
     getJobCandidates,
     updateCandidateOfferStatus,
     getAllCandidatesForHR,
-    getCandidateDetails
+    getCandidateDetails,
+    updateInterviewDate
 }

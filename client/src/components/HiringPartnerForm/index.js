@@ -799,7 +799,7 @@ const HiringPartnerForm = () => {
 
     return (
         <div className='homepage-container'>
-            <NavBar />
+            {/* <NavBar /> */}
             <div className='hiring-partner-container'>
                 <div className='stepper-container'>
                     <Stepper 

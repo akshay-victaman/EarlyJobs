@@ -295,7 +295,7 @@ const AddJobVacanciesPage = () => {
           email: !emailRegex.test(addJobVacancies.companyDetails.email),
           contactNo: addJobVacancies.companyDetails.contactNo.length !== 10,
           qualification: addJobVacancies.qualification.trim().length === 0,
-          experience: addJobVacancies.experience.trim().length === 0,
+          experience: addJobVacancies.experience.length === 0,
           age: addJobVacancies.age < 18
         };
       
@@ -616,7 +616,7 @@ const AddJobVacanciesPage = () => {
     return (
         <>
         <div className='bde-container'>
-            <NavBar />
+            {/* <NavBar /> */}
             <div className='bde-content'>
                 <h1 className='bde-heading'><span className='head-span'>Add Job Vacancies</span></h1>
                 { showJobForm ? renderJobForm() : renderAnotherJobButton()}

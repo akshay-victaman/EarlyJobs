@@ -73,7 +73,7 @@ const HiringPartnerReqPage = () => {
 
     return (
         <div className='homepage-container'>
-            <NavBar />
+            {/* <NavBar /> */}
             <div className='hiring-partner-req-page-content-con'>
                 <h1 className='hiring-partner-req-heading'>Recruiter Requests</h1>
                 <div className="user-view-search-con" style={{marginBottom: "20px"}}>

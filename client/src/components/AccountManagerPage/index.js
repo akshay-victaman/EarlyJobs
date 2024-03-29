@@ -5,7 +5,7 @@ import './style.css';
 const AccountManagerPage = () => {
     return (
         <div className="account-manager-container">
-            <NavBar />
+            {/* <NavBar /> */}
             <div className='bde-content'>
                 <h1 className='bde-heading'>Welcome to <span className='head-span'>Account Manager</span> Portal</h1>
                 

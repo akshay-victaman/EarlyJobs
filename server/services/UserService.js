@@ -103,7 +103,6 @@ const updateDocId = async (user) => {
 
 const loginUser = async (user) => {
     const {email, password} = user;
-    console.log(user)
     // const dbUser = await getUserByNameEmail(email, email);
     const dbUser = await getUserByEmail(email);
     console.log(dbUser)
@@ -155,6 +154,27 @@ const getAllHRsForHiringManager = async (email, hiringFor) => {
     return result[0]; 
 }
 
+const getHrAssignedHm = async (email, role) => {
+    const HRQuery = `
+        SELECT username, phone 
+        FROM users
+        WHERE email = ?
+    `;
+    if(role === 'AC') {
+        const result = await db.query(HRQuery, [email]);
+        return {hm: result[0]};
+    }
+    const result1 = await db.query(HRQuery, [email]);
+    const HMQuery = `
+        SELECT username, phone 
+        FROM users INNER JOIN hrassignedhm ON 
+        users.email = hrassignedhm.hm_email 
+        WHERE hr_email = ?
+    `;
+    const result = await db.query(HMQuery, [email]);
+    return {hm: result[0], hr: result1[0]};
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmailPhone,
@@ -167,5 +187,6 @@ module.exports = {
   loginUser,
   getAllAccountManagers,
   getAllHRs,
-  getAllHRsForHiringManager
+  getAllHRsForHiringManager,
+  getHrAssignedHm
 };

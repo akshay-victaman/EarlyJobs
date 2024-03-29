@@ -11,10 +11,11 @@ router.get('/users/all/account-managers', authenticateToken, userController.getA
 router.get('/users/all/hr/:email', authenticateToken, userController.getAllHRs);
 router.post('/users/register', userController.createUser);
 router.put('/users/update', userController.updateUser);
-router.get('/users/hr-resumes/:email', authenticateToken, userController.getHrResumes);
+router.get('/users/hr-offer-letter/:email', authenticateToken, userController.getHrResumes);
 router.put('/users/update-password', userController.updatePassword);
 router.put('/users/update-doc-id', userController.updateDocId);
 router.post('/users/login', userController.loginUser);
 router.get('/users/hr-for-hm/:email', authenticateToken, userController.getAllHRsForHiringManager);
+router.get('/users/hr-assigned-hm/:email', authenticateToken, userController.getHrAssignedHm);
 
 module.exports = router;

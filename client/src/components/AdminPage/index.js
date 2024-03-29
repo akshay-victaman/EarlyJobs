@@ -298,7 +298,7 @@ const AdminPage = () => {
 
     return (
         <div className='homepage-container'>
-            <NavBar />
+            {/* <NavBar /> */}
             <div className='admin-sub-con'>
                 <div className='admin-page-content-con'>
                     <h1 className='bde-heading'>Welcome to <span className='head-span'>Admin</span> Portal</h1>

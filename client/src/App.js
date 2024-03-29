@@ -1,43 +1,44 @@
-import { Route, Switch, Redirect } from 'react-router-dom';
-import HomePage from './components/HomePage';
-import './App.css';
-import JobsPage from './components/JobsPage';
-import SignUpPage from './components/SignUpPage';
-import BDEPage from './components/BDEPage';
-// import AccountManagerPage from './components/AccountManagerPage';
-import AdminPage from './components/AdminPage';
-import UsersPage from './components/UsersPage';
-import CandidatesPage from './components/CandidatesPage';
-import ProtectedRoute from './components/ProtectedRoute';
-import JobDetailsPage from './components/JobDetailsPage';
-import {HiringPartnerForm} from './components/HiringPartnerForm';
-import AddJobVacanciesPage from './components/AddJobVacanciesPage';
-import HiringPartnerReqPage from './components/HiringPartnerReqPage';
-import HiringPartnerDetails from './components/HiringPartnerDetails';
+import EachRoute from './routes/EachRoute';
 import ScrollUp from './components/ScrollUp';
-import NotFoundPage from './components/NotFoundPage';
+import NavBar from './components/NavBar';
+import './components/AccountManagerPage/style.css'
+import './components/AddJobsPage/style.css'
+import './components/AddJobVacanciesPage/style.css'
+import './components/AdminPage/style.css'
+import './components/BDEPage/style.css'
+import './components/CollegeAgencyForm/style.css'
+import './components/EmploymentTypeList/style.css'
+import './components/FilterJobs/style.css'
+import './components/Footer/style.css'
+import './components/HiringPartnerDetails/style.css'
+import './components/HiringPartnerForm/style.css'
+import './components/HiringPartnerReqPage/style.css'
+import './components/HomePage/style.css'
+import './components/HRPage/style.css'
+import './components/IndustryTypeList/style.css'
+import './components/JobDetailsPage/style.css'
+import './components/JobsCard/style.css'
+import './components/JobsPage/style.css'
+import './components/JobsSection/style.css'
+import './components/LocationTypeList/style.css'
+import './components/NavBar/style.css'
+import './components/NotFoundPage/style.css'
+import './components/Profile/style.css'
+import './components/SalaryRangeList/style.css'
+import './components/ScrollUp/style.css'
+import './components/SignUpPage/style.css'
+import './components/UploadCandidatePage/style.css'
+import './components/UsersPage/style.css'
+import './components/ViewCandidates/style.css'
+import './components/WorkPlaceTypeList/style.css'
+import './App.css';
 
 
 const App = () => (
   <>
-    <Switch>
-      <Route exact path="/" component={HomePage} />
-      <Route exact path="/apply-as-a-recruiter" component={HiringPartnerForm} />
-      <Route exact path="/add-job-vacancies" component={AddJobVacanciesPage} />
-      <ProtectedRoute exact path="/jobs" component={JobsPage} />
-      <ProtectedRoute exact path="/jobs/:id" component={JobDetailsPage} />
-      <ProtectedRoute exact path='/signup' component={SignUpPage} />
-      <ProtectedRoute exact path='/bde-portal' component={BDEPage} />
-      {/* <ProtectedRoute exact path='/account-manager-portal' component={AccountManagerPage} /> */}
-      <ProtectedRoute exact path='/admin' component={AdminPage} />
-      <ProtectedRoute exact path="/admin/users" component={UsersPage} />
-      <ProtectedRoute exact path="/admin/candidates" component={CandidatesPage} />
-      <ProtectedRoute exact path="/admin/recruiter-requests" component={HiringPartnerReqPage} />
-      <ProtectedRoute exact path="/admin/recruiter-requests/:id" component={HiringPartnerDetails} />
-      <Route path="/not-found" component={NotFoundPage} />
-      <Redirect to="/not-found" />
-    </Switch>
-  <ScrollUp />
+    <NavBar />
+    <EachRoute />
+    <ScrollUp />
   </>
 )
 

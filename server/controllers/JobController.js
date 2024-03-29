@@ -103,6 +103,16 @@ const addCandidateDetailsForJob = async (req, res) => {
     }
 }
 
+const updateInterviewDate = async (req, res) => {
+    const candidate = req.body;
+    try {
+      const updatedCandidate = await jobService.updateInterviewDate(candidate);
+      res.json(updatedCandidate);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const getJobCandidates = async (req, res) => {
     const jobId = req.params.jobId;
     try {
@@ -158,5 +168,6 @@ module.exports = {
     getJobCandidates,
     updateCandidateOfferStatus,
     getAllCandidatesForHR,
-    getCandidateDetails
+    getCandidateDetails,
+    updateInterviewDate
 }

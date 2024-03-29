@@ -53,12 +53,15 @@ const HomePage = () => {
         }
         if(role === 'ADMIN') {
             history.replace('/admin')
+            window.location.reload();
             return
         } else if(role === 'BDE') {
             history.replace('/bde-portal')
+            window.location.reload();
             return
         } else if(role === 'AC' || role === 'HR') {
             history.replace('/jobs')
+            window.location.reload();
             return
         }
     }
@@ -113,7 +116,7 @@ const HomePage = () => {
 
     return (
         <div className="homepage-container">
-            <NavBar isLoggedIn={false} />
+            {/* <NavBar isLoggedIn={false} /> */}
             <div className="homepage-sub-con">
                 <div className="homepage-card">
                     <div className='login-type-con'>

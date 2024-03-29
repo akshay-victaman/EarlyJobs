@@ -272,7 +272,7 @@ const UsersPage = () => {
 
     return (
         <div className="homepage-container">
-            <NavBar />
+            {/* <NavBar /> */}
             <div className="user-view-container">
                 <h1 className='user-heading'>Users View</h1>
                 <div className="user-view-search-filter-con">

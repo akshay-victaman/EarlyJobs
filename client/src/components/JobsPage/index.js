@@ -31,7 +31,7 @@ const JobsPage = () => {
 
   return (
     <>
-      <NavBar isLoggedIn={true} />
+      {/* <NavBar isLoggedIn={true} /> */}
       <div className="jobs-container">
         <JobsSection onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup}/>
         {

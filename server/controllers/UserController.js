@@ -127,6 +127,17 @@ const getAllHRsForHiringManager = async (req, res) => {
     }
 }
 
+const getHrAssignedHm = async (req, res) => {
+    try {
+      const email = req.params.email;
+      const role = req.query.role;
+      const users = await userService.getHrAssignedHm(email, role);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmailPhone,
@@ -139,5 +150,6 @@ module.exports = {
   loginUser,
   getAllAccountManagers,
   getAllHRs,
-  getAllHRsForHiringManager
+  getAllHRsForHiringManager,
+  getHrAssignedHm
 };

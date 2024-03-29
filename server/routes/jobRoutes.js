@@ -14,6 +14,7 @@ router.get('/account-manager/:email', authenticateToken, addJobController.getAcc
 router.get('/hr/:email', authenticateToken, addJobController.getHRJobs);
 router.post('/candidate/add', authenticateToken, addJobController.addCandidateDetailsForJob);
 router.get('/candidate/:jobId', authenticateToken, addJobController.getJobCandidates);
+router.put('/candidate/interview', authenticateToken, addJobController.updateInterviewDate);
 router.put('/candidate/status/update', authenticateToken, addJobController.updateCandidateOfferStatus);
 router.get('/candidates/:email', authenticateToken, addJobController.getAllCandidatesForHR);
 router.get('/candidate/details/:candidateId', authenticateToken, addJobController.getCandidateDetails);
