@@ -6,7 +6,7 @@ import './style.css';
 const NotFoundPage = () => {
     return (
         <>
-            <NavBar />
+            {/* <NavBar /> */}
             <div className="not-found-container">
                 <img src="/page-not-found.avif" alt="not-found" className="not-found-image" />
                 <h1 className="not-found-heading">Page Not Found</h1>

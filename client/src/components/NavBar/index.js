@@ -23,6 +23,7 @@ const NavBar = ({isLoggedIn}) => {
         Cookies.remove('hiring_for')
         Cookies.remove('hm_type')
         history.replace('/');
+        window.location.reload();
     }
 
     const jwtToken = Cookies.get('jwt_token');

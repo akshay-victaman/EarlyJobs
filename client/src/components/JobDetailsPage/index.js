@@ -638,7 +638,7 @@ const JobDetailsPage = () => {
 
     return (
       <div className='job-details-main-container'>
-        <NavBar isLoggedIn={true} />
+        {/* <NavBar isLoggedIn={true} /> */}
         {
           isEditJob ? 
           <EditJobDetails updateJobDetails={updateJobDetails} jobDetails={jobDetails} setIsEditJob={setIsEditJob} />

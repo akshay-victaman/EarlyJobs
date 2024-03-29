@@ -207,7 +207,7 @@ const BDEPage = () => {
           hiringNeed: postNewJob.hiringNeed.trim().length === 0,
           assignedTo: postNewJob.assignedTo.length === 0,
           qualification: postNewJob.qualification.trim().length === 0,
-          experience: postNewJob.experience.trim().length === 0,
+          experience: postNewJob.experience.length === 0,
           age: postNewJob.age < 18
         };
       
@@ -578,7 +578,7 @@ const BDEPage = () => {
     return (
         <>
             <div className='bde-container'>
-                <NavBar />
+                {/* <NavBar /> */}
                 <div className='bde-content'>
                     <h1 className='bde-heading'>Welcome to <span className='head-span'>Business Development Executive</span> Portal</h1>
                     { showJobForm ? renderJobForm() : renderAnotherJobButton()}

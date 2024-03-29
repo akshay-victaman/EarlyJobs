@@ -213,7 +213,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
           hiringNeed: editJob.hiringNeed.trim().length === 0,
           assignedTo: editJob.assignedTo.length === 0,
           qualification: editJob.qualification.trim().length === 0,
-          experience: editJob.experience.trim().length === 0,
+          experience: editJob.experience.length === 0,
           age: editJob.age < 18
         };
       

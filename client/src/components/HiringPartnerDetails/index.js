@@ -839,7 +839,7 @@ const HiringPartnerDetails = () => {
 
     return (
         <div className="homepage-container">
-            <NavBar />
+            {/* <NavBar /> */}
             <div className="job-details-container hrp-details-con">
                 <h1 className='hiring-partner-req-heading'>Recruiter Details</h1>
                 {
