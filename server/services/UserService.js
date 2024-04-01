@@ -54,6 +54,7 @@ const createUser = async (user) => {
             if(role === 'HR') {
                 hrAssignedHm(email, assignHM);
                 hrResumes(email, resumeUrl);
+                console.log(resumeUrl)
             }
             return {success: 'User created successfully'};
         } else {
