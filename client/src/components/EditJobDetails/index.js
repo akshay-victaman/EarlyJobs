@@ -4,6 +4,7 @@ import Select from 'react-select';
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
+import EditorComponent from '../TextEditorQuill';
 
 let languageOptions = [
     { value: 'English', label: 'English' },
@@ -144,6 +145,10 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const handleInputChange = (e) => {
         const {name, value} = e.target
         setEditJob({...editJob, [name]: value})  
+    }
+
+    const handleEditorChange = (content) => {
+        setEditJob({...editJob, jobDescription: content})
     }
 
     const onChangeSkills = (e) => {
@@ -354,9 +359,14 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                 </div>
             </div>
 
-            <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
+            {/* <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <textarea className='hr-textarea' id='description'  onChange={handleInputChange} value={editJob.jobDescription} name='jobDescription' placeholder='Minimum of 150 words' />
+            {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>} */}
+
+            <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
+            <EditorComponent content={editJob.jobDescription} handleEditorChange={handleEditorChange} />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
+
 
             <label className='bde-form-label' htmlFor='job-location'>Job Location<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='job-location'  onChange={handleInputChange} value={editJob.jobLocation} name='jobLocation' type='text' placeholder='Enter Job Location' />

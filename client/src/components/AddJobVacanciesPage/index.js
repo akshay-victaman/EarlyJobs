@@ -10,6 +10,7 @@ import './style.css';
 import Footer from '../Footer';
 import app from '../../firebase';
 import ScrollUp from '../ScrollUp';
+import EditorComponent from '../TextEditorQuill';
 
 let languageOptions = [
     { value: 'English', label: 'English' },
@@ -122,6 +123,10 @@ const AddJobVacanciesPage = () => {
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setAddJobVacancies({ ...addJobVacancies, [name]: value})
+    }
+
+    const handleEditorChange = (content) => {
+        setAddJobVacancies({...addJobVacancies, jobDescription: content})
     }
 
     const handleCompanyDetailsChange = (e) => {
@@ -397,6 +402,12 @@ const AddJobVacanciesPage = () => {
             <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <textarea className='hr-textarea' id='description'  onChange={handleInputChange} value={addJobVacancies.jobDescription} name='jobDescription' placeholder='Minimum of 150 words' />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
+            
+            <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
+            <EditorComponent content={addJobVacancies.jobDescription} handleEditorChange={handleEditorChange} />
+            {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
+
+            
             <label className='bde-form-label' htmlFor='job-location'>Job Location<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='job-location'  onChange={handleInputChange} value={addJobVacancies.jobLocation} name='jobLocation' type='text' placeholder='Enter Job Location' />
             {locationError && <p className='hr-error'>*Please enter job location</p>}

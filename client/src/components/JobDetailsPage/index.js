@@ -520,7 +520,8 @@ const JobDetailsPage = () => {
               <HiOutlineExternalLink />
             </a>
           </div>
-          <p className="job-details-desc">{jobDescription}</p>
+          {/* <p className="job-details-desc">{jobDescription}</p> */}
+          <p className="job-details-desc" dangerouslySetInnerHTML={{__html: jobDescription}}></p> 
           <p className="job-details-posted-at">Posted {formattedDate}</p>
           {renderButtons()}
         </div>
