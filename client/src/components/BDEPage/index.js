@@ -8,6 +8,7 @@ import { IoIosClose } from "react-icons/io";
 import NavBar from '../NavBar';
 import './style.css';
 import Footer from '../Footer';
+import EditorComponent from '../TextEditorQuill';
 
 let languageOptions = [
     { value: 'English', label: 'English' },
@@ -136,6 +137,10 @@ const BDEPage = () => {
         setPostNewJob({...postNewJob, [name]: value})  
     }
 
+    const handleEditorChange = (content) => {
+        setPostNewJob({...postNewJob, jobDescription: content})
+    }
+
     const onChangeSkills = (e) => {
         setSkills(e.target.value)
     }
@@ -248,6 +253,7 @@ const BDEPage = () => {
         }
 
         setError("");
+        console.log(postNewJob)
         setLoading(true)
         const email = Cookies.get('email')
         const newJob = {
@@ -357,8 +363,12 @@ const BDEPage = () => {
                 </div>
             </div>
 
-            <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
+            {/* <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <textarea className='hr-textarea' id='description'  onChange={handleInputChange} value={postNewJob.jobDescription} name='jobDescription' placeholder='Minimum of 150 words' />
+            {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>} */}
+
+            <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
+            <EditorComponent content={postNewJob.jobDescription} handleEditorChange={handleEditorChange} />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
 
             <label className='bde-form-label' htmlFor='job-location'>Job Location<span className='hr-form-span'> *</span></label>
