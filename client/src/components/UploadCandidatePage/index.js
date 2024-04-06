@@ -84,7 +84,9 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
         jobCategory: '',
         offerStatus: 'Ongoing',
         interviewDate: '',
-        interviewTime: ''
+        interviewTime: '',
+        shiftTimings: '',
+        employmentType: ''
       })
 
     useEffect(() => {
@@ -351,12 +353,16 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
             candidateDetails.offerStatus === '' ||
             candidateDetails.jobCategory === '' ||
             candidateDetails.interviewDate === '' ||
-            candidateDetails.interviewTime === ''
+            candidateDetails.interviewTime === '' ||
+            candidateDetails.shiftTimings === '' ||
+            candidateDetails.employmentType === ''
         ) {
             setError("Please fill all the details")
             return
         }
         setError("")
+        console.log(candidateDetails)
+        // return
         setLoading(true)
         
         const interviewDateTime = new Date(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
@@ -368,7 +374,6 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
           hrEmail,
           interviewDate: formattedDateTime
         }
-        // return;
         const url = `${backendUrl}/jobs/candidate/add`
         const options = {
             method: 'POST',
@@ -402,7 +407,9 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                     jobCategory: '',
                     offerStatus: 'Ongoing',
                     interviewDate: '',
-                    interviewTime: ''
+                    interviewTime: '',
+                    shiftTimings: '',
+                    employmentType: ''
                 })
                 sendInterviewEmails()
                 setShowForm(false)
@@ -501,6 +508,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                         <option value=''>Select Category</option>
                         <option value='IT'>IT</option>
                         <option value='Non-IT'>Non-IT</option>
+                        <option value='BPO'>BPO</option>
                     </select>
                 </div>
             </div>
@@ -581,25 +589,52 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
                         <label htmlFor='experienceInMonths' className="experience-label">Months</label>
                     </div>
                 </div>
-                <div className="upload-candidate-input-con">
-                    <label className="homepage-label" htmlFor='resume'>Select Job<span className='hr-form-span'> *</span></label>
-                    <select className="homepage-input" name='jobId' id='jobId' value={candidateDetails.jobId} onChange={handleCandidateInputChange}>
-                        <option value=''>Select Job</option>
-                        {
-                            jobsList.map(job => (
-                                <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
-                            ))
-                        }
+
+                <div className='upload-candidate-input-con'>
+                    <label className='homepage-label' htmlFor='employment-type'>Employment Type<span className='hr-form-span'> *</span></label>
+                    <select className='homepage-input' id='employment-type'  onChange={handleCandidateInputChange} name='employmentType' value={candidateDetails.employmentType} >
+                        <option value=''>Select Employment Type</option>
+                        <option value='Full Time'>Full Time</option>
+                        <option value='Part Time'>Part Time</option>
+                        <option value='Internship'>Internship</option>
+                        <option value='Contract'>Contract</option>
+                        <option value='Freelance'>Freelance</option>
                     </select>
                 </div>
             </div>
-            <div className="upload-candidate-input-con">
-                <label className="homepage-label" htmlFor='interviewDate'>Schedule Interveiw Date time<span className='hr-form-span'> *</span></label>
-                <div className="interview-input-con homepage-input">
-                    <input type="date" name='interviewDate' className="homepage-input interview-input" id='interviewDate' min={dateString} value={candidateDetails.interviewDate} onChange={handleCandidateInputChange} />
-                    <input type="time" name='interviewTime' className="homepage-input interview-input" id='interviewDate' value={candidateDetails.interviewTime} onChange={handleCandidateInputChange} />
+
+            <div className="upload-candidate-sub-con">
+                <div className="upload-candidate-input-con">
+                    <label className="homepage-label" htmlFor='interviewDate'>Schedule Interveiw Date time<span className='hr-form-span'> *</span></label>
+                    <div className="interview-input-con homepage-input">
+                        <input type="date" name='interviewDate' className="homepage-input interview-input" id='interviewDate' min={dateString} value={candidateDetails.interviewDate} onChange={handleCandidateInputChange} />
+                        <input type="time" name='interviewTime' className="homepage-input interview-input" id='interviewDate' value={candidateDetails.interviewTime} onChange={handleCandidateInputChange} />
+                    </div>
+                </div>
+                <div className="upload-candidate-input-con">
+                        <label className='homepage-label' htmlFor='shiftTimings'>Shift Timings<span className='hr-form-span'> *</span></label>
+                        <select className='homepage-input' id='shiftTimings'  onChange={handleCandidateInputChange} value={candidateDetails.shiftTimings} name='shiftTimings'>
+                            <option value=''>Select Shift Timings</option>
+                            <option value='Day Shift'>Day Shift</option>
+                            <option value='Night Shift'>Night Shift</option>
+                        </select>
+                    {/* {shiftTimingError && <p className='hr-error'>*Please select shift timings</p>} */}
                 </div>
             </div>
+
+            
+            <div className="upload-candidate-input-con">
+                <label className="homepage-label" htmlFor='resume'>Select Job<span className='hr-form-span'> *</span></label>
+                <select className="homepage-input" name='jobId' id='jobId' value={candidateDetails.jobId} onChange={handleCandidateInputChange}>
+                    <option value=''>Select Job</option>
+                    {
+                        jobsList.map(job => (
+                            <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
+                        ))
+                    }
+                </select>
+            </div>
+
             <div className="upload-candidate-sub-con">
                 <button className="login-button candidate-button" type="button" disabled={loading} onClick={() => setShowCandidateForm(0)}>Back</button>
                 <button className="login-button candidate-button" type="submit" disabled={loading}>
