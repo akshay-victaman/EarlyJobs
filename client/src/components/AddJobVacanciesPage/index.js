@@ -110,8 +110,10 @@ const AddJobVacanciesPage = () => {
         status: 'Open',
         hiringNeed: '',
         qualification: '',
-        experience: '',
-        age: '',
+        minExperience: '',
+        maxExperience: '',
+        minAge: '',
+        maxAge: '',
         companyDetails: {
             name: '',
             email: '',
@@ -264,8 +266,10 @@ const AddJobVacanciesPage = () => {
                 status: 'Open',
                 hiringNeed: '',
                 qualification: '',
-                experience: '',
-                age: '',
+                minExperience: '',
+                maxExperience: '',
+                minAge: '',
+                maxAge: '',
                 companyDetails: {
                     name: '',
                     email: '',
@@ -300,8 +304,11 @@ const AddJobVacanciesPage = () => {
           email: !emailRegex.test(addJobVacancies.companyDetails.email),
           contactNo: addJobVacancies.companyDetails.contactNo.length !== 10,
           qualification: addJobVacancies.qualification.trim().length === 0,
-          experience: addJobVacancies.experience.length === 0,
-          age: addJobVacancies.age < 18
+          minExperience: parseInt(addJobVacancies.minExperience) < 0 || addJobVacancies.minExperience.length === 0 || parseInt(addJobVacancies.minExperience) > parseInt(addJobVacancies.maxExperience),
+          maxExperience: parseInt(addJobVacancies.maxExperience) < 0 || addJobVacancies.maxExperience.length === 0 || parseInt(addJobVacancies.maxExperience) < parseInt(addJobVacancies.minExperience),
+          minAge: parseInt(addJobVacancies.minAge) < 18 || addJobVacancies.minAge.trim().length === 0 || parseInt(addJobVacancies.minAge) > parseInt(addJobVacancies.maxAge),
+          maxAge: parseInt(addJobVacancies.maxAge) < 18 || addJobVacancies.maxAge.trim().length === 0 || parseInt(addJobVacancies.maxAge) < parseInt(addJobVacancies.minAge)
+        
         };
       
         // Set errors in state
@@ -323,8 +330,8 @@ const AddJobVacanciesPage = () => {
         setEmailError(errors.email);
         setContactNoError(errors.contactNo);
         setQualificationError(errors.qualification);
-        setExperienceError(errors.experience);
-        setAgeError(errors.age);
+        setExperienceError(errors.minExperience || errors.maxExperience);
+        setAgeError(errors.minAge || errors.maxAge);
       
         return !Object.values(errors).some(Boolean);
     };
@@ -362,8 +369,10 @@ const AddJobVacanciesPage = () => {
             hiringNeed: addJobVacancies.hiringNeed,
             companyDetails: addJobVacancies.companyDetails,
             qualification: addJobVacancies.qualification,
-            experience: addJobVacancies.experience,
-            age: addJobVacancies.age
+            minExperience: addJobVacancies.minExperience,
+            maxExperience: addJobVacancies.maxExperience,
+            minAge: addJobVacancies.minAge,
+            maxAge: addJobVacancies.maxAge
         }
 
         console.log(newJob)
@@ -399,10 +408,10 @@ const AddJobVacanciesPage = () => {
                     {shiftTimingError && <p className='hr-error'>*Please select shift timings</p>}
                 </div>
             </div>
-            <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
+            {/* <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <textarea className='hr-textarea' id='description'  onChange={handleInputChange} value={addJobVacancies.jobDescription} name='jobDescription' placeholder='Minimum of 150 words' />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
-            
+             */}
             <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <EditorComponent content={addJobVacancies.jobDescription} handleEditorChange={handleEditorChange} />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
@@ -568,18 +577,34 @@ const AddJobVacanciesPage = () => {
             <div className='salary-container'>
                 <div className='emp-work-sub-con'>
                     <label className='bde-form-label' htmlFor='min-qual'>Minimum Qualification<span className='hr-form-span'> *</span></label>
-                    <input className='bde-form-input emp-work-input' id='min-qual'  type='text' onChange={handleInputChange} value={addJobVacancies.qualification} name='qualification' placeholder='Ex: Graduate' />
+                    <select className='bde-form-input emp-work-input' id='min-qual' name='qualification' value={addJobVacancies.qualification} onChange={handleInputChange}>
+                        <option value=''>Select Qualification</option>
+                        <option value="10th">10th</option>
+                        <option value="12th">12th</option>
+                        <option value="ITI">ITI</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Graduation (10 + 2 + 3)">Graduation (10 + 2 + 3)</option>
+                        <option value="Graduation (10 + 2 + 4)">Graduation (10 + 2 + 4)</option>
+                        <option value="Post Graduation">Post Graduation</option>
+                        <option value="PhD">PhD</option>
+                    </select>
                     {qualificationError && <p className='hr-error'>*Please enter Minimum Qualification</p>}
                 </div>
                 <div className='emp-work-sub-con'>
-                    <label className='bde-form-label' htmlFor='experience'>Minimum Experience (In years)<span className='hr-form-span'> *</span></label>
-                    <input className='bde-form-input emp-work-input' id='experience'  type='number' onChange={handleInputChange} value={addJobVacancies.experience} name='experience' placeholder='Ex: 2' />
+                    <label className='bde-form-label' htmlFor='experience'>Total Experience (In years)<span className='hr-form-span'> *</span></label>
+                    <div className='experience-sub-con'>
+                        <input className='bde-form-input emp-work-input experience-bde-input' id='experience'  type='number' onChange={handleInputChange} value={addJobVacancies.minExperience} name='minExperience' placeholder='Min' />
+                        <input className='bde-form-input emp-work-input experience-bde-input' type='number' onChange={handleInputChange} value={addJobVacancies.maxExperience} name='maxExperience' placeholder='Max' />
+                    </div>
                     {experienceError && <p className='hr-error'>*Please enter Minimum Experience</p>}
                 </div>
             </div>
 
             <label className='bde-form-label' htmlFor='age'>Age<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' type='number' id='age' name='age' value={addJobVacancies.age} onChange={handleInputChange} placeholder='Ex: 25' />
+            <div className='salary-container'>
+                <input className='bde-form-input salary-input' id='age'  onChange={handleInputChange} value={addJobVacancies.minAge} name='minAge' type='number' placeholder='Minimum age' />
+                <input className='bde-form-input salary-input'  onChange={handleInputChange} value={addJobVacancies.maxAge} name='maxAge' type='number' placeholder='Maximum age' />
+            </div>
             {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
 
             <label className='bde-form-label spoc-label'>Your Company Details<span className='hr-form-span'> *</span></label>

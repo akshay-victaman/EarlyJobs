@@ -116,9 +116,11 @@ const JobDetailsPage = () => {
           language: data.language,
           status: data.status,
           createdAt: data.created_at,
-          experience: data.experience,
           qualification: data.qualification,
-          age: data.age
+          minExperience: data.min_experience,
+          maxExperience: data.max_experience,
+          minAge: data.min_age,
+          maxAge: data.max_age
         }
         console.log(formattedData)
         setJobDetails(formattedData)
@@ -163,7 +165,8 @@ const JobDetailsPage = () => {
             offerStatus: eachItem.offer_status,
             offeredDate: eachItem.offered_date,
             appliedBy: eachItem.applied_by,
-            interviewDate: formatDate(eachItem.interview_date)
+            interviewDate: formatDate(eachItem.interview_date),
+            companyName: eachItem.company_name
           }))
           setCandidateList(formattedData)
         } else {
@@ -175,7 +178,8 @@ const JobDetailsPage = () => {
             offerStatus: eachItem.offer_status,
             offeredDate: eachItem.offered_date,
             appliedBy: eachItem.applied_by,
-            interviewDate: formatDate(eachItem.interview_date)
+            interviewDate: formatDate(eachItem.interview_date),
+            companyName: eachItem.company_name
           }))
           setCandidateList(formattedData)
         }
@@ -232,9 +236,11 @@ const JobDetailsPage = () => {
             noOfOpenings,
             status,
             hiringNeed,
-            experience,
             qualification,
-            age
+            minExperience,
+            maxExperience,
+            minAge,
+            maxAge
             } = updatedData
     setJobDetails({
       ...jobDetails, 
@@ -258,9 +264,11 @@ const JobDetailsPage = () => {
         language: language,
         status: status,
         createdAt: jobDetails.createdAt,
-        experience: experience,
         qualification: qualification,
-        age: age
+        minExperience: minExperience,
+        maxExperience: maxExperience,
+        minAge: minAge,
+        maxAge: maxAge
       }
     )
   }
@@ -449,9 +457,11 @@ const JobDetailsPage = () => {
       skills,
       status,
       createdAt,
-      experience,
       qualification,
-      age
+      minExperience,
+      maxExperience,
+      minAge,
+      maxAge
     } = jobDetails
     const formattedDate = formatDistanceToNow(createdAt, { addSuffix: true });
 
@@ -505,9 +515,9 @@ const JobDetailsPage = () => {
           <p className="job-detials-misc"><span className='misc-head'>No of Openings:</span> {noOfOpenings}</p>
           <p className="job-detials-misc"><span className='misc-head'>Language:</span> {jobDetails.language}</p>
           <p className="job-detials-misc"><span className='misc-head'>Skills:</span> {skills}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Experience:</span> {experience} years</p>
+          <p className="job-detials-misc"><span className='misc-head'>Experience:</span> {minExperience} - {maxExperience} years</p>
           <p className="job-detials-misc"><span className='misc-head'>Qualification:</span> {qualification}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Age:</span> {age}</p>
+          <p className="job-detials-misc"><span className='misc-head'>Age:</span> {minAge} - {maxAge} years</p>
           <div className="job-details-desc-visit-con">
             <h1 className="job-details-desc-heading">Description</h1>
             <a

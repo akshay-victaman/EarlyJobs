@@ -103,8 +103,10 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         hiringNeed: jobDetails.hiringNeed,
         assignedTo: [],
         qualification: jobDetails.qualification,
-        experience: jobDetails.experience,
-        age: jobDetails.age
+        minExperience: jobDetails.minExperience,
+        maxExperience: jobDetails.maxExperience,
+        minAge: jobDetails.minAge,
+        maxAge: jobDetails.maxAge
     })
 
     useEffect(() => {
@@ -218,8 +220,10 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
           hiringNeed: editJob.hiringNeed.trim().length === 0,
           assignedTo: editJob.assignedTo.length === 0,
           qualification: editJob.qualification.trim().length === 0,
-          experience: editJob.experience.length === 0,
-          age: editJob.age < 18
+          minExperience: parseInt(editJob.minExperience) < 0 || editJob.minExperience.length === 0 || parseInt(editJob.minExperience) > parseInt(editJob.maxExperience),
+          maxExperience: parseInt(editJob.maxExperience) < 0 || editJob.maxExperience.length === 0 || parseInt(editJob.maxExperience) < parseInt(editJob.minExperience),
+          minAge: parseInt(editJob.minAge) < 18 || editJob.minAge.length === 0 || parseInt(editJob.minAge) > parseInt(editJob.maxAge),
+          maxAge: parseInt(editJob.maxAge) < 18 || editJob.maxAge.length === 0 || parseInt(editJob.maxAge) < parseInt(editJob.minAge)
         };
       
         // Set errors in state
@@ -238,8 +242,8 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         setHiringNeedError(errors.hiringNeed);
         setAssignedToError(errors.assignedTo);
         setQualificationError(errors.qualification);
-        setExperienceError(errors.experience);
-        setAgeError(errors.age);
+        setExperienceError(errors.minExperience || errors.maxExperience);
+        setAgeError(errors.minAge || errors.maxAge);
       
         return !Object.values(errors).some(Boolean);
       };
@@ -278,8 +282,10 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             hiringNeed: editJob.hiringNeed,
             assignedTo: editJob.assignedTo,
             qualification: editJob.qualification,
-            experience: editJob.experience,
-            age: editJob.age
+            minExperience: editJob.minExperience,
+            maxExperience: editJob.maxExperience,
+            minAge: editJob.minAge,
+            maxAge: editJob.maxAge
         }
         console.log(newJob)
         // return
@@ -511,18 +517,34 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             <div className='salary-container'>
                 <div className='emp-work-sub-con'>
                     <label className='bde-form-label' htmlFor='min-qual'>Minimum Qualification<span className='hr-form-span'> *</span></label>
-                    <input className='bde-form-input emp-work-input' id='min-qual'  type='text' onChange={handleInputChange} value={editJob.qualification} name='qualification' placeholder='Ex: Graduate' />
+                    <select className='bde-form-input emp-work-input' id='min-qual' name='qualification' value={editJob.qualification} onChange={handleInputChange}>
+                        <option value=''>Select Qualification</option>
+                        <option value="10th">10th</option>
+                        <option value="12th">12th</option>
+                        <option value="ITI">ITI</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Graduation (10 + 2 + 3)">Graduation (10 + 2 + 3)</option>
+                        <option value="Graduation (10 + 2 + 4)">Graduation (10 + 2 + 4)</option>
+                        <option value="Post Graduation">Post Graduation</option>
+                        <option value="PhD">PhD</option>
+                    </select>
                     {qualificationError && <p className='hr-error'>*Please enter Minimum Qualification</p>}
                 </div>
-                <div className='emp-work-sub-con'>
-                    <label className='bde-form-label' htmlFor='experience'>Minimum Experience (In years)<span className='hr-form-span'> *</span></label>
-                    <input className='bde-form-input emp-work-input' id='experience'  type='number' onChange={handleInputChange} value={editJob.experience} name='experience' placeholder='Ex: 2' />
+                <div className='emp-work-sub-con'>                    
+                    <label className='bde-form-label' htmlFor='experience'>Total Experience (In years)<span className='hr-form-span'> *</span></label>
+                    <div className='experience-sub-con'>
+                        <input className='bde-form-input emp-work-input experience-bde-input' id='experience'  type='number' onChange={handleInputChange} value={editJob.minExperience} name='minExperience' placeholder='Min' />
+                        <input className='bde-form-input emp-work-input experience-bde-input' type='number' onChange={handleInputChange} value={editJob.maxExperience} name='maxExperience' placeholder='Max' />
+                    </div>
                     {experienceError && <p className='hr-error'>*Please enter Minimum Experience</p>}
                 </div>
             </div>
 
             <label className='bde-form-label' htmlFor='age'>Age<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' type='number' id='age' name='age' value={editJob.age} onChange={handleInputChange} placeholder='Ex: 25' />
+            <div className='salary-container'>
+                <input className='bde-form-input salary-input' id='age'  onChange={handleInputChange} value={editJob.minAge} name='minAge' type='number' placeholder='Minimum age' />
+                <input className='bde-form-input salary-input'  onChange={handleInputChange} value={editJob.maxAge} name='maxAge' type='number' placeholder='Maximum age' />
+            </div>
             {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
                
 

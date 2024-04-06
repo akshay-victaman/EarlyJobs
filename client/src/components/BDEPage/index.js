@@ -109,8 +109,10 @@ const BDEPage = () => {
         hiringNeed: '',
         assignedTo: [],
         qualification: '',
-        experience: '',
-        age: ''
+        minExperience: '',
+        maxExperience: '',
+        minAge: '',
+        maxAge: ''
     })
 
     useEffect(() => {
@@ -212,8 +214,10 @@ const BDEPage = () => {
           hiringNeed: postNewJob.hiringNeed.trim().length === 0,
           assignedTo: postNewJob.assignedTo.length === 0,
           qualification: postNewJob.qualification.trim().length === 0,
-          experience: postNewJob.experience.length === 0,
-          age: postNewJob.age < 18
+          minExperience: parseInt(postNewJob.minExperience) < 0 || postNewJob.minExperience.length === 0 || parseInt(postNewJob.minExperience) > parseInt(postNewJob.maxExperience),
+          maxExperience: parseInt(postNewJob.maxExperience) < 0 || postNewJob.maxExperience.length === 0 || parseInt(postNewJob.maxExperience) < parseInt(postNewJob.minExperience),
+          minAge: parseInt(postNewJob.minAge) < 18 || postNewJob.minAge.trim().length === 0 || parseInt(postNewJob.minAge) > parseInt(postNewJob.maxAge),
+          maxAge: parseInt(postNewJob.maxAge) < 18 || postNewJob.maxAge.trim().length === 0 || parseInt(postNewJob.maxAge) < parseInt(postNewJob.minAge)
         };
       
         // Set errors in state
@@ -233,9 +237,9 @@ const BDEPage = () => {
         setHiringNeedError(errors.hiringNeed);
         setAssignedToError(errors.assignedTo);
         setQualificationError(errors.qualification);
-        setExperienceError(errors.experience);
-        setAgeError(errors.age);
-      
+        setExperienceError(errors.minExperience || errors.maxExperience);
+        setAgeError(errors.minAge || errors.maxAge);
+
         return !Object.values(errors).some(Boolean);
       };
       
@@ -277,8 +281,10 @@ const BDEPage = () => {
             postedBy: email,
             assignedTo: postNewJob.assignedTo,
             qualification: postNewJob.qualification,
-            experience: postNewJob.experience,
-            age: postNewJob.age
+            minExperience: postNewJob.minExperience,
+            maxExperience: postNewJob.maxExperience,
+            minAge: postNewJob.minAge,
+            maxAge: postNewJob.maxAge
         }
         console.log(newJob)
         // return
@@ -317,7 +323,8 @@ const BDEPage = () => {
                     hiringNeed: '',
                     assignedTo: [],
                     qualification: '',
-                    experience: '',
+                    minExperience: '',
+                    maxExperience: '',
                     age: ''
                 })
                 setShowJobForm(false)
@@ -514,18 +521,34 @@ const BDEPage = () => {
             <div className='salary-container'>
                 <div className='emp-work-sub-con'>
                     <label className='bde-form-label' htmlFor='min-qual'>Minimum Qualification<span className='hr-form-span'> *</span></label>
-                    <input className='bde-form-input emp-work-input' id='min-qual'  type='text' onChange={handleInputChange} value={postNewJob.qualification} name='qualification' placeholder='Ex: Graduate' />
+                    <select className='bde-form-input emp-work-input' id='min-qual' name='qualification' value={postNewJob.qualification} onChange={handleInputChange}>
+                        <option value=''>Select Qualification</option>
+                        <option value="10th">10th</option>
+                        <option value="12th">12th</option>
+                        <option value="ITI">ITI</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Graduation (10 + 2 + 3)">Graduation (10 + 2 + 3)</option>
+                        <option value="Graduation (10 + 2 + 4)">Graduation (10 + 2 + 4)</option>
+                        <option value="Post Graduation">Post Graduation</option>
+                        <option value="PhD">PhD</option>
+                    </select>
                     {qualificationError && <p className='hr-error'>*Please enter Minimum Qualification</p>}
                 </div>
                 <div className='emp-work-sub-con'>
-                    <label className='bde-form-label' htmlFor='experience'>Minimum Experience (In years)<span className='hr-form-span'> *</span></label>
-                    <input className='bde-form-input emp-work-input' id='experience'  type='number' onChange={handleInputChange} value={postNewJob.experience} name='experience' placeholder='Ex: 2' />
-                    {experienceError && <p className='hr-error'>*Please enter Minimum Experience</p>}
+                    <label className='bde-form-label' htmlFor='experience'>Total Experience (In years)<span className='hr-form-span'> *</span></label>
+                    <div className='experience-sub-con'>
+                        <input className='bde-form-input emp-work-input experience-bde-input' id='experience'  type='number' onChange={handleInputChange} value={postNewJob.minExperience} name='minExperience' placeholder='Min' />
+                        <input className='bde-form-input emp-work-input experience-bde-input' type='number' onChange={handleInputChange} value={postNewJob.maxExperience} name='maxExperience' placeholder='Max' />
+                    </div>
+                    {experienceError && <p className='hr-error'>*Please enter Minimum & Maximum Experience</p>}
                 </div>
             </div>
 
             <label className='bde-form-label' htmlFor='age'>Age<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' type='number' id='age' name='age' value={postNewJob.age} onChange={handleInputChange} placeholder='Ex: 25' />
+            <div className='salary-container'>
+                <input className='bde-form-input salary-input' id='age'  onChange={handleInputChange} value={postNewJob.minAge} name='minAge' type='number' placeholder='Minimum age' />
+                <input className='bde-form-input salary-input'  onChange={handleInputChange} value={postNewJob.maxAge} name='maxAge' type='number' placeholder='Maximum age' />
+            </div>
             {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
                 
 

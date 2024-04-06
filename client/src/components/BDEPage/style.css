@@ -18,7 +18,6 @@
     text-decoration: underline;
 }
 
-
 .add-job-container {
     height: 75vh;
     width: 100%;
@@ -145,6 +144,17 @@
     font-size: 14px;
     outline: none;
     background-color: transparent;
+}
+
+.experience-sub-con {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.experience-bde-input {
+    width: 48%;
 }
 
  @media screen and (max-width: 768px) {
