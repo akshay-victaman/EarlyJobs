@@ -334,32 +334,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
             age--;
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        // if(
-        //     candidateDetails.jobId === '' ||
-        //     candidateDetails.fullName.trim() === '' || 
-        //     candidateDetails.fatherName.trim() === '' || 
-        //     !emailRegex.test(candidateDetails.email) ||
-        //     (candidateDetails.phone.length < 10 || candidateDetails.phone.length > 10)||
-        //     candidateDetails.dateOfBirth === '' || age < 18 ||
-        //     candidateDetails.gender === '' ||
-        //     candidateDetails.highestQualification === '' || 
-        //     candidateDetails.currentLocation.trim() === '' || 
-        //     candidateDetails.skills.length === 0 || 
-        //     candidateDetails.spokenLanguages.length === 0 || 
-        //     candidateDetails.experienceInYears < 0 || 
-        //     candidateDetails.experienceInYears === "" ||
-        //     candidateDetails.experienceInMonths < 0 || 
-        //     candidateDetails.experienceInMonths === "" ||
-        //     candidateDetails.offerStatus === '' ||
-        //     candidateDetails.jobCategory === '' ||
-        //     candidateDetails.interviewDate === '' ||
-        //     candidateDetails.interviewTime === '' ||
-        //     candidateDetails.shiftTimings === '' ||
-        //     candidateDetails.employmentType === ''
-        // ) {
-        //     setError("Please fill all the details")
-        //     return
-        // }
+        
         if(candidateDetails.fullName.trim() === '') {
             setError("Please enter full name")
             return
