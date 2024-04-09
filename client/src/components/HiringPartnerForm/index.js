@@ -816,7 +816,7 @@ const HiringPartnerForm = () => {
                     />
                 </div>
                 {renderAllSections()}
-                <Footer />
+                {/* <Footer /> */}
                
             </div>
         </div>

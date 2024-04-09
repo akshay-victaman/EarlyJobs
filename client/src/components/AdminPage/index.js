@@ -553,7 +553,7 @@ const AdminPage = () => {
                 </div>
             </div>
             
-            <Footer />
+            {/* <Footer /> */}
         </div>
     )
 }

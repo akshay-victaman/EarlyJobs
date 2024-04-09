@@ -115,7 +115,7 @@ const HiringPartnerReqPage = () => {
                     </table>
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     )
 }

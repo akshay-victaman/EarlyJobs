@@ -672,7 +672,7 @@ const JobDetailsPage = () => {
             <ScheduleInterview onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} interviewDetails={interviewDetails} />
           </div>
         }
-        <Footer />
+        {/* <Footer /> */}
       </div>
     )
 }

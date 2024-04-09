@@ -2,7 +2,7 @@ import { FaFacebook, FaLinkedin, FaTelegram, FaYoutube } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 import './style.css';
 
-const Footer = () => {
+const Footer = ({handleShowContactForm}) => {
     return (
         <footer className="footer-container">
             <div className="footer-social-media">
@@ -32,7 +32,7 @@ const Footer = () => {
                     {/* <a href="" class="footer-link">Support</a> */}
                     <a href="/TermsPage/index.html" className="footer-link">Terms & Conditions</a>
                     <a href="/PrivacyPage/index.html" className="footer-link">Privacy Policy</a>
-                    <a className="footer-link" rel="noreferrer" id="contact-link">Contact</a>
+                    <a className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact</a>
                 </div>
             </div>
         </footer>

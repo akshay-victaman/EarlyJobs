@@ -318,7 +318,7 @@ const UsersPage = () => {
                 </div>
                 {renderGetUsers()}
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     )
 }
