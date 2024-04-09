@@ -115,7 +115,7 @@ const CandidatesPage = () => {
                 </div>
                 {renderCandidates()}
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     )
 }

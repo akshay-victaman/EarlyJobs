@@ -618,7 +618,7 @@ const BDEPage = () => {
                 </div>
 
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

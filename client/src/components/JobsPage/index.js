@@ -49,7 +49,7 @@ const JobsPage = () => {
           </div>
         }
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }

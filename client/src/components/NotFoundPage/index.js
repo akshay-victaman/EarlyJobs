@@ -17,7 +17,7 @@ const NotFoundPage = () => {
                     Go to Home
                 </Link>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     );
 }

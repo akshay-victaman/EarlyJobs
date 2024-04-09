@@ -1,6 +1,11 @@
+import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import EachRoute from './routes/EachRoute';
 import ScrollUp from './components/ScrollUp';
 import NavBar from './components/NavBar';
+import Footer from './components/Footer';
+import ContactForm from './components/ContactForm';
+import 'react-toastify/dist/ReactToastify.min.css';
 import './components/AccountManagerPage/style.css'
 import './components/AddJobsPage/style.css'
 import './components/AddJobVacanciesPage/style.css'
@@ -34,12 +39,23 @@ import './components/WorkPlaceTypeList/style.css'
 import './App.css';
 
 
-const App = () => (
-  <>
-    <NavBar />
-    <EachRoute />
-    <ScrollUp />
-  </>
-)
+const App = () => {
+
+  const [showContactForm, setShowContactForm] = useState(false)
+
+  const handleShowContactForm = () => {
+    setShowContactForm(!showContactForm)
+  }
+
+  return (
+    <>
+      <NavBar />
+      { showContactForm && <ContactForm handleShowContactForm={handleShowContactForm} /> }
+      <EachRoute />
+      <Footer handleShowContactForm={handleShowContactForm} />
+      <ScrollUp />
+      <ToastContainer autoClose={4000} />
+    </>
+)}
 
 export default App;

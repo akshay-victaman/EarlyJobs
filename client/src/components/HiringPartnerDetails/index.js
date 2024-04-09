@@ -8,11 +8,8 @@ import { PDFDocument, StandardFonts } from 'pdf-lib';
 import { getFirestore, collection, query, where, getDocs, addDoc, doc, deleteDoc, setDoc } from "firebase/firestore"
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import app from "../../firebase"
-import NavBar from "../NavBar"
 import './style.css'
-import Footer from "../Footer";
 import Cookie from "js-cookie";
-import ScrollUp from "../ScrollUp";
 import Victaman_intern_offer_letter from "../../assets/Victaman_intern_offer_letter.pdf"
 
 
@@ -839,15 +836,12 @@ const HiringPartnerDetails = () => {
 
     return (
         <div className="homepage-container">
-            {/* <NavBar /> */}
             <div className="job-details-container hrp-details-con">
                 <h1 className='hiring-partner-req-heading'>Recruiter Details</h1>
                 {
                     loading ? <h1>Loading...</h1> : renderHiringPartnerReqDetails()
                 }
             </div>
-            <ScrollUp />
-            <Footer />
         </div>
     )
 }

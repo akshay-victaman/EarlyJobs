@@ -159,7 +159,7 @@ const HomePage = () => {
                 </div>
                 <img src='/homepage-bg.png' className='homepage-img' alt='homepage-img'/>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     )
 }

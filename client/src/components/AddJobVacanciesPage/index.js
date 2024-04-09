@@ -5,11 +5,8 @@ import {v4 as uuidv4} from 'uuid';
 import Select from 'react-select';
 import emailjs from '@emailjs/browser';
 import {Oval} from 'react-loader-spinner'
-import NavBar from '../NavBar';
 import './style.css';
-import Footer from '../Footer';
 import app from '../../firebase';
-import ScrollUp from '../ScrollUp';
 import EditorComponent from '../TextEditorQuill';
 
 let languageOptions = [
@@ -652,15 +649,11 @@ const AddJobVacanciesPage = () => {
     return (
         <>
         <div className='bde-container'>
-            {/* <NavBar /> */}
             <div className='bde-content'>
                 <h1 className='bde-heading'><span className='head-span'>Add Job Vacancies</span></h1>
                 { showJobForm ? renderJobForm() : renderAnotherJobButton()}
             </div>
-            {/* <Footer /> */}
-            <ScrollUp />
         </div>
-        <Footer />
         </>
     )
 }
