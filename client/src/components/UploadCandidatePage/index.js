@@ -334,32 +334,92 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
             age--;
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if(
-            candidateDetails.jobId === '' ||
-            candidateDetails.fullName.trim() === '' || 
-            candidateDetails.fatherName.trim() === '' || 
-            !emailRegex.test(candidateDetails.email) ||
-            (candidateDetails.phone.length < 10 || candidateDetails.phone.length > 10)||
-            candidateDetails.dateOfBirth === '' || age < 18 ||
-            candidateDetails.gender === '' ||
-            candidateDetails.highestQualification === '' || 
-            candidateDetails.currentLocation.trim() === '' || 
-            candidateDetails.skills.length === 0 || 
-            candidateDetails.spokenLanguages.length === 0 || 
-            candidateDetails.experienceInYears < 0 || 
-            candidateDetails.experienceInYears === "" ||
-            candidateDetails.experienceInMonths < 0 || 
-            candidateDetails.experienceInMonths === "" ||
-            candidateDetails.offerStatus === '' ||
-            candidateDetails.jobCategory === '' ||
-            candidateDetails.interviewDate === '' ||
-            candidateDetails.interviewTime === '' ||
-            candidateDetails.shiftTimings === '' ||
-            candidateDetails.employmentType === ''
-        ) {
-            setError("Please fill all the details")
+        // if(
+        //     candidateDetails.jobId === '' ||
+        //     candidateDetails.fullName.trim() === '' || 
+        //     candidateDetails.fatherName.trim() === '' || 
+        //     !emailRegex.test(candidateDetails.email) ||
+        //     (candidateDetails.phone.length < 10 || candidateDetails.phone.length > 10)||
+        //     candidateDetails.dateOfBirth === '' || age < 18 ||
+        //     candidateDetails.gender === '' ||
+        //     candidateDetails.highestQualification === '' || 
+        //     candidateDetails.currentLocation.trim() === '' || 
+        //     candidateDetails.skills.length === 0 || 
+        //     candidateDetails.spokenLanguages.length === 0 || 
+        //     candidateDetails.experienceInYears < 0 || 
+        //     candidateDetails.experienceInYears === "" ||
+        //     candidateDetails.experienceInMonths < 0 || 
+        //     candidateDetails.experienceInMonths === "" ||
+        //     candidateDetails.offerStatus === '' ||
+        //     candidateDetails.jobCategory === '' ||
+        //     candidateDetails.interviewDate === '' ||
+        //     candidateDetails.interviewTime === '' ||
+        //     candidateDetails.shiftTimings === '' ||
+        //     candidateDetails.employmentType === ''
+        // ) {
+        //     setError("Please fill all the details")
+        //     return
+        // }
+        if(candidateDetails.fullName.trim() === '') {
+            setError("Please enter full name")
             return
-        }
+        } else if(candidateDetails.fatherName.trim() === '') {
+            setError("Please enter father name")
+            return
+        } else if(!emailRegex.test(candidateDetails.email)) {
+            setError("Please enter a valid email")
+            return
+        } else if(candidateDetails.phone.length < 10 || candidateDetails.phone.length > 10) {
+            setError("Please enter a valid phone number")
+            return
+        } else if(candidateDetails.dateOfBirth === '' || age < 18) {
+            setError("Please enter date of birth")
+            return
+        } else if(candidateDetails.gender === '') {
+            setError("Please select gender")
+            return
+        } else if(candidateDetails.highestQualification === '') {
+            setError("Please select highest qualification")
+            return
+        } else if(candidateDetails.currentLocation.trim() === '') {
+            setError("Please enter current location")
+            return
+        } else if(candidateDetails.jobCategory === '') {
+            setError("Please select job category")
+            return
+        } else if(candidateDetails.skills.length === 0) {
+            setError("Please enter skills")
+            return
+        } else if(candidateDetails.spokenLanguages.length === 0) {
+            setError("Please enter spoken languages")
+            return
+        } else if(candidateDetails.experienceInYears < 0 || candidateDetails.experienceInYears === "") {
+            setError("Please enter experience in years")
+            return
+        } else if(candidateDetails.experienceInMonths < 0 || candidateDetails.experienceInMonths === "") {
+            setError("Please enter experience in months")
+            return
+        } else if(candidateDetails.offerStatus === '') {
+            setError("Please select offer status")
+            return
+        } else if(candidateDetails.employmentType === '') {
+            setError("Please select employment type")
+            return
+        } else if(candidateDetails.interviewDate === '') {
+            setError("Please select interview date")
+            return
+        } else if(candidateDetails.interviewTime === '') {
+            setError("Please select interview time")
+            return
+        } else if(candidateDetails.shiftTimings === '') {
+            setError("Please select shift timings")
+            return
+        } else if(candidateDetails.jobId === '') {
+            setError("Please select a job")
+            return
+        } 
+
+
         setError("")
         console.log(candidateDetails)
         // return
