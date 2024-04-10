@@ -7,16 +7,6 @@ const PrivacyPolicyPage = () => {
                 <h1 className='privacy-policy-heading'>Privacy Policies</h1>
             </div>
 
-
-                {/* <div className='privacy-policy-content-sub'>
-                    <h3 className='privacy-policy-subheading'></h3>
-                    <ul className='privacy-policy-list'>
-                        <li className='privacy-policy-item'><span className='privacy-policy-item-span'>(a)</span> </li>
-                        <li className='privacy-policy-item'></li>
-                    </ul>
-                </div> */}
-
-
             <div className="privacy-policy-page__content">
                 <div className='privacy-policy-content-sub'>
                     <h3 className='privacy-policy-subheading'>Victaman Services Private Limited (‘Earlyjobs’ 'Victaman,' the 'Company,' 'we,' 'us,' and 'our,') respect your privacy and are committed to protecting it through our compliance with this privacy policy. This policy describes:</h3>
