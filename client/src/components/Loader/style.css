@@ -1,0 +1,9 @@
+.suspense-loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 85vh;
+    margin-top: 15vh;
+    width: 100%;
+    background-color: #ffffff;
+}

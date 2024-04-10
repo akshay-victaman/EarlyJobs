@@ -1,8 +1,7 @@
 import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from '../components/ProtectedRoute';
-import PrivacyPolicyPage from '../components/PrivacyPolicyPage/index.js';
-import TermsPage from '../components/TermsPage/index.js';
+import Loader from '../components/Loader/index.js';
 
 const HomePage = lazy(() => import("../components/HomePage"));
 const JobsPage = lazy(() => import("../components/JobsPage"));
@@ -17,6 +16,8 @@ const AddJobVacanciesPage = lazy(() => import("../components/AddJobVacanciesPage
 const HiringPartnerReqPage = lazy(() => import("../components/HiringPartnerReqPage"));
 const HiringPartnerDetails = lazy(() => import("../components/HiringPartnerDetails"));
 const NotFoundPage = lazy(() => import("../components/NotFoundPage"));
+const PrivacyPolicyPage = lazy(() => import("../components/PrivacyPolicyPage"));
+const TermsPage = lazy(() => import("../components/TermsPage"));
 
 
 const EachRoute = () => {
@@ -25,7 +26,7 @@ const EachRoute = () => {
             
             <Route exact path="/"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <HomePage />
                     </Suspense>
                 }
@@ -33,7 +34,7 @@ const EachRoute = () => {
 
             <Route exact path="/privacy-policy"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <PrivacyPolicyPage />
                     </Suspense>
                 }
@@ -41,7 +42,7 @@ const EachRoute = () => {
 
             <Route exact path="/terms-and-conditions"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <TermsPage />
                     </Suspense>
                 }
@@ -49,7 +50,7 @@ const EachRoute = () => {
 
             <Route exact path="/apply-as-a-recruiter"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <HiringPartnerForm />
                     </Suspense>
                 }
@@ -57,7 +58,7 @@ const EachRoute = () => {
 
             <Route exact path="/add-job-vacancies"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <AddJobVacanciesPage />
                     </Suspense>
                 }
@@ -65,7 +66,7 @@ const EachRoute = () => {
 
             <ProtectedRoute exact path="/jobs"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <JobsPage />
                     </Suspense>
                 }
@@ -73,7 +74,7 @@ const EachRoute = () => {
 
             <ProtectedRoute exact path="/jobs/:id"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <JobDetailsPage />
                     </Suspense>
                 }
@@ -81,7 +82,7 @@ const EachRoute = () => {
 
             <ProtectedRoute exact path='/signup'
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <SignUpPage />
                     </Suspense>
                 }
@@ -89,7 +90,7 @@ const EachRoute = () => {
 
             <ProtectedRoute exact path='/bde-portal'
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <BDEPage />
                     </Suspense>
                 }
@@ -97,7 +98,7 @@ const EachRoute = () => {
 
             <ProtectedRoute exact path='/admin'
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <AdminPage />
                     </Suspense>
                 }
@@ -105,7 +106,7 @@ const EachRoute = () => {
 
             <ProtectedRoute exact path="/admin/users"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <UsersPage />
                     </Suspense>
                 }
@@ -113,7 +114,7 @@ const EachRoute = () => {
 
             <ProtectedRoute exact path="/admin/candidates"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <CandidatesPage />
                     </Suspense>
                 }
@@ -121,7 +122,7 @@ const EachRoute = () => {
 
             <ProtectedRoute exact path="/admin/recruiter-requests"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <HiringPartnerReqPage />
                     </Suspense>
                 }
@@ -129,7 +130,7 @@ const EachRoute = () => {
 
             <ProtectedRoute exact path="/admin/recruiter-requests/:id"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <HiringPartnerDetails />
                     </Suspense>
                 }
@@ -137,7 +138,7 @@ const EachRoute = () => {
 
             <Route path="/not-found"
                 render={() =>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<Loader />}>
                         <NotFoundPage />
                     </Suspense>
                 }
