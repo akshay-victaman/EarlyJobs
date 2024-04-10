@@ -31,7 +31,7 @@ const Footer = ({handleShowContactForm}) => {
                 <div className="footer-link-wrapper">
                     {/* <a href="/RefundPolicy/index.html" className="footer-link">Refund Policy</a> */}
                     {/* <a href="" class="footer-link">Support</a> */}
-                    <Link to='/privacy-policy' className="footer-link">Terms & Conditions</Link>
+                    <Link to='/terms-and-conditions' className="footer-link">Terms & Conditions</Link>
                     <Link to='/privacy-policy' className="footer-link">Privacy Policy</Link>
                     <a className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact</a>
                 </div>

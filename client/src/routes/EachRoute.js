@@ -2,6 +2,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from '../components/ProtectedRoute';
 import PrivacyPolicyPage from '../components/PrivacyPolicyPage/index.js';
+import TermsPage from '../components/TermsPage/index.js';
 
 const HomePage = lazy(() => import("../components/HomePage"));
 const JobsPage = lazy(() => import("../components/JobsPage"));
@@ -34,6 +35,14 @@ const EachRoute = () => {
                 render={() =>
                     <Suspense fallback={<div>Loading...</div>}>
                         <PrivacyPolicyPage />
+                    </Suspense>
+                }
+            />
+
+            <Route exact path="/terms-and-conditions"
+                render={() =>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <TermsPage />
                     </Suspense>
                 }
             />

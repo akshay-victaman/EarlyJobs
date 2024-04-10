@@ -36,6 +36,7 @@ import './components/UploadCandidatePage/style.css'
 import './components/UsersPage/style.css'
 import './components/ViewCandidates/style.css'
 import './components/WorkPlaceTypeList/style.css'
+import './components/PrivacyPolicyPage/style.css'
 import './App.css';
 
 
