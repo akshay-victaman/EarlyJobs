@@ -7,3 +7,10 @@
     width: 100%;
     background-color: #ffffff;
 }
+
+@media screen and (max-width: 768px){
+    .suspense-loader-container {
+        height: 90vh;
+        margin-top: 10vh;
+    }
+}
