@@ -1,6 +1,7 @@
 import { FaFacebook, FaLinkedin, FaTelegram, FaYoutube } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 import './style.css';
+import { Link } from "react-router-dom";
 
 const Footer = ({handleShowContactForm}) => {
     return (
@@ -30,8 +31,8 @@ const Footer = ({handleShowContactForm}) => {
                 <div className="footer-link-wrapper">
                     {/* <a href="/RefundPolicy/index.html" className="footer-link">Refund Policy</a> */}
                     {/* <a href="" class="footer-link">Support</a> */}
-                    <a href="/TermsPage/index.html" className="footer-link">Terms & Conditions</a>
-                    <a href="/PrivacyPage/index.html" className="footer-link">Privacy Policy</a>
+                    <Link to='/privacy-policy' className="footer-link">Terms & Conditions</Link>
+                    <Link to='/privacy-policy' className="footer-link">Privacy Policy</Link>
                     <a className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact</a>
                 </div>
             </div>
