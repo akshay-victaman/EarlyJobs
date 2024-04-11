@@ -98,8 +98,11 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username} Victaman, at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
             <br>
             <br>
-            Early Jobs <br>
-            Victaman Services Pvt. Ltd.
+            Regards,
+            <br> 
+            earlyjobs.in team
+            <br> 
+            Victaman Enterprises
         `
         const encodedContent = encodeURIComponent(emailContent)
         const queryParameters = {
@@ -110,7 +113,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             contentType: 'text/html',
             name: 'Interview Scheduled Acknowledgement Mail',
             fromEmailId: 'no-reply@earlyjobs.in',
-            subject: `Your interview was scheduled for position ${jobName} with ${companyName} by ${username}`,
+            subject: `Interview Scheduled by Earlyjobs Victaman`,
             recipients: `${candidateDetails.candidateEmail}`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'
@@ -144,8 +147,11 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username}, Victaman at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
             <br>
             <br>
-            Early Jobs <br>
-            Victaman Services Pvt. Ltd.
+            Regards,
+            <br> 
+            earlyjobs.in team
+            <br> 
+            Victaman Enterprises
         `
         const encodedContent = encodeURIComponent(emailContent)
         const queryParameters = {
@@ -156,7 +162,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             contentType: 'text/html',
             name: 'EarlyJobs Signup',
             fromEmailId: 'no-reply@earlyjobs.in',
-            subject: `A reminder about our interview scheduled for position ${jobName} with ${companyName} by ${username}`,
+            subject: `A reminder about your interview scheduled by Earlyjobs Victaman`,
             recipients: `${candidateDetails.candidateEmail}`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in',
@@ -191,8 +197,11 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username}, Victaman at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
             <br>
             <br>
-            Early Jobs <br>
-            Victaman Services Pvt. Ltd.
+            Regards,
+            <br> 
+            earlyjobs.in team
+            <br> 
+            Victaman Enterprises
         `
         const encodedContent = encodeURIComponent(emailContent)
         const queryParameters = {
@@ -203,7 +212,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             contentType: 'text/html',
             name: 'EarlyJobs Signup',
             fromEmailId: 'no-reply@earlyjobs.in',
-            subject: `A reminder about our interview scheduled for position ${jobName} with ${companyName} by ${username}`,
+            subject: `A reminder about your interview scheduled by Earlyjobs Victaman`,
             recipients: `${candidateDetails.candidateEmail}`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in',

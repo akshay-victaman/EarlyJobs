@@ -99,9 +99,9 @@ const AdminPage = () => {
         const assignHMDetails = hiringManagersList.filter((hm) => hm.email === signUpDetails.assignHM)[0]
         let emailContent = ''
         if(signUpDetails.role === 'HR') {
-            emailContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials. <br> Your hiring manager is ${assignHMDetails.username} and the contact number is ${assignHMDetails.phone}. Please contact for the further process. <br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
+            emailContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials. <br> Your hiring manager is ${assignHMDetails.username} and the contact number is ${assignHMDetails.phone}. Please contact for the further process. <br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team<br> Victaman Enterprises`
         } else {
-            emailContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials.<br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team`
+            emailContent = `Hi ${signUpDetails.username},<br><br> your account for ${signUpDetails.hiringFor} has been created.<br> You can log in to the earlyjobs.in portal using the below credentials.<br><br> Login Email : ${signUpDetails.email}<br> Login Password: ${signUpDetails.password}<br><br> This Email contains confidential information about your account, so don't forward this mail to anyone.<br> If you received this email by mistake or without your concern contact hr@ealryjobs.in team immediately.<br><br> Thank you,<br> Regards,<br> earlyjobs.in team<br> Victaman Enterprises`
         }
         const encodedContent = encodeURIComponent(emailContent)
         const queryParameters = {
@@ -112,7 +112,7 @@ const AdminPage = () => {
             contentType: 'text/html',
             name: 'EarlyJobs Signup',
             fromEmailId: 'no-reply@earlyjobs.in',
-            subject: `Successfully created an account as a ${signUpDetails.hiringFor} in Earlyjobs.in portal`,
+            subject: `Account created in Earlyjobs.in as a ${signUpDetails.hiringFor}`,
             recipients: `${signUpDetails.email},hr@earlyjobs.in,no-reply@earlyjobs.in`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'

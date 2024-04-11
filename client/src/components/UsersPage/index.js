@@ -5,11 +5,9 @@ import { format, parseISO } from 'date-fns';
 import Cookies from 'js-cookie';
 import { Redirect } from 'react-router-dom';
 import { Oval } from 'react-loader-spinner';
-import NavBar from "../NavBar"
 import './style.css'
 import { useState, useEffect } from 'react';
 import UsersItem from '../UsersItem';
-import Footer from '../Footer';
 
 
 const UsersPage = () => {

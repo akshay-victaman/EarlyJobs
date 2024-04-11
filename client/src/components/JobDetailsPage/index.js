@@ -12,9 +12,7 @@ import {TiLocation} from 'react-icons/ti'
 import {BsFillBriefcaseFill} from 'react-icons/bs'
 import {HiOutlineExternalLink} from 'react-icons/hi'
 import {ThreeCircles} from 'react-loader-spinner'
-import NavBar from '../NavBar'
 import './style.css'
-import Footer from '../Footer';
 import UpdateCandidateStatus from '../ViewCandidates/UpdateCandidateStatus';
 import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails';
 import EditJobDetails from '../EditJobDetails';
