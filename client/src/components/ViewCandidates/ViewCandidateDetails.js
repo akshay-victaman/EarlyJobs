@@ -58,6 +58,8 @@ const ViewCandidateDetails = (props) => {
                     phone: data.phone,
                     skills: data.skills,
                     spokenLanguages: data.spoken_languages,
+                    shiftTimings: data.shift_timings,
+                    employmentType: data.employment_type,
                 }
                 setCandidateDetails(formattedData)
                 setApiStatus(apiStatusConstant.success)
@@ -69,7 +71,7 @@ const ViewCandidateDetails = (props) => {
     }
 
     const { aadharNumber, createdAt, currentLocation, dateOfBirth, email, experienceInMonths, experienceInYears,
-        fatherName, gender, highestQualification, jobCategory, name, phone, skills, spokenLanguages } = candidateDetails;
+        fatherName, gender, highestQualification, jobCategory, name, phone, skills, spokenLanguages, shiftTimings, employmentType} = candidateDetails;
 
     let formattedDOB = null;
     let formattedCreatedAt = null;
@@ -133,6 +135,14 @@ const ViewCandidateDetails = (props) => {
             <div className="candidate-details-sub-con">
                 <p className="candidate-details-sub-heading">Skills: </p>
                 <p className="candidate-details-sub-text">{skills}</p>
+            </div>
+            <div className="candidate-details-sub-con">
+                <p className="candidate-details-sub-heading">Employment Type: </p>
+                <p className="candidate-details-sub-text">{employmentType}</p>
+            </div>
+            <div className="candidate-details-sub-con">
+                <p className="candidate-details-sub-heading">Shift Timings: </p>
+                <p className="candidate-details-sub-text">{shiftTimings}</p>
             </div>
             <div className="candidate-details-sub-con">
                 <p className="candidate-details-sub-heading">Created At: </p>

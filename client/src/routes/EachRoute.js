@@ -80,13 +80,13 @@ const EachRoute = () => {
                 }
             />
 
-            <ProtectedRoute exact path='/signup'
+            {/* <ProtectedRoute exact path='/signup'
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <SignUpPage />
                     </Suspense>
                 }
-            />
+            /> */}
 
             <ProtectedRoute exact path='/bde-portal'
                 render={() =>
