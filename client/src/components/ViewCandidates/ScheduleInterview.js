@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Cookies from 'js-cookie'
-import { formatISO, differenceInDays, parseISO, sub, parse, format } from 'date-fns';
+import { formatISO, differenceInDays, parseISO, sub, parse, format, set } from 'date-fns';
 import { ThreeCircles } from 'react-loader-spinner'
 
 const apiStatusConstant = {
@@ -11,11 +11,14 @@ const apiStatusConstant = {
 }
 
 const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => {
-    const { jobId, candidateDetails, setCandidateList, candidateList } = interviewDetails
+    const { jobId, candidateDetails, setCandidateList, candidateList, jobsList } = interviewDetails
+    console.log(jobsList)
     const [jobDetails, setJobDetails] = useState({})
     const [hmHrData, setHmHrData] = useState({})
     const [interviewDate, setInterviewDate] = useState('')
     const [interviewTime, setInterviewTime] = useState('')
+    const [companyName, setCompanyName] = useState('')
+    // const [location, setLocation] = useState('')
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
     const [loading, setLoading] = useState(false)
 
@@ -45,6 +48,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
                 setApiStatus(apiStatusConstant.failure)
             } else {
                 setJobDetails(data)
+                setCompanyName(data.id)
                 setApiStatus(apiStatusConstant.success)
             }
         } else {
@@ -252,8 +256,8 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
     }
 
     const scheduleInterview = async () => {
-        if(interviewDate === '' || interviewTime === '') {
-            alert('Please enter the date and time for the interview')
+        if(interviewDate === '' || interviewTime === '' || companyName === '') {
+            alert('Please fill all the fields to reschedule the interview')
             return;
         }
         const interviewDateTime = new Date(`${interviewDate}T${interviewTime}`);
@@ -261,9 +265,13 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
         
         const candidateData = {
             candidateId: candidateDetails.candidateId,
-            jobId,
+            jobId: companyName,
+            hrEmail: Cookies.get('email'),
+            offerStatus: 'Ongoing',
             interviewDate: formattedDateTime
         }
+        console.log(candidateData)
+        // return
         setLoading(true)
         const url = `${backendUrl}/jobs/candidate/interview/`
         const options = {
@@ -281,15 +289,17 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
                 alert(data.error)
             } else {
                 sendInterviewEmails()
-                setCandidateList(candidateList.map(eachItem => {
-                    if(eachItem.candidateId === candidateDetails.candidateId) {
-                      return {
-                        ...eachItem,
-                        interviewDate: formatDate(formattedDateTime)
-                      }
-                    }
-                    return eachItem
-                }))
+                if(jobId === companyName) {
+                    setCandidateList(candidateList.map(eachItem => {
+                        if(eachItem.candidateId === candidateDetails.candidateId) {
+                        return {
+                            ...eachItem,
+                            interviewDate: formatDate(formattedDateTime)
+                        }
+                        }
+                        return eachItem
+                    }))
+                }
                 onShowScheduleInterviewPopup()
             }
         } else {
@@ -303,6 +313,16 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
 
     const renderRescheduleInterview = () => (
         <>
+            <label htmlFor="companyName" className="homepage-label">Company Name</label>
+            <select id="companyName" name="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="homepage-input">
+                {
+                    jobsList.map((eachJob) => (
+                        <option key={eachJob.id} value={eachJob.id}>{eachJob.role} - {eachJob.compname}</option>
+                    ))
+                }
+            </select>
+            {/* <label htmlFor="location" className="homepage-label">Location</label>
+            <input type="text" id="location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} className="homepage-input" /> */}
             <label htmlFor="interviewDate" className="homepage-label">Interview Date</label>
             <input type="date" id="interviewDate" name="interviewDate" value={interviewDate} min={dateString} onChange={(e) => setInterviewDate(e.target.value)} className="homepage-input" required />
             <label htmlFor="interviewTime" className="homepage-label">Interview Time</label>

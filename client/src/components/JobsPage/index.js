@@ -19,13 +19,14 @@ const JobsPage = () => {
     setCandidateId(candidateId)
   }
 
-  const onShowScheduleInterviewPopup = (jobId, candidateDetails, setCandidateList, candidateList) => {
+  const onShowScheduleInterviewPopup = (jobId, candidateDetails, jobsList, setCandidateList, candidateList) => {
     setViewScheduleInterviewPopup(!viewScheduleInterviewPopup)
     setInterviewDetails({
       jobId,
       candidateDetails,
       setCandidateList,
-      candidateList
+      candidateList,
+      jobsList
     })
   }
 
