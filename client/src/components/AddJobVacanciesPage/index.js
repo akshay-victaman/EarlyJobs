@@ -73,6 +73,7 @@ const AddJobVacanciesPage = () => {
     const [shiftTimingError, setShiftTimingError] = useState(false)
     const [descriptionError, setDescriptionError] = useState(false)
     const [locationError, setLocationError] = useState(false)
+    const [locationLinkError, setLocationLinkError] = useState(false)
     const [salaryError, setSalaryError] = useState(false)
     const [skillsError, setSkillsError] = useState(false)
     const [languageError, setLanguageError] = useState(false)
@@ -95,6 +96,7 @@ const AddJobVacanciesPage = () => {
         shiftTimings: '',
         jobDescription: '',
         jobLocation: '',
+        locationLink: '',
         salaryMin: '',
         salaryMax: '',
         skills: [],
@@ -251,6 +253,7 @@ const AddJobVacanciesPage = () => {
                 category: '',
                 jobDescription: '',
                 jobLocation: '',
+                locationLink: '',
                 salaryMin: '',
                 salaryMax: '',
                 skills: [],
@@ -289,6 +292,7 @@ const AddJobVacanciesPage = () => {
           shiftTimings: addJobVacancies.shiftTimings.trim().length === 0,
           description: addJobVacancies.jobDescription.split(/\s+/).length < 150,
           location: addJobVacancies.jobLocation.trim().length === 0,
+          locationLink: addJobVacancies.locationLink.trim().length === 0,
           salary: addJobVacancies.salaryMin.trim().length === 0 || addJobVacancies.salaryMax.trim().length === 0,
           skills: addJobVacancies.skills.length === 0,
           language: addJobVacancies.language.length === 0,
@@ -315,6 +319,7 @@ const AddJobVacanciesPage = () => {
         setShiftTimingError(errors.shiftTimings);
         setDescriptionError(errors.description);
         setLocationError(errors.location);
+        setLocationLinkError(errors.locationLink);
         setSalaryError(errors.salary);
         setSkillsError(errors.skills);
         setLanguageError(errors.language);
@@ -353,6 +358,7 @@ const AddJobVacanciesPage = () => {
             shiftTimings: addJobVacancies.shiftTimings,
             description: addJobVacancies.jobDescription,
             location: addJobVacancies.jobLocation,
+            locationLink: addJobVacancies.locationLink,
             salaryMin: addJobVacancies.salaryMin,
             salaryMax: addJobVacancies.salaryMax,
             skills: addJobVacancies.skills,
@@ -405,10 +411,7 @@ const AddJobVacanciesPage = () => {
                     {shiftTimingError && <p className='hr-error'>*Please select shift timings</p>}
                 </div>
             </div>
-            {/* <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
-            <textarea className='hr-textarea' id='description'  onChange={handleInputChange} value={addJobVacancies.jobDescription} name='jobDescription' placeholder='Minimum of 150 words' />
-            {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
-             */}
+            
             <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <EditorComponent content={addJobVacancies.jobDescription} handleEditorChange={handleEditorChange} />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
@@ -417,6 +420,11 @@ const AddJobVacanciesPage = () => {
             <label className='bde-form-label' htmlFor='job-location'>Job Location<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='job-location'  onChange={handleInputChange} value={addJobVacancies.jobLocation} name='jobLocation' type='text' placeholder='Enter Job Location' />
             {locationError && <p className='hr-error'>*Please enter job location</p>}
+
+            <label className='bde-form-label' htmlFor='location-link'>Location Link<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='location-link'  onChange={handleInputChange} value={addJobVacancies.locationLink} name='locationLink' type='text' placeholder='Enter Location Link' />
+            {locationLinkError && <p className='hr-error'>*Please enter location link</p>}
+
             <label className='bde-form-label' htmlFor='salary'>Salary(in LPA)<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>
                 <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMin} name='salaryMin' type='number' placeholder='Minimum - INR' />

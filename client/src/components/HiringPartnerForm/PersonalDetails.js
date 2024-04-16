@@ -11,17 +11,54 @@ const countryOptions = [
     { value: '+237', label: '+237'},
 ];
 
+const customStyles2 = {
+    control: (provided, state) => ({
+        ...provided,
+        border: '1px solid #EB6A4D',
+        borderRadius: '5px',
+        boxShadow: null,
+        '&:hover': {
+            borderColor: '#EB6A4D',
+        },
+        marginBottom: '16px',
+        width: '100%',
+        height: '35px',
+        minHeight: '35px',
+        fontSize: '14px'
+    }),
+    menu: (provided, state) => ({
+        ...provided,
+        marginTop: '0px',
+        paddingTop: '0px',
+    }),
+    dropdownIndicator: (provided) => ({
+        ...provided,
+        color: '#EB6A4D',
+        '&:hover': {
+            color: '#EB6A4D',
+        },
+        width: '15px',
+        padding: '0px',
+        margin: '0px',
+        border: '0px',
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isSelected ? '#EB6A4D' : null,
+        color: state.isSelected ? 'white' : 'black',
+    }),
+};
+
 const defaultSelectedValue = countryOptions[0].value;
 
 const PersonalDetailsForm = (props) => {
     const {
         handleInputChange,
-        languages,
         onChangeLanguage,
         personalDetails,
-        handleLanguageChange, 
         handleLanguageRemove, 
         onSubmitPersonalDetails, 
+        languageOptions,
         error 
     } = props;
 
@@ -103,7 +140,7 @@ const PersonalDetailsForm = (props) => {
                 <input type='text' placeholder="Ex: 123456" onChange={handleInputChange} value={personalDetails.permPincode} required className='hr-input' id='permPincode' name='permPincode' />
                 
                 <label htmlFor='languages' className='hr-label'>Languages you speak<span className='hr-form-span'> *</span></label>
-                <div className='hr-input-list-con'>
+                {/* <div className='hr-input-list-con'>
                     {
                         personalDetails.languages.map((language) => (
                             <div className='hr-input-list' key={language.id}>
@@ -117,7 +154,24 @@ const PersonalDetailsForm = (props) => {
                     <input type='text' placeholder="Ex: English" className='hr-input-sub' id='languages' name='languages' required={personalDetails.languages.length === 0} value={languages} onChange={onChangeLanguage} />
                     <button type='button' className='hr-form-btn-add' onClick={handleLanguageChange}>+Add</button>
                 </div>
-                <p className='hr-size'>Type a language and click 'Add' button to add it to the list</p>
+                <p className='hr-size'>Type a language and click 'Add' button to add it to the list</p> */}
+                <div className='hr-input-list-con'>
+                        {
+                        personalDetails.languages.map((language, index) => (
+                            <div className='hr-input-list' key={index}>
+                                <p className='hr-input-list-item'>{language}</p>
+                                <button type='button' className='hr-remove-item-button' onClick={() => handleLanguageRemove(index, language)}><IoIosClose className='hr-close-icon' /></button>
+                            </div>
+                        ))
+                    }
+                </div>
+                <Select
+                    options={languageOptions}
+                    defaultValue={languageOptions.length !== 0 && { label: languageOptions[0].label }}
+                    isSearchable={true}
+                    onChange={onChangeLanguage}
+                    styles={customStyles2}
+                />
 
 
                 {

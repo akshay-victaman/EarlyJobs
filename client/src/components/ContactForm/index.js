@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReCAPTCHA from "react-google-recaptcha";
 import {toast} from 'react-toastify';
 import './style.css'
 
@@ -13,6 +14,10 @@ const ContactForm = ({handleShowContactForm}) => {
     const { name, value } = event.target;
     setFormState({ ...formState, [name]: value });
   };
+
+  function onChange(value) {
+    console.log("Captcha value:", value);
+  }
 
   const sendEmail = async () => {
 
@@ -106,6 +111,10 @@ const ContactForm = ({handleShowContactForm}) => {
                 <p className="success-text">{successMessage}</p>
             </div>
             )}
+            <ReCAPTCHA
+              sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+              onChange={onChange}
+            />
             <button type="submit" className='login-button'>Submit</button>
         </form>
     </section>

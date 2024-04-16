@@ -70,6 +70,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const [shiftTimingError, setShiftTimingError] = useState(false)
     const [descriptionError, setDescriptionError] = useState(false)
     const [locationError, setLocationError] = useState(false)
+    const [locationLinkError, setLocationLinkError] = useState(false)
     const [salaryError, setSalaryError] = useState(false)
     const [skillsError, setSkillsError] = useState(false)
     const [languageError, setLanguageError] = useState(false)
@@ -90,6 +91,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         shiftTimings: jobDetails.shiftTimings,
         jobDescription: jobDetails.jobDescription,
         jobLocation: jobDetails.location,
+        locationLink: jobDetails.locationLink,
         salaryMin: jobDetails.minSalary,
         salaryMax: jobDetails.maxSalary,
         skills: jobDetails.skills.split(',').map(skill => ({id: uuidv4(), value: skill})),
@@ -211,6 +213,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
           shiftTimings: editJob.shiftTimings.trim().length === 0,
           description: editJob.jobDescription.split(/\s+/).length < 150,
           location: editJob.jobLocation.trim().length === 0,
+          locationLink: editJob.locationLink.trim().length === 0,
           salary: editJob.salaryMin.length === 0 || editJob.salaryMax.length === 0,
           skills: editJob.skills.length === 0,
           employmentType: editJob.employmentType.trim().length === 0,
@@ -233,6 +236,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         setShiftTimingError(errors.shiftTimings);
         setDescriptionError(errors.description);
         setLocationError(errors.location);
+        setLocationLinkError(errors.locationLink);
         setSalaryError(errors.salary);
         setSkillsError(errors.skills);
         setEmploymentError(errors.employmentType);
@@ -269,6 +273,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             shiftTimings: editJob.shiftTimings,
             description: editJob.jobDescription,
             location: editJob.jobLocation,
+            locationLink: editJob.locationLink,
             minSalary: editJob.salaryMin,
             maxSalary: editJob.salaryMax,
             skills: editJob.skills.map(skill => skill.value).join(', '),
@@ -365,10 +370,6 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                 </div>
             </div>
 
-            {/* <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
-            <textarea className='hr-textarea' id='description'  onChange={handleInputChange} value={editJob.jobDescription} name='jobDescription' placeholder='Minimum of 150 words' />
-            {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>} */}
-
             <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <EditorComponent content={editJob.jobDescription} handleEditorChange={handleEditorChange} />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
@@ -377,6 +378,10 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             <label className='bde-form-label' htmlFor='job-location'>Job Location<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='job-location'  onChange={handleInputChange} value={editJob.jobLocation} name='jobLocation' type='text' placeholder='Enter Job Location' />
             {locationError && <p className='hr-error'>*Please enter job location</p>}
+
+            <label className='bde-form-label' htmlFor='location-link'>Location Link<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='location-link'  onChange={handleInputChange} value={editJob.locationLink} name='locationLink' type='text' placeholder='Enter Location Link' />
+            {locationLinkError && <p className='hr-error'>*Please enter location link</p>}
 
             <label className='bde-form-label' htmlFor='salary'>Salary(in LPA)<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>

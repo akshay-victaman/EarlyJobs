@@ -51,6 +51,20 @@ const customStyles = {
     }),
 };
 
+let languageOptions = [
+    { value: 'English', label: 'English' },
+    { value: 'Hindi', label: 'Hindi' },
+    { value: 'Tamil', label: 'Tamil' },
+    { value: 'Kannada', label: 'Kannada' },
+    { value: 'Malayalam', label: 'Malayalam' },
+    { value: 'Telugu', label: 'Telugu' },
+    { value: 'Marathi', label: 'Marathi' },
+    { value: 'Gujarati', label: 'Gujarati' },
+    { value: 'Bengali', label: 'Bengali' },
+    { value: 'Punjabi', label: 'Punjabi' },
+    { value: 'Odia', label: 'Odia' }
+];
+
 
 const HiringPartnerForm = () => {
     const steps = [
@@ -232,26 +246,21 @@ const HiringPartnerForm = () => {
         setPersonalDetails(prevState => ({ ...prevState, [name]: value}))
     }
 
-    const onChangeLanguage = (event) => {
-        setLanguages(event.target.value)
+    const onChangeLanguage = (e) => {
+        if(e.value === "") return
+        const languages = personalDetails.languages
+        languages.push(e.value)
+        setPersonalDetails({ ...personalDetails, languages })
+        languageOptions = languageOptions.filter((option) => option.value !== e.value)
     }
 
-    const handleLanguageChange = (event) => {
-        const trimmedLanguage = languages.trim()
-        if(trimmedLanguage === "") {
-            return
-        }
-        const language = {
-            id: uuidv4(),
-            value: trimmedLanguage
-        }
-        setPersonalDetails(prevState => ({ ...prevState, languages: [...prevState.languages, language]}))
-        setLanguages("")
+    const handleLanguageRemove = (index, languageLabel) => {
+        const languages = personalDetails.languages
+        languages.splice(index, 1)
+        setPersonalDetails({ ...personalDetails, languages })
+        languageOptions.push({ value: languageLabel, label: languageLabel })
     }
 
-    const handleLanguageRemove = (id) => {
-        setPersonalDetails(prevState => ({ ...prevState, languages: prevState.languages.filter((language) => language.id !== id)}))
-    }
 
     // Qualification Events
 
@@ -484,7 +493,7 @@ const HiringPartnerForm = () => {
         } else if(personalDetails.permPincode.trim().length === 0) {
             setError("*Please enter permanent address pincode")
             return
-        } else if(languages !== "" && personalDetails.languages.length === 0) {
+        } else if(personalDetails.languages.length === 0) {
             setError("*Please enter languages you speak")
             return
         } else if(personalDetails.applyFor.trim().length === 0) {
@@ -731,13 +740,11 @@ const HiringPartnerForm = () => {
         switch(currentStep) {
             case 0: return <PersonalDetailsForm 
                                 handleInputChange={handleInputChange}
-                                languages={languages}
                                 onChangeLanguage={onChangeLanguage}
                                 personalDetails={personalDetails}
-                                handleLanguageChange={handleLanguageChange}
                                 handleLanguageRemove={handleLanguageRemove}
-                                handleCurrentStep={handleCurrentStep}
                                 onSubmitPersonalDetails={onSubmitPersonalDetails}
+                                languageOptions={languageOptions}
                                 error={error}
                             />;
             case 1: return <QualificationForm 
@@ -799,7 +806,6 @@ const HiringPartnerForm = () => {
 
     return (
         <div className='homepage-container'>
-            {/* <NavBar /> */}
             <div className='hiring-partner-container'>
                 <div className='stepper-container'>
                     <Stepper 
@@ -815,9 +821,7 @@ const HiringPartnerForm = () => {
                         activeStep={ currentStep } 
                     />
                 </div>
-                {renderAllSections()}
-                {/* <Footer /> */}
-               
+                {renderAllSections()}               
             </div>
         </div>
     )

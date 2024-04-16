@@ -1,4 +1,11 @@
+import React, { useEffect } from 'react';
+
 const TermsPage = () => {
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     return (
         <div className="privacy-policy-page">
             <div className="privacy-policy-page__background">
