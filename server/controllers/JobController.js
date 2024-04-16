@@ -137,10 +137,13 @@ const updateCandidateOfferStatus = async (req, res) => {
 
 }
 
-const getAllCandidatesForHR = async (req, res) => {
+const getInitialCandidates = async (req, res) => {
     const email = req.params.email;
+    const offerStatus = req.query.offerStatus;
+    const page = parseInt(req.query.page) || 1;
+    console.log(email, offerStatus, page)
     try {
-      const candidates = await jobService.getAllCandidatesForHR(email);
+      const candidates = await jobService.getInitialCandidates(email, offerStatus, page);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -170,7 +173,7 @@ module.exports = {
     addCandidateDetailsForJob,
     getJobCandidates,
     updateCandidateOfferStatus,
-    getAllCandidatesForHR,
+    getInitialCandidates,
     getCandidateDetails,
     updateInterviewDate
 }
