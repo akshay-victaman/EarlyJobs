@@ -27,12 +27,13 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
 
     useEffect(() => {
         if(jobId !== '') {
-            getCandidates()
+            getCandidates(selectHr, applicationStatus, page)
         } else {
             setCandidateList([])
+            setHrList([])
             // getAllCandidatesForHR()
         }
-    }, [jobId])
+    }, [jobId, applicationStatus, selectHr, page])
 
     const handleJobIdChange = (event) => {
         if(jobId === '') {
@@ -44,13 +45,11 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
 
     const handleApplicationStatusChange = (event) => {
         setApplicationStatus(event.target.value)
-        getCandidates(selectHr, event.target.value)
     }
 
     const handleSelectHrChange = (event) => {
       setSelectHr(event.target.value)
       // getAllCandidatesForHR(event.target.value)
-      getCandidates(event.target.value, applicationStatus)
     }
 
     const formatDate = (date) => {
@@ -150,7 +149,6 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
 
     const handlePageChange = (page) => {
       setPage(page)
-      getCandidates(selectHr, applicationStatus, page)
     };
   
     const itemRender = (current, type, element) => {
