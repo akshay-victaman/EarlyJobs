@@ -5,9 +5,7 @@ import Select from 'react-select';
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
-import NavBar from '../NavBar';
 import './style.css';
-import Footer from '../Footer';
 import EditorComponent from '../TextEditorQuill';
 
 let languageOptions = [
@@ -76,6 +74,7 @@ const BDEPage = () => {
     const [shiftTimingError, setShiftTimingError] = useState(false)
     const [descriptionError, setDescriptionError] = useState(false)
     const [locationError, setLocationError] = useState(false)
+    const [locationLinkError, setLocationLinkError] = useState(false)
     const [salaryError, setSalaryError] = useState(false)
     const [skillsError, setSkillsError] = useState(false)
     const [languageError, setLanguageError] = useState(false)
@@ -96,6 +95,7 @@ const BDEPage = () => {
         shiftTimings: '',
         jobDescription: '',
         jobLocation: '',
+        locationLink: '',
         salaryMin: '',
         salaryMax: '',
         skills: [],
@@ -204,6 +204,7 @@ const BDEPage = () => {
           shiftTimings: postNewJob.shiftTimings.trim().length === 0,
           description: postNewJob.jobDescription.split(/\s+/).length < 150,
           location: postNewJob.jobLocation.trim().length === 0,
+          locationLink: postNewJob.locationLink.trim().length === 0,
           salary: postNewJob.salaryMin.trim().length === 0 || postNewJob.salaryMax.trim().length === 0,
           skills: postNewJob.skills.length === 0,
           language: postNewJob.language.length === 0,
@@ -227,6 +228,7 @@ const BDEPage = () => {
         setShiftTimingError(errors.shiftTimings);
         setDescriptionError(errors.description);
         setLocationError(errors.location);
+        setLocationLinkError(errors.locationLink);
         setSalaryError(errors.salary);
         setSkillsError(errors.skills);
         setLanguageError(errors.language);
@@ -267,6 +269,7 @@ const BDEPage = () => {
             shiftTimings: postNewJob.shiftTimings,
             description: postNewJob.jobDescription,
             location: postNewJob.jobLocation,
+            locationLink: postNewJob.locationLink,
             minSalary: postNewJob.salaryMin,
             maxSalary: postNewJob.salaryMax,
             skills: postNewJob.skills.map(skill => skill.value).join(', '),
@@ -310,6 +313,7 @@ const BDEPage = () => {
                     shiftTimings: '',
                     jobDescription: '',
                     jobLocation: '',
+                    locationLink: '',
                     salaryMin: '',
                     salaryMax: '',
                     skills: [],
@@ -369,18 +373,18 @@ const BDEPage = () => {
                     {shiftTimingError && <p className='hr-error'>*Please select shift timings</p>}
                 </div>
             </div>
-
-            {/* <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
-            <textarea className='hr-textarea' id='description'  onChange={handleInputChange} value={postNewJob.jobDescription} name='jobDescription' placeholder='Minimum of 150 words' />
-            {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>} */}
-
+            
             <label className='bde-form-label' htmlFor='description'>Job Description<span className='hr-form-span'> *</span></label>
             <EditorComponent content={postNewJob.jobDescription} handleEditorChange={handleEditorChange} />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
 
-            <label className='bde-form-label' htmlFor='job-location'>Job Location<span className='hr-form-span'> *</span></label>
+            <label className='bde-form-label' htmlFor='job-location'>Job Address<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='job-location'  onChange={handleInputChange} value={postNewJob.jobLocation} name='jobLocation' type='text' placeholder='Enter Job Location' />
             {locationError && <p className='hr-error'>*Please enter job location</p>}
+
+            <label className='bde-form-label' htmlFor='location-link'>Location Link<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='location-link'  onChange={handleInputChange} value={postNewJob.locationLink} name='locationLink' type='text' placeholder='Enter Location Link' />
+            {locationLinkError && <p className='hr-error'>*Please enter location link</p>}
 
             <label className='bde-form-label' htmlFor='salary'>Salary(in LPA)<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>

@@ -558,7 +558,11 @@ const HiringPartnerDetails = () => {
                     <div className="hiring-partner-details-con">
                         <p className="hiring-partner-label">Languages:</p>
                         <p className="hiring-partner-value">
-                            {personalDetails.languages.map((language) => language.value).join(', ')}
+                            {
+                                (typeof personalDetails.languages[0] === 'object') ? 
+                                personalDetails.languages.map(language => language.value).join(', ') : 
+                                personalDetails.languages.map((language) => language).join(', ')
+                            }
                         </p>
                     </div>
                     <div className="hiring-partner-details-con">

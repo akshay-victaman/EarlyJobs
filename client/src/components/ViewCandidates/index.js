@@ -29,8 +29,8 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         if(jobId !== '') {
             getCandidates()
         } else {
-            // setCandidateList([])
-            getAllCandidatesForHR()
+            setCandidateList([])
+            // getAllCandidatesForHR()
         }
     }, [jobId])
 
@@ -39,14 +39,18 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
           setHrList([])
         }
         setJobId(event.target.value)
+        setApplicationStatus('')
     }
 
     const handleApplicationStatusChange = (event) => {
         setApplicationStatus(event.target.value)
+        getCandidates(selectHr, event.target.value)
     }
 
     const handleSelectHrChange = (event) => {
       setSelectHr(event.target.value)
+      // getAllCandidatesForHR(event.target.value)
+      getCandidates(event.target.value, applicationStatus)
     }
 
     const formatDate = (date) => {
@@ -55,10 +59,11 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
       return formattedDate;
     }
 
-    const getAllCandidatesForHR = async () => {
+    const getAllCandidatesForHR = async (hrEmail) => {
         setApiStatus(apiStatusConstant.inProgress)
         const jwtToken = Cookies.get('jwt_token')
-        const email = Cookies.get('email')
+        let email = Cookies.get('email')
+        if(hrEmail !== '') email = hrEmail
         const apiUrl = `${backendUrl}/jobs/candidates/${email}`
         const options = {
           method: 'GET',
@@ -68,6 +73,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         }
         const response = await fetch(apiUrl, options)
         const data = await response.json()
+        console.log(data)
         if (response.ok === true) {
           if(data.error) {
             setApiStatus(apiStatusConstant.failure)
@@ -81,14 +87,13 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
               offerStatus: eachItem.offer_status,
               offeredDate: eachItem.offered_date,
               appliedBy: eachItem.applied_by,
-              interviewDate: formatDate(eachItem.interview_date)
+              interviewDate: formatDate(eachItem.interview_date),
+              companyName: eachItem.company_name
             }))
             if(jobId !== "") {
-              const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
-              setHrList(hrList)
-              console.log(hrList)
+              // const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
+              // setHrList(hrList)
             }
-            console.log(formattedData)
             setCandidateList(formattedData)
             setApiStatus(apiStatusConstant.success)
           }
@@ -97,10 +102,13 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         }
     }
 
-    const getCandidates = async () => {
+    const getCandidates = async (hrEmail, status, page) => {
         setApiStatus(apiStatusConstant.inProgress)
         const jwtToken = Cookies.get('jwt_token')
-        const apiUrl = `${backendUrl}/jobs/candidate/${jobId}`
+        let email = Cookies.get('email')
+        const role = Cookies.get('role')
+        if(role === 'HR') hrEmail = email
+        const apiUrl = `${backendUrl}/jobs/candidate/${jobId}?email=${hrEmail}&offerStatus=${status}&page=${page}`
         const options = {
           method: 'GET',
           headers: {
@@ -113,49 +121,24 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
           if(data.error) {
             setApiStatus(apiStatusConstant.failure)
           } else {
-            const email = Cookies.get('email')
-            const role = Cookies.get('role')
-            if(role === 'HR') {
-              const filteredData = data.filter(eachItem => eachItem.applied_by === email)
-              const formattedData = filteredData.map(eachItem => ({
-                candidateId: eachItem.candidate_id,
-                candidateName: eachItem.name,
-                candidateEmail: eachItem.email,
-                candidatePhone: eachItem.phone,
-                offerStatus: eachItem.offer_status,
-                offeredDate: eachItem.offered_date,
-                appliedBy: eachItem.applied_by,
-                interviewDate: formatDate(eachItem.interview_date)
-              }))
-              const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
-              // const filterHrList = data.map(eachItem => {
-              //   if(hrList.find(hr => hr.hrEmail === eachItem.applied_by)) return null
-              //   else return {hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}
-              // })
-              setHrList(hrList)
-              console.log(formattedData)
-              setCandidateList(formattedData)
-            } else {
-              const formattedData = data.map(eachItem => ({
-                candidateId: eachItem.candidate_id,
-                candidateName: eachItem.name,
-                candidateEmail: eachItem.email,
-                candidatePhone: eachItem.phone,
-                offerStatus: eachItem.offer_status,
-                offeredDate: eachItem.offered_date,
-                appliedBy: eachItem.applied_by,
-                interviewDate: formatDate(eachItem.interview_date)
-              }))
-              // const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
-              const hrList = []
-              const filterHrList = data.map(eachItem => {
-                if(hrList.find(hr => hr.hrEmail === eachItem.applied_by)) return null
-                else return hrList.push({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name})
-              })
-              setHrList(hrList)
-              console.log(filterHrList)
-              setCandidateList(formattedData)
-            }
+            console.log("get candidates raw api data", data)
+            const formattedData = data.candidates.map(eachItem => ({
+              applicationId: eachItem.application_id,
+              candidateId: eachItem.candidate_id,
+              candidateName: eachItem.name,
+              candidateEmail: eachItem.email,
+              candidatePhone: eachItem.phone,
+              hrName: eachItem.hr_name,
+              offerStatus: eachItem.offer_status,
+              offeredDate: eachItem.offered_date,
+              appliedBy: eachItem.applied_by,
+              interviewDate: formatDate(eachItem.interview_date),
+              companyName: eachItem.company_name
+            }))
+            console.log(formattedData)
+            setHrList(data.hrList)
+            setTotalItems(data.count)
+            setCandidateList(formattedData)
             setApiStatus(apiStatusConstant.success)
           }
         } else {
@@ -163,21 +146,11 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         }
     }
 
-    let filteredCandidates = []
-    if(applicationStatus !== '' && selectHr !== '') {
-      filteredCandidates = candidateList.filter(eachItem => eachItem.offerStatus === applicationStatus && eachItem.appliedBy === selectHr);
-    } else if(applicationStatus !== '') {
-      filteredCandidates = candidateList.filter(eachItem => eachItem.offerStatus === applicationStatus);
-    } else if(selectHr !== '') {
-      filteredCandidates = candidateList.filter(eachItem => eachItem.appliedBy === selectHr);
-    } else {
-      filteredCandidates = candidateList
-    }
-
     const itemsPerPage = 10; 
 
     const handlePageChange = (page) => {
       setPage(page)
+      getCandidates(selectHr, applicationStatus, page)
     };
   
     const itemRender = (current, type, element) => {
@@ -266,7 +239,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
                         <option value=''>Select HR</option>
                         {
                           hrList.map(hr => (
-                              <option key={hr.hrEmail} value={hr.hrEmail}>{hr.hrName}</option>
+                              <option key={hr.email} value={hr.email}>{hr.username}</option>
                           ))
                         }
                     </select>
@@ -310,10 +283,10 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
                   </tr>
                   
                   {
-                    filteredCandidates.length > 0 && filteredCandidates.map(eachItem => {
+                    candidateList.length > 0 && candidateList.map(eachItem => {
                       const jobId1 = jobId==='' ? eachItem.jobId : jobId;
                     return(
-                        <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem}  jobId={jobId1} jobsList={jobsList} candidateList={candidateList} setCandidateList={setCandidateList} />
+                        <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem}  jobId={jobId1} jobsList={jobsList} candidateList={candidateList} setCandidateList={setCandidateList} />
                     )})               
                   }
                 </table>
@@ -326,7 +299,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
               <button className="login-button candidate-button" type="button" onClick={() => setShowCandidateForm(0)}>Back</button>
               <Pagination
                 current={page}
-                total={filteredCandidates.length}
+                total={totalItems}
                 pageSize={itemsPerPage}
                 onChange={handlePageChange}
                 className="pagination-class pagination-class-candidates"

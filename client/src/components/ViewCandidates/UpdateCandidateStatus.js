@@ -6,7 +6,7 @@ import { MdOutlineEditCalendar } from "react-icons/md";
 const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewPopup, candidateDetails, jobId, jobsList, candidateList, setCandidateList}) => {
     const [updateOfferStatus, setUpdateOfferStatus] = useState('');
     const [loading, setLoading] = useState(false)
-    const {candidateName,candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy, interviewDate} = candidateDetails
+    const {candidateName,candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy, interviewDate, companyName} = candidateDetails
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const handleCandidateStatusChange = event => {
@@ -59,15 +59,13 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
         setLoading(false)
     }
 
-    // console.log(jobsList.filter(eachJob => eachJob.id === jobId)[0].compname)
-    // const companyName = jobsList.filter(eachJob => eachJob.id === jobId)[0].compname
     return (
         <tr className="job-details-candidates-table-row">
             <td className="job-details-candidates-table-cell job-details-candidates-table-cell-hover" onClick={() => onShowCandidateDetails(candidateId)}>
                 {candidateName}
             </td>
             <td className="job-details-candidates-table-cell">
-            {/* {companyName} */}
+            {companyName}
             </td>
             <td className="job-details-candidates-table-cell">
             {candidatePhone}
@@ -84,7 +82,7 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
             <td className="job-details-candidates-table-cell" style={{display: "flex"}} >
                 {interviewDate}
                 {Cookies.get('role') !== 'ADMIN' &&
-                    <button type="button" className="shedule-interview-button" onClick={() => onShowScheduleInterviewPopup(jobId, candidateDetails, setCandidateList, candidateList)} >
+                    <button type="button" className="shedule-interview-button" onClick={() => onShowScheduleInterviewPopup(jobId, candidateDetails, jobsList, setCandidateList, candidateList)} >
                         <MdOutlineEditCalendar className="shedule-icon" />
                     </button>
                 }

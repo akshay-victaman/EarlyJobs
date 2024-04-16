@@ -95,6 +95,12 @@
   margin-top: 35px;
 }
 
+.job-details-location-link {
+  color: #EB6A4D;
+  font-size: 15px;
+  margin-left: 10px;
+}
+
 .job-details-location-type-con {
   display: flex;
   align-items: center;
@@ -514,6 +520,9 @@
   }
   .job-details-location-type {
     margin-right: 13px;
+  }
+  .job-details-location-link {
+    font-size: 13px;
   }
   .job-details-title-rating-con {
     margin-left: 10px;

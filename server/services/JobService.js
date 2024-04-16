@@ -24,6 +24,7 @@ const addJobDetials = async (job) => {
         shiftTimings,
         description, 
         location, 
+        locationLink,
         minSalary, 
         maxSalary, 
         skills, 
@@ -38,8 +39,10 @@ const addJobDetials = async (job) => {
         postedBy, 
         assignedTo,
         qualification,
-        experience,
-        age
+        maxExperience,
+        minExperience,
+        minAge,
+        maxAge
     } = job;
     const id = uuidv4();
     const query = `
@@ -51,6 +54,7 @@ const addJobDetials = async (job) => {
         shift_timings,
         description, 
         location, 
+        location_link, 
         min_salary, 
         max_salary, 
         skills, 
@@ -64,11 +68,12 @@ const addJobDetials = async (job) => {
         hiring_need, 
         posted_by,
         qualification,
-        experience,
-        age
-        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?)`;
-    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, postedBy, qualification, experience, age]);
-    console.log('tried to add job')
+        min_experience,
+        max_experience,
+        min_age,
+        max_age
+        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge]);
 
     if (result[0].affectedRows > 0) {
         return assignJobToHMByBDE(id, assignedTo);
@@ -96,6 +101,7 @@ const editJobDetials = async (job) => {
         shiftTimings,
         description,
         location,
+        locationLink,
         minSalary,
         maxSalary,
         skills,
@@ -110,8 +116,10 @@ const editJobDetials = async (job) => {
         assignedTo,
         jobId,
         qualification,
-        experience,
-        age
+        minExperience,
+        maxExperience,
+        minAge,
+        maxAge
     } = job;
     const query = `
     UPDATE jobs SET
@@ -121,6 +129,7 @@ const editJobDetials = async (job) => {
         shift_timings = ?,
         description = ?,
         location = ?,
+        location_link = ?,
         min_salary = ?,
         max_salary = ?,
         skills = ?,
@@ -133,10 +142,12 @@ const editJobDetials = async (job) => {
         status = ?,
         hiring_need = ?,
         qualification = ?,
-        experience = ?,
-        age = ?
+        min_experience = ?,
+        max_experience = ?,
+        min_age = ?,
+        max_age = ?
     WHERE id = ?`;
-    const result = await db.query(query, [companyName, title, category, shiftTimings, description, location, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, qualification, experience, age, jobId]);
+    const result = await db.query(query, [companyName, title, category, shiftTimings, description, location, locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, jobId]);
     if (result[0].affectedRows > 0) {
         await updateJobAssignmentByBde(jobId, assignedTo);
         return {success: 'Job updated successfully'};
@@ -280,7 +291,9 @@ const addCandidateDetailsForJob = async (candidate) => {
         offerStatus,
         jobId,
         hrEmail,
-        interviewDate
+        interviewDate,
+        shiftTimings,
+        employmentType
     } = candidate;
     const candidateQuery = 'SELECT * FROM candidates WHERE email = ? OR phone = ?';
     const candidateResult = await db.query(candidateQuery, [email, phone]);
@@ -302,9 +315,11 @@ const addCandidateDetailsForJob = async (candidate) => {
             experience_in_years, 
             experience_in_months, 
             job_category, 
-            skills
-            ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,?)`;
-        const result = await db.query(query, [cId, fullName, email, phone, fatherName, dateOfBirth, gender, aadharNumber, highestQualification, currentLocation, spokenLanguages.join(','), experienceInYears, experienceInMonths, jobCategory, skills.join(',')]);
+            skills,
+            shift_timings,
+            employment_type
+            ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?)`;
+        const result = await db.query(query, [cId, fullName, email, phone, fatherName, dateOfBirth, gender, aadharNumber, highestQualification, currentLocation, spokenLanguages.join(','), experienceInYears, experienceInMonths, jobCategory, skills.join(','), shiftTimings, employmentType]);
         if (result[0].affectedRows > 0) {
             return addApplication(jobId, cId, hrEmail, offerStatus, interviewDate);
         } else {
@@ -316,7 +331,12 @@ const addCandidateDetailsForJob = async (candidate) => {
 }
 
 const updateInterviewDate = async (candidate) => {
-    const {candidateId, jobId, interviewDate} = candidate;
+    const {candidateId, jobId, interviewDate, hrEmail, offerStatus} = candidate;
+    const applicationQuery = 'SELECT * FROM applications WHERE job_id = ? AND candidate_id = ?';
+    const applicationResult = await db.query(applicationQuery, [jobId, candidateId]);
+    if (applicationResult[0].length === 0) {
+        return addApplication(jobId, candidateId, hrEmail, offerStatus, interviewDate);
+    }
     const query = 'UPDATE applications SET interview_date = ? WHERE job_id = ? AND candidate_id = ?';
     const result = await db.query(query, [interviewDate, jobId, candidateId]);
     if (result[0].affectedRows > 0) {
@@ -326,35 +346,140 @@ const updateInterviewDate = async (candidate) => {
     }
 }
 
-const getJobCandidates = async (jobId) => {
+const getAllTodayInterviewCandidates = async (email, pastDate, futureDate) => {
     const query = `
     SELECT 
         candidates.id as candidate_id,
-        users.username as hr_name,
-        candidates.name as name,
-        candidates.email as email,
-        candidates.phone as phone,
+        job_id,
+        name,
+        email,
+        phone,
         offer_status,
         offered_date,
         applied_by,
-        interview_date
+        interview_date, 
+        company_name
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.applied_by = ? AND DATE(applications.interview_date) BETWEEN ${pastDate ? pastDate : 'CURDATE()'} AND ${futureDate ? futureDate : 'CURDATE()'}
+    order by candidates.created_at desc;`;
+    const result = await db.query(query, [email, pastDate, futureDate]);
+    return result[0];
+}
+
+const getjobHREmailAndUsername = async (jobId) => {
+    const query = `
+        SELECT 
+            DISTINCT users.email as email,
+            users.username as username
+        FROM applications 
+        INNER JOIN users ON
+        applications.applied_by = users.email
+        WHERE applications.job_id = ?`;
+    const result = await db.query(query, [jobId]);
+    return result[0];
+}
+
+const getCandidateCountForJob = async (jobId, email, offerStatus) => {
+    const query = `
+    SELECT 
+        count(*) as count
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
     INNER JOIN users ON 
     users.email = applications.applied_by 
-    WHERE applications.job_id = ? order by candidates.created_at desc`;
-    const result = await db.query(query, [jobId]);
-    return result[0];
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.job_id = ? 
+    ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""}
+    ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
+    order by candidates.created_at desc`;
+    const params = (email && offerStatus) ? [jobId, email, offerStatus] : email ? [jobId, email] : (offerStatus ? [jobId, offerStatus] : [jobId])
+    const result = await db.query(query, params);
+    return result[0][0].count;
+}
+
+const getJobCandidates = async (jobId, email, offerStatus, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    // const query = `
+    //     SELECT 
+    //         applications.id as application_id,
+    //         candidates.id as candidate_id,
+    //         users.username as hr_name,
+    //         candidates.name as name,
+    //         candidates.email as email,
+    //         candidates.phone as phone,
+    //         offer_status,
+    //         offered_date,
+    //         applied_by,
+    //         interview_date,
+    //         company_name
+    //     FROM candidates 
+    //     INNER JOIN applications ON 
+    //     candidates.id = applications.candidate_id 
+    //     INNER JOIN users ON 
+    //     users.email = applications.applied_by 
+    //     INNER JOIN jobs ON 
+    //     jobs.id = applications.job_id 
+    //     WHERE applications.job_id = ? 
+    //     ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""}
+    //     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
+    //     order by candidates.created_at desc
+    //     Limit ? offset ?;`;
+    // const params = (email && offerStatus) ? [jobId, email, offerStatus, endIndex, startIndex] : email ? [jobId, email, endIndex, startIndex] : (offerStatus ? [jobId, offerStatus, endIndex, startIndex] : [jobId, endIndex, startIndex])
+    // const result = await db.query(query, params);
+    // const hrEmails = await getjobHREmailAndUsername(jobId);
+    // const count = await getCandidateCountForJob(jobId, email, offerStatus);
+    // console.log(count)
+    // return {candidates: result[0], hrList: hrEmails, count: count};
+    try {
+        const query = `
+        SELECT 
+            applications.id as application_id,
+            candidates.id as candidate_id,
+            users.username as hr_name,
+            candidates.name as name,
+            candidates.email as email,
+            candidates.phone as phone,
+            offer_status,
+            offered_date,
+            applied_by,
+            interview_date,
+            company_name
+        FROM candidates 
+        INNER JOIN applications ON 
+        candidates.id = applications.candidate_id 
+        INNER JOIN users ON 
+        users.email = applications.applied_by 
+        INNER JOIN jobs ON 
+        jobs.id = applications.job_id 
+        WHERE applications.job_id = ? 
+        ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""} 
+        ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
+        order by candidates.created_at desc 
+        Limit ? offset ?`;
+        const params = ((email !== 'undefined' && email !== "") && (offerStatus !== 'undefined' && offerStatus !== "")) ? [jobId, email, offerStatus, endIndex, startIndex] : (email !== 'undefined' && email !== "") ? [jobId, email, endIndex, startIndex] : (offerStatus !== 'undefined' && offerStatus !== "") ? [jobId, offerStatus, endIndex, startIndex] : [jobId, endIndex, startIndex]
+        console.log(params)
+        const result = await db.query(query, params);
+        const hrEmails = await getjobHREmailAndUsername(jobId);
+        const count = await getCandidateCountForJob(jobId, email, offerStatus);
+        return {candidates: result[0], hrList: hrEmails, count: count};
+    
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const updateCandidateOfferStatus = async (candidate) => {
-    console.log(candidate)
     const {candidateId, jobId, email, offerStatus} = candidate;
     const query = 'UPDATE applications SET offer_status = ? WHERE job_id = ? AND candidate_id = ? AND applied_by = ?';
     const result = await db.query(query, [offerStatus, jobId, candidateId, email]);
-    console.log(result)
-    console.log(query)
     if (result[0].affectedRows > 0) {
         return {success: 'Candidate offer status updated successfully'};
     } else {         
@@ -373,11 +498,15 @@ const getAllCandidatesForHR = async (email) => {
         offer_status,
         offered_date,
         applied_by,
-        interview_date
+        interview_date, 
+        company_name
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
-    WHERE applications.applied_by = ? order by created_at desc;`;
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.applied_by = ? 
+    order by candidates.created_at desc;`;
     const result = await db.query(query, [email]);
     return result[0];
 }

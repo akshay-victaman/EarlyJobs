@@ -115,8 +115,11 @@ const updateInterviewDate = async (req, res) => {
 
 const getJobCandidates = async (req, res) => {
     const jobId = req.params.jobId;
+    const email = req.query.email;
+    const offerStatus = req.query.offerStatus;
+    const page = parseInt(req.query.page) || 1;
     try {
-      const candidates = await jobService.getJobCandidates(jobId);
+      const candidates = await jobService.getJobCandidates(jobId, email, offerStatus, page);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });

@@ -1,6 +1,12 @@
+import React, { useEffect } from 'react'
 import './style.css'
 
 const PrivacyPolicyPage = () => {
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
     return (
         <div className="privacy-policy-page">
             <div className="privacy-policy-page__background">

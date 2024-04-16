@@ -106,6 +106,7 @@ const JobDetailsPage = () => {
           employmentType: data.employment_type,
           jobDescription: data.description,
           location: data.location,
+          locationLink: data.location_link,
           role: data.title,
           workType: data.work_type,
           hiringNeed: data.hiring_need,
@@ -223,6 +224,7 @@ const JobDetailsPage = () => {
             shiftTimings,
             description,
             location,
+            locationLink,
             minSalary,
             maxSalary,
             skills,
@@ -254,6 +256,7 @@ const JobDetailsPage = () => {
         employmentType: employmentType,
         jobDescription: description,
         location: location,
+        locationLink: locationLink,
         role: title,
         workType: workType,
         hiringNeed: hiringNeed,
@@ -446,6 +449,7 @@ const JobDetailsPage = () => {
       employmentType,
       jobDescription,
       location,
+      locationLink,
       role,
       category,
       shiftTimings,
@@ -492,6 +496,7 @@ const JobDetailsPage = () => {
               <div className="job-details-location-type">
                 <TiLocation className="job-details-location-icon" />
                 <p className="job-details-location">{location}</p>
+                <a href={locationLink} target="_blank" rel="noreferrer" className="job-details-location-link">View Location</a>
               </div>
               <div className="job-details-location-type">
                 <BsFillBriefcaseFill className="job-details-location-icon" />
