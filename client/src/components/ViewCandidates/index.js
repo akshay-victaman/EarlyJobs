@@ -29,9 +29,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         if(jobId !== '') {
             getCandidates(selectHr, applicationStatus, page)
         } else {
-            setCandidateList([])
-            setHrList([])
-            // getAllCandidatesForHR()
+            getInitialCandidates(applicationStatus, page)
         }
     }, [jobId, applicationStatus, selectHr, page])
 
@@ -49,7 +47,6 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
 
     const handleSelectHrChange = (event) => {
       setSelectHr(event.target.value)
-      // getAllCandidatesForHR(event.target.value)
     }
 
     const formatDate = (date) => {
@@ -58,47 +55,46 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
       return formattedDate;
     }
 
-    const getAllCandidatesForHR = async (hrEmail) => {
-        setApiStatus(apiStatusConstant.inProgress)
-        const jwtToken = Cookies.get('jwt_token')
-        let email = Cookies.get('email')
-        if(hrEmail !== '') email = hrEmail
-        const apiUrl = `${backendUrl}/jobs/candidates/${email}`
-        const options = {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-        const response = await fetch(apiUrl, options)
-        const data = await response.json()
-        console.log(data)
-        if (response.ok === true) {
-          if(data.error) {
-            setApiStatus(apiStatusConstant.failure)
-          } else {
-            const formattedData = data.map(eachItem => ({
-              candidateId: eachItem.candidate_id,
-              jobId: eachItem.job_id,
-              candidateName: eachItem.name,
-              candidateEmail: eachItem.email,
-              candidatePhone: eachItem.phone,
-              offerStatus: eachItem.offer_status,
-              offeredDate: eachItem.offered_date,
-              appliedBy: eachItem.applied_by,
-              interviewDate: formatDate(eachItem.interview_date),
-              companyName: eachItem.company_name
-            }))
-            if(jobId !== "") {
-              // const hrList = data.map(eachItem => ({hrEmail: eachItem.applied_by, hrName: eachItem.hr_name}))
-              // setHrList(hrList)
-            }
-            setCandidateList(formattedData)
-            setApiStatus(apiStatusConstant.success)
-          }
-        } else {
+    const getInitialCandidates = async (status, page) => {
+      setApiStatus(apiStatusConstant.inProgress)
+      const jwtToken = Cookies.get('jwt_token')
+      let email = Cookies.get('email')
+      const apiUrl = `${backendUrl}/jobs/candidate/initial/${email}/?&offerStatus=${status}&page=${page}`
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+      const response = await fetch(apiUrl, options)
+      const data = await response.json()
+      if (response.ok === true) {
+        if(data.error) {
           setApiStatus(apiStatusConstant.failure)
+        } else {
+          console.log("get candidates raw api data", data)
+          const formattedData = data.candidates.map(eachItem => ({
+            applicationId: eachItem.application_id,
+            candidateId: eachItem.candidate_id,
+            candidateName: eachItem.name,
+            candidateEmail: eachItem.email,
+            candidatePhone: eachItem.phone,
+            hrName: eachItem.hr_name,
+            offerStatus: eachItem.offer_status,
+            offeredDate: eachItem.offered_date,
+            appliedBy: eachItem.applied_by,
+            interviewDate: formatDate(eachItem.interview_date),
+            companyName: eachItem.company_name
+          }))
+          console.log(formattedData)
+          setHrList(data.hrList)
+          setTotalItems(data.count)
+          setCandidateList(formattedData)
+          setApiStatus(apiStatusConstant.success)
         }
+      } else {
+        setApiStatus(apiStatusConstant.failure)
+      }
     }
 
     const getCandidates = async (hrEmail, status, page) => {
@@ -210,7 +206,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
               <div className="job-section-select-container"> 
                   <label className="homepage-label view-candidates-label" htmlFor='resume'>Select Job</label>
                   <select className="homepage-input view-candidates-select" name='jobId' id='jobId' value={jobId} onChange={handleJobIdChange}>
-                      <option value=''>Select Job</option>
+                      <option value=''>All Jobs</option>
                       {
                           jobsList.map(job => (
                               <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
