@@ -39,14 +39,17 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         }
         setJobId(event.target.value)
         setApplicationStatus('')
+        setPage(1)
     }
 
     const handleApplicationStatusChange = (event) => {
         setApplicationStatus(event.target.value)
+        setPage(1)
     }
 
     const handleSelectHrChange = (event) => {
       setSelectHr(event.target.value)
+      setPage(1)
     }
 
     const formatDate = (date) => {
