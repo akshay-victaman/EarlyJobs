@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import { formatDistanceToNow, parseISO, format } from 'date-fns';
 import {Oval} from 'react-loader-spinner'
+import Pagination from 'rc-pagination';
 import { FaCircleCheck } from "react-icons/fa6";
 import { FiBriefcase, FiEdit } from "react-icons/fi";
 import { IoIosCloseCircle } from "react-icons/io";
@@ -38,19 +39,23 @@ const JobDetailsPage = () => {
   const [interviewDetails, setInterviewDetails] = useState({})
   const [candidateId, setCandidateId] = useState('')
   const [isEditJob, setIsEditJob] = useState(false)
+  const [page, setPage] = useState(1)
+  const [totalItems, setTotalItems] = useState(0);
+
 
   const onShowCandidateDetails = (candidateId) => {
     setViewCandidateDetails(!viewCandidateDetails)
     setCandidateId(candidateId)
   }
 
-  const onShowScheduleInterviewPopup = (jobId, candidateDetails, setCandidateList, candidateList) => {
+  const onShowScheduleInterviewPopup = (jobId, candidateDetails, jobDetails, setCandidateList, candidateList) => {
     setViewScheduleInterviewPopup(!viewScheduleInterviewPopup)
     setInterviewDetails({
       jobId,
       candidateDetails,
       setCandidateList,
-      candidateList
+      candidateList,
+      jobsList: jobDetails
     })
   }
 
@@ -58,13 +63,17 @@ const JobDetailsPage = () => {
 
   useEffect(() => {
     getJobDetails()
+    window.scrollTo(0, 0)
     if(Cookies.get('role') === 'AC') {
       fetchHumanResources()
     }
-    if(Cookies.get('role') !== 'BDE') {
-      getCandidates()
-    }
   }, [])
+
+  useEffect(() => {
+    if(Cookies.get('role') !== 'BDE') {
+      getCandidates(page)
+    }
+  }, [page])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -136,10 +145,15 @@ const JobDetailsPage = () => {
     return formattedDate;
   }
 
-  const getCandidates = async () => {
+  const getCandidates = async (page) => {
+    setApiStatus(apiStatusConstant.inProgress)
+    console.log("triggered")
     const {id} = params
     const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `${backendUrl}/jobs/candidate/${id}`
+    let email = ""
+    const role = Cookies.get('role')
+    if(role === 'HR') email = Cookies.get('email')
+    const apiUrl = `${backendUrl}/jobs/candidate/${id}?email=${email}&offerStatus=&page=${page}`
     const options = {
       method: 'GET',
       headers: {
@@ -152,41 +166,30 @@ const JobDetailsPage = () => {
       if(data.error) {
         setApiStatus(apiStatusConstant.failure)
       } else {
-        const email = Cookies.get('email')
-        const role = Cookies.get('role')
-        if(role === 'HR') {
-          const filteredData = data.filter(eachItem => eachItem.applied_by === email)
-          const formattedData = filteredData.map(eachItem => ({
-            candidateId: eachItem.candidate_id,
-            candidateName: eachItem.name,
-            candidateEmail: eachItem.email,
-            candidatePhone: eachItem.phone,
-            offerStatus: eachItem.offer_status,
-            offeredDate: eachItem.offered_date,
-            appliedBy: eachItem.applied_by,
-            interviewDate: formatDate(eachItem.interview_date),
-            companyName: eachItem.company_name
-          }))
-          setCandidateList(formattedData)
-        } else {
-          const formattedData = data.map(eachItem => ({
-            candidateId: eachItem.candidate_id,
-            candidateName: eachItem.name,
-            candidateEmail: eachItem.email,
-            candidatePhone: eachItem.phone,
-            offerStatus: eachItem.offer_status,
-            offeredDate: eachItem.offered_date,
-            appliedBy: eachItem.applied_by,
-            interviewDate: formatDate(eachItem.interview_date),
-            companyName: eachItem.company_name
-          }))
-          setCandidateList(formattedData)
-        }
+        console.log("get candidates raw api data", data)
+        const formattedData = data.candidates.map(eachItem => ({
+          applicationId: eachItem.application_id,
+          candidateId: eachItem.candidate_id,
+          candidateName: eachItem.name,
+          candidateEmail: eachItem.email,
+          candidatePhone: eachItem.phone,
+          hrName: eachItem.hr_name,
+          offerStatus: eachItem.offer_status,
+          offeredDate: eachItem.offered_date,
+          appliedBy: eachItem.applied_by,
+          interviewDate: formatDate(eachItem.interview_date),
+          companyName: eachItem.company_name
+        }))
+        console.log(formattedData)
+        // setHrList(data.hrList)
+        setTotalItems(data.count)
+        setCandidateList(formattedData)
+        setApiStatus(apiStatusConstant.success)
       }
     } else {
       setApiStatus(apiStatusConstant.failure)
     }
-  }
+}
 
   const fetchHumanResources = async () => {
     const email = Cookies.get('email')
@@ -339,6 +342,44 @@ const JobDetailsPage = () => {
         alert(data.error)
     }
   }
+
+  const itemsPerPage = 10; 
+
+  const handlePageChange = (page) => {
+    setPage(page)
+  };
+
+  const itemRender = (current, type, element) => {
+    if (type === 'page') {
+      return (
+        <button className={`pagination-button ${current === page ? "activePage" : ""}`} key={current} onClick={() => handlePageChange(current)}>
+          {current}
+        </button>
+      );
+    }
+
+    if (type === 'prev') {
+      return (
+        <button className={`pagination-button ${page === 1 ? "endPage" : ""}`} title="Previous" key="prev" onClick={() => handlePageChange(current - 1)}>
+          {'< Prev'}
+        </button>
+      );
+    }
+
+    if (type === 'next') {
+      return (
+        <button className={`pagination-button ${totalItems/itemsPerPage <= page ? "endPage" : ""}`} title="Next" key="next" onClick={() => handlePageChange(current + 1)}>
+          {'Next >'}
+        </button>
+      );
+    }
+
+    if (type === 'jump-prev' || type === 'jump-next') {
+      return <span className="pagination-dots" title='more'>...</span>;
+    }
+
+    return element;
+  };
 
   const renderLoader = () => (
     <div data-testid="loader" className="loader-container-job-details">
@@ -585,7 +626,7 @@ const JobDetailsPage = () => {
               {
                   candidateList.length > 0 && candidateList.map(eachItem => (
                   
-                  <UpdateCandidateStatus key={eachItem.candidateId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem} jobId={id} jobsList={[jobDetails]} candidateList={candidateList} setCandidateList={setCandidateList} />
+                  <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem} jobId={id} jobsList={[jobDetails]} candidateList={candidateList} setCandidateList={setCandidateList} />
                   ))                    
               }
           </table>
@@ -609,6 +650,16 @@ const JobDetailsPage = () => {
                 }
             </p>}
         </div>
+        <Pagination
+          current={page}
+          total={totalItems}
+          pageSize={itemsPerPage}
+          onChange={handlePageChange}
+          className="pagination-class pagination-class-candidates"
+          style={{marginTop: '20px'}}
+          itemRender={itemRender}
+          showSizeChanger
+        />
       </div>
     )
 
