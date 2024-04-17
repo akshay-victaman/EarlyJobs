@@ -201,10 +201,10 @@ const assignJobToHrByAccountManager = async (jobAssignment) => {
 const getJobsForBDE = async (email, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+    // const endIndex = startIndex + pageSize;
     const query = 'SELECT * FROM jobs WHERE posted_by = ? order by created_at desc Limit ? offset ?;';
     const countQuery = 'SELECT count(*) as count FROM jobs WHERE posted_by = ?';
-    const result = await db.query(query, [email, endIndex, startIndex]);
+    const result = await db.query(query, [email, pageSize, startIndex]);
     const countResult = await db.query(countQuery, [email]);
     return {jobs: result[0], count: countResult[0][0].count};
 }
@@ -212,10 +212,10 @@ const getJobsForBDE = async (email, page) => {
 const getAccountManagerJobs = async (email, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+    // const endIndex = startIndex + pageSize;
     const query = 'SELECT jobs.* FROM jobs INNER JOIN job_assigned_by_bde ON job_assigned_by_bde.job_id = jobs.id WHERE hm_email = ? order by created_at desc Limit ? offset ?;';
     const countQuery = 'SELECT count(*) as count FROM job_assigned_by_bde WHERE hm_email = ?';
-    const result = await db.query(query, [email, endIndex, startIndex]);
+    const result = await db.query(query, [email, pageSize, startIndex]);
     const countResult = await db.query(countQuery, [email]);
     return {jobs: result[0], count: countResult[0][0].count};
 }
@@ -223,7 +223,7 @@ const getAccountManagerJobs = async (email, page) => {
 const getHRJobs = async (email, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+    // const endIndex = startIndex + pageSize;
     const query = `
     SELECT 
         jobs.id as id,
@@ -251,7 +251,7 @@ const getHRJobs = async (email, page) => {
     order by jobassignments.assigned_at desc
     Limit ? offset ?;`;
     const countQuery = 'SELECT count(*) as count FROM jobassignments WHERE assigned_to = ?';
-    const result = await db.query(query, [email, endIndex, startIndex]);
+    const result = await db.query(query, [email, pageSize, startIndex]);
     const countResult = await db.query(countQuery, [email]);
     return {jobs: result[0], count: countResult[0][0].count};
 }

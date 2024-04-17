@@ -19,10 +19,10 @@ const getAllCandidates = async () => {
 const getAllJobs = async (page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+    // const endIndex = startIndex + pageSize;
     const query = `SELECT * FROM jobs order by created_at desc Limit ? offset ?;`;
     const countQuery = 'SELECT count(*) as count FROM jobs';
-    const result = await db.query(query, [endIndex, startIndex]);
+    const result = await db.query(query, [pageSize, startIndex]);
     const countResult = await db.query(countQuery);
     return {jobs: result[0], count: countResult[0][0].count};
 }
