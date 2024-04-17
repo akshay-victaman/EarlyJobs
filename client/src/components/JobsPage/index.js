@@ -1,12 +1,8 @@
-import Cookies from 'js-cookie'
-import { Redirect } from 'react-router-dom'
-import JobsSection from '../JobsSection'
-import NavBar from '../NavBar'
-import './style.css'
-import Footer from '../Footer'
 import { useState } from 'react'
+import JobsSection from '../JobsSection'
 import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails'
 import ScheduleInterview from '../ViewCandidates/ScheduleInterview'
+import './style.css'
 
 const JobsPage = () => {
   const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
@@ -31,8 +27,6 @@ const JobsPage = () => {
   }
 
   return (
-    <>
-      {/* <NavBar isLoggedIn={true} /> */}
       <div className="jobs-container">
         <JobsSection onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup}/>
         {
@@ -50,8 +44,6 @@ const JobsPage = () => {
           </div>
         }
       </div>
-      {/* <Footer /> */}
-    </>
   )
 }
 

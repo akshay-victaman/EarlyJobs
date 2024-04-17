@@ -317,7 +317,10 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             <select id="companyName" name="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="homepage-input">
                 {
                     jobsList.map((eachJob) => (
+                        <>
+                        {console.log(eachJob)}
                         <option key={eachJob.id} value={eachJob.id}>{eachJob.role} - {eachJob.compname}</option>
+                        </>
                     ))
                 }
             </select>

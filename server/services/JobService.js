@@ -406,7 +406,7 @@ const getCandidateCountForJob = async (jobId, email, offerStatus) => {
 const getJobCandidates = async (jobId, email, offerStatus, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+    // const endIndex = startIndex + pageSize;
     try {
         const query = `
         SELECT 
@@ -432,9 +432,8 @@ const getJobCandidates = async (jobId, email, offerStatus, page) => {
         ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""} 
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         order by candidates.created_at desc 
-        Limit ? offset ?`;
-        const params = ((email !== 'undefined' && email !== "") && (offerStatus !== 'undefined' && offerStatus !== "")) ? [jobId, email, offerStatus, endIndex, startIndex] : (email !== 'undefined' && email !== "") ? [jobId, email, endIndex, startIndex] : (offerStatus !== 'undefined' && offerStatus !== "") ? [jobId, offerStatus, endIndex, startIndex] : [jobId, endIndex, startIndex]
-        console.log(params)
+        LIMIT ? OFFSET ?`;
+        const params = ((email !== 'undefined' && email !== "") && (offerStatus !== 'undefined' && offerStatus !== "")) ? [jobId, email, offerStatus, pageSize, startIndex] : (email !== 'undefined' && email !== "") ? [jobId, email, pageSize, startIndex] : (offerStatus !== 'undefined' && offerStatus !== "") ? [jobId, offerStatus, pageSize, startIndex] : [jobId, pageSize, startIndex]
         const result = await db.query(query, params);
         const hrEmails = await getjobHREmailAndUsername(jobId);
         const count = await getCandidateCountForJob(jobId, email, offerStatus);
@@ -478,7 +477,7 @@ const getIntitalCandidateCount = async (email, offerStatus) => {
 const getInitialCandidates = async (email, offerStatus, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+    // const endIndex = startIndex + pageSize;
     try {
         const query = `
         SELECT 
@@ -504,13 +503,10 @@ const getInitialCandidates = async (email, offerStatus, page) => {
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         order by candidates.created_at desc 
         Limit ? offset ?`;
-        const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, offerStatus, endIndex, startIndex] : [email, endIndex, startIndex]
-        console.log("params", params)
+        const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, offerStatus, pageSize, startIndex] : [email, pageSize, startIndex]
         const result = await db.query(query, params);
-        console.log("result", result[0])
         const count = await getIntitalCandidateCount(email, offerStatus);
         return {candidates: result[0], hrList: [], count};
-    
     } catch (error) {
         console.log(error)
     }
