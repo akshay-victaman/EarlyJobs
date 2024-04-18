@@ -13,6 +13,7 @@
 .job-section-select-filter-container {
     align-self: flex-start!important;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     margin-top: 20px;
 }
@@ -31,6 +32,16 @@
     height: 30px;
     margin-bottom: 0px;
     color: white;
+}
+
+.date-con {
+    display: flex;
+    align-items: center;
+}
+
+.interview-date-input {
+    margin-right: 10px;
+    width: 115px;
 }
 
 .no-candidates-error {
@@ -204,8 +215,8 @@
 
     }
     .job-section-select-container {
-        width: 48%;
-        margin-right: 0px;
+        /* width: 48%; */
+        margin-right: 6px;
     }
     .candidate-details-modal-con {
         width: 90%;
@@ -232,10 +243,13 @@
         width: 100%;
         height: 25px;
         font-size: 12px;
-        width: 90%;
+        width: 90px;
         padding-left: 5px;
     }
     .view-candidates-label {
         font-size: 11px;
+    }
+    .job-details-candidates-pagination-con {
+        flex-direction: column;
     }
 }

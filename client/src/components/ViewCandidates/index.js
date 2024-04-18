@@ -23,6 +23,11 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
     const [totalItems, setTotalItems] = useState(0);
     const [hrList, setHrList] = useState([])
 
+    const today = new Date();
+    const date = today.toISOString().split('T')[0];
+    const [fromDate, setFromDate] = useState(date)
+    const [toDate, setToDate] = useState(date)
+
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
 
     useEffect(() => {
@@ -31,7 +36,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         } else {
             getInitialCandidates(applicationStatus, page)
         }
-    }, [jobId, applicationStatus, selectHr, page])
+    }, [jobId, applicationStatus, selectHr, page, fromDate, toDate])
 
     const handleJobIdChange = (event) => {
         if(jobId === '') {
@@ -52,17 +57,44 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
       setPage(1)
     }
 
+    const handleFromDateChange = (event) => {
+      setFromDate(event.target.value)
+      setPage(1)
+    }
+
+    const handleToDateChange = (event) => {
+      setToDate(event.target.value)
+      setPage(1)
+    }
+
     const formatDate = (date) => {
       const dbDate = parseISO(date);
       const formattedDate = format(dbDate, 'dd-MMM-yyyy hh:mm a');
       return formattedDate;
     }
 
+    const dateValidation = (fromDate, toDate) => {
+      const from = new Date(fromDate);
+      const to = new Date(toDate);
+      console.log('triggered')
+      if(from.getTime() > to.getTime()) {
+        alert("FROM date should be less or equal to TO date")
+        const today = new Date();
+        const date = today.toISOString().split('T')[0];
+        setFromDate(date)
+        setToDate(date)
+        return false
+      }
+      return true
+    }
+
+
     const getInitialCandidates = async (status, page) => {
+      if(!dateValidation(fromDate, toDate)) return;
       setApiStatus(apiStatusConstant.inProgress)
       const jwtToken = Cookies.get('jwt_token')
       let email = Cookies.get('email')
-      const apiUrl = `${backendUrl}/jobs/candidate/initial/${email}/?&offerStatus=${status}&page=${page}`
+      const apiUrl = `${backendUrl}/jobs/candidate/initial/${email}/?&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&page=${page}`
       const options = {
         method: 'GET',
         headers: {
@@ -78,6 +110,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
           console.log("get candidates raw api data", data)
           const formattedData = data.candidates.map(eachItem => ({
             applicationId: eachItem.application_id,
+            jobId: eachItem.job_id,
             candidateId: eachItem.candidate_id,
             candidateName: eachItem.name,
             candidateEmail: eachItem.email,
@@ -101,12 +134,13 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
     }
 
     const getCandidates = async (hrEmail, status, page) => {
+        if(!dateValidation(fromDate, toDate)) return;
         setApiStatus(apiStatusConstant.inProgress)
         const jwtToken = Cookies.get('jwt_token')
         let email = Cookies.get('email')
         const role = Cookies.get('role')
         if(role === 'HR') hrEmail = email
-        const apiUrl = `${backendUrl}/jobs/candidate/${jobId}?email=${hrEmail}&offerStatus=${status}&page=${page}`
+        const apiUrl = `${backendUrl}/jobs/candidate/${jobId}?email=${hrEmail}&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&page=${page}`
         const options = {
           method: 'GET',
           headers: {
@@ -122,6 +156,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
             console.log("get candidates raw api data", data)
             const formattedData = data.candidates.map(eachItem => ({
               applicationId: eachItem.application_id,
+              jobId: eachItem.job_id,
               candidateId: eachItem.candidate_id,
               candidateName: eachItem.name,
               candidateEmail: eachItem.email,
@@ -162,7 +197,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
       if (type === 'prev') {
         return (
           <button className={`pagination-button ${page === 1 ? "endPage" : ""}`} title="Previous" key="prev" onClick={() => handlePageChange(current - 1)}>
-            {'< Prev'}
+            {'<'}
           </button>
         );
       }
@@ -170,7 +205,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
       if (type === 'next') {
         return (
           <button className={`pagination-button ${totalItems/itemsPerPage <= page ? "endPage" : ""}`} title="Next" key="next" onClick={() => handlePageChange(current + 1)}>
-            {'Next >'}
+            {'>'}
           </button>
         );
       }
@@ -243,6 +278,13 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
                   </div>
                 )
               }
+              <div className="job-section-select-container"> 
+                  <label className="homepage-label view-candidates-label" htmlFor='interview-date'>Filter By Interview Date (From - To)</label>
+                  <div className="date-con"> 
+                    <input className="homepage-input view-candidates-select interview-date-input" type='date' id='interview-date' value={fromDate} onChange={handleFromDateChange} />
+                    <input className="homepage-input view-candidates-select interview-date-input" type='date' id='interview-date' value={toDate} onChange={handleToDateChange} />
+                  </div>
+              </div>
             </div>
             <div className='table-candidate-container'>
                <table className={`job-details-candidates-table candidate-table-job-section ${candidateList.length === 0 && "empty-candidates"}`}>

@@ -12,7 +12,6 @@ const apiStatusConstant = {
 
 const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => {
     const { jobId, candidateDetails, setCandidateList, candidateList, jobsList } = interviewDetails
-    console.log(jobsList)
     const [jobDetails, setJobDetails] = useState({})
     const [hmHrData, setHmHrData] = useState({})
     const [interviewDate, setInterviewDate] = useState('')
@@ -122,13 +121,8 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'
         }
-        console.log(queryParameters)
         const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`
-        const response = await fetch(url, {method: "GET", mode: "no-cors"})
-        // const data = await response.json()
-        if(response.ok === true) {
-            // console.log(data)
-        }
+        await fetch(url, {method: "GET", mode: "no-cors"})
     }
 
     const sendEmailDayBeforeRem = async () => {
@@ -174,11 +168,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
         }
         const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}&scheduled_at=${queryParameters.scheduledAt}`
         
-        const response = await fetch(url, {method: "GET", mode: "no-cors"})
-        // const data = await response.json()
-        if(response.ok === true) {
-            // console.log(data)
-        }
+        await fetch(url, {method: "GET", mode: "no-cors"})
     }
 
     const sendEmailOnDay = async () => {
@@ -224,11 +214,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
         }
         const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}&scheduled_at=${queryParameters.scheduledAt}`
         
-        const response = await fetch(url, {method: "GET", mode: "no-cors"})
-        // const data = await response.json()
-        if(response.ok === true) {
-            // console.log(data)
-        }
+        await fetch(url, {method: "GET", mode: "no-cors"})
     }
 
     const sendInterviewEmails = async () => {
@@ -317,10 +303,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             <select id="companyName" name="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="homepage-input">
                 {
                     jobsList.map((eachJob) => (
-                        <>
-                        {console.log(eachJob)}
                         <option key={eachJob.id} value={eachJob.id}>{eachJob.role} - {eachJob.compname}</option>
-                        </>
                     ))
                 }
             </select>

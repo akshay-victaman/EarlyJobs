@@ -383,7 +383,7 @@ const getjobHREmailAndUsername = async (jobId) => {
     return result[0];
 }
 
-const getCandidateCountForJob = async (jobId, email, offerStatus) => {
+const getCandidateCountForJob = async (jobId, email, offerStatus, fromDate, toDate) => {
     const query = `
     SELECT 
         count(*) as count
@@ -395,15 +395,17 @@ const getCandidateCountForJob = async (jobId, email, offerStatus) => {
     INNER JOIN jobs ON 
     jobs.id = applications.job_id 
     WHERE applications.job_id = ? 
+    AND DATE(applications.interview_date) >= ?
+    AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
     ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""}
     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
     order by candidates.created_at desc`;
-    const params = (email && offerStatus) ? [jobId, email, offerStatus] : email ? [jobId, email] : (offerStatus ? [jobId, offerStatus] : [jobId])
+    const params = (email && offerStatus) ? [jobId, fromDate, toDate, email, offerStatus] : email ? [jobId, fromDate, toDate, email] : (offerStatus ? [jobId, fromDate, toDate, offerStatus] : [jobId, fromDate, toDate])
     const result = await db.query(query, params);
     return result[0][0].count;
 }
 
-const getJobCandidates = async (jobId, email, offerStatus, page) => {
+const getJobCandidates = async (jobId, email, offerStatus, fromDate, toDate, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     // const endIndex = startIndex + pageSize;
@@ -412,6 +414,7 @@ const getJobCandidates = async (jobId, email, offerStatus, page) => {
         SELECT 
             applications.id as application_id,
             candidates.id as candidate_id,
+            applications.job_id as job_id,
             users.username as hr_name,
             candidates.name as name,
             candidates.email as email,
@@ -429,14 +432,16 @@ const getJobCandidates = async (jobId, email, offerStatus, page) => {
         INNER JOIN jobs ON 
         jobs.id = applications.job_id 
         WHERE applications.job_id = ? 
+        AND DATE(applications.interview_date) >= ?
+        AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
         ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""} 
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         order by candidates.created_at desc 
         LIMIT ? OFFSET ?`;
-        const params = ((email !== 'undefined' && email !== "") && (offerStatus !== 'undefined' && offerStatus !== "")) ? [jobId, email, offerStatus, pageSize, startIndex] : (email !== 'undefined' && email !== "") ? [jobId, email, pageSize, startIndex] : (offerStatus !== 'undefined' && offerStatus !== "") ? [jobId, offerStatus, pageSize, startIndex] : [jobId, pageSize, startIndex]
+        const params = ((email !== 'undefined' && email !== "") && (offerStatus !== 'undefined' && offerStatus !== "")) ? [jobId, fromDate, toDate, email, offerStatus, pageSize, startIndex] : (email !== 'undefined' && email !== "") ? [jobId, fromDate, toDate, email, pageSize, startIndex] : (offerStatus !== 'undefined' && offerStatus !== "") ? [jobId, fromDate, toDate, offerStatus, pageSize, startIndex] : [jobId, fromDate, toDate, pageSize, startIndex]
         const result = await db.query(query, params);
         const hrEmails = await getjobHREmailAndUsername(jobId);
-        const count = await getCandidateCountForJob(jobId, email, offerStatus);
+        const count = await getCandidateCountForJob(jobId, email, offerStatus, fromDate, toDate);
         return {candidates: result[0], hrList: hrEmails, count};
     
     } catch (error) {
@@ -455,7 +460,7 @@ const updateCandidateOfferStatus = async (candidate) => {
     }
 }
 
-const getIntitalCandidateCount = async (email, offerStatus) => {
+const getIntitalCandidateCount = async (email, offerStatus, fromDate, toDate) => {
     const query = `
     SELECT 
         count(*) as count
@@ -466,15 +471,17 @@ const getIntitalCandidateCount = async (email, offerStatus) => {
     users.email = applications.applied_by 
     INNER JOIN jobs ON 
     jobs.id = applications.job_id 
-    WHERE applications.applied_by = ?
+    WHERE applications.applied_by = ? 
+    AND DATE(applications.interview_date) >= ?
+    AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
     order by candidates.created_at desc`;
-    const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, offerStatus] : [email]
+    const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, fromDate, toDate, offerStatus] : [email, fromDate, toDate]
     const result = await db.query(query, params);
     return result[0][0].count;
 }
 
-const getInitialCandidates = async (email, offerStatus, page) => {
+const getInitialCandidates = async (email, offerStatus, fromDate, toDate, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     // const endIndex = startIndex + pageSize;
@@ -482,6 +489,7 @@ const getInitialCandidates = async (email, offerStatus, page) => {
         const query = `
         SELECT 
             applications.id as application_id,
+            applications.job_id as job_id,
             candidates.id as candidate_id,
             users.username as hr_name,
             candidates.name as name,
@@ -500,12 +508,14 @@ const getInitialCandidates = async (email, offerStatus, page) => {
         INNER JOIN jobs ON 
         jobs.id = applications.job_id 
         WHERE applications.applied_by = ? 
+        AND DATE(applications.interview_date) >= ? 
+        AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         order by candidates.created_at desc 
         Limit ? offset ?`;
-        const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, offerStatus, pageSize, startIndex] : [email, pageSize, startIndex]
+        const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, fromDate, toDate, offerStatus, pageSize, startIndex] : [email, fromDate, toDate, pageSize, startIndex]
         const result = await db.query(query, params);
-        const count = await getIntitalCandidateCount(email, offerStatus);
+        const count = await getIntitalCandidateCount(email, offerStatus, fromDate, toDate);
         return {candidates: result[0], hrList: [], count};
     } catch (error) {
         console.log(error)

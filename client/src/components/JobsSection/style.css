@@ -314,4 +314,8 @@
     .job-section-filter-close-icon {
       font-size: 22px;
     }
+    .pagination-button  {
+      padding: 3px 7px;
+      margin: 3px;
+    }
   }
