@@ -117,9 +117,11 @@ const getJobCandidates = async (req, res) => {
     const jobId = req.params.jobId;
     const email = req.query.email;
     const offerStatus = req.query.offerStatus;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
     const page = parseInt(req.query.page) || 1;
     try {
-      const candidates = await jobService.getJobCandidates(jobId, email, offerStatus, page);
+      const candidates = await jobService.getJobCandidates(jobId, email, offerStatus, fromDate, toDate, page);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -140,10 +142,12 @@ const updateCandidateOfferStatus = async (req, res) => {
 const getInitialCandidates = async (req, res) => {
     const email = req.params.email;
     const offerStatus = req.query.offerStatus;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
     const page = parseInt(req.query.page) || 1;
     console.log(email, offerStatus, page)
     try {
-      const candidates = await jobService.getInitialCandidates(email, offerStatus, page);
+      const candidates = await jobService.getInitialCandidates(email, offerStatus, fromDate, toDate, page);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });

@@ -41,7 +41,6 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
         if(response.ok === true) {
             if(data.error) {
                 alert(data.error)
-                console.log(data.error)
             } else {
                 setCandidateList(candidateList.map(eachItem => {
                   if(eachItem.candidateId === candidateId) {

@@ -99,7 +99,12 @@
         width: 100%;
     }
     .candidate-button {
-        width: 100%;
+        width: 50px;
+        align-self: flex-start;
+        padding: 7px 7px;
+        font-size: 12px;
+        order: 2;
+        height: unset;
     }
 
     .candidate-back-btn {
