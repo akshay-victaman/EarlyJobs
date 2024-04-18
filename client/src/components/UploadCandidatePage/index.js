@@ -58,12 +58,13 @@ const customStyles = {
     }),
 };
 
-const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
+const UploadCandidatePage = ({setShowCandidateForm}) => {
     const [error, setError] = useState('')
     const [skills, setSkills] = useState('');
     const [loading, setLoading] = useState(false)
     const [showForm, setShowForm] = useState(true)
     const [hmHrData, setHmHrData] = useState([])
+    const [jobsList, setJobsList] = useState([])
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const [candidateDetails, setCandidateDetails] = useState({
@@ -91,6 +92,7 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
 
     useEffect(() => {
         getHrAssignedHm()
+        getAllJobsList()
     }, [])
 
     const handleCandidateInputChange = (e) => {
@@ -154,6 +156,49 @@ const UploadCandidatePage = ({setShowCandidateForm, jobsList}) => {
             setError(data.error)
         }
     }
+
+    const getAllJobsList = async () => {
+        const email = Cookies.get('email')
+        const role = Cookies.get('role')
+        let apiUrl = ""
+        if (role === 'AC') {
+          apiUrl = `${backendUrl}/jobs/account-manager/all/${email}`
+        } else if (role === 'HR') {
+          apiUrl = `${backendUrl}/jobs/hr/all/${email}`
+        } else if (role === 'BDE') {
+          apiUrl = `${backendUrl}/jobs/bde/all/${email}`
+        } else {
+          apiUrl = `${backendUrl}/admin/get-admin-jobs/all`
+        }
+        const jwtToken = Cookies.get('jwt_token')
+        const options = {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+        const response = await fetch(apiUrl, options)
+        const data = await response.json()
+        console.log('api data', data)
+        
+        if (response.ok === true) {
+          if(data.error) {
+            alert(data.error)
+          } else {
+            const updatedData = data.map(eachItem => ({
+              id: eachItem.id,
+              compname: eachItem.company_name,
+              role: eachItem.title,
+              location: eachItem.location,
+            }))
+            console.log('updated data',updatedData)
+    
+            setJobsList(updatedData)
+          }
+        } else {
+          alert(data.error)
+        }
+      }
 
     const today = new Date();
     const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;

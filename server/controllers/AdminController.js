@@ -30,6 +30,15 @@ const getAllJobs = async (req, res) => {
   }
 }
 
+const getAllAdminJobs = async (req, res) => {
+  try {
+    const jobs = await adminService.getAllAdminJobs();
+    res.json(jobs);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 const archiveJob = async (req, res) => {
   try {
     const jobId = req.params.id;
@@ -95,6 +104,7 @@ module.exports = {
   getAllUsers,
   getAllCandidates,
   getAllJobs,
+  getAllAdminJobs,
   archiveJob,
   blockUser,
   unblockUser,

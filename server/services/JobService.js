@@ -209,6 +209,19 @@ const getJobsForBDE = async (email, page) => {
     return {jobs: result[0], count: countResult[0][0].count};
 }
 
+const getAllJobsForBDE = async (email) => {
+    const query = `
+    SELECT 
+        id,
+        company_name,
+        title,
+        location
+    FROM jobs 
+    WHERE posted_by = ? order by created_at desc;`;
+    const result = await db.query(query, [email]);
+    return result[0];
+}
+
 const getAccountManagerJobs = async (email, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
@@ -218,6 +231,20 @@ const getAccountManagerJobs = async (email, page) => {
     const result = await db.query(query, [email, pageSize, startIndex]);
     const countResult = await db.query(countQuery, [email]);
     return {jobs: result[0], count: countResult[0][0].count};
+}
+
+const getAllAccountManagerJobs = async (email) => {
+    const query = `
+    SELECT 
+        jobs.id as id,
+        company_name,
+        title,
+        location
+    FROM jobs INNER JOIN job_assigned_by_bde 
+    ON job_assigned_by_bde.job_id = jobs.id 
+    WHERE hm_email = ? order by created_at desc;`;
+    const result = await db.query(query, [email]);
+    return result[0];
 }
 
 const getHRJobs = async (email, page) => {
@@ -254,6 +281,22 @@ const getHRJobs = async (email, page) => {
     const result = await db.query(query, [email, pageSize, startIndex]);
     const countResult = await db.query(countQuery, [email]);
     return {jobs: result[0], count: countResult[0][0].count};
+}
+
+const getAllHRJobs = async (email) => {
+    const query = `
+    SELECT
+        jobs.id as id,
+        company_name,
+        title,
+        location
+    FROM jobs
+    INNER JOIN jobassignments ON
+    jobs.id = jobassignments.job_id
+    WHERE jobassignments.assigned_to = ?
+    order by jobassignments.assigned_at desc;`;
+    const result = await db.query(query, [email]);
+    return result[0];
 }
 
 const addApplication = async (jobId, cId, hrEmail, offerStatus, interviewDate) => {
@@ -344,30 +387,6 @@ const updateInterviewDate = async (candidate) => {
     } else {         
         return {error: 'Candidate interview date updation failed'};
     }
-}
-
-const getAllTodayInterviewCandidates = async (email, pastDate, futureDate) => {
-    const query = `
-    SELECT 
-        candidates.id as candidate_id,
-        job_id,
-        name,
-        email,
-        phone,
-        offer_status,
-        offered_date,
-        applied_by,
-        interview_date, 
-        company_name
-    FROM candidates 
-    INNER JOIN applications ON 
-    candidates.id = applications.candidate_id 
-    INNER JOIN jobs ON 
-    jobs.id = applications.job_id 
-    WHERE applications.applied_by = ? AND DATE(applications.interview_date) BETWEEN ${pastDate ? pastDate : 'CURDATE()'} AND ${futureDate ? futureDate : 'CURDATE()'}
-    order by candidates.created_at desc;`;
-    const result = await db.query(query, [email, pastDate, futureDate]);
-    return result[0];
 }
 
 const getjobHREmailAndUsername = async (jobId) => {
@@ -539,8 +558,11 @@ module.exports = {
     getJobDetails,
     assignJobToHrByAccountManager,
     getJobsForBDE,
+    getAllJobsForBDE,
     getAccountManagerJobs,
+    getAllAccountManagerJobs,
     getHRJobs,
+    getAllHRJobs,
     addCandidateDetailsForJob,
     getJobCandidates,
     updateCandidateOfferStatus,
