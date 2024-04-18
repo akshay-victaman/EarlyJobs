@@ -27,6 +27,12 @@ const getAllJobs = async (page) => {
     return {jobs: result[0], count: countResult[0][0].count};
 }
 
+const getAllAdminJobs = async () => {
+    const query = `SELECT id, company_name, title FROM jobs order by created_at desc;`;
+    const result = await db.query(query);
+    return result[0];
+}
+
 const archiveJob = async (jobId) => {
     const query = `UPDATE jobs SET status = 'ARCHIVED' WHERE id = ?`;
     const result = await db.query(query, [jobId]);
@@ -120,6 +126,7 @@ module.exports = {
   getAllUsers,
   getAllCandidates,
   getAllJobs,
+  getAllAdminJobs,
   archiveJob,
   blockUser,
   unblockUser,

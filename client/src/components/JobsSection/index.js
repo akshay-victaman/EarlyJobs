@@ -176,28 +176,6 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
       if(data.error) {
         setApiStatus(apiStatusConstant.failure)
       } else {
-        /*
-        assigned_to
-        category
-        commission_fee
-        commission_type
-        company_name
-        created_at
-        description
-        employment_type
-        hiring_need
-        id
-        location
-        max_salary
-        min_salary
-        no_of_openings
-        posted_by
-        skills
-        status
-        title
-        updated_at
-        work_type
-        */
         const updatedData = data.jobs.map(eachItem => ({
           id: eachItem.id,
           companyLogoUrl: eachItem.company_logo_url,

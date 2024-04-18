@@ -22,6 +22,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
     const [page, setPage] = useState(1)
     const [totalItems, setTotalItems] = useState(0);
     const [hrList, setHrList] = useState([])
+    const [allJobsList, setAllJobsList] = useState([])
 
     const today = new Date();
     const date = today.toISOString().split('T')[0];
@@ -29,6 +30,10 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
     const [toDate, setToDate] = useState(date)
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+
+    useEffect(() => {
+      getAllJobsList()
+    }, [])
 
     useEffect(() => {
         if(jobId !== '') {
@@ -179,6 +184,49 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         }
     }
 
+    const getAllJobsList = async () => {
+      const email = Cookies.get('email')
+      const role = Cookies.get('role')
+      let apiUrl = ""
+      if (role === 'AC') {
+        apiUrl = `${backendUrl}/jobs/account-manager/all/${email}`
+      } else if (role === 'HR') {
+        apiUrl = `${backendUrl}/jobs/hr/all/${email}`
+      } else if (role === 'BDE') {
+        apiUrl = `${backendUrl}/jobs/bde/all/${email}`
+      } else {
+        apiUrl = `${backendUrl}/admin/get-admin-jobs/all`
+      }
+      const jwtToken = Cookies.get('jwt_token')
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+      const response = await fetch(apiUrl, options)
+      const data = await response.json()
+      console.log('api data', data)
+      
+      if (response.ok === true) {
+        if(data.error) {
+          alert(data.error)
+        } else {
+          const updatedData = data.map(eachItem => ({
+            id: eachItem.id,
+            compname: eachItem.company_name,
+            role: eachItem.title,
+            location: eachItem.location,
+          }))
+          console.log('updated data',updatedData)
+  
+          setAllJobsList(updatedData)
+        }
+      } else {
+        alert(data.error)
+      }
+    }
+
     const itemsPerPage = 10; 
 
     const handlePageChange = (page) => {
@@ -246,7 +294,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
                   <select className="homepage-input view-candidates-select" name='jobId' id='jobId' value={jobId} onChange={handleJobIdChange}>
                       <option value=''>All Jobs</option>
                       {
-                          jobsList.map(job => (
+                          allJobsList.map(job => (
                               <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
                           ))
                       }
@@ -325,7 +373,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
                     candidateList.length > 0 && candidateList.map(eachItem => {
                       const jobId1 = jobId==='' ? eachItem.jobId : jobId;
                     return(
-                        <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem}  jobId={jobId1} jobsList={jobsList} candidateList={candidateList} setCandidateList={setCandidateList} />
+                        <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem}  jobId={jobId1} jobsList={allJobsList} candidateList={candidateList} setCandidateList={setCandidateList} />
                     )})               
                   }
                 </table>

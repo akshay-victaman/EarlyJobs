@@ -26,11 +26,12 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
     useEffect(() => {
         getHrAssignedHm()
         getJobDetails()
-    }, [])
-
+    }, [companyName])
 
     const getJobDetails = async () => {
-        const url = `${backendUrl}/jobs/details/${jobId}`
+        let jobId1 = jobId;
+        if(companyName !== '') jobId1 = companyName;
+        const url = `${backendUrl}/jobs/details/${jobId1}`
         const options = {
             method: 'GET',
             headers: {
