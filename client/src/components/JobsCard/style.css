@@ -59,21 +59,26 @@
     justify-content: space-between;
     margin-top: 25px;
     margin-bottom: 5px;
+    align-items: center;
   }
   
   .jobs-loc-type-con {
     display: flex;
     align-items: center;
+    width: 85%;
   }
   
   .jobs-location-con {
     display: flex;
     align-items: center;
     margin-right: 20px;
+    width: 50%;
   }
   
   .job-location-icon {
     font-size: 20px;
+    min-width: 22px;
+    max-height: 22px;
     color: #EB6A4D;
   }
   
