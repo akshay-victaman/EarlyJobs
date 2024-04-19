@@ -174,10 +174,10 @@ const getInitialCandidates = async (req, res) => {
     const offerStatus = req.query.offerStatus;
     const fromDate = req.query.fromDate;
     const toDate = req.query.toDate;
+    const role = req.query.role;
     const page = parseInt(req.query.page) || 1;
-    console.log(email, offerStatus, page)
     try {
-      const candidates = await jobService.getInitialCandidates(email, offerStatus, fromDate, toDate, page);
+      const candidates = await jobService.getInitialCandidates(email, offerStatus, fromDate, toDate, role, page);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });

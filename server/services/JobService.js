@@ -479,7 +479,19 @@ const updateCandidateOfferStatus = async (candidate) => {
     }
 }
 
-const getIntitalCandidateCount = async (email, offerStatus, fromDate, toDate) => {
+const getHirignManagerHrEmails = async (email) => {
+    const query = `
+        SELECT 
+            hr_email as email,
+            users.username as username
+        FROM hrassignedhm INNER JOIN users ON
+        hrassignedhm.hr_email = users.email
+        WHERE hm_email = ?`;
+    const result = await db.query(query, [email]);
+    return result[0];
+}
+
+const getIntitalCandidateCount = async (emails, offerStatus, fromDate, toDate) => {
     const query = `
     SELECT 
         count(*) as count
@@ -490,17 +502,23 @@ const getIntitalCandidateCount = async (email, offerStatus, fromDate, toDate) =>
     users.email = applications.applied_by 
     INNER JOIN jobs ON 
     jobs.id = applications.job_id 
-    WHERE applications.applied_by = ? 
+    WHERE applications.applied_by IN (?) 
     AND DATE(applications.interview_date) >= ?
     AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
     order by candidates.created_at desc`;
-    const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, fromDate, toDate, offerStatus] : [email, fromDate, toDate]
+    let params = [];
+    if (offerStatus !== 'undefined' && offerStatus !== "") {
+        params = [emails, fromDate, toDate, offerStatus];
+    } else {
+        params = [emails, fromDate, toDate];
+    }
+    // const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, fromDate, toDate, offerStatus] : [email, fromDate, toDate]
     const result = await db.query(query, params);
     return result[0][0].count;
 }
 
-const getInitialCandidates = async (email, offerStatus, fromDate, toDate, page) => {
+const getInitialCandidates = async (email, offerStatus, fromDate, toDate, role, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     // const endIndex = startIndex + pageSize;
@@ -526,16 +544,28 @@ const getInitialCandidates = async (email, offerStatus, fromDate, toDate, page) 
         users.email = applications.applied_by 
         INNER JOIN jobs ON 
         jobs.id = applications.job_id 
-        WHERE applications.applied_by = ? 
+        WHERE applications.applied_by IN (?)
         AND DATE(applications.interview_date) >= ? 
         AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         order by candidates.created_at desc 
         Limit ? offset ?`;
-        const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, fromDate, toDate, offerStatus, pageSize, startIndex] : [email, fromDate, toDate, pageSize, startIndex]
+        const hrEmails = await getHirignManagerHrEmails(email);
+        const hrEmailsArr = hrEmails.map(hr => hr.email);
+        // const params = (offerStatus !== 'undefined' && offerStatus !== "") ? [email, fromDate, toDate, offerStatus, pageSize, startIndex] : [email, fromDate, toDate, pageSize, startIndex]
+        let params = [];        
+        if (offerStatus !== 'undefined' && offerStatus !== "" && role === 'AC') {
+            params = [[email, ...hrEmailsArr], fromDate, toDate, offerStatus, pageSize, startIndex];
+        } else if (role === 'AC') {
+            params = [[email, ...hrEmailsArr], fromDate, toDate, pageSize, startIndex];
+        } else if (offerStatus !== 'undefined' && offerStatus !== "") {
+            params = [email, fromDate, toDate, offerStatus, pageSize, startIndex];
+        } else {
+            params = [email, fromDate, toDate, pageSize, startIndex];
+        }
         const result = await db.query(query, params);
-        const count = await getIntitalCandidateCount(email, offerStatus, fromDate, toDate);
-        return {candidates: result[0], hrList: [], count};
+        const count = await getIntitalCandidateCount([email, ...hrEmailsArr], offerStatus, fromDate, toDate);
+        return {candidates: result[0], hrList: hrEmails, count};
     } catch (error) {
         console.log(error)
     }
