@@ -94,10 +94,12 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
                         (
                             <select className="homepage-input candidate-input-select" id='offerStatus' disabled={offerStatus === 'Accepted' || offerStatus === 'Rejected'} value={updateOfferStatus} onChange={handleCandidateStatusChange}>
                                 <option value=''>Select Offer Status</option>
-                                <option value='Accepted'>Accepted</option>
+                                <option value='Selected'>Selected</option>
+                                <option value='Attended'>Attended</option>
+                                <option value='Not Attended'>Not Attended</option>
                                 <option value='Rejected'>Rejected</option>
                                 <option value='Ongoing'>Ongoing</option>
-                                <option value='ReScheduled'>ReScheduled</option>
+                                <option value='Rescheduled'>Rescheduled</option>
                                 <option value='Joined'>Joined</option>
                             </select>
                         )

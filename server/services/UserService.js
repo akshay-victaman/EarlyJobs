@@ -37,7 +37,6 @@ const hrResumes = async (hrEmail, resumeUrl) => {
 }
 
 const createUser = async (user) => {
-    console.log(user)
     const {docId, username, email, phone, password, role, hiringFor, assignHM, location, hiringCategory, resumeUrl, hmType} = user;
     const hiringCategory1 = hiringCategory.join(', ');
     const id = uuidv4();
@@ -54,7 +53,6 @@ const createUser = async (user) => {
             if(role === 'HR') {
                 hrAssignedHm(email, assignHM);
                 hrResumes(email, resumeUrl);
-                console.log(resumeUrl)
             }
             return {success: 'User created successfully'};
         } else {
@@ -102,14 +100,29 @@ const updateDocId = async (user) => {
     return {error: 'User update failed'};
 }
 
+const updateHRLastLogin = async (email) => {
+    const query = 'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = ?';
+    const result = await db.query(query, [email]);
+    if (result[0].affectedRows > 0) {
+        return true;
+    }
+    return false;
+}
+
 const loginUser = async (user) => {
     const {email, password} = user;
     // const dbUser = await getUserByNameEmail(email, email);
     const dbUser = await getUserByEmail(email);
-    console.log(dbUser)
+    console.log('dbUser', dbUser)
     if (dbUser.length > 0) {
         const match = bcrypt.compareSync(password, dbUser[0].password);
         if (match) {
+            if(dbUser[0].role === 'HR') {
+                const isUpdated = await updateHRLastLogin(email);
+                if(!isUpdated) {
+                    return {error: 'Login failed'};
+                }
+            }
             const jwtToken = jwt.sign({email: dbUser[0].email}, 'jobbyApp');
             return {username: dbUser[0].username, userDetailsId: dbUser[0].user_details_id, email, jwtToken, role: dbUser[0].role, isBlocked: dbUser[0].is_blocked, hiringFor: dbUser[0].hiring_for, hmType: dbUser[0].hm_type};
         } else {
@@ -121,10 +134,8 @@ const loginUser = async (user) => {
 }
 
 const getAllAccountManagers = async () => {
-    console.log('triggered')
     const query = 'SELECT username, email, phone, location, hiring_ctc, hiring_category FROM users WHERE role = ? order by username asc';
     const result = await db.query(query, ['AC']);
-    console.log(result)
     return result[0]; 
 }
 
@@ -140,19 +151,31 @@ const getAllHRs = async (email) => {
     return result[0]; 
 }
 
-const getAllHRsForHiringManager = async (email, hiringFor) => {
+const getAllHRsForHiringManager = async (email, hiringFor, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize; 
     let query = `
-        SELECT username, email, hiring_category, phone, created_at, hiring_for
+        SELECT username, email, phone, created_at, hiring_for, last_login 
         FROM users INNER JOIN hrassignedhm ON 
         users.email=hrassignedhm.hr_email 
         WHERE hm_email = ? 
+        ${hiringFor !== 'undefined' && hiringFor !== '' ? `AND hiring_for = ? ` : ''} 
+        ORDER BY created_at DESC, username ASC 
+        LIMIT ? OFFSET ? ;
     `;
-    if(hiringFor !== '') { 
-        query += ` AND hiring_for = ?`;
-    }
-    query += ` order by created_at desc, username asc`;
-    const result = await db.query(query, [email, hiringFor]);
-    return result[0]; 
+    console.log(query)
+    let countQuery = `
+        SELECT count(*) as count 
+        FROM users INNER JOIN hrassignedhm ON 
+        users.email=hrassignedhm.hr_email 
+        WHERE hm_email = ? 
+        ${hiringFor !== 'undefined' && hiringFor !== '' ? `AND hiring_for = ? ` : ''} 
+    `;
+    const params = (hiringFor !== 'undefined' && hiringFor !== '') ? [email, hiringFor, pageSize, startIndex] : [email, pageSize, startIndex];
+    const result = await db.query(query, params);
+    const params2 = (hiringFor !== 'undefined' && hiringFor !== '') ? [email, hiringFor] : [email];
+    const countResult = await db.query(countQuery, params2);
+    return {users: result[0], count: countResult[0][0].count};
 }
 
 const getHrAssignedHm = async (email, role) => {
