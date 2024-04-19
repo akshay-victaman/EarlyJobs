@@ -39,7 +39,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         if(jobId !== '') {
             getCandidates(selectHr, applicationStatus, page)
         } else {
-            getInitialCandidates(applicationStatus, page)
+            getInitialCandidates(selectHr, applicationStatus, page)
         }
     }, [jobId, applicationStatus, selectHr, page, fromDate, toDate])
 
@@ -94,12 +94,14 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
     }
 
 
-    const getInitialCandidates = async (status, page) => {
+    const getInitialCandidates = async (hrEmail, status, page) => {
       if(!dateValidation(fromDate, toDate)) return;
       setApiStatus(apiStatusConstant.inProgress)
       const jwtToken = Cookies.get('jwt_token')
       let email = Cookies.get('email')
-      const apiUrl = `${backendUrl}/jobs/candidate/initial/${email}/?&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&page=${page}`
+      // if(hrEmail !== '') email = hrEmail
+      const role = Cookies.get('role')
+      const apiUrl = `${backendUrl}/jobs/candidate/initial/${email}/?&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&role=${role}&page=${page}`
       const options = {
         method: 'GET',
         headers: {
@@ -128,7 +130,12 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
             companyName: eachItem.company_name
           }))
           console.log(formattedData)
-          setHrList(data.hrList)
+          const appliedByList = data.candidates.map(eachItem => eachItem.applied_by)
+          const filteredHrList = data.hrList.filter(hr => {
+            return appliedByList.includes(hr.email)
+          })
+          console.log("filtered hr list", filteredHrList)
+          // setHrList(data.hrList)
           setTotalItems(data.count)
           setCandidateList(formattedData)
           setApiStatus(apiStatusConstant.success)
