@@ -97,7 +97,6 @@ const loginUser = async (req, res) => {
 }
 
 const getAllAccountManagers = async (req, res) => {
-  console.log('triggered controller')
     try {
       const users = await userService.getAllAccountManagers();
       res.json(users);
@@ -120,7 +119,8 @@ const getAllHRsForHiringManager = async (req, res) => {
     try {
       const email = req.params.email;
       const hiringFor = req.query.hiringFor;
-      const users = await userService.getAllHRsForHiringManager(email, hiringFor);
+      const page = parseInt(req.query.page) || 1;
+      const users = await userService.getAllHRsForHiringManager(email, hiringFor, page);
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });

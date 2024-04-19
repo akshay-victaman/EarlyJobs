@@ -22,7 +22,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
 
     useEffect(() => {
         getHrRecruiters()
-    }, [hrRoleType])
+    }, [hrRoleType, page])
 
     const handleSelectHrRoleType = (event) => {
         setHrRoleType(event.target.value)
@@ -38,7 +38,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
         setApiStatus(apiStatusConstant.inProgress)
         const jwtToken = Cookies.get('jwt_token')
         const email = Cookies.get('email')
-        const apiUrl = `${backendUrl}/api/users/hr-for-hm/${email}?hiringFor=${hrRoleType}`
+        const apiUrl = `${backendUrl}/api/users/hr-for-hm/${email}?hiringFor=${hrRoleType}&page=${page}`
         const options = {
           method: 'GET',
           headers: {
@@ -52,14 +52,16 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
           if(data.error) {
             setApiStatus(apiStatusConstant.failure)
           } else {
-            const formattedData = data.map(eachItem => ({
-            name: eachItem.username,
-            email: eachItem.email,
-            hiringCategory: eachItem.hiring_category,
-            phone: eachItem.phone,
-            createdAt: formatDate(eachItem.created_at),
-            hiringFor: eachItem.hiring_for
+            const formattedData = data.users.map(eachItem => ({
+              name: eachItem.username,
+              email: eachItem.email,
+              phone: eachItem.phone,
+              createdAt: formatDate(eachItem.created_at),
+              hiringFor: eachItem.hiring_for,
+              lastLogin: eachItem.last_login ? formatDate(eachItem.last_login) : 'N/A'
             }))
+            console.log(data)
+            setTotalItems(data.count)
             setRecruiterList(formattedData)
             setApiStatus(apiStatusConstant.success)
           }
@@ -86,7 +88,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       if (type === 'prev') {
         return (
           <button className={`pagination-button ${page === 1 ? "endPage" : ""}`} title="Previous" key="prev" onClick={() => handlePageChange(current - 1)}>
-            {'< Prev'}
+            {'<<'}
           </button>
         );
       }
@@ -94,7 +96,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       if (type === 'next') {
         return (
           <button className={`pagination-button ${totalItems/itemsPerPage <= page ? "endPage" : ""}`} title="Next" key="next" onClick={() => handlePageChange(current + 1)}>
-            {'Next >'}
+            {'>>'}
           </button>
         );
       }
@@ -146,8 +148,8 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                     <th className="job-details-candidates-table-heading-cell">Name</th>
                     <th className="job-details-candidates-table-heading-cell">Email</th>
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
-                    <th className="job-details-candidates-table-heading-cell">Hiring Category</th>
                     <th className="job-details-candidates-table-heading-cell">Hiring For</th>
+                    <th className="job-details-candidates-table-heading-cell">Last Login</th>
                     <th className="job-details-candidates-table-heading-cell">Created At</th>
                   </tr>
                   {
@@ -156,8 +158,8 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                             <td className="job-details-candidates-table-cell">{eachItem.name}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.email}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.phone}</td>
-                            <td className="job-details-candidates-table-cell">{eachItem.hiringCategory}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.hiringFor}</td>
+                            <td className="job-details-candidates-table-cell">{eachItem.lastLogin}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.createdAt}</td>
                         </tr>
                     ))
@@ -172,7 +174,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
               <button className="login-button candidate-button" type="button" onClick={() => setShowCandidateForm(0)}>Back</button>
               <Pagination
                 current={page}
-                total={recruiterList.length}
+                total={totalItems}
                 pageSize={itemsPerPage}
                 onChange={handlePageChange}
                 className="pagination-class pagination-class-candidates"

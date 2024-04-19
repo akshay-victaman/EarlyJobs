@@ -311,10 +311,12 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
                 <label className="homepage-label view-candidates-label" htmlFor='resume'>Application Status</label>
                 <select className="homepage-input view-candidates-select" name='jobId' id='jobId' value={applicationStatus} onChange={handleApplicationStatusChange}>
                     <option value=''>All status</option>
-                    <option value='Accepted'>Accepted</option>
+                    <option value='Selected'>Selected</option>
+                    <option value='Attended'>Attended</option>
+                    <option value='Not Attended'>Not Attended</option>
                     <option value='Rejected'>Rejected</option>
                     <option value='Ongoing'>Ongoing</option>
-                    <option value='ReScheduled'>ReScheduled</option>
+                    <option value='Rescheduled'>Rescheduled</option>
                     <option value='Joined'>Joined</option>
                 </select>
               </div>
