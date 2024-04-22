@@ -108,6 +108,7 @@ const JobDetailsPage = () => {
           shiftTimings: data.shift_timings,
           commissionType: data.commission_type,
           commissionFee: data.commission_fee,
+          tenureInDays: data.tenure_in_days,
           compname: data.company_name,
           minSalary: data.min_salary,
           maxSalary: data.max_salary,
@@ -236,6 +237,7 @@ const JobDetailsPage = () => {
             workType,
             commissionFee,
             commissionType,
+            tenureInDays,
             noOfOpenings,
             status,
             hiringNeed,
@@ -252,6 +254,7 @@ const JobDetailsPage = () => {
         shiftTimings: shiftTimings,
         commissionType: commissionType,
         commissionFee: commissionFee,
+        tenureInDays: tenureInDays,
         compname: companyName,
         minSalary: minSalary,
         maxSalary: maxSalary,
@@ -484,6 +487,7 @@ const JobDetailsPage = () => {
       compname,
       commissionType,
       commissionFee,
+      tenureInDays,
       minSalary,
       maxSalary,
       noOfOpenings,
@@ -550,9 +554,11 @@ const JobDetailsPage = () => {
           <p className="job-detials-misc"><span className='misc-head'>Status:</span> {status}</p>
           <p className="job-detials-misc"><span className='misc-head'>Assigned By:</span> {postedBy}</p>
           {
-            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
+            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${(commissionFee/100)*50} Per Joining` : `${(commissionFee/100)*70}% of Annual CTC` }</p>
           }
-          {/* <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p> */}
+          {
+            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Tenure:</span> {tenureInDays} days</p>
+          }
           <p className="job-detials-misc"><span className='misc-head'>Notice Period:</span> {hiringNeed}</p>
           <p className="job-detials-misc"><span className='misc-head'>Shift Timings:</span> {shiftTimings}</p>
           <p className="job-detials-misc"><span className='misc-head'>Work Type:</span> {workType}</p>

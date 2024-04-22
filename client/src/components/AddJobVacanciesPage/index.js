@@ -88,6 +88,7 @@ const AddJobVacanciesPage = () => {
     const [qualificationError, setQualificationError] = useState(false)
     const [experienceError, setExperienceError] = useState(false)
     const [ageError, setAgeError] = useState(false)
+    const [tenureError, setTenureError] = useState(false)
 
     const [addJobVacancies, setAddJobVacancies] = useState({
         companyName: '',
@@ -105,6 +106,7 @@ const AddJobVacanciesPage = () => {
         workType: '',
         commission: '',
         commissionType: '',
+        tenureInDays: '',
         noOfOpenings: '',
         status: 'Open',
         hiringNeed: '',
@@ -201,6 +203,7 @@ const AddJobVacanciesPage = () => {
             <b>Employment Type:</b> ${addJobVacancies.employmentType}<br> 
             <b>Work Type:</b> ${addJobVacancies.workType}<br> 
             <b>Commission:</b> ${addJobVacancies.commission} ${addJobVacancies.commissionType}<br> 
+            <b>Tenure:</b> ${addJobVacancies.tenureInDays} days<br>
             <b>No of Openings:</b> ${addJobVacancies.noOfOpenings}<br> 
             <b>Status:</b> ${addJobVacancies.status}<br> 
             <b>Hiring Need:</b> ${addJobVacancies.hiringNeed}<br> 
@@ -262,6 +265,7 @@ const AddJobVacanciesPage = () => {
                 workType: '',
                 commission: '',
                 commissionType: '',
+                tenureInDays: '',
                 noOfOpenings: '',
                 status: 'Open',
                 hiringNeed: '',
@@ -299,6 +303,7 @@ const AddJobVacanciesPage = () => {
           employmentType: addJobVacancies.employmentType.trim().length === 0,
           workType: addJobVacancies.workType.trim().length === 0,
           commission: addJobVacancies.commission.trim().length === 0 || addJobVacancies.commissionType.trim().length === 0,
+          tenureInDays: parseInt(addJobVacancies.tenureInDays) < 0 || addJobVacancies.tenureInDays.trim().length === 0,
           noOfOpenings: addJobVacancies.noOfOpenings.trim().length === 0,
           hiringNeed: addJobVacancies.hiringNeed.trim().length === 0,
           name: addJobVacancies.companyDetails.name.trim().length === 0,
@@ -326,6 +331,7 @@ const AddJobVacanciesPage = () => {
         setEmploymentError(errors.employmentType);
         setWorkError(errors.workType);
         setCommissionError(errors.commission);
+        setTenureError(errors.tenureInDays);
         setNoOfOpeningsError(errors.noOfOpenings);
         setHiringNeedError(errors.hiringNeed);
         setNameError(errors.name);
@@ -367,6 +373,7 @@ const AddJobVacanciesPage = () => {
             workType: addJobVacancies.workType,
             commission: addJobVacancies.commission,
             commissionType: addJobVacancies.commissionType,
+            tenureInDays: addJobVacancies.tenureInDays,
             noOfOpenings: addJobVacancies.noOfOpenings,
             status: addJobVacancies.status,
             hiringNeed: addJobVacancies.hiringNeed,
@@ -379,7 +386,7 @@ const AddJobVacanciesPage = () => {
         }
 
         console.log(newJob)
-        console.log('triggered')
+        // return
         onSubmitToFirestore(newJob)
     }
 
@@ -561,6 +568,10 @@ const AddJobVacanciesPage = () => {
                 </div>
             </div>
             {commissionError && <p className='hr-error'>*Please select commission type & enter commission</p>}
+
+            <label className='bde-form-label' htmlFor='tenure'>Days Completion (Tenure)<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='tenure'  type='number' onChange={handleInputChange} value={addJobVacancies.tenureInDays} name='tenureInDays' placeholder='Enter Tenure in days' />
+            {tenureError && <p className='hr-error'>*Please enter tenure in days</p>}
 
             <div className='salary-container'>
                 <div className='emp-work-sub-con'>

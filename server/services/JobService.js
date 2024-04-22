@@ -33,6 +33,7 @@ const addJobDetials = async (job) => {
         workType, 
         commissionFee,
         commissionType,
+        tenureInDays,
         noOfOpenings, 
         status, 
         hiringNeed, 
@@ -63,6 +64,7 @@ const addJobDetials = async (job) => {
         work_type, 
         commission_fee, 
         commission_type, 
+        tenure_in_days,
         no_of_openings, 
         status, 
         hiring_need, 
@@ -72,8 +74,8 @@ const addJobDetials = async (job) => {
         max_experience,
         min_age,
         max_age
-        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge]);
+        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, location, locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge]);
 
     if (result[0].affectedRows > 0) {
         return assignJobToHMByBDE(id, assignedTo);
@@ -110,6 +112,7 @@ const editJobDetials = async (job) => {
         workType,
         commissionFee,
         commissionType,
+        tenureInDays,
         noOfOpenings,
         status,
         hiringNeed,
@@ -138,6 +141,7 @@ const editJobDetials = async (job) => {
         work_type = ?,
         commission_fee = ?,
         commission_type = ?,
+        tenure_in_days = ?,
         no_of_openings = ?,
         status = ?,
         hiring_need = ?,
@@ -147,7 +151,7 @@ const editJobDetials = async (job) => {
         min_age = ?,
         max_age = ?
     WHERE id = ?`;
-    const result = await db.query(query, [companyName, title, category, shiftTimings, description, location, locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, jobId]);
+    const result = await db.query(query, [companyName, title, category, shiftTimings, description, location, locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, jobId]);
     if (result[0].affectedRows > 0) {
         await updateJobAssignmentByBde(jobId, assignedTo);
         return {success: 'Job updated successfully'};

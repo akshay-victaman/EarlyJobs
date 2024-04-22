@@ -83,6 +83,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const [qualificationError, setQualificationError] = useState(false)
     const [experienceError, setExperienceError] = useState(false)
     const [ageError, setAgeError] = useState(false)
+    const [tenureError, setTenureError] = useState(false)
 
     const [editJob, setEditJob] = useState({
         companyName: jobDetails.compname,
@@ -100,6 +101,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         workType: jobDetails.workType,
         commission: jobDetails.commissionFee,
         commissionType: jobDetails.commissionType,
+        tenureInDays: jobDetails.tenureInDays,
         noOfOpenings: jobDetails.noOfOpenings,
         status: 'Open',
         hiringNeed: jobDetails.hiringNeed,
@@ -216,9 +218,11 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
           locationLink: editJob.locationLink.trim().length === 0,
           salary: editJob.salaryMin.length === 0 || editJob.salaryMax.length === 0,
           skills: editJob.skills.length === 0,
+          language: editJob.language.length === 0,
           employmentType: editJob.employmentType.trim().length === 0,
           workType: editJob.workType.trim().length === 0,
           commission: editJob.commission.length === 0 || editJob.commissionType.length === 0,
+          tenureInDays: parseInt(editJob.tenureInDays) < 0 || editJob.tenureInDays.length === 0,
           noOfOpenings: editJob.noOfOpenings.length === 0,
           hiringNeed: editJob.hiringNeed.trim().length === 0,
           assignedTo: editJob.assignedTo.length === 0,
@@ -239,9 +243,11 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         setLocationLinkError(errors.locationLink);
         setSalaryError(errors.salary);
         setSkillsError(errors.skills);
+        setLanguageError(errors.language);
         setEmploymentError(errors.employmentType);
         setWorkError(errors.workType);
         setCommissionError(errors.commission);
+        setTenureError(errors.tenureInDays);
         setNoOfOpeningsError(errors.noOfOpenings);
         setHiringNeedError(errors.hiringNeed);
         setAssignedToError(errors.assignedTo);
@@ -282,6 +288,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             workType: editJob.workType,
             commissionFee: editJob.commission,
             commissionType: editJob.commissionType,
+            tenureInDays: editJob.tenureInDays,
             noOfOpenings: editJob.noOfOpenings,
             status: editJob.status,
             hiringNeed: editJob.hiringNeed,
@@ -501,6 +508,10 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                 </div>
             </div>
             {commissionError && <p className='hr-error'>*Please select commission type & enter commission</p>}
+
+            <label className='bde-form-label' htmlFor='tenure'>Days Completion (Tenure)<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='tenure'  type='number' onChange={handleInputChange} value={editJob.tenureInDays} name='tenureInDays' placeholder='Enter Tenure in days' />
+            {tenureError && <p className='hr-error'>*Please enter tenure in days</p>}
 
             <div className='salary-container'>
                 <div className='emp-work-sub-con'>
