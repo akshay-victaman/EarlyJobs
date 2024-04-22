@@ -151,7 +151,10 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
                 <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
             </>
             : 
+            <>
+                <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(4)}>View Hiring Requests</button>
                 <Link to="/bde-portal" style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button">Post New Job</Link>
+            </>
             }
         </div>
     )

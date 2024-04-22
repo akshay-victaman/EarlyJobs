@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import {ThreeCircles} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
+import { query, where, collection, getFirestore, getDocs, orderBy, Timestamp } from "firebase/firestore";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import {BsSearch} from 'react-icons/bs'
 import { FaFilter } from "react-icons/fa6";
@@ -16,6 +17,8 @@ import ViewCandidates from '../ViewCandidates';
 import { HiringManagerDetailsForm } from '../HiringManagerDetailsForm';
 import MyHrRecruiters from '../MyHrRecruiters';
 import CollegeAgencyForm from '../CollegeAgencyForm';
+import app from "../../firebase";
+
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -48,9 +51,13 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
 
 
   useEffect(() => {
-    getJobsCard()
+    if(showCandidateForm === 4) {
+      getHirignReqCard()
+    } else {
+      getJobsCard()
+    }
     updateUrl(page);
-    }, [employmentTypeList, minimumPackageList, page])
+    }, [employmentTypeList, minimumPackageList, page, showCandidateForm])
 
   const archieveJobs = () => {
     console.log(archieve)
@@ -207,6 +214,51 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
       setApiStatus(apiStatusConstant.failure)
     }
   }
+
+  const getHirignReqCard = async () => {
+    // setApiStatus(apiStatusConstant.inProgress)
+    const db = getFirestore(app);
+    const queryRef = query(
+        collection(db, "AddJobVacancies"),
+        orderBy("postDateTime", "desc"),
+    );
+
+    const querySnap = await getDocs(queryRef);
+    if (!querySnap.empty) {
+      const documents = querySnap.docs.map((doc) => {
+          const timestamp = doc.data().postDateTime;
+        
+          // Check if AppliedDate is a Timestamp object:
+          if (!(timestamp instanceof Timestamp)) {
+            console.error("AppliedDate is not a valid Timestamp. Skipping conversion.");
+            return doc.data();
+          }
+        
+          // Convert Timestamp to human-readable format:
+          const options = { // Configure formatting options as needed
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true, // Use appropriate time format
+            timeZone: 'Asia/Kolkata' // Replace with your preferred time zone
+          };
+          const formattedDate = timestamp.toDate().toLocaleString('en-US', options);
+        
+          return {
+            // Original document data
+            ...doc.data(),
+            // Add `formattedDate` property with converted string
+            formattedDate
+          };
+      });
+      console.log(documents)
+    } else {
+        console.log("No such documents!");
+    }
+  }
+
 
   const itemsPerPage = 10; 
 
@@ -421,6 +473,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
             : showCandidateForm===1 ? <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
             : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
             : showCandidateForm===3 ? <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
+            : showCandidateForm===4 ? renderAllSections()
             : renderAllSections()
           }
           {/* <Footer /> */}
