@@ -179,26 +179,35 @@ const getJobDetails = async (jobId) => {
 
 const assignJobToHrByAccountManager = async (jobAssignment) => {
     const {jobId, assignedTo, assignedBy} = jobAssignment;
-    const assingmentQuery = 'SELECT * FROM jobassignments WHERE job_id = ? AND assigned_to IN (?)';
-    
-    const assignmentResult = await db.query(assingmentQuery, [jobId, assignedTo]);
-    if (assignmentResult[0].length > 0) {
-        const hrEmails = assignmentResult[0].map(assignment => assignment.assigned_to);
-        return {error: `Job already assigned to ${hrEmails.join(', ')} selcted HRs`, hrEmails: assignmentResult[0].map(assignment => assignment.assigned_to)};
-    }
-    
-    const insertQuery = 'INSERT INTO jobassignments (id, job_id, assigned_to, assigned_by) VALUES ';
-    let multiInsertQuery = '';
+    const assignmentQuery = 'INSERT INTO jobassignments (id, job_id, assigned_to, assigned_by) VALUES ';
+    let multiAssingmentQuery = '';
     for (let i = 0; i < assignedTo.length; i++) {
         const id = uuidv4();
-        multiInsertQuery += `('${id}', '${jobId}', '${assignedTo[i]}', '${assignedBy}'),`;
+        multiAssingmentQuery += `('${id}', '${jobId}', '${assignedTo[i]}', '${assignedBy}'),`;
     }
-    const query = insertQuery + multiInsertQuery.slice(0, -1);
+    const query = assignmentQuery + multiAssingmentQuery.slice(0, -1);
     const result = await db.query(query);
     if (result[0].affectedRows > 0) {
         return {success: 'Job assigned successfully to HR'};
     } else {
         return {error: 'Job assignment failed'};
+    }
+}
+
+const getAssignedHRsForJob = async (jobId, email) => {
+    const query = 'SELECT * FROM jobassignments WHERE job_id = ? AND assigned_by = ?';
+    const result = await db.query(query, [jobId, email]);
+    return result[0];
+}
+
+const updateJobAssignmentByHM = async (jobAssignment) => {
+    const {jobId, assignedTo, assignedBy} = jobAssignment;
+    const deleteQuery = 'DELETE FROM jobassignments WHERE job_id = ? AND assigned_by = ?';
+    const deleteResult = await db.query(deleteQuery, [jobId, assignedBy]);
+    if (deleteResult[0].affectedRows > 0) {
+        return assignJobToHrByAccountManager({jobId, assignedTo, assignedBy});
+    } else {
+        return {error: 'Job updation failed'};
     }
 }
 
@@ -591,6 +600,8 @@ module.exports = {
     getAssignedHMsForJob,
     getJobDetails,
     assignJobToHrByAccountManager,
+    getAssignedHRsForJob,
+    updateJobAssignmentByHM,
     getJobsForBDE,
     getAllJobsForBDE,
     getAccountManagerJobs,
