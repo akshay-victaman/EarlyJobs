@@ -66,6 +66,7 @@ const JobDetailsPage = () => {
     window.scrollTo(0, 0)
     if(Cookies.get('role') === 'AC') {
       fetchHumanResources()
+      getHRsForJob()
     }
   }, [])
 
@@ -207,6 +208,32 @@ const JobDetailsPage = () => {
     setHumanResources(data)
   }
 
+  const getHRsForJob = async () => {
+    const {id} = params
+    const jwtToken = Cookies.get('jwt_token')
+    const email = Cookies.get('email')
+    const apiUrl = `${backendUrl}/jobs/assigned-hr/${id}/${email}`
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+    const response = await fetch(apiUrl, options)
+    const data = await response.json()
+    if (response.ok === true) {
+      if(data.error) {
+        console.log(data.error)
+      } else {
+        const hrEmails = data.map(item => item.assigned_to)
+        console.log(hrEmails)
+        setSelectedHR(hrEmails)
+      }
+    } else {
+      console.log(data.error)
+    }
+  }
+
   const handleAddHR = (e) => {
     if(e.target.value === "") return
     if(selectedHR.includes(e.target.value)) return;
@@ -287,21 +314,23 @@ const JobDetailsPage = () => {
     
     setLoading(true)
     const email = Cookies.get('email')
-    const assingedData = {
+    const assignedData = {
       jobId: jobDetails.id,
       assignedTo: selectedHR,
       assignedBy: email,
     }
     const options = {
-        method: 'POST',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${Cookies.get('jwt_token')}`
         },
-        body: JSON.stringify(assingedData)
+        body: JSON.stringify(assignedData)
     }
-    const response = await fetch(`${backendUrl}/jobs/assign`, options)
+    try {
+    const response = await fetch(`${backendUrl}/jobs/assigned-hr/update`, options)
     const data = await response.json()
+    
     if(response.ok === true) {
         if(data.error) {
             const hrEmails = data.hrEmails.map(item => {
@@ -316,6 +345,9 @@ const JobDetailsPage = () => {
     } else {
         setHrAssigned(2)
     }
+  } catch (error) {
+    console.log(error)
+  }
     setLoading(false)
   }
 
@@ -429,8 +461,8 @@ const JobDetailsPage = () => {
         </div>
       </div>
       <div style={{marginTop: '12px'}} className='hr-input-list-con'>
-            {
-                selectedHR.map((email, index) => {
+            { selectedHR.length > 0 && 
+              selectedHR.map((email, index) => {
                     const hrName = humanResources.find(item => item.email === email) 
                     return (
                         <div className='hr-input-list' key={index}>

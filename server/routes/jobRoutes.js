@@ -9,6 +9,8 @@ router.put('/edit', authenticateToken, addJobController.editJobDetials);
 router.get('/assigned-hm/:jobId', authenticateToken, addJobController.getAssignedHMsForJob);
 router.get('/details/:jobId', authenticateToken, addJobController.getJobDetails);
 router.post('/assign', authenticateToken, addJobController.assignJobToHrByAccountManager);
+router.get('/assigned-hr/:jobId/:email', authenticateToken, addJobController.getAssignedHRsForJob);
+router.put('/assigned-hr/update', authenticateToken, addJobController.updateJobAssignmentByHM);
 router.get('/bde/:email', authenticateToken, addJobController.getJobsForBDE);
 router.get('/bde/all/:email', authenticateToken, addJobController.getAllJobsForBDE);
 router.get('/account-manager/:email', authenticateToken, addJobController.getAccountManagerJobs);
