@@ -87,6 +87,7 @@ const BDEPage = () => {
     const [qualificationError, setQualificationError] = useState(false)
     const [experienceError, setExperienceError] = useState(false)
     const [ageError, setAgeError] = useState(false)
+    const [tenureError, setTenureError] = useState(false)
 
     const [postNewJob, setPostNewJob] = useState({
         companyName: '',
@@ -104,6 +105,7 @@ const BDEPage = () => {
         workType: '',
         commission: '',
         commissionType: '',
+        tenureInDays: '',
         noOfOpenings: '',
         status: 'Open',
         hiringNeed: '',
@@ -211,6 +213,7 @@ const BDEPage = () => {
           employmentType: postNewJob.employmentType.trim().length === 0,
           workType: postNewJob.workType.trim().length === 0,
           commission: postNewJob.commission.trim().length === 0 || postNewJob.commissionType.trim().length === 0,
+          tenureInDays: parseInt(postNewJob.tenureInDays) < 0 || postNewJob.tenureInDays.trim().length === 0,
           noOfOpenings: postNewJob.noOfOpenings.trim().length === 0,
           hiringNeed: postNewJob.hiringNeed.trim().length === 0,
           assignedTo: postNewJob.assignedTo.length === 0,
@@ -235,6 +238,7 @@ const BDEPage = () => {
         setEmploymentError(errors.employmentType);
         setWorkError(errors.workType);
         setCommissionError(errors.commission);
+        setTenureError(errors.tenureInDays);
         setNoOfOpeningsError(errors.noOfOpenings);
         setHiringNeedError(errors.hiringNeed);
         setAssignedToError(errors.assignedTo);
@@ -278,6 +282,7 @@ const BDEPage = () => {
             workType: postNewJob.workType,
             commissionFee: postNewJob.commission,
             commissionType: postNewJob.commissionType,
+            tenureInDays: postNewJob.tenureInDays,
             noOfOpenings: postNewJob.noOfOpenings,
             status: postNewJob.status,
             hiringNeed: postNewJob.hiringNeed,
@@ -322,6 +327,7 @@ const BDEPage = () => {
                     workType: '',
                     commission: '',
                     commissionType: '',
+                    tenureInDays: '',
                     noOfOpenings: '',
                     status: 'Open',
                     hiringNeed: '',
@@ -504,6 +510,10 @@ const BDEPage = () => {
                 </div>
             </div>
             {commissionError && <p className='hr-error'>*Please select commission type & enter commission</p>}
+
+            <label className='bde-form-label' htmlFor='tenure'>Days Completion (Tenure)<span className='hr-form-span'> *</span></label>
+            <input className='bde-form-input' id='tenure'  type='number' onChange={handleInputChange} value={postNewJob.tenureInDays} name='tenureInDays' placeholder='Enter Tenure in days' />
+            {tenureError && <p className='hr-error'>*Please enter tenure in days</p>}
 
             <div className='salary-container'>
                 <div className='emp-work-sub-con'>
