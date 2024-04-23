@@ -204,8 +204,12 @@ const updateJobAssignmentByHM = async (jobAssignment) => {
     const {jobId, assignedTo, assignedBy} = jobAssignment;
     const deleteQuery = 'DELETE FROM jobassignments WHERE job_id = ? AND assigned_by = ?';
     const deleteResult = await db.query(deleteQuery, [jobId, assignedBy]);
-    if (deleteResult[0].affectedRows > 0) {
-        return assignJobToHrByAccountManager({jobId, assignedTo, assignedBy});
+    if (deleteResult[0].affectedRows >= 0) {
+        if(assignedTo.length > 0) {
+            return assignJobToHrByAccountManager({jobId, assignedTo, assignedBy});
+        } else {
+            return {success: 'Job assigned successfully to HR'};
+        }
     } else {
         return {error: 'Job updation failed'};
     }
