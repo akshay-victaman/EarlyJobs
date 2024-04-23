@@ -308,10 +308,6 @@ const JobDetailsPage = () => {
   }
 
   const assignJobToHR = async () => {
-    if(selectedHR.length === 0) {
-      return
-    }
-    
     setLoading(true)
     const email = Cookies.get('email')
     const assignedData = {
