@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import {ThreeCircles} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
-import { query, where, collection, getFirestore, getDocs, orderBy, Timestamp } from "firebase/firestore";
+import { query, limit, collection, getFirestore, getDocs, orderBy, Timestamp, startAfter } from "firebase/firestore";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import {BsSearch} from 'react-icons/bs'
 import { FaFilter } from "react-icons/fa6";
@@ -48,6 +48,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
     const [page, setPage] = useState(initialPage)
     const [totalItems, setTotalItems] = useState(0);
     const [showFilter, setShowFilter] = useState(false)
+    const [lastVisible, setLastVisible] = useState(null)
 
 
   useEffect(() => {
@@ -70,6 +71,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
 
   const onShowCandidateForm = (status) => {
     setShowCandidateForm(status)
+    setPage(1)
   }
 
   const onClickFilter = () => {
@@ -216,15 +218,33 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
   }
 
   const getHirignReqCard = async () => {
-    // setApiStatus(apiStatusConstant.inProgress)
+    setApiStatus(apiStatusConstant.inProgress)
     const db = getFirestore(app);
-    const queryRef = query(
+    
+    let queryRef;
+    if (page === 1) { // If it's the first page, no need to use startAfter
+      queryRef = query(
         collection(db, "AddJobVacancies"),
         orderBy("postDateTime", "desc"),
-    );
+        limit(10)
+      );
+    } else { // If it's not the first page, start after the last document from the previous page
+      console.log('lastVisible', lastVisible)
+      queryRef = query(
+        collection(db, "AddJobVacancies"),
+        orderBy("postDateTime", "desc"),
+        startAfter(lastVisible),
+        limit(10)
+      );
+    }
+
+    const queryRefForCount = query(collection(db, "AddJobVacancies"));
+    const querySnapForCount = await getDocs(queryRefForCount);
+    setTotalItems(querySnapForCount.size);
 
     const querySnap = await getDocs(queryRef);
     if (!querySnap.empty) {
+      setLastVisible(querySnap.docs[querySnap.docs.length - 1])
       const documents = querySnap.docs.map((doc) => {
           const timestamp = doc.data().postDateTime;
         
@@ -253,7 +273,25 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
             formattedDate
           };
       });
-      console.log(documents)
+      const formattedData = documents.map(eachItem => ({
+        id: eachItem.docId,
+        category: eachItem.category,
+        commissionType: eachItem.commissionType,
+        commissionFee: eachItem.commission,
+        compname: eachItem.companyName,
+        employmentType: eachItem.employmentType,
+        hiringNeed: eachItem.hiringNeed,
+        location: eachItem.location,
+        minSalary: eachItem.salaryMax,
+        maxSalary: eachItem.salaryMin,
+        role: eachItem.title,
+        workType: eachItem.workType,
+        postedBy: eachItem.postedBy,
+      })
+      )
+      setJobsList(formattedData)
+      setApiStatus(apiStatusConstant.success)
+      console.log('formatted data',formattedData)
     } else {
         console.log("No such documents!");
     }
@@ -315,7 +353,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
           ) : (
             <ul className="jobs-card-list">
               {jobsList.map(eachJob => (
-                <JobsCard key={eachJob.id} jobsItem={eachJob} />
+                <JobsCard key={eachJob.id} jobsItem={eachJob} showCandidateForm={showCandidateForm}  />
               ))}
             </ul>
           )}

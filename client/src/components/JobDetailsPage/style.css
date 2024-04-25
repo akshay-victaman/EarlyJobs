@@ -464,6 +464,39 @@
   margin-left: 20px;
 }
 
+.job-details-comapany-details-con {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  color: #000000;
+}
+
+.job-details-company-details-heading {
+  font-size: 25px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  align-self: center;
+  text-align: center;
+  border-bottom: 3px solid #EB6A4D;
+  padding-bottom: 4px;
+}
+
+.job-details-company-details-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.job-details-company-details-item-heading {
+  font-size: 18px;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.job-details-company-details-item-value {
+  font-size: 16px;
+  font-weight: 400;
+}
 
 @media screen and (max-width: 500px) {
   .modal {
@@ -613,6 +646,29 @@
     font-size: 20px;
   }
   .job-details-assign-status {
+    font-size: 13px;
+  }
+
+  .job-details-comapany-details-con {
+    margin-top: 10px;
+  }
+  
+  .job-details-company-details-heading {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    align-self: center;
+    text-align: center;
+    border-bottom: 3px solid #EB6A4D;
+    padding-bottom: 4px;
+  }
+  
+  .job-details-company-details-item-heading {
+    font-size: 14px;
+    margin-right: 7px;
+  }
+  
+  .job-details-company-details-item-value {
     font-size: 13px;
   }
 }

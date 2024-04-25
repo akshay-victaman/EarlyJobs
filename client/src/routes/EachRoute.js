@@ -2,6 +2,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from '../components/ProtectedRoute';
 import Loader from '../components/Loader/index.js';
+import RequestJobDetailsPage from '../components/RequestJobDetailsPage/index.js';
 
 const HomePage = lazy(() => import("../components/HomePage"));
 const JobsPage = lazy(() => import("../components/JobsPage"));
@@ -80,13 +81,13 @@ const EachRoute = () => {
                 }
             />
 
-            {/* <ProtectedRoute exact path='/signup'
+            <ProtectedRoute exact path='/job-request-details/:id'
                 render={() =>
                     <Suspense fallback={<Loader />}>
-                        <SignUpPage />
+                        <RequestJobDetailsPage />
                     </Suspense>
                 }
-            /> */}
+            />
 
             <ProtectedRoute exact path='/bde-portal'
                 render={() =>
