@@ -6,7 +6,7 @@ import './style.css'
 import Cookies from 'js-cookie';
 
 const JobsCard = props => {
-  const {jobsItem} = props
+  const {jobsItem, showCandidateForm} = props
 
   const hiringFor = Cookies.get('hiring_for')
   const userRole = Cookies.get('role')
@@ -26,7 +26,7 @@ const JobsCard = props => {
     hiringNeed,
   } = jobsItem
   return (
-    <Link to={`/jobs/${id}`} className="link-item">
+    <Link to={showCandidateForm === 4 ? `job-request-details/${id}` : `/jobs/${id}`} className="link-item">
       <li className="jobs-list-item-container">
         <div className="jobs-logo-name-con">
           <FiBriefcase className="jobs-logo" />
