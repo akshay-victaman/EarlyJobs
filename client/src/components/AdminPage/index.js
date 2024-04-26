@@ -5,19 +5,10 @@ import Popup from 'reactjs-popup';
 import Cookie from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
 import {v4 as uuid} from 'uuid'
-import {addDays, format} from 'date-fns'
-import { PDFDocument, StandardFonts } from 'pdf-lib';
-import { getFirestore, collection, query, where, getDocs, addDoc, doc, deleteDoc, setDoc } from "firebase/firestore"
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import app from "../../firebase"
 import Cookies from "js-cookie";
-import NavBar from '../NavBar'
 import './style.css'
 import { Link, Redirect } from "react-router-dom";
-import Footer from "../Footer";
 import { useEffect, useState } from "react";
-import Victaman_intern_offer_letter from "../../assets/Victaman_intern_offer_letter.pdf"
-
 
 let hiringCategoryOptions = [
     { value: 'BPO', label: 'BPO' },
@@ -126,178 +117,8 @@ const AdminPage = () => {
         }
     }
 
-    const getOfferLetterCount = async () => {
-        const date = format(new Date(), 'yyyy-MM-dd')
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/admin/offer-letter-count/${date}`
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                Authorization: 'Bearer ' + Cookie.get('jwt_token')
-            }
-        }
-        const response = await fetch(url, options)
-        const data = await response.json()
-        console.log(data)
-        console.log(Object.keys(data).length === 0)
-        let count = 0;
-        if(response.ok === true) {
-            if(Object.keys(data).length === 0) {
-                count = 0
-            } else {
-                count = data.count.count
-            }
-            return count
-        } else {
-            setError(data.error)
-            return false
-        }
-    }
-
-    const updateOfferLetterCount = async () => {
-        const date = format(new Date(), 'yyyy-MM-dd')
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/admin/offer-letter-count/update/${date}`
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                Authorization: 'Bearer ' + Cookie.get('jwt_token')
-            }
-        }
-        const response = await fetch(url, options)
-        const data = await response.json()
-        console.log(data)
-        if(response.ok === true) {
-            if(data.error) {
-                setError(data.error)
-                return false
-            } else {
-                setError("")
-                console.log(data.message)
-                return true
-            }
-        } else {
-            setError(data.error)
-            return false
-        }
-    }
-
-    const uploadPdf = async (pdfFile) => {
-        const result = await updateOfferLetterCount();
-        if(!result) return;
-        const storage = getStorage(app);
-        const storageRef = ref(storage, `HROfferLetters/${signUpDetails.username}_${Date()}.pdf`);
-        const uploadTask = uploadBytesResumable(storageRef, pdfFile);
-        let pdfURL = '';
-      
-        // Create a new promise to handle the upload task
-        const promise = new Promise((resolve, reject) => {
-          uploadTask.on(
-            'state_changed',
-            (snapshot) => {
-              var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log('Upload is ' + progress + '% done');
-            },
-            (error) => {
-              console.log(error);
-              reject(error);
-            },
-            async () => {
-              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-              console.log('File available at', downloadURL);
-              pdfURL = downloadURL;
-              resolve(pdfURL);
-            }
-          );
-        });
-      
-        return promise;
-    }; 
-
-    const generatePDF = async () => {
-        const count = await getOfferLetterCount();
-        if(count === false) return;
-        try {
-            // Load the existing PDF
-            const response = await fetch(Victaman_intern_offer_letter); // Load the PDF bytes using your preferred method
-            const arrayBuffer = await response.arrayBuffer();
-            const existingPdfBytes = new Uint8Array(arrayBuffer);
-      
-            // Load the PDF document
-            const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      
-            // Modify the PDF content as needed
-            // Example: Add text to the first page
-            const currDate = new Date();
-            const day = currDate.getDate();
-            const month = currDate.getMonth() + 1;
-            const year = currDate.getFullYear();
-            const currDateStr = `${day < 10 ? "0"+day : day}- ${month < 10 ? "0"+month : month}- ${year}`;
-            const dateRefCount = `- Vic/${format(currDate, 'yy/MMM/dd')}/${(count+1).toString()}`;
-            const dateAfter3Days = addDays(currDate, 3);
-            const lastJoiningDate = format(dateAfter3Days, 'MMMM dd, yyyy');
-            const pdfDate = pdfDoc.getPages()[0];
-            pdfDate.drawText(currDateStr, {
-                x: 82, 
-                y: 743,
-                size: 10,
-            });
-            const pdfRef = pdfDoc.getPages()[0];
-            pdfRef.drawText(dateRefCount, {
-                x: 472, 
-                y: 743,
-                size: 10.5,
-            });
-            const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
-            const pdfName = pdfDoc.getPages()[0];
-            pdfName.drawText(signUpDetails.username, { 
-                x: 81,
-                y: 717,
-                size: 12,
-                font: timesRomanFont,
-            });
-            const pdfAddress = pdfDoc.getPages()[0];
-            pdfAddress.drawText(signUpDetails.location, { 
-                x: 92, 
-                y: 703,
-                size: 12,
-                font: timesRomanFont,
-            });
-            const pdfJoiningDate = pdfDoc.getPages()[0];
-            pdfJoiningDate.drawText(`${lastJoiningDate}`, { 
-                x: 430, 
-                y: 603,
-                size: 11,
-            });
-      
-            // Save the modified PDF
-            const modifiedPdfBytes = await pdfDoc.save();
-      
-            // Perform further actions (e.g., send the modified PDF to the server, download, etc.)
-            console.log('PDF Modified:', modifiedPdfBytes);
-            
-            try {
-                const pdfURL = await uploadPdf(modifiedPdfBytes);
-                // setSignUpDetails({ ...signUpDetails, resumeUrl: pdfURL })
-                // return modifiedPdfBytes;
-                return pdfURL;
-            } catch (error) {
-                console.error('Error uploading PDF:', error);
-            }
-
-          } catch (error) {
-            console.error('Error modifying PDF:', error);
-          }
-    }
-
     const onClickCreate = async (close) => {
-        let pdfURL = '';
-        if(signUpDetails.role === 'HR' && signUpDetails.hiringFor === 'Intern HR Recruiter') {
-            pdfURL = await generatePDF();
-            if(!pdfURL) return;
-        }
+
         if(signUpDetails.role !== 'HR') {
             setSignUpDetails({ ...signUpDetails, location: 'TBF' })
         }
@@ -360,7 +181,7 @@ const AdminPage = () => {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + Cookie.get('jwt_token')
             },
-            body: JSON.stringify({...updatedSignUpDetails, resumeUrl: pdfURL})
+            body: JSON.stringify(updatedSignUpDetails)
         }
         const response = await fetch(url, options) // create account in DB
         const data = await response.json()
@@ -415,19 +236,6 @@ const AdminPage = () => {
                 <input className="homepage-input" type="number" required name="phone" value={signUpDetails.phone} onChange={handleInputChange} />
                 <label className="homepage-label">Login Password</label>
                 <input className="homepage-input" type="text" disabled value={signUpDetails.password} />
-
-                {/* <label className="homepage-label" htmlFor="location">Location</label>
-                <input className="homepage-input" type="text" id="location" required name="location" value={signUpDetails.location} onChange={handleInputChange} />
-                <label className="homepage-label" htmlFor="hiringCTC">Hiring CTC</label>
-                <input className="homepage-input" type="number" id="hiringCTC" required name="hiringCTC" value={signUpDetails.hiringCTC} onChange={handleInputChange} /> */}
-                
-                {/* <label className="homepage-label" htmlFor="hiringFor">Hiring For</label>
-                <select className="homepage-input" id="hiringFor" name="hiringFor" required value={signUpDetails.hiringFor} onChange={handleInputChange} >
-                    <option value="">select</option>
-                    <option value="Freelance HR Recruiter">Freelance HR Recruiter</option>
-                    <option value="Intern HR Recruiter">Intern HR Recruiter</option> 
-                    <option value="Fulltime HR Recruiter">Fulltime HR Recruiter</option> 
-                </select> */}
                 {
                     signUpDetails.role === 'HR' && (
                     <>
@@ -488,7 +296,6 @@ const AdminPage = () => {
 
     return (
         <div className='homepage-container'>
-            {/* <NavBar /> */}
             <div className='admin-sub-con'>
                 <div className='admin-page-content-con'>
                     <h1 className='bde-heading'>Welcome to <span className='head-span'>Admin</span> Portal</h1>
@@ -521,13 +328,6 @@ const AdminPage = () => {
                             </Link>
                         </button>
 
-                        {/* <button className='admin-btn'>
-                            <div className="admin-link">
-                                <FaUserPlus className='admin-icon' />
-                                <p className="button-text"> Signup New User </p>
-                            </div>
-                        </button> */}
-
                         <Popup
                             trigger={
                             <button className='admin-btn'>
@@ -552,8 +352,6 @@ const AdminPage = () => {
                     <img src='/admin-bg.jpg' alt='admin vector' className='admin-image' />
                 </div>
             </div>
-            
-            {/* <Footer /> */}
         </div>
     )
 }

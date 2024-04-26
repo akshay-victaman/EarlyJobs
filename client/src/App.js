@@ -6,12 +6,10 @@ import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import ContactForm from './components/ContactForm';
 import 'react-toastify/dist/ReactToastify.min.css';
-import './components/AccountManagerPage/style.css'
 import './components/AddJobsPage/style.css'
 import './components/AddJobVacanciesPage/style.css'
 import './components/AdminPage/style.css'
 import './components/BDEPage/style.css'
-import './components/CollegeAgencyForm/style.css'
 import './components/EmploymentTypeList/style.css'
 import './components/FilterJobs/style.css'
 import './components/Footer/style.css'
