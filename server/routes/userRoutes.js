@@ -9,6 +9,7 @@ router.get('/users/v1/:email/:phone', userController.getUserByEmailPhone);
 router.get('/users/:username', authenticateToken, userController.getUserByEmail);
 router.get('/users/all/account-managers', authenticateToken, userController.getAllAccountManagers);
 router.get('/users/all/hr/:email', authenticateToken, userController.getAllHRs);
+router.post('/users/hr-resumes/:hrEmail', authenticateToken, userController.hrResumes);
 router.post('/users/register', userController.createUser);
 router.put('/users/update', userController.updateUser);
 router.get('/users/hr-offer-letter/:email', authenticateToken, userController.getHrResumes);

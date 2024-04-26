@@ -33,11 +33,15 @@ const hrAssignedHm = async (email, hrEmail) => {
 const hrResumes = async (hrEmail, resumeUrl) => {
     const query = 'INSERT INTO hr_resume (hr_email, resume_url) VALUES (?, ?)';
     const result = await db.query(query, [hrEmail, resumeUrl]);
-    return result[0].affectedRows > 0;
+    if(result[0].affectedRows > 0) {
+        return {success: 'HR resume uploaded successfully'};
+    }
+    return {error: 'HR resume upload failed'};
+    // return result[0].affectedRows > 0;
 }
 
 const createUser = async (user) => {
-    const {docId, username, email, phone, password, role, hiringFor, assignHM, location, hiringCategory, resumeUrl, hmType} = user;
+    const {docId, username, email, phone, password, role, hiringFor, assignHM, location, hiringCategory, hmType} = user;
     const hiringCategory1 = hiringCategory.join(', ');
     const id = uuidv4();
     const hashedPassword = bcrypt.hashSync(password, 10)
@@ -52,7 +56,6 @@ const createUser = async (user) => {
         if (result[0].affectedRows > 0) {
             if(role === 'HR') {
                 hrAssignedHm(email, assignHM);
-                hrResumes(email, resumeUrl);
             }
             return {success: 'User created successfully'};
         } else {
@@ -203,6 +206,7 @@ module.exports = {
   getAllUsers,
   getUserByEmailPhone,
   getUserByEmail,
+  hrResumes,
   createUser,
   updateUser,
   getHrResumes,

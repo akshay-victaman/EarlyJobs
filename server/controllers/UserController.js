@@ -36,6 +36,17 @@ const getUserByEmail = async (req, res) => {
   }
 };
 
+const hrResumes = async (req, res) => {
+  const hrEmail = req.params.hrEmail;
+  const {offerLetterUrl} = req.body;
+  try {
+    const user = await userService.hrResumes(hrEmail, offerLetterUrl);
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const createUser = async (req, res) => {
     const user = req.body;
     try {
@@ -142,6 +153,7 @@ module.exports = {
   getAllUsers,
   getUserByEmailPhone,
   getUserByEmail,
+  hrResumes,
   createUser,
   updateUser,
   getHrResumes,
