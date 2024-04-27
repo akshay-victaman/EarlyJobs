@@ -9,6 +9,7 @@ const ContactForm = ({handleShowContactForm}) => {
   const { name, email, subject, message, phone } = formState;
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [captchaValue, setCaptchaValue] = useState(null);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -16,7 +17,7 @@ const ContactForm = ({handleShowContactForm}) => {
   };
 
   function onChange(value) {
-    console.log("Captcha value:", value);
+    setCaptchaValue(value);
   }
 
   const sendEmail = async () => {
@@ -59,6 +60,9 @@ const ContactForm = ({handleShowContactForm}) => {
         return;
     } else if(message.trim() === '') {
         setErrorMessage('Message is required');
+        return;
+    } if (!captchaValue) {
+        setErrorMessage('Please verify the captcha');
         return;
     } else {
         setErrorMessage('');
