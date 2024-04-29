@@ -184,6 +184,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
     if (response.ok === true) {
       if(data.error) {
         setApiStatus(apiStatusConstant.failure)
+        alert(data.error)
       } else {
         const updatedData = data.jobs.map(eachItem => ({
           id: eachItem.id,
@@ -214,6 +215,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
       }
     } else {
       setApiStatus(apiStatusConstant.failure)
+      alert(data.error)
     }
   }
 

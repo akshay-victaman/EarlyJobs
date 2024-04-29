@@ -82,6 +82,8 @@ const ContactForm = ({handleShowContactForm}) => {
     }
   };
 
+  // comment out the return statement below
+
 
   return (
     <>
@@ -110,9 +112,13 @@ const ContactForm = ({handleShowContactForm}) => {
                 <p className="error-text">*{errorMessage}</p>
             </div>
             )}
+
+
+   
+
             {successMessage && (
             <div>
-                <p className="success-text">{successMessage}</p>
+                <p className="success-text">{successMessage}</p> 
             </div>
             )}
             <ReCAPTCHA

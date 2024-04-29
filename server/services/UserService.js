@@ -158,7 +158,7 @@ const getAllHRsForHiringManager = async (email, hiringFor, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize; 
     let query = `
-        SELECT username, email, phone, created_at, hiring_for, last_login 
+        SELECT username, email, phone, created_at, hiring_for, last_login, is_blocked
         FROM users INNER JOIN hrassignedhm ON 
         users.email=hrassignedhm.hr_email 
         WHERE hm_email = ? 
