@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import {Oval} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
 import { format, parseISO } from 'date-fns';
+import Popup from 'reactjs-popup';
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -16,6 +17,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
     const [hrRoleType, setHrRoleType] = useState('')
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [page, setPage] = useState(1)
+    const [blockStatus, setBlockStatus] = useState(false);
     const [totalItems, setTotalItems] = useState(0);
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
@@ -51,6 +53,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
         if (response.ok === true) {
           if(data.error) {
             setApiStatus(apiStatusConstant.failure)
+            alert(data.error)
           } else {
             const formattedData = data.users.map(eachItem => ({
               name: eachItem.username,
@@ -58,7 +61,8 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
               phone: eachItem.phone,
               createdAt: formatDate(eachItem.created_at),
               hiringFor: eachItem.hiring_for,
-              lastLogin: eachItem.last_login ? formatDate(eachItem.last_login) : 'N/A'
+              lastLogin: eachItem.last_login ? formatDate(eachItem.last_login) : '--',
+              isBlocked: eachItem.is_blocked
             }))
             console.log(data)
             setTotalItems(data.count)
@@ -66,9 +70,74 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
             setApiStatus(apiStatusConstant.success)
           }
         } else {
+          alert(data.error)
           setApiStatus(apiStatusConstant.failure)
         }
     }
+
+    const blockUser = async (close, email) => {
+      setBlockStatus(true);
+      const url = `${backendUrl}/admin/block-user/${email}`;
+      const options = {
+          method: 'PUT',
+          headers: { 
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          }
+      };
+      const response = await fetch(url, options);
+      const data = await response.json();
+      if(response.ok === true) {
+          if(data.error) {
+              alert(data.error);
+          } else {
+              setRecruiterList(recruiterList.map(eachItem => {
+                  if(eachItem.email === email) {
+                      return {...eachItem, isBlocked: 1}
+                  } else {
+                      return eachItem;
+                  }
+              }))
+              alert(data.message);
+              close();
+          }
+      } else {
+          alert(data.error);
+      }
+      setBlockStatus(false);
+  }
+
+  const unblockUser = async (close, email) => {
+      setBlockStatus(true);
+      const url = `${backendUrl}/admin/unblock-user/${email}`;
+      const options = {
+          method: 'PUT',
+          headers: { 
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          }
+      };
+      const response = await fetch(url, options);
+      const data = await response.json();
+      if(response.ok === true) {
+          if(data.error) {
+              alert(data.error);
+          } else {
+              setRecruiterList(recruiterList.map(eachItem => {
+                  if(eachItem.email === email) {
+                      return {...eachItem, isBlocked: 0}
+                  } else {
+                      return eachItem;
+                  }
+              }))
+              alert(data.message);
+              close();
+          }
+      } else {
+          alert(data.error);
+      }
+      setBlockStatus(false);
+  }
 
     const itemsPerPage = 10; 
 
@@ -127,8 +196,23 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       else return "no records found!"
     }
 
+    const renderBlockUnblockPopup = (close, email, isBlocked) => (
+      <div className="modal-form">
+          <button className="modal-close-button" disabled={blockStatus} onClick={close}>&times;</button>
+          <label className="homepage-label">Do you want to {isBlocked === 0 ? "Block" : "Unblock"} this user?</label>
+          <div className='achieve-button-con'>
+          {
+              isBlocked === 0 ?
+              <button className='job-details-upload-candidate-button' disabled={blockStatus} onClick={() => blockUser(close, email)}>YES</button>
+              :
+              <button className='job-details-upload-candidate-button' disabled={blockStatus} onClick={() => unblockUser(close, email)}>YES</button>
+          }
+          <button className='job-details-upload-candidate-button archieve-cancel-btn' disabled={blockStatus} onClick={close}>NO</button>
+          </div>
+      </div>
+  )
+
     return (
-        // offeredDate: eachItem.offered_date
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
             <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>My HR Recruiters</span></h1>
             <div className="job-section-select-filter-container">
@@ -151,6 +235,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                     <th className="job-details-candidates-table-heading-cell">Hiring For</th>
                     <th className="job-details-candidates-table-heading-cell">Last Login</th>
                     <th className="job-details-candidates-table-heading-cell">Created At</th>
+                    <th className="job-details-candidates-table-heading-cell">Block/Unblock HR</th>
                   </tr>
                   {
                     recruiterList.length > 0 && recruiterList.map(eachItem => (
@@ -161,6 +246,18 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                             <td className="job-details-candidates-table-cell">{eachItem.hiringFor}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.lastLogin}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.createdAt}</td>
+                            <td className="job-details-candidates-table-cell">
+                              <Popup
+                                  trigger={<button className="block-user-button">{eachItem.isBlocked === 0 ? "Block" : "Unblock"}</button>}
+                                  modal
+                              >
+                                  {close => (
+                                  <div className="modal">
+                                      {renderBlockUnblockPopup(close, eachItem.email, eachItem.isBlocked)}
+                                  </div>
+                                  )}
+                              </Popup>
+                          </td>
                         </tr>
                     ))
                   }

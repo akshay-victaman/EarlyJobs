@@ -126,11 +126,21 @@ const BDEPage = () => {
                     Authorization: `Bearer ${Cookies.get('jwt_token')}`
                 },
             }
-            const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-            const response = await fetch(`${backendUrl}/api/users/all/account-managers`, options)
-            const data = await response.json()
-            setAccountManagers(data)
-            console.log(data)
+            try {
+                const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+                const response = await fetch(`${backendUrl}/api/users/all/account-managers`, options)
+                const data = await response.json()
+                if(response.ok) {
+
+                setAccountManagers(data)
+                console.log(data)
+                } else {
+                    alert(data.error)
+                }
+                
+            } catch (error) {
+                console.log(error)
+            }
         }
         fetchAccountManagers()
     }, [])
