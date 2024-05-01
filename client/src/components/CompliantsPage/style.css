@@ -1,0 +1,185 @@
+.complaints-page-con {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15vh;
+    min-height: 85vh;
+    padding: 25px 6%;
+}
+
+.complaints-page-button-con {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.complaints-page-button {
+    color: #EB6A4D;
+    background-color: transparent;
+    border: 0px;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px 16px;
+}
+
+.complaints-page-button:hover {
+    background-color: #EB6A4D10;
+    border-radius: 6px;
+}
+
+.active-button {
+    background-color: #EB6A4D20;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.compliants-line {
+    border: 1px solid #EB6A4D;
+    margin-bottom: 20px;
+}
+
+.complaints-page-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 0px;
+    list-style: none;
+    width: 100%;
+}
+
+.complaints-page-list-item {
+    width: 100%;
+}
+
+.complaints-page-list-item-link {
+    display: flex;
+    width: 100%;
+    padding: 10px 0px;
+    border: 1px solid #EB6A4D;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    padding: 15px;
+    text-decoration: none;
+}
+
+.complaints-page-list-item-link:hover {
+    background-color: #EB6A4D15;
+}
+
+.complaints-page-list-item-icon {
+    margin-right: 16px;
+    font-size: 35px;
+    color: #EB6A4D;
+}
+
+.complaints-page-list-item-con {
+    display: flex;
+    flex-direction: column;
+}
+
+.complaints-page-list-item-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+.complaints-page-list-item-text {
+    font-size: 16px;
+    color: #4A4A4A;
+    margin-bottom: 5px;
+}
+
+.complaints-page-list-item-date {
+    font-size: 14px;
+    color: #4A4A4A;
+}
+
+.compliants-loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 68vh;
+}
+
+.compliants-no-compliants {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 68vh;
+    font-size: 20px;
+    color: #4A4A4A;
+}
+
+.compliants-failure {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 68vh;
+}
+
+.compliants-failure-heading {
+    font-size: 20px;
+    color: #4A4A4A;
+    margin-bottom: 10px;
+}
+
+.compliants-failure-button {
+    color: #ffffff;
+    background-color: #EB6A4D;
+    border: 0px;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 6px;
+}
+
+@media screen and (max-width: 768px) {
+    .complaints-page-con {
+        padding: 14px 4%;
+        margin-top: 10vh;
+        min-height: 90vh;
+    }
+
+    .complaints-page-button {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .complaints-page-list-item-link {
+        padding: 10px;
+    }
+
+    .complaints-page-list-item-icon {
+        font-size: 28px;
+        margin-right: 10px;
+    }
+
+    .complaints-page-list-item-title {
+        font-size: 15px;
+    }
+
+    .complaints-page-list-item-text {
+        font-size: 14px;
+    }
+
+    .complaints-page-list-item-date {
+        font-size: 12px;
+    }
+
+    .compliants-failure-heading {
+        font-size: 16px;
+    }
+
+    .compliants-failure-button {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .compliants-no-compliants {
+        font-size: 16px;
+    }
+    
+}

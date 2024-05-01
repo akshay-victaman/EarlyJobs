@@ -19,5 +19,6 @@ router.put('/users/update-doc-id', userController.updateDocId);
 router.post('/users/login', userController.loginUser);
 router.get('/users/hr-for-hm/:email', authenticateToken, checkUserBlockStatus, userController.getAllHRsForHiringManager);
 router.get('/users/hr-assigned-hm/:email', authenticateToken, checkUserBlockStatus, userController.getHrAssignedHm);
+router.post('/users/complaints', authenticateToken, userController.createComplaint);
 
 module.exports = router;

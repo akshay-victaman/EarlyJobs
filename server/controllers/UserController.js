@@ -149,6 +149,17 @@ const getHrAssignedHm = async (req, res) => {
     }
 }
 
+const createComplaint = async (req, res) => {
+    const complaint = req.body;
+    complaint.email = req.email;
+    try {
+      const newComplaint = await userService.createComplaint(complaint);
+      res.json(newComplaint);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmailPhone,
@@ -163,5 +174,6 @@ module.exports = {
   getAllAccountManagers,
   getAllHRs,
   getAllHRsForHiringManager,
-  getHrAssignedHm
+  getHrAssignedHm,
+  createComplaint
 };

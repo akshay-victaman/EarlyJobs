@@ -202,6 +202,21 @@ const getHrAssignedHm = async (email, role) => {
     return {hm: result[0], hr: result1[0]};
 }
 
+const createComplaint = async (compliant) => {
+    const {email, subject, message, attachmentLink} = compliant;
+    const id = uuidv4();
+    const query = 'INSERT INTO Compliants (id, subject, message, attachment_link, user_email, is_read) VALUES (?, ?, ?, ?, ?, ?)';
+    try {
+        const result = await db.query(query, [id, subject, message, attachmentLink, email, 0]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Complaint sent successfully'};
+        }
+        return {error: 'Complaint creation failed'};
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmailPhone,
@@ -216,5 +231,6 @@ module.exports = {
   getAllAccountManagers,
   getAllHRs,
   getAllHRsForHiringManager,
-  getHrAssignedHm
+  getHrAssignedHm,
+  createComplaint
 };

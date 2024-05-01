@@ -5,6 +5,7 @@ import ScrollUp from './components/ScrollUp';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import ContactForm from './components/ContactForm';
+import ComplaintsForm from './components/ComplaintsForm';
 import 'react-toastify/dist/ReactToastify.min.css';
 import './components/AddJobsPage/style.css'
 import './components/AddJobVacanciesPage/style.css'
@@ -34,21 +35,30 @@ import './components/UsersPage/style.css'
 import './components/ViewCandidates/style.css'
 import './components/WorkPlaceTypeList/style.css'
 import './components/PrivacyPolicyPage/style.css'
+import './components/CompliantsPage/style.css'
+import './components/CompliantDetails/style.css'
+import './components/ContactForm/style.css'
 import './App.css';
 
 
 const App = () => {
 
   const [showContactForm, setShowContactForm] = useState(false)
+  const [showComplaintsForm, setShowComplaintsForm] = useState(false)
 
   const handleShowContactForm = () => {
     setShowContactForm(!showContactForm)
   }
 
+  const handleShowComplaintsForm = () => {
+    setShowComplaintsForm(!showComplaintsForm)
+  }
+
   return (
     <>
-      <NavBar />
+      <NavBar handleShowComplaintsForm={handleShowComplaintsForm} />
       { showContactForm && <ContactForm handleShowContactForm={handleShowContactForm} /> }
+      { showComplaintsForm && <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} /> }
       <EachRoute />
       <Footer handleShowContactForm={handleShowContactForm} />
       <ScrollUp />
