@@ -14,5 +14,9 @@ router.put('/unblock-user/:email', authenticateToken, AdminController.unblockUse
 router.put('/user/change-password', authenticateToken, AdminController.changePassword);
 router.get('/offer-letter-count/:date', authenticateToken, AdminController.offerLetterCount);
 router.put('/offer-letter-count/update/:date', authenticateToken, AdminController.updateOrInsertOfferLetterCount);
+router.get('/complaints/unread', authenticateToken, AdminController.getUnreadCompliants);
+router.get('/complaints/read', authenticateToken, AdminController.getReadCompliants);
+router.get('/complaint/:id', authenticateToken, AdminController.getCompliantById);
+router.put('/complaint/mark-as-read/:id', authenticateToken, AdminController.markCompliantAsRead);
 
 module.exports = router;

@@ -3,10 +3,10 @@ import React, { lazy, Suspense } from "react";
 import ProtectedRoute from '../components/ProtectedRoute';
 import Loader from '../components/Loader/index.js';
 import RequestJobDetailsPage from '../components/RequestJobDetailsPage/index.js';
+import ComplaintDetails from '../components/CompliantDetails/index.js';
 
 const HomePage = lazy(() => import("../components/HomePage"));
 const JobsPage = lazy(() => import("../components/JobsPage"));
-const SignUpPage = lazy(() => import("../components/SignUpPage"));
 const BDEPage = lazy(() => import("../components/BDEPage"));
 const AdminPage = lazy(() => import("../components/AdminPage"));
 const UsersPage = lazy(() => import("../components/UsersPage"));
@@ -19,6 +19,7 @@ const HiringPartnerDetails = lazy(() => import("../components/HiringPartnerDetai
 const NotFoundPage = lazy(() => import("../components/NotFoundPage"));
 const PrivacyPolicyPage = lazy(() => import("../components/PrivacyPolicyPage"));
 const TermsPage = lazy(() => import("../components/TermsPage"));
+const ComplaintsPage = lazy(() => import("../components/CompliantsPage"));
 
 
 const EachRoute = () => {
@@ -125,6 +126,22 @@ const EachRoute = () => {
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <HiringPartnerReqPage />
+                    </Suspense>
+                }
+            />
+
+            <ProtectedRoute exact path="/admin/compliants"
+                render={() =>
+                    <Suspense fallback={<Loader />}>
+                        <ComplaintsPage />
+                    </Suspense>
+                }
+            />
+
+            <ProtectedRoute exact path="/admin/compliants/:id"
+                render={() =>
+                    <Suspense fallback={<Loader />}>
+                        <ComplaintDetails />
                     </Suspense>
                 }
             />

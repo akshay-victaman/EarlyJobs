@@ -1,6 +1,7 @@
 import { ImUsers } from "react-icons/im";
 import { BsBriefcaseFill } from "react-icons/bs";
 import { FaUsers, FaUserPlus, FaFileCircleQuestion } from "react-icons/fa6";
+import { BsMailbox2 } from "react-icons/bs";
 import Popup from 'reactjs-popup';
 import Cookie from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
@@ -325,6 +326,13 @@ const AdminPage = () => {
                             <Link to='/admin/recruiter-requests' className="admin-link">
                                 <FaFileCircleQuestion className='admin-icon' />
                                 <p className="button-text">Recruiter Requests </p>
+                            </Link>
+                        </button>
+
+                        <button className='admin-btn'>
+                            <Link to='/admin/compliants' className="admin-link">
+                                <BsMailbox2 className='admin-icon' />
+                                <p className="button-text">Compliants</p>
                             </Link>
                         </button>
 

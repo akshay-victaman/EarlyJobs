@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import './style.css'
 
-const NavBar = ({isLoggedIn}) => {
+const NavBar = ({handleShowComplaintsForm}) => {
 
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -62,6 +62,13 @@ const NavBar = ({isLoggedIn}) => {
                     }
 
                     {
+                        jwtToken !== undefined &&
+                        <li className='nav-item'>
+                            <button type='button' className='signup-button' onClick={handleShowComplaintsForm}>Complaints</button>
+                        </li>
+                    }
+
+                    {
                         jwtToken !== undefined ?
                         <li className='nav-item'>
                             <button type='button' className='signup-button' onClick={onClickLogout}>Logout</button>
@@ -73,11 +80,6 @@ const NavBar = ({isLoggedIn}) => {
                             </Link>
                         </li>
                     }
-                    {/* <li className='nav-item'>
-                        <Link to='/apply-as-a-hiring-partner' className='nav-link'>
-                            <button type='button' className='signup-button' onClick={onClickLogout}>{isLoggedIn ? 'Logout' : 'Apply as a hiring partner'}</button>
-                        </Link>
-                    </li> */}
                 </ul>
                 <button type='button' className='hamburger-menu'>
                     {
@@ -112,6 +114,14 @@ const NavBar = ({isLoggedIn}) => {
                                 <button type='button' className='signup-button'>Add Job Vacancies</button>
                             </Link>
                         </li>
+
+                        {
+                            jwtToken !== undefined &&
+                            <li className='nav-item-mobile'>
+                                <button type='button' className='signup-button' onClick={handleShowComplaintsForm}>Complaints</button>
+                            </li>
+                        }
+
                         <li className='nav-item-mobile'>
                             {
                                 jwtToken !== undefined ?

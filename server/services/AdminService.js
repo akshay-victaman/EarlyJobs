@@ -122,6 +122,51 @@ const updateOrInsertOfferLetterCount = async (date) => {
     }
 };
 
+const getUnreadCompliants = async () => {
+    const query = `
+        SELECT 
+        compliants.*, username
+        FROM compliants INNER JOIN users ON compliants.user_email = users.email
+        WHERE is_read = 0
+        order by created_at desc;
+    `;
+    const result = await db .query(query);
+    return result[0];
+}
+
+const getReadCompliants = async () => {
+    const query = `
+        SELECT 
+        compliants.*, username
+        FROM compliants INNER JOIN users ON compliants.user_email = users.email
+        WHERE is_read = 1
+        order by created_at desc;
+    `;
+    const result = await db .query(query);
+    return result[0];
+}
+
+const getCompliantById = async (compliantId) => {
+    const query = `
+        SELECT 
+        compliants.*, username, users.role, users.phone, users.hiring_for
+        FROM compliants INNER JOIN users ON compliants.user_email = users.email
+        WHERE compliants.id = ?;
+    `;
+    const result = await db .query(query, [compliantId]);
+    return result[0][0];
+}
+
+const markCompliantAsRead = async (compliantId) => {
+    const query = `UPDATE compliants SET is_read = 1 WHERE id = ?`;
+    const result = await db.query(query, [compliantId]);
+    if (result[0].affectedRows === 0) {
+        return {error: 'Compliant not found.'};
+    } else {
+        return {message: 'Compliant marked as read.'};
+    }
+}
+
 module.exports = {
   getAllUsers,
   getAllCandidates,
@@ -132,5 +177,9 @@ module.exports = {
   unblockUser,
   changePassword,
   offerLetterCount,
-  updateOrInsertOfferLetterCount
+  updateOrInsertOfferLetterCount,
+  getUnreadCompliants,
+  getReadCompliants,
+  getCompliantById,
+  markCompliantAsRead
 };

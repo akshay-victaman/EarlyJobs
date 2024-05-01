@@ -100,6 +100,44 @@ const updateOrInsertOfferLetterCount = async (req, res) => {
   }
 }
 
+const getUnreadCompliants = async (req, res) => {
+  try {
+    const compliants = await adminService.getUnreadCompliants();
+    res.json(compliants);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const getReadCompliants = async (req, res) => {
+  try {
+    const compliants = await adminService.getReadCompliants();
+    res.json(compliants);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const getCompliantById = async (req, res) => {
+  try {
+    const compliantId = req.params.id;
+    const compliant = await adminService.getCompliantById(compliantId);
+    res.json(compliant);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const markCompliantAsRead = async (req, res) => {
+  try {
+    const compliantId = req.params.id;
+    const result = await adminService.markCompliantAsRead(compliantId);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = {
   getAllUsers,
   getAllCandidates,
@@ -110,5 +148,9 @@ module.exports = {
   unblockUser,
   changePassword,
   offerLetterCount,
-  updateOrInsertOfferLetterCount
+  updateOrInsertOfferLetterCount,
+  getUnreadCompliants,
+  getReadCompliants,
+  getCompliantById,
+  markCompliantAsRead
 };
