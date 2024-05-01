@@ -205,7 +205,7 @@ const getHrAssignedHm = async (email, role) => {
 const createComplaint = async (compliant) => {
     const {email, subject, message, attachmentLink} = compliant;
     const id = uuidv4();
-    const query = 'INSERT INTO Compliants (id, subject, message, attachment_link, user_email, is_read) VALUES (?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO compliants (id, subject, message, attachment_link, user_email, is_read) VALUES (?, ?, ?, ?, ?, ?)';
     try {
         const result = await db.query(query, [id, subject, message, attachmentLink, email, 0]);
         if (result[0].affectedRows > 0) {
