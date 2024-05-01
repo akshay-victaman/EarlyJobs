@@ -62,7 +62,7 @@ const NavBar = ({handleShowComplaintsForm}) => {
                     }
 
                     {
-                        jwtToken !== undefined &&
+                        (jwtToken !== undefined && role !== 'ADMIN') &&
                         <li className='nav-item'>
                             <button type='button' className='signup-button' onClick={handleShowComplaintsForm}>Complaints</button>
                         </li>

@@ -44,7 +44,6 @@ const ComplaintsPage = () => {
             }
             const response = await fetch(url, options)
             const result = await response.json()
-            console.log(result)
             if(response.ok === true) {
                 setComplaints(result)
                 setApiStatus(apiStatusConstant.success)
