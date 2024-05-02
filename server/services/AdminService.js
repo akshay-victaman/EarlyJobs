@@ -122,28 +122,46 @@ const updateOrInsertOfferLetterCount = async (date) => {
     }
 };
 
-const getUnreadCompliants = async () => {
+const getUnreadCompliants = async page => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
     const query = `
         SELECT 
         compliants.*, username
         FROM compliants INNER JOIN users ON compliants.user_email = users.email
         WHERE is_read = 0
-        order by created_at desc;
+        order by created_at desc
+        Limit ? offset ?;
     `;
-    const result = await db .query(query);
-    return result[0];
+    const queryCount = `
+        SELECT count(*) as count
+        FROM compliants
+        WHERE is_read = 0;
+    `;
+    const result = await db .query(query, [pageSize, startIndex]);
+    const countResult = await db.query(queryCount);
+    return {compliants: result[0], count: countResult[0][0].count};
 }
 
-const getReadCompliants = async () => {
+const getReadCompliants = async (page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
     const query = `
         SELECT 
         compliants.*, username
         FROM compliants INNER JOIN users ON compliants.user_email = users.email
         WHERE is_read = 1
-        order by created_at desc;
+        order by created_at desc
+        Limit ? offset ?;
     `;
-    const result = await db .query(query);
-    return result[0];
+    const queryCount = `
+        SELECT count(*) as count
+        FROM compliants
+        WHERE is_read = 1;
+    `;
+    const result = await db .query(query, [pageSize, startIndex]);
+    const countResult = await db.query(queryCount);
+    return {compliants: result[0], count: countResult[0][0].count};
 }
 
 const getCompliantById = async (compliantId) => {

@@ -102,7 +102,8 @@ const updateOrInsertOfferLetterCount = async (req, res) => {
 
 const getUnreadCompliants = async (req, res) => {
   try {
-    const compliants = await adminService.getUnreadCompliants();
+    const page = parseInt(req.query.page) || 1;
+    const compliants = await adminService.getUnreadCompliants(page);
     res.json(compliants);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -111,7 +112,8 @@ const getUnreadCompliants = async (req, res) => {
 
 const getReadCompliants = async (req, res) => {
   try {
-    const compliants = await adminService.getReadCompliants();
+    const page = parseInt(req.query.page) || 1;
+    const compliants = await adminService.getReadCompliants(page);
     res.json(compliants);
   } catch (error) {
     res.status(500).json({ error: error.message });

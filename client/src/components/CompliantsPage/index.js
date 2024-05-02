@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import { useState, useEffect } from 'react';
 import { ThreeCircles } from 'react-loader-spinner';
 import CompliantItem from "./CompliantItem";
+import Pagination from 'rc-pagination';
 import './style.css'
 
 const apiStatusConstant = {
@@ -13,28 +14,46 @@ const apiStatusConstant = {
 
 const ComplaintsPage = () => {
 
-    const [complaintView, setComplaintView] = useState('INBOX')
+    const initialPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
+    const view = new URLSearchParams(window.location.search).get('view') || 'INBOX';
+    const [page, setPage] = useState(initialPage)
+    const [complaintView, setComplaintView] = useState(view)
     const [complaints, setComplaints] = useState([])
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
+    const [totalItems, setTotalItems] = useState(0);
 
     useEffect(() => {
-        fetchUnReadCompliants()
-    }, [])
-
-    const handleComplaintView = (view) => {
-        setComplaintView(view)
-        if(view === 'INBOX') {
+        if(complaintView === 'INBOX') {
             fetchUnReadCompliants()
         } else {
             fetchReadCompliants()
         }
+        updateUrl(page, complaintView)
+    }, [page])
+
+    const handleComplaintView = (view) => {
+        setComplaintView(view)
+        if(view === 'INBOX') {
+            setPage(1)
+            fetchUnReadCompliants()
+        } else {
+            setPage(1)
+            fetchReadCompliants()
+        }
+        updateUrl(page, view)
     }
     
+    const updateUrl = (page, complaintView) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('view', complaintView);
+        url.searchParams.set('page', page);
+        window.history.pushState({}, '', url);
+      };
 
     const fetchUnReadCompliants = async () => {
         setApiStatus(apiStatusConstant.inProgress)
         try {
-            const url = `${process.env.REACT_APP_BACKEND_API_URL}/admin/complaints/unread`
+            const url = `${process.env.REACT_APP_BACKEND_API_URL}/admin/complaints/unread?page=${page}`
             const options = {
                 method: 'GET',
                 headers: {
@@ -45,7 +64,8 @@ const ComplaintsPage = () => {
             const response = await fetch(url, options)
             const result = await response.json()
             if(response.ok === true) {
-                setComplaints(result)
+                setComplaints(result.compliants)
+                setTotalItems(result.count)
                 setApiStatus(apiStatusConstant.success)
             } else {
                 setApiStatus(apiStatusConstant.failure)
@@ -58,7 +78,7 @@ const ComplaintsPage = () => {
     const fetchReadCompliants = async () => {
         setApiStatus(apiStatusConstant.inProgress)
         try {
-            const url = `${process.env.REACT_APP_BACKEND_API_URL}/admin/complaints/read`
+            const url = `${process.env.REACT_APP_BACKEND_API_URL}/admin/complaints/read?page=${page}`
             const options = {
                 method: 'GET',
                 headers: {
@@ -69,7 +89,8 @@ const ComplaintsPage = () => {
             const response = await fetch(url, options)
             const result = await response.json()
             if(response.ok === true) {
-                setComplaints(result)
+                setComplaints(result.compliants)
+                setTotalItems(result.count)
                 setApiStatus(apiStatusConstant.success)
             } else {
                 setApiStatus(apiStatusConstant.failure)
@@ -79,10 +100,59 @@ const ComplaintsPage = () => {
         }
     }
 
+    const itemsPerPage = 10; 
+
+  const handlePageChange = (page) => {
+    setPage(page)
+  };
+
+  const itemRender = (current, type, element) => {
+    if (type === 'page') {
+      return (
+        <button className={`pagination-button ${current === page ? "activePage" : ""}`} key={current} onClick={() => handlePageChange(current)}>
+          {current}
+        </button>
+      );
+    }
+
+    if (type === 'prev') {
+      return (
+        <button className={`pagination-button ${page === 1 ? "endPage" : ""}`} title="Previous" key="prev" onClick={() => handlePageChange(current - 1)}>
+          {'< Prev'}
+        </button>
+      );
+    }
+
+    if (type === 'next') {
+      return (
+        <button className={`pagination-button ${totalItems/itemsPerPage <= page ? "endPage" : ""}`} title="Next" key="next" onClick={() => handlePageChange(current + 1)}>
+          {'Next >'}
+        </button>
+      );
+    }
+
+    if (type === 'jump-prev' || type === 'jump-next') {
+      return <span className="pagination-dots" title='more'>...</span>;
+    }
+
+    return element;
+  };
+
     const renderCompliants = () => (
-        complaints.length > 0 && complaints.map(compliant => (
-            <CompliantItem key={compliant.id} compliant={compliant} />
-        ))
+        <>
+            {complaints.length > 0 && complaints.map(compliant => (
+                <CompliantItem key={compliant.id} compliant={compliant} />
+            ))}
+            <Pagination
+                current={page}
+                total={totalItems}
+                pageSize={itemsPerPage}
+                onChange={handlePageChange}
+                className="pagination-class"
+                itemRender={itemRender}
+                showSizeChanger
+            />
+        </>
     )
 
     const renderLoader = () => (
