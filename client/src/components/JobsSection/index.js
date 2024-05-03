@@ -33,6 +33,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const initialPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
+    const view = parseInt(new URLSearchParams(window.location.search).get('view')) || 0;
 
     const [jobsList, setJobsList] = useState([])
     const [employmentTypeList, setEmploymentTypeList] = useState([])
@@ -44,7 +45,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [toggleFilter, setToggleFilter] = useState(false)
     const [archieve, setArchieve] = useState(false)
-    const [showCandidateForm, setShowCandidateForm] = useState(0)
+    const [showCandidateForm, setShowCandidateForm] = useState(view)
     const [page, setPage] = useState(initialPage)
     const [totalItems, setTotalItems] = useState(0);
     const [showFilter, setShowFilter] = useState(false)
@@ -57,7 +58,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
     } else {
       getJobsCard()
     }
-    updateUrl(page);
+    updateUrl(page, showCandidateForm);
     }, [employmentTypeList, minimumPackageList, page, showCandidateForm])
 
   const archieveJobs = () => {
@@ -338,8 +339,9 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
     return element;
   };
 
-  const updateUrl = (page) => {
+  const updateUrl = (page, view) => {
     const url = new URL(window.location.href);
+    url.searchParams.set('view', view);
     url.searchParams.set('page', page);
     window.history.pushState({}, '', url);
   };

@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { format, addDays } from 'date-fns';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 import Cookie from 'js-cookie';
-import emailjs from '@emailjs/browser';
 import IdentityProofForm from '../HiringPartnerForm/IdentityProof';
 import PersonalDetailsForm from '../HiringPartnerForm/PersonalDetails';
 import QualificationForm from '../HiringPartnerForm/QualificationForm';
@@ -90,11 +89,9 @@ const HiringManagerDetailsForm = () => {
     ]
 
     const [currentStep, setCurrentStep] = useState(0)
-    const [isVisible, setIsVisible] = useState(false);
     const [loading, setLoading] = useState(false)
     const [certification, setCertification] = useState("")
     const [workExperience, setWorkExperience] = useState("")
-    const [languages, setLanguages] = useState("")
     const [error, setError] = useState("")
     const [selectedOption, setSelectedOption] = useState("+91");
 
@@ -820,24 +817,6 @@ const HiringManagerDetailsForm = () => {
           }
     }
 
-
-    const sendEmail = (formData) => {
-        const languages = formData.personalDetails.languages.map((language) => language.value).join(', ')
-        // const certification = formData.qualification.certification.map((certification) => certification.value).join(', ')
-        const workExperience = formData.qualification.workExperience.map((experience) => experience.value).join(', ')
-        const hiringDept = formData.about.hiringDept.join(', ')
-        formData.personalDetails.languages = languages
-        formData.qualification.certification = certification
-        formData.qualification.workExperience = workExperience
-        formData.about.hiringDept = hiringDept
-        emailjs.send(process.env.REACT_APP_EMAILJS_SERVICE_ID, process.env.REACT_APP_EMAILJS_TEMPLATE_ID, formData, process.env.REACT_APP_EMAILJS_USER_ID)
-        .then((result) => {
-            console.log(result.text);
-        }, (error) => {
-            console.log(error.text);
-        });
-    };
-
     const updateUserDetailsAndPassowrdInDB = async (email, docId, location, password) => {
         const user = {
             email,
@@ -862,7 +841,7 @@ const HiringManagerDetailsForm = () => {
                 setError(data.error)
             } else {
                 // sendEmail(formData)
-                handleCurrentStep(5)
+                // handleCurrentStep(5)
             }
         } else {
             setError(data.error)
@@ -916,6 +895,7 @@ const HiringManagerDetailsForm = () => {
             }
         }
         setLoading(false)
+        handleCurrentStep(5)
     }
 
     const onSubmitIdentityProof = async (e) => {
@@ -957,8 +937,7 @@ const HiringManagerDetailsForm = () => {
             newIdentityProof,
         }
 
-        
-        onSubmitToFirestore(formData)
+        await onSubmitToFirestore(formData)
     }
 
 
