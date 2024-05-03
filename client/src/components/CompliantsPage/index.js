@@ -48,7 +48,7 @@ const ComplaintsPage = () => {
         url.searchParams.set('view', complaintView);
         url.searchParams.set('page', page);
         window.history.pushState({}, '', url);
-      };
+    };
 
     const fetchUnReadCompliants = async () => {
         setApiStatus(apiStatusConstant.inProgress)
