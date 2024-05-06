@@ -38,6 +38,7 @@ import './components/PrivacyPolicyPage/style.css'
 import './components/CompliantsPage/style.css'
 import './components/CompliantDetails/style.css'
 import './components/ContactForm/style.css'
+import './components/MyHrRecruiters/style.css'
 import './App.css';
 
 

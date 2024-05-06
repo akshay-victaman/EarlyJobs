@@ -51,7 +51,7 @@ const JobsCard = props => {
         </div>
         <hr className="jobs-line" />
         {
-          (hiringFor === "Freelance HR Recruiter" || userRole !== "HR") && <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${(commissionFee/100)*50} Per Joining` : `${(commissionFee/100)*70}% of Annual CTC` }</p>
+          (hiringFor === "Freelance HR Recruiter" || userRole !== "HR") && <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${(commissionFee/100)*70} Per Joining` : `${(commissionFee/100)*50}% of Annual CTC` }</p>
         }
         
         <p className="job-detials">Notice Period: {hiringNeed}</p>

@@ -148,6 +148,9 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
                 {
                     (userRole === 'HR' && offerLetterURL !== '') && <a href={offerLetterURL} style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Joining Letter</a>
                 }
+                {
+                    userRole !== 'ADMIN' && <a href='https://firebasestorage.googleapis.com/v0/b/early-jobs.appspot.com/o/HROfferLetters%2Fraja_Thu%20May%2002%202024%2013%3A20%3A42%20GMT%2B0530%20(India%20Standard%20Time).pdf?alt=media&token=56399609-0ec2-4461-9c6e-e6eda3c03032' style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Manuals</a>
+                }
                 <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
             </>
             : 

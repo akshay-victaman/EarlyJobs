@@ -216,5 +216,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc
 
 ###
 
-GET http://localhost:5000/jobs/assigned-hr/82c52b87-39cc-4fb8-8e2f-d9eaaf015dc5
+GET http://localhost:5000/jobs/assigned-hr/2907ff40-fefb-49b1-98d9-149b6adc4f81/sauravprkmr@gmail.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFrc2hheSIsImlhdCI6MTcwMjY0NDY4N30.DZF3pL_MiHb5FWl_7ZqkjBZ2kEhiDbJcVlXmGzVUkJY

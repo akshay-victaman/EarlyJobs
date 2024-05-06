@@ -3,19 +3,9 @@
   "name": "Create React App Sample",
   "icons": [
     {
-      "src": "early-jobs-white-logo.png",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "Early-white.png",
+      "sizes": "40x40",
       "type": "image/png"
-    },
-    {
-      "src": "early-jobs-white-logo.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "early-jobs-white-logo.png",
-      "type": "image/png",
-      "sizes": "512x512"
     }
   ],
   "start_url": ".",
