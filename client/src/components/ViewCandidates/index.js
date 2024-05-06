@@ -3,8 +3,9 @@ import { useEffect, useState } from "react"
 import {Oval} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
 import { format, parseISO } from 'date-fns'
-import './style.css'
+import { IoSearchSharp } from 'react-icons/io5';
 import UpdateCandidateStatus from "./UpdateCandidateStatus"
+import './style.css'
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -23,6 +24,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
     const [totalItems, setTotalItems] = useState(0);
     const [hrList, setHrList] = useState([])
     const [allJobsList, setAllJobsList] = useState([])
+    const [searchInput, setSearchInput] = useState('');
 
     const today = new Date();
     const date = today.toISOString().split('T')[0];
@@ -57,6 +59,10 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         setPage(1)
     }
 
+    const handleChangeSearchInput = (event) => {
+      setSearchInput(event.target.value);
+    }
+
     const handleSelectHrChange = (event) => {
       setSelectHr(event.target.value)
       setPage(1)
@@ -72,6 +78,24 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
       setPage(1)
     }
 
+    const onClickEnter = (event) => {
+      if (event.key === 'Enter') {
+        if(jobId !== '') {
+          getCandidates(selectHr, applicationStatus, page)
+        } else {
+          getInitialCandidates(selectHr, applicationStatus, page)
+        }
+      }
+    }
+
+    const onClickSearch = () => {
+      if(jobId !== '') {
+        getCandidates(selectHr, applicationStatus, page)
+      } else {
+        getInitialCandidates(selectHr, applicationStatus, page)
+      }
+    }
+
     const formatDate = (date) => {
       const dbDate = parseISO(date);
       const formattedDate = format(dbDate, 'dd-MMM-yyyy hh:mm a');
@@ -81,7 +105,6 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
     const dateValidation = (fromDate, toDate) => {
       const from = new Date(fromDate);
       const to = new Date(toDate);
-      console.log('triggered')
       if(from.getTime() > to.getTime()) {
         alert("FROM date should be less or equal to TO date")
         const today = new Date();
@@ -101,7 +124,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
       let email = Cookies.get('email')
       // if(hrEmail !== '') email = hrEmail
       const role = Cookies.get('role')
-      const apiUrl = `${backendUrl}/jobs/candidate/initial/${email}/?&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&role=${role}&page=${page}`
+      const apiUrl = `${backendUrl}/jobs/candidate/initial/${email}/?&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&role=${role}&search=${searchInput}&page=${page}`
       const options = {
         method: 'GET',
         headers: {
@@ -152,7 +175,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
         let email = Cookies.get('email')
         const role = Cookies.get('role')
         if(role === 'HR') hrEmail = email
-        const apiUrl = `${backendUrl}/jobs/candidate/${jobId}?email=${hrEmail}&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&page=${page}`
+        const apiUrl = `${backendUrl}/jobs/candidate/${jobId}?email=${hrEmail}&role=${role}&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&page=${page}`
         const options = {
           method: 'GET',
           headers: {
@@ -340,6 +363,12 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
                   <div className="date-con"> 
                     <input className="homepage-input view-candidates-select interview-date-input" type='date' id='interview-date' value={fromDate} onChange={handleFromDateChange} />
                     <input className="homepage-input view-candidates-select interview-date-input" type='date' id='interview-date' value={toDate} onChange={handleToDateChange} />
+                  </div>
+              </div>
+              <div className="user-view-search-con my-hr-recruiters-search-con view-candidates-search-input-con">
+                  <input className="user-view-search-input my-hr-recruiter-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} onKeyDown={onClickEnter} placeholder="Search by name, email, phone or company" />
+                  <div className="user-view-search-button my-hr-recruiters-search-btn" onClick={onClickSearch} >
+                      <IoSearchSharp className="search-icon my-hr-recruiter-search-icon" />
                   </div>
               </div>
             </div>

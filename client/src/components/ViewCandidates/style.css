@@ -68,6 +68,10 @@
     font-size: 13px;
 }
 
+.view-candidates-search-input-con {
+    margin-bottom: 15px!important;
+}
+
 .table-candidate-container {
     width: 100%;
     overflow-x: auto;

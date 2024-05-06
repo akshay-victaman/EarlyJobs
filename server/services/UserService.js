@@ -45,9 +45,7 @@ const createUser = async (user) => {
     const hiringCategory1 = hiringCategory.join(', ');
     const id = uuidv4();
     const hashedPassword = bcrypt.hashSync(password, 10)
-    // const dbUser = await getUserByNameEmail(username, email);
     const dbUser = await getUserByEmailPhone(email, phone);
-    console.log(dbUser)
     if (dbUser.length > 0) {
         return {error: 'User already exists'};
     } else {
@@ -114,9 +112,7 @@ const updateHRLastLogin = async (email) => {
 
 const loginUser = async (user) => {
     const {email, password} = user;
-    // const dbUser = await getUserByNameEmail(email, email);
     const dbUser = await getUserByEmail(email);
-    console.log('dbUser', dbUser)
     if (dbUser.length > 0) {
         const match = bcrypt.compareSync(password, dbUser[0].password);
         if (match) {
@@ -154,7 +150,7 @@ const getAllHRs = async (email) => {
     return result[0]; 
 }
 
-const getAllHRsForHiringManager = async (email, hiringFor, page) => {
+const getAllHRsForHiringManager = async (email, hiringFor, search, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize; 
     let query = `
@@ -163,16 +159,17 @@ const getAllHRsForHiringManager = async (email, hiringFor, page) => {
         users.email=hrassignedhm.hr_email 
         WHERE hm_email = ? 
         ${hiringFor !== 'undefined' && hiringFor !== '' ? `AND hiring_for = ? ` : ''} 
+        ${search !== 'undefined' && search !== '' ? `AND (username LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%') ` : ''}
         ORDER BY created_at DESC, username ASC 
         LIMIT ? OFFSET ? ;
     `;
-    console.log(query)
     let countQuery = `
         SELECT count(*) as count 
         FROM users INNER JOIN hrassignedhm ON 
         users.email=hrassignedhm.hr_email 
         WHERE hm_email = ? 
         ${hiringFor !== 'undefined' && hiringFor !== '' ? `AND hiring_for = ? ` : ''} 
+        ${search !== 'undefined' && search !== '' ? `AND (username LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%') ` : ''}
     `;
     const params = (hiringFor !== 'undefined' && hiringFor !== '') ? [email, hiringFor, pageSize, startIndex] : [email, pageSize, startIndex];
     const result = await db.query(query, params);

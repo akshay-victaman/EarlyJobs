@@ -10,7 +10,7 @@ router.put('/edit', authenticateToken, checkUserBlockStatus, addJobController.ed
 router.get('/assigned-hm/:jobId', authenticateToken, checkUserBlockStatus, addJobController.getAssignedHMsForJob);
 router.get('/details/:jobId', authenticateToken, checkUserBlockStatus, addJobController.getJobDetails);
 router.post('/assign', authenticateToken, checkUserBlockStatus, addJobController.assignJobToHrByAccountManager);
-router.get('/assigned-hr/:jobId/:email', checkUserBlockStatus, authenticateToken, addJobController.getAssignedHRsForJob);
+router.get('/assigned-hr/:jobId/:email', authenticateToken, checkUserBlockStatus, addJobController.getAssignedHRsForJob);
 router.put('/assigned-hr/update', authenticateToken, checkUserBlockStatus, addJobController.updateJobAssignmentByHM);
 router.get('/bde/:email', authenticateToken, checkUserBlockStatus, addJobController.getJobsForBDE);
 router.get('/bde/all/:email', authenticateToken, checkUserBlockStatus, addJobController.getAllJobsForBDE);

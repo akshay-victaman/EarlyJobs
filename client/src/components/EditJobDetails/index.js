@@ -215,7 +215,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
           shiftTimings: editJob.shiftTimings.trim().length === 0,
           description: editJob.jobDescription.split(/\s+/).length < 150,
           location: editJob.jobLocation.trim().length === 0,
-          locationLink: editJob.locationLink.trim().length === 0,
+          locationLink: editJob.locationLink.startsWith('http') === false,
           salary: editJob.salaryMin.length === 0 || editJob.salaryMax.length === 0,
           skills: editJob.skills.length === 0,
           language: editJob.language.length === 0,
@@ -226,7 +226,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
           noOfOpenings: editJob.noOfOpenings.length === 0,
           hiringNeed: editJob.hiringNeed.trim().length === 0,
           assignedTo: editJob.assignedTo.length === 0,
-          qualification: editJob.qualification.trim().length === 0,
+          qualification: editJob.qualification === '',
           minExperience: parseInt(editJob.minExperience) < 0 || editJob.minExperience.length === 0 || parseInt(editJob.minExperience) > parseInt(editJob.maxExperience),
           maxExperience: parseInt(editJob.maxExperience) < 0 || editJob.maxExperience.length === 0 || parseInt(editJob.maxExperience) < parseInt(editJob.minExperience),
           minAge: parseInt(editJob.minAge) < 18 || editJob.minAge.length === 0 || parseInt(editJob.minAge) > parseInt(editJob.maxAge),
@@ -270,7 +270,6 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         }
 
         setError("");
-        setLoading(true)
         const newJob = {
             jobId: jobDetails.id,
             companyName: editJob.companyName,
@@ -300,6 +299,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             maxAge: editJob.maxAge
         }
         console.log(newJob)
+        setLoading(true)
         // return
         const options = {
             method: 'PUT',

@@ -149,7 +149,6 @@ const JobDetailsPage = () => {
 
   const getCandidates = async (page) => {
     setApiStatus(apiStatusConstant.inProgress)
-    console.log("triggered")
     const {id} = params
     const jwtToken = Cookies.get('jwt_token')
     let email = ""
@@ -195,7 +194,6 @@ const JobDetailsPage = () => {
 
   const fetchHumanResources = async () => {
     const email = Cookies.get('email')
-    console.log(email)
     const options = {
         method: 'GET',
         headers: {
@@ -219,18 +217,21 @@ const JobDetailsPage = () => {
         Authorization: `Bearer ${jwtToken}`,
       },
     }
-    const response = await fetch(apiUrl, options)
-    const data = await response.json()
-    if (response.ok === true) {
-      if(data.error) {
-        console.log(data.error)
+    try {
+      const response = await fetch(apiUrl, options)
+      const data = await response.json()
+      if (response.ok === true) {
+        if(data.error) {
+          alert(data.error)
+        } else {
+          const hrEmails = data.map(item => item.assigned_to)
+          setSelectedHR(hrEmails)
+        }
       } else {
-        const hrEmails = data.map(item => item.assigned_to)
-        console.log(hrEmails)
-        setSelectedHR(hrEmails)
+        alert(data.error)
       }
-    } else {
-      console.log(data.error)
+    } catch (error) {
+      alert(error)
     }
   }
 
@@ -342,7 +343,7 @@ const JobDetailsPage = () => {
         setHrAssigned(2)
     }
   } catch (error) {
-    console.log(error)
+    alert(error)
   }
     setLoading(false)
   }
@@ -426,7 +427,7 @@ const JobDetailsPage = () => {
           <select className='job-details-select' value={selectedHR} onChange={handleAddHR}>
             <option value=''>Select HR</option>
               {   humanResources.length > 0 &&
-                  humanResources.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.hiring_category}</option>)
+                  humanResources.map(eachItem => <option key={eachItem.email} value={eachItem.email}>{eachItem.username + ' - ' + eachItem.hiring_category}</option>)
               }
           </select>
         </div>
@@ -582,7 +583,7 @@ const JobDetailsPage = () => {
           <p className="job-detials-misc"><span className='misc-head'>Status:</span> {status}</p>
           <p className="job-detials-misc"><span className='misc-head'>Assigned By:</span> {postedBy}</p>
           {
-            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${(commissionFee/100)*50} Per Joining` : `${(commissionFee/100)*70}% of Annual CTC` }</p>
+            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${(commissionFee/100)*70} Per Joining` : `${(commissionFee/100)*50}% of Annual CTC` }</p>
           }
           {
             (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Tenure:</span> {tenureInDays} days</p>

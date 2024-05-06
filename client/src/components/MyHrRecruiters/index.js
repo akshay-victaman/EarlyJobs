@@ -4,6 +4,8 @@ import {Oval} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
 import { format, parseISO } from 'date-fns';
 import Popup from 'reactjs-popup';
+import { IoSearchSharp } from 'react-icons/io5';
+import './style.css'
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -19,6 +21,11 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
     const [page, setPage] = useState(1)
     const [blockStatus, setBlockStatus] = useState(false);
     const [totalItems, setTotalItems] = useState(0);
+    const [searchInput, setSearchInput] = useState('');
+    const [passwordDetails, setPasswordDetails] = useState({
+      password: '',
+      confirmPassword: ''
+    });
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
 
@@ -28,6 +35,14 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
 
     const handleSelectHrRoleType = (event) => {
         setHrRoleType(event.target.value)
+    }
+
+    const handleChangePasswordDetails = (event) => {
+      setPasswordDetails({...passwordDetails, [event.target.name]: event.target.value});
+    }
+
+    const handleChangeSearchInput = (event) => {
+      setSearchInput(event.target.value);
     }
 
     const formatDate = (date) => {
@@ -40,7 +55,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
         setApiStatus(apiStatusConstant.inProgress)
         const jwtToken = Cookies.get('jwt_token')
         const email = Cookies.get('email')
-        const apiUrl = `${backendUrl}/api/users/hr-for-hm/${email}?hiringFor=${hrRoleType}&page=${page}`
+        const apiUrl = `${backendUrl}/api/users/hr-for-hm/${email}?hiringFor=${hrRoleType}&search=${searchInput}&page=${page}`
         const options = {
           method: 'GET',
           headers: {
@@ -75,6 +90,12 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
         }
     }
 
+    const onClickEnter = (event) => {
+      if (event.key === 'Enter') {
+        getHrRecruiters()
+      }
+    }
+
     const blockUser = async (close, email) => {
       setBlockStatus(true);
       const url = `${backendUrl}/admin/block-user/${email}`;
@@ -105,17 +126,57 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
           alert(data.error);
       }
       setBlockStatus(false);
-  }
+    }
 
-  const unblockUser = async (close, email) => {
-      setBlockStatus(true);
-      const url = `${backendUrl}/admin/unblock-user/${email}`;
+    const unblockUser = async (close, email) => {
+        setBlockStatus(true);
+        const url = `${backendUrl}/admin/unblock-user/${email}`;
+        const options = {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            }
+        };
+        const response = await fetch(url, options);
+        const data = await response.json();
+        if(response.ok === true) {
+            if(data.error) {
+                alert(data.error);
+            } else {
+                setRecruiterList(recruiterList.map(eachItem => {
+                    if(eachItem.email === email) {
+                        return {...eachItem, isBlocked: 0}
+                    } else {
+                        return eachItem;
+                    }
+                }))
+                alert(data.message);
+                close();
+            }
+        } else {
+            alert(data.error);
+        }
+        setBlockStatus(false);
+    }
+
+    const changePassword = async (close, email) => {
+      if(passwordDetails.password.trim().length < 6) {
+          alert('Password should be atleast 6 characters long');
+          return;
+      } else if(passwordDetails.password !== passwordDetails.confirmPassword) {
+          alert('Passwords do not match');
+          return;
+      }
+      console.log(email, passwordDetails.password, passwordDetails.confirmPassword)
+      const url = `${backendUrl}/admin/user/change-password`;
       const options = {
           method: 'PUT',
-          headers: { 
+          headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${Cookies.get('jwt_token')}`
-          }
+          },
+          body: JSON.stringify({email, password: passwordDetails.password})
       };
       const response = await fetch(url, options);
       const data = await response.json();
@@ -123,22 +184,17 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
           if(data.error) {
               alert(data.error);
           } else {
-              setRecruiterList(recruiterList.map(eachItem => {
-                  if(eachItem.email === email) {
-                      return {...eachItem, isBlocked: 0}
-                  } else {
-                      return eachItem;
-                  }
-              }))
               alert(data.message);
+              setPasswordDetails({
+                  password: '',
+                  confirmPassword: ''
+              });
               close();
           }
       } else {
           alert(data.error);
       }
-      setBlockStatus(false);
-  }
-
+    }
     const itemsPerPage = 10; 
 
     const handlePageChange = (page) => {
@@ -210,12 +266,27 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
           <button className='job-details-upload-candidate-button archieve-cancel-btn' disabled={blockStatus} onClick={close}>NO</button>
           </div>
       </div>
-  )
+    )
+
+    const renderChangePasswordPopup = (close, email) => (
+      <div className="modal-form">
+          <button className="modal-close-button" onClick={close}>&times;</button>
+          <label className="homepage-label" style={{marginBottom: '15px'}}>Change password for {email}</label>
+          <label className="homepage-label">Enter new password</label>
+          <input className="homepage-input" type="password" name='password' onChange={handleChangePasswordDetails} />
+          <label className="homepage-label">Confirm new password</label>
+          <input className="homepage-input" type="password" name='confirmPassword' onChange={handleChangePasswordDetails}/>
+          <div className='achieve-button-con' style={{marginTop: '0px'}}>
+              <button className='job-details-upload-candidate-button' onClick={() => changePassword(close, email)}>Change</button>
+              <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>Cancel</button>
+          </div>
+      </div>
+    )
 
     return (
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
             <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>My HR Recruiters</span></h1>
-            <div className="job-section-select-filter-container">
+            <div className="job-section-select-filter-container my-hr-recruiters-filter-con">
               <div className="job-section-select-container"> 
                 <label className="homepage-label" htmlFor='resume'>Hiring For</label>
                 <select className="homepage-input" name='jobId' id='jobId' value={hrRoleType} onChange={handleSelectHrRoleType}>
@@ -224,6 +295,12 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                     <option value='Fulltime HR Recruiter'>Fulltime HR Recruiter</option>
                     <option value='Freelance HR Recruiter'>Freelance HR Recruiter</option>
                 </select>
+              </div>
+              <div className="user-view-search-con my-hr-recruiters-search-con">
+                  <input className="user-view-search-input my-hr-recruiter-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} onKeyDown={onClickEnter} placeholder="Search by name, email, or phone" />
+                  <div className="user-view-search-button my-hr-recruiters-search-btn" onClick={getHrRecruiters}>
+                      <IoSearchSharp className="search-icon my-hr-recruiter-search-icon" />
+                  </div>
               </div>
             </div>
             <div className='table-candidate-container'>
@@ -235,6 +312,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                     <th className="job-details-candidates-table-heading-cell">Hiring For</th>
                     <th className="job-details-candidates-table-heading-cell">Last Login</th>
                     <th className="job-details-candidates-table-heading-cell">Created At</th>
+                    <th className="job-details-candidates-table-heading-cell">Change Password</th>
                     <th className="job-details-candidates-table-heading-cell">Block/Unblock HR</th>
                   </tr>
                   {
@@ -246,6 +324,18 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                             <td className="job-details-candidates-table-cell">{eachItem.hiringFor}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.lastLogin}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.createdAt}</td>
+                            <td className="job-details-candidates-table-cell">
+                              <Popup
+                                  trigger={<button className="block-user-button">Change</button>}
+                                  modal
+                              >
+                                  {close => (
+                                  <div className="modal">
+                                      {renderChangePasswordPopup(close, eachItem.email)}
+                                  </div>
+                                  )}
+                              </Popup>
+                          </td>
                             <td className="job-details-candidates-table-cell">
                               <Popup
                                   trigger={<button className="block-user-button">{eachItem.isBlocked === 0 ? "Block" : "Unblock"}</button>}
