@@ -84,6 +84,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const [experienceError, setExperienceError] = useState(false)
     const [ageError, setAgeError] = useState(false)
     const [tenureError, setTenureError] = useState(false)
+    const [hmLoader, setHmLoader] = useState(false)
 
     const [editJob, setEditJob] = useState({
         companyName: jobDetails.compname,
@@ -119,6 +120,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     }, [])
 
     const fetchAccountManagers = async () => {
+        setHmLoader(true)
         const options = {
             method: 'GET',
             headers: {
@@ -131,6 +133,9 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         const data = await response.json()
         setAccountManagers(data)
         console.log(data)
+        setTimeout(() => {
+            setHmLoader(false)
+        }, 1000);
     }
 
     const fetchAssignedHiringManagers = async () => {
@@ -320,7 +325,6 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                 alert(data.success)
                 setIsEditJob(false)
                 updateJobDetails(newJob)
-                // window.location.reload()
             }
             setLoading(false)
         } else {
@@ -567,16 +571,6 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             <label className='bde-form-label'>Assign To Account Manager<span className='hr-form-span'> *</span></label>
             <div className='hr-input-list-con'>
                 {
-                    // editJob.assignedTo.length > 0 && 
-                    // (editJob.assignedTo.map((email, index) => {
-                    //     const hiringManagerName = accountManagers.find(item => item.email === email) 
-                    //     return (
-                    //         <div className='hr-input-list' key={index}>
-                    //             <p className='hr-input-list-item'>{hiringManagerName.username}</p>
-                    //             <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveHiringManager(email)}><IoIosClose className='hr-close-icon' /></button>
-                    //         </div>
-                    //     )}
-                    // ))
                     renderHiringManagerOptions()
                 }
             </div>
@@ -615,7 +609,25 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
 
     return (
         <div className='bde-content'>
-            {renderJobForm()}
+            {
+                hmLoader ? 
+                <div className='hm-loader' style={{height: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <Oval
+                        height={25}
+                        width={25}
+                        color="#EB6A4D"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        ariaLabel='oval-loading'
+                        secondaryColor="#EB6A4D"
+                        strokeWidth={3}
+                        strokeWidthSecondary={3}
+                    />
+                </div>
+                :
+                renderJobForm()
+            }
         </div>
     )
 }
