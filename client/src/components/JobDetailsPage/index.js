@@ -41,6 +41,7 @@ const JobDetailsPage = () => {
   const [isEditJob, setIsEditJob] = useState(false)
   const [page, setPage] = useState(1)
   const [totalItems, setTotalItems] = useState(0);
+  const [hrLoader, setHrLoader] = useState(false)
 
 
   const onShowCandidateDetails = (candidateId) => {
@@ -148,7 +149,7 @@ const JobDetailsPage = () => {
   }
 
   const getCandidates = async (page) => {
-    setApiStatus(apiStatusConstant.inProgress)
+    // setApiStatus(apiStatusConstant.inProgress)
     const {id} = params
     const jwtToken = Cookies.get('jwt_token')
     let email = ""
@@ -165,7 +166,7 @@ const JobDetailsPage = () => {
     const data = await response.json()
     if (response.ok === true) {
       if(data.error) {
-        setApiStatus(apiStatusConstant.failure)
+        // setApiStatus(apiStatusConstant.failure)
       } else {
         console.log("get candidates raw api data", data)
         const formattedData = data.candidates.map(eachItem => ({
@@ -185,10 +186,10 @@ const JobDetailsPage = () => {
         // setHrList(data.hrList)
         setTotalItems(data.count)
         setCandidateList(formattedData)
-        setApiStatus(apiStatusConstant.success)
+        // setApiStatus(apiStatusConstant.success)
       }
     } else {
-      setApiStatus(apiStatusConstant.failure)
+      // setApiStatus(apiStatusConstant.failure)
     }
 }
 
@@ -207,6 +208,7 @@ const JobDetailsPage = () => {
   }
 
   const getHRsForJob = async () => {
+    setHrLoader(true)
     const {id} = params
     const jwtToken = Cookies.get('jwt_token')
     const email = Cookies.get('email')
@@ -233,6 +235,9 @@ const JobDetailsPage = () => {
     } catch (error) {
       alert(error)
     }
+    setTimeout(() => {
+      setHrLoader(false)
+    }, 2000);
   }
 
   const handleAddHR = (e) => {
@@ -420,6 +425,20 @@ const JobDetailsPage = () => {
   )
 
   const renderAssignToHR = () => (
+    hrLoader ? 
+    <Oval
+        height={16}
+        width={16}
+        color="#EB6A4D"
+        wrapperStyle={{}}
+        wrapperClass=""
+        visible={true}
+        ariaLabel='oval-loading'
+        secondaryColor="#EB6A4D"
+        strokeWidth={3}
+        strokeWidthSecondary={3}
+    />
+    :
     <>
       <div className='job-details-assign-con'>
         <div className='job-details-assign-sub-con'>
