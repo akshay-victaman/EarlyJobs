@@ -48,6 +48,7 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
                     name: data[0].username,
                     hiringFor: data[0].hiring_for,
                     role: data[0].role,
+                    gender: data[0].gender
                 }
                 setProfileData(updatedData)
                 setApiStatus(apiStatusConstant.success)
@@ -99,12 +100,26 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
         onClickFilter()
     }
 
+
     const renderProfileDetails = () => {
-        const {name, hiringFor, role} = profileData
+        const {name, hiringFor, role, gender} = profileData
+        console.log(gender)
+        let profileURL = ''
+        let prefix = ''
+        if(gender === "Male") {
+            profileURL = '/boy_profile.jpg';
+            prefix = 'Mr.'
+        } else if(gender === "Female") {
+            profileURL = '/girl-profile.avif';
+            prefix = 'Ms.'
+        } else {
+            profileURL = '/other_profile.avif';
+            prefix = 'Mx.'
+        }
         return (
         <>
-            <img src='/profile-image.png' alt="profile" className="profile-image" />
-            <h1 className="profile-name">{name}</h1>
+            <img src={profileURL} alt="profile" className="profile-image" />
+            <h1 className="profile-name">{prefix} {name}</h1>
             <p className="profile-designation">{role} - {hiringFor}</p>
         </>
         )
