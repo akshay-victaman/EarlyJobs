@@ -40,12 +40,14 @@ import './components/CompliantDetails/style.css'
 import './components/ContactForm/style.css'
 import './components/MyHrRecruiters/style.css'
 import './App.css';
+import GenderForm from './components/GenderForm';
 
 
 const App = () => {
 
   const [showContactForm, setShowContactForm] = useState(false)
   const [showComplaintsForm, setShowComplaintsForm] = useState(false)
+  const [showGenderForm, setShowGenderForm] = useState(false)
 
   const handleShowContactForm = () => {
     setShowContactForm(!showContactForm)
@@ -55,11 +57,16 @@ const App = () => {
     setShowComplaintsForm(!showComplaintsForm)
   }
 
+  const handleShowGenderForm = () => {
+    setShowGenderForm(!showGenderForm)
+  }
+
   return (
     <>
-      <NavBar handleShowComplaintsForm={handleShowComplaintsForm} />
+      <NavBar handleShowComplaintsForm={handleShowComplaintsForm} handleShowGenderForm={handleShowGenderForm} />
       { showContactForm && <ContactForm handleShowContactForm={handleShowContactForm} /> }
       { showComplaintsForm && <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} /> }
+      { showGenderForm && <GenderForm handleShowGenderForm={handleShowGenderForm} /> }
       <EachRoute />
       <Footer handleShowContactForm={handleShowContactForm} />
       <ScrollUp />

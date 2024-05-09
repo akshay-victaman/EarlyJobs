@@ -24,6 +24,9 @@
 
 .nav-item {
     margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .nav-link {
@@ -31,6 +34,25 @@
     color: #222222;
     font-size: 16px;
 }
+
+@keyframes blink {
+    0% {opacity: 1;}
+    50% {opacity: 0;}
+    100% {opacity: 1;}
+  }
+  
+  .gender-urgency {
+    position: absolute;
+    top: -11px;
+    left: 0px;
+    background-color: black;
+    color: #ffffff;
+    border-radius: 20%;
+    padding: 5px;
+    font-size: 11px;
+    animation: blink 1s linear infinite;
+  }
+
 
 .signup-button {
     /* background-color: #f9a828; */
@@ -41,6 +63,25 @@
     padding: 10px 20px;
     font-size: 14px;
     cursor: pointer;
+}
+
+@keyframes rotate {
+    0% {border-color: red; color: red;}
+    25% {border-color: orange; color: orange;}
+    50% {border-color: green; color: green;}
+    75% {border-color: blue; color: blue;}
+    100% {border-color: red; color: red ;}
+  }
+
+.gender-btn {
+    background-color: transparent;
+    color: #EB6A4D;
+    border: 2px solid #EB6A4D;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    animation: rotate 5s linear infinite;
 }
 
 .hamburger-menu {
@@ -98,6 +139,7 @@
     
     .nav-item-mobile {
         margin-top: 10px;
+        position: relative;
     }
 
     .nav-link {

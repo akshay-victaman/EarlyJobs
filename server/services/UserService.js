@@ -214,6 +214,17 @@ const createComplaint = async (compliant) => {
     }
 }
 
+const updateGender = async (email, gender) => {
+    const query = 'UPDATE users SET gender = ? WHERE email = ?';
+    const result = await db.query(query, [gender, email]);
+    if (result[0].affectedRows > 0) {
+        return {success: 'Gender updated successfully'};
+    } else {
+        return {error: 'Gender update failed'};
+    }
+}
+
+
 module.exports = {
   getAllUsers,
   getUserByEmailPhone,
@@ -229,5 +240,6 @@ module.exports = {
   getAllHRs,
   getAllHRsForHiringManager,
   getHrAssignedHm,
-  createComplaint
+  createComplaint,
+  updateGender
 };

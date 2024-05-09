@@ -161,6 +161,18 @@ const createComplaint = async (req, res) => {
     }
 }
 
+const updateGender = async (req, res) => {
+    console.log(req)
+    const gender = req.body.gender;
+    const email = req.email;
+    try {
+      const updatedUser = await userService.updateGender(email, gender);
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmailPhone,
@@ -176,5 +188,6 @@ module.exports = {
   getAllHRs,
   getAllHRsForHiringManager,
   getHrAssignedHm,
-  createComplaint
+  createComplaint,
+  updateGender
 };
