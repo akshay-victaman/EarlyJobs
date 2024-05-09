@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import './style.css'
 
-const NavBar = ({handleShowComplaintsForm}) => {
+const NavBar = ({handleShowComplaintsForm, handleShowGenderForm}) => {
 
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -50,6 +50,14 @@ const NavBar = ({handleShowComplaintsForm}) => {
                                 <Link to='/jobs' className='nav-link'>Jobs</Link>
                             </li>
                         </>
+                    }
+
+                    {
+                        (jwtToken !== undefined && role !== 'ADMIN') &&
+                        <li className='nav-item'>
+                            <span className='gender-urgency'>Urgent</span>
+                            <button type='button' className='signup-button gender-btn' onClick={handleShowGenderForm}>Gender</button>
+                        </li>
                     }
 
                     {
@@ -107,6 +115,14 @@ const NavBar = ({handleShowComplaintsForm}) => {
                                     <Link to='/jobs' className='nav-link'>Jobs</Link>
                                 </li>
                             </>
+                        }
+
+{
+                        (jwtToken !== undefined && role !== 'ADMIN') &&
+                            <li className='nav-item-mobile'>
+                                <span className='gender-urgency'>Urgent</span>
+                                <button type='button' className='signup-button gender-btn' onClick={handleShowGenderForm}>Gender</button>
+                            </li>
                         }
                         
                         <li className='nav-item-mobile'>

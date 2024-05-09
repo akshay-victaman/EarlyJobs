@@ -116,7 +116,7 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
         </div>
     )
 
- const renderSwitch = () => {
+    const renderSwitch = () => {
         switch (apiStatus) {
         case apiStatusConstant.inProgress:
             return renderLoader()
@@ -131,6 +131,22 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
 
     const userRole = Cookies.get('role')
     const hmType = Cookies.get('hm_type')
+
+    let manualURL = ''; 
+    if(userRole === 'HR') {
+        if(profileData.hiringFor === 'Intern HR Recruiter') {
+            manualURL = '/intern_manual.pdf'
+        } else if(profileData.hiringFor === 'Fulltime HR Recruiter') {
+            manualURL = '/fulltime_manual.pdf'
+        } else {
+            manualURL = '/Freelance_manual.pdf'
+        }
+    } else if(userRole === 'AC') {
+        manualURL = '/HM_manual.pdf'
+    } else {
+        manualURL = '/BDE_manual.pdf'
+    }
+
     return (
         <div className="profile-container">
             {renderSwitch()}
@@ -149,7 +165,7 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
                     (userRole === 'HR' && offerLetterURL !== '') && <a href={offerLetterURL} style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Joining Letter</a>
                 }
                 {
-                    userRole !== 'ADMIN' && <a href='https://firebasestorage.googleapis.com/v0/b/early-jobs.appspot.com/o/HROfferLetters%2Fraja_Thu%20May%2002%202024%2013%3A20%3A42%20GMT%2B0530%20(India%20Standard%20Time).pdf?alt=media&token=56399609-0ec2-4461-9c6e-e6eda3c03032' style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Manuals</a>
+                    userRole !== 'ADMIN' && <a href={manualURL} target='_blank' style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Manuals</a>
                 }
                 <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
             </>
