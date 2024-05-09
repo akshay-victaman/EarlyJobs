@@ -302,6 +302,10 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                       <IoSearchSharp className="search-icon my-hr-recruiter-search-icon" />
                   </div>
               </div>
+              <div className="rows-count-con">
+                  <span className="rows-count-text">Total Results:</span>
+                  <span className="rows-count-number">`{totalItems}`</span>
+              </div>
             </div>
             <div className='table-candidate-container'>
                <table className={`job-details-candidates-table candidate-table-job-section ${recruiterList.length === 0 && "empty-candidates"}`}>

@@ -213,6 +213,25 @@
     width: 180px;
 }
 
+.rows-count-con {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+    margin-bottom: 10px;
+}
+
+.rows-count-text {
+    font-size: 18px;
+    margin-right: 5px;
+    color: #02022c;
+}
+
+.rows-count-number {
+    font-size: 18px;
+    color: #EB6A4D;
+    font-weight: 600;
+}
+
 @media screen and (max-width: 768px) {
     .job-section-select-filter-container {
         justify-content: space-between;
@@ -255,5 +274,17 @@
     }
     .job-details-candidates-pagination-con {
         flex-direction: column;
+    }
+
+    .rows-count-con {
+        margin-left: 0px;
+    }
+
+    .rows-count-text {
+        font-size: 14px;
+    }
+
+    .rows-count-number {
+        font-size: 14px;
     }
 }
