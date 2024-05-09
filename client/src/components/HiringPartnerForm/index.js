@@ -126,6 +126,7 @@ const HiringPartnerForm = () => {
     const [personalDetails, setPersonalDetails ] = useState({
         fullName: "",
         dob: "",
+        gender: "Male",
         phone: "",
         wtspNum: "",
         email: "",

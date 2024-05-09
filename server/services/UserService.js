@@ -41,7 +41,7 @@ const hrResumes = async (hrEmail, resumeUrl) => {
 }
 
 const createUser = async (user) => {
-    const {docId, username, email, phone, password, role, hiringFor, assignHM, location, hiringCategory, hmType} = user;
+    const {docId, username, gender, email, phone, password, role, hiringFor, assignHM, location, hiringCategory, hmType} = user;
     const hiringCategory1 = hiringCategory.join(', ');
     const id = uuidv4();
     const hashedPassword = bcrypt.hashSync(password, 10)
@@ -49,8 +49,8 @@ const createUser = async (user) => {
     if (dbUser.length > 0) {
         return {error: 'User already exists'};
     } else {
-        const query = 'INSERT INTO users (id, user_details_id, username, email, phone, password, role, hiring_for, location, hiring_category, is_blocked, hm_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        const result = await db.query(query, [id, docId, username, email, phone, hashedPassword, role, hiringFor, location, hiringCategory1, 0, hmType]);
+        const query = 'INSERT INTO users (id, user_details_id, username, gender, email, phone, password, role, hiring_for, location, hiring_category, is_blocked, hm_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const result = await db.query(query, [id, docId, username, gender, email, phone, hashedPassword, role, hiringFor, location, hiringCategory1, 0, hmType]);
         if (result[0].affectedRows > 0) {
             if(role === 'HR') {
                 hrAssignedHm(email, assignHM);
@@ -63,10 +63,10 @@ const createUser = async (user) => {
 }
 
 const updateUser = async (user) => {
-    const {docId, email, location, password} = user;
+    const {docId, email, location, password, gender} = user;
     const hashedPassword = bcrypt.hashSync(password, 10);
-    const query = 'UPDATE users SET user_details_id = ?, location = ?, password = ? WHERE email = ?';
-    const result = await db.query(query, [docId, location, hashedPassword, email]);
+    const query = 'UPDATE users SET user_details_id = ?, location = ?, password = ?, gender = ? WHERE email = ?';
+    const result = await db.query(query, [docId, location, hashedPassword, gender, email]);
     if (result[0].affectedRows > 0) {
         return {success: 'User updated successfully'};
     }

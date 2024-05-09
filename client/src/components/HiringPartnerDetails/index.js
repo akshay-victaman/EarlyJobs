@@ -34,6 +34,7 @@ const HiringPartnerDetails = () => {
     const [signUpDetails, setSignUpDetails] = useState({
         docId: id,
         username: "",
+        gender: "",
         email: "",
         phone: "",
         password: uuid().slice(0, 8),
@@ -76,7 +77,8 @@ const HiringPartnerDetails = () => {
                 email: hiringPartnerReqDetails.formData.personalDetails.email, 
                 location: hiringPartnerReqDetails.formData.personalDetails.currAddress,
                 phone: hiringPartnerReqDetails.formData.personalDetails.phone,
-                hiringFor: hiringPartnerReqDetails.formData.personalDetails.applyFor
+                hiringFor: hiringPartnerReqDetails.formData.personalDetails.applyFor,
+                gender: hiringPartnerReqDetails.formData.personalDetails.gender
             })
         }
     }, [hiringPartnerReqDetails])
@@ -534,6 +536,10 @@ const HiringPartnerDetails = () => {
                     <div className="hiring-partner-details-con">
                         <p className="hiring-partner-label">Date of Birth:</p>
                         <p className="hiring-partner-value">{personalDetails.dob}</p>
+                    </div>
+                    <div className="hiring-partner-details-con">
+                        <p className="hiring-partner-label">Gender:</p>
+                        <p className="hiring-partner-value">{personalDetails.gender}</p>
                     </div>
                     <div className="hiring-partner-details-con">
                         <p className="hiring-partner-label">Phone Number:</p>
