@@ -98,6 +98,7 @@ const HiringManagerDetailsForm = () => {
     const [personalDetails, setPersonalDetails ] = useState({
         fullName: "",
         dob: "",
+        gender: "Male",
         phone: "",
         wtspNum: "",
         email: "",
@@ -817,12 +818,13 @@ const HiringManagerDetailsForm = () => {
           }
     }
 
-    const updateUserDetailsAndPassowrdInDB = async (email, docId, location, password) => {
+    const updateUserDetailsAndPassowrdInDB = async (email, docId, location, password, gender) => {
         const user = {
             email,
             docId,
             location,
-            password
+            password,
+            gender
         }
         const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/update`
         const options = {
@@ -887,7 +889,7 @@ const HiringManagerDetailsForm = () => {
 
         console.log(docRef)
         if(docRef) {
-            await updateUserDetailsAndPassowrdInDB(personalDetails.email, docId, personalDetails.currAddress, personalDetails.password)
+            await updateUserDetailsAndPassowrdInDB(personalDetails.email, docId, personalDetails.currAddress, personalDetails.password, personalDetails.gender)
             const role = Cookies.get('role')
             if(role === "HR") {
                 const pdfURL = await generatePDF()

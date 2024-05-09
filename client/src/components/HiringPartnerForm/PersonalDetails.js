@@ -87,6 +87,13 @@ const PersonalDetailsForm = (props) => {
 
                 <label htmlFor='date-of-birth' className='hr-label'>Date of Birth<span className='hr-form-span'> *</span></label>
                 <input type='date' onChange={handleInputChange} max={validDateString} value={personalDetails.dob} required className='hr-input' id='date-of-birth' name='dob' />
+
+                <label htmlFor='gender' className='contact-label'>Gender<span className='hr-form-span'> *</span></label>
+                <select className='contact-input' name="gender" onChange={handleInputChange} value={personalDetails.gender}>
+                    <option value='Male'>Male</option>
+                    <option value='Female'>Female</option>
+                    <option value='Other'>Other</option>
+                </select>
                 
                 <label htmlFor='phone-number' className='hr-label'>Phone Number<span className='hr-form-span'> *</span></label>
 
@@ -140,21 +147,6 @@ const PersonalDetailsForm = (props) => {
                 <input type='text' placeholder="Ex: 123456" onChange={handleInputChange} value={personalDetails.permPincode} required className='hr-input' id='permPincode' name='permPincode' />
                 
                 <label htmlFor='languages' className='hr-label'>Languages you speak<span className='hr-form-span'> *</span></label>
-                {/* <div className='hr-input-list-con'>
-                    {
-                        personalDetails.languages.map((language) => (
-                            <div className='hr-input-list' key={language.id}>
-                                <p className='hr-input-list-item'>{language.value}</p>
-                                <button type='button' className='hr-remove-item-button' onClick={() => handleLanguageRemove(language.id)}><IoIosClose className='hr-close-icon' /></button>
-                            </div>
-                        ))
-                    }
-                </div>
-                <div className='hr-input-con'>
-                    <input type='text' placeholder="Ex: English" className='hr-input-sub' id='languages' name='languages' required={personalDetails.languages.length === 0} value={languages} onChange={onChangeLanguage} />
-                    <button type='button' className='hr-form-btn-add' onClick={handleLanguageChange}>+Add</button>
-                </div>
-                <p className='hr-size'>Type a language and click 'Add' button to add it to the list</p> */}
                 <div className='hr-input-list-con'>
                         {
                         personalDetails.languages.map((language, index) => (
