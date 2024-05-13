@@ -482,7 +482,7 @@ const JobDetailsPage = () => {
                     const hrName = humanResources.find(item => item.email === email) 
                     return (
                         <div className='hr-input-list' key={index}>
-                            <p className='hr-input-list-item'>{hrName.username}</p>
+                            <p className='hr-input-list-item'>{hrName && hrName.username}</p>
                             <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveHR(email)}><IoIosClose className='hr-close-icon' /></button>
                         </div>
                     )}

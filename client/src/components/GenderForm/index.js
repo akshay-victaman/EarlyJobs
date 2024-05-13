@@ -13,7 +13,6 @@ const GenderForm = ({handleShowGenderForm}) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(gender)
     try {
         const url = process.env.REACT_APP_BACKEND_API_URL + '/api/users/gender'
         const options = {

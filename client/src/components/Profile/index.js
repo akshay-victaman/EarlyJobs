@@ -11,7 +11,7 @@ const apiStatusConstant = {
     failure: 'FAILURE',
 }
 
-const Profile = ({onShowCandidateForm, onClickFilter}) => {
+const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
 
     const [profileData, setProfileData] = useState({})
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
@@ -103,7 +103,6 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
 
     const renderProfileDetails = () => {
         const {name, hiringFor, role, gender} = profileData
-        console.log(gender)
         let profileURL = ''
         let prefix = ''
         if(gender === "Male") {
@@ -117,11 +116,11 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
             prefix = 'Mx.'
         }
         return (
-        <>
+        <div className='profile-content-con'>
             <img src={profileURL} alt="profile" className="profile-image" />
             <h1 className="profile-name">{prefix} {name}</h1>
             <p className="profile-designation">{role} - {hiringFor}</p>
-        </>
+        </div>
         )
     }
 
@@ -167,29 +166,36 @@ const Profile = ({onShowCandidateForm, onClickFilter}) => {
             {renderSwitch()}
             {
                 userRole !== 'BDE' ?
-            <>
+            <div className='profile-button-con'>
                 {
-                    userRole !== 'ADMIN' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(1)}>Add Candidate</button>
+                    userRole !== 'ADMIN' && <button type="button" className={`profile-button ${showCandidateForm === 1 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(1)}>Add Candidate</button>
                 }
-                {/* <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(1)}>Add Candidate</button> */}
-                <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(2)}>View Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 2 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(2)}>View Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 5 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(5)}>Selected Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 6 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(6)}>Joined Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 7 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(7)}>Ongoing Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 8 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(8)}>Rescheduled Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 9 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(9)}>Attended Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 10 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(10)}>Not-Attended Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 11 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(11)}>Rejected Candidates</button>
+
                 {
-                    userRole === 'AC' && <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(3)}>My {hmType === "CLG" ? "Interns" : "HR Recruiters"}</button>
+                    userRole === 'AC' && <button type="button" className={`profile-button ${showCandidateForm === 3 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(3)}>My {hmType === "CLG" ? "Interns" : "HR Recruiters"}</button>
                 }
                 {
-                    (userRole === 'HR' && offerLetterURL !== '') && <a href={offerLetterURL} style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Joining Letter</a>
+                    (userRole === 'HR' && offerLetterURL !== '') && <a href={offerLetterURL} style={{textDecoration: 'none', display: 'inline-flex'}} className="profile-button" >Download Joining Letter</a>
                 }
                 {
-                    userRole !== 'ADMIN' && <a href={manualURL} target='_blank' style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button" >Download Manuals</a>
+                    userRole !== 'ADMIN' && <a href={manualURL} target='_blank' style={{textDecoration: 'none', display: 'inline-flex'}} className="profile-button" >Download Manuals</a>
                 }
-                <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
-            </>
+                <button type="button" className={`profile-button ${showCandidateForm === 0 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
+            </div>
             : 
-            <>
-                <Link to="/bde-portal" style={{textDecoration: 'none', display: 'inline-flex'}} className="job-details-upload-candidate-button">Post New Job</Link>
-                <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(0)}>My Job Openings</button>
-                <button type="button" className="job-details-upload-candidate-button" onClick={() => onClickButtons(4)}>View Hiring Requests</button>
-            </>
+            <div className='profile-button-con'>
+                <Link to="/bde-portal" style={{textDecoration: 'none', display: 'inline-flex'}} className="profile-button">Post New Job</Link>
+                <button type="button" className={`profile-button ${showCandidateForm === 0 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(0)}>My Job Openings</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 4 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(4)}>View Hiring Requests</button>
+            </div>
             }
         </div>
     )

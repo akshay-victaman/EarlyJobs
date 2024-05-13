@@ -232,6 +232,10 @@
     font-weight: 600;
 }
 
+.selected-candidate-con {
+    margin-bottom: 15px;
+}
+
 @media screen and (max-width: 768px) {
     .job-section-select-filter-container {
         justify-content: space-between;
@@ -286,5 +290,9 @@
 
     .rows-count-number {
         font-size: 14px;
+    }
+
+    .selected-candidate-con {
+        margin-bottom: 0px;
     }
 }

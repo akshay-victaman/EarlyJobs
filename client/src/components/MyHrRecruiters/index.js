@@ -12,7 +12,7 @@ const apiStatusConstant = {
     inProgress: 'IN_PROGRESS',
     success: 'SUCCESS',
     failure: 'FAILURE',
-  }
+}
 
 const MyHrRecruiters = ({setShowCandidateForm}) => {
     const [recruiterList, setRecruiterList] = useState([])

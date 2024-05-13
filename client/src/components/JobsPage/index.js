@@ -3,12 +3,15 @@ import JobsSection from '../JobsSection'
 import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails'
 import ScheduleInterview from '../ViewCandidates/ScheduleInterview'
 import './style.css'
+import SelectedJoinedPopUp from '../ViewCandidates/SelectedJoinedPopUp'
 
 const JobsPage = () => {
   const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
   const [viewScheduleInterviewPopup, setViewScheduleInterviewPopup] = useState(false)
+  const [viewSelectedOrJoinedPopup, setViewSelectedOrJoinedPopup] = useState(false)
   const [candidateId, setCandidateId] = useState('')
   const [interviewDetails, setInterviewDetails] = useState({})
+  const [selectedJoined, setSelectedJoined] = useState('')
 
   const onShowCandidateDetails = (candidateId) => {
     setViewCandidateDetails(!viewCandidateDetails)
@@ -26,9 +29,19 @@ const JobsPage = () => {
     })
   }
 
+  const onShowSelectedOrJoinedPopup = (email, candidateId, jobId, offerStatus) => {
+    setViewSelectedOrJoinedPopup(!viewSelectedOrJoinedPopup)
+    setSelectedJoined({
+      email,
+      candidateId,
+      jobId,
+      offerStatus
+    })
+  }
+
   return (
       <div className="jobs-container">
-        <JobsSection onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup}/>
+        <JobsSection onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup} />
         {
           viewCandidateDetails && 
           <div className="view-candidate-details-modal">
@@ -41,6 +54,13 @@ const JobsPage = () => {
           <div className="view-candidate-details-modal">
             <div className='view-candidate-details-modal-overlay' onClick={onShowScheduleInterviewPopup}></div>
             <ScheduleInterview onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} interviewDetails={interviewDetails} />
+          </div>
+        }
+        {
+          viewSelectedOrJoinedPopup && 
+          <div className="view-candidate-details-modal">
+            <div className='view-candidate-details-modal-overlay' onClick={onShowSelectedOrJoinedPopup}></div>
+            <SelectedJoinedPopUp onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup} selectedJoined={selectedJoined} />
           </div>
         }
       </div>

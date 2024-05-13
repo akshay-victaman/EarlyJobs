@@ -14,7 +14,7 @@ const apiStatusConstant = {
     failure: 'FAILURE',
   }
 
-const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, jobsList, setShowCandidateForm}) => {
+const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup, jobsList, setShowCandidateForm}) => {
     const [candidateList, setCandidateList] = useState([])
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [jobId, setJobId] = useState('')
@@ -415,7 +415,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, j
                     candidateList.length > 0 && candidateList.map(eachItem => {
                       const jobId1 = jobId==='' ? eachItem.jobId : jobId;
                     return(
-                        <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem}  jobId={jobId1} jobsList={allJobsList} candidateList={candidateList} setCandidateList={setCandidateList} />
+                        <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup} candidateDetails={eachItem}  jobId={jobId1} jobsList={allJobsList} candidateList={candidateList} setCandidateList={setCandidateList} />
                     )})               
                   }
                 </table>

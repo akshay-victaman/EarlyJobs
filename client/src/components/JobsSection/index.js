@@ -18,6 +18,7 @@ import { HiringManagerDetailsForm } from '../HiringManagerDetailsForm';
 import MyHrRecruiters from '../MyHrRecruiters';
 import CollegeAgencyForm from '../CollegeAgencyForm';
 import app from "../../firebase";
+import SelectedCandidates from '../ViewCandidates/SelectedCandidates';
 
 
 const apiStatusConstant = {
@@ -28,7 +29,7 @@ const apiStatusConstant = {
 }
 
 
-const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => {
+const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup}) => {
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
@@ -481,6 +482,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
               onClickButton={onClickButton}
               onShowCandidateForm={onShowCandidateForm}
               onClickFilter={onClickFilter}
+              showCandidateForm={showCandidateForm}
             />
             <button type='button' className='job-section-filter-close-button' onClick={onClickFilter}><MdKeyboardDoubleArrowLeft className='job-section-filter-close-icon' /></button>
         </div>
@@ -513,9 +515,10 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup}) => 
             userDetailsId === 'TBF' ? <HiringManagerDetailsForm />
             : (userDetailsId === 'CLG' || userDetailsId === 'AGY') ? <CollegeAgencyForm />
             : showCandidateForm===1 ? <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
-            : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
+            : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
             : showCandidateForm===3 ? <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
             : showCandidateForm===4 ? renderAllSections()
+            : showCandidateForm===5 ? <SelectedCandidates />
             : renderAllSections()
           }
           {/* <Footer /> */}
