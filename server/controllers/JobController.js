@@ -218,6 +218,20 @@ const getCandidateDetails = async (req, res) => {
     }
 }
 
+const getOfferStatusCandidates = async (req, res) => {
+    const email = req.email;
+    const offerStatus = req.query.offerStatus;
+    const role = req.query.role;
+    const search = req.query.search;
+    const page = parseInt(req.query.page) || 1;
+    try {
+      const candidates = await jobService.getOfferStatusCandidates(email, offerStatus, role, search, page);
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getAllJobs,
     addJobDetials,
@@ -238,5 +252,6 @@ module.exports = {
     updateCandidateOfferStatus,
     getInitialCandidates,
     getCandidateDetails,
-    updateInterviewDate
+    updateInterviewDate,
+    getOfferStatusCandidates
 }

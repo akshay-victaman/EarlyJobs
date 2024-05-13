@@ -6,6 +6,7 @@ import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import ContactForm from './components/ContactForm';
 import ComplaintsForm from './components/ComplaintsForm';
+import GenderForm from './components/GenderForm';
 import 'react-toastify/dist/ReactToastify.min.css';
 import './components/AddJobsPage/style.css'
 import './components/AddJobVacanciesPage/style.css'
@@ -40,7 +41,6 @@ import './components/CompliantDetails/style.css'
 import './components/ContactForm/style.css'
 import './components/MyHrRecruiters/style.css'
 import './App.css';
-import GenderForm from './components/GenderForm';
 
 
 const App = () => {

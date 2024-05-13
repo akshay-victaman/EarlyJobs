@@ -115,7 +115,8 @@ const FilterJobs = props => {
     onChangeInput,
     onClickButton,
     onShowCandidateForm,
-    onClickFilter
+    onClickFilter,
+    showCandidateForm
   } = props
   return (
     <div className="profile-filters-container">
@@ -136,7 +137,7 @@ const FilterJobs = props => {
           <BsSearch className="search-icon" />
         </button>
       </div> */}
-      <Profile onShowCandidateForm={onShowCandidateForm} onClickFilter={onClickFilter} />
+      <Profile onShowCandidateForm={onShowCandidateForm} onClickFilter={onClickFilter} showCandidateForm={showCandidateForm} />
       <hr className="line" />
       <h1 className="filter-jobs-heading">Archieve</h1>
       <ul className="filter-jobs-employment-type-list">

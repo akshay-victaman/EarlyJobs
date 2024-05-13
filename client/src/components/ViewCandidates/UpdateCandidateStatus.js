@@ -3,17 +3,27 @@ import { useState } from "react"
 import { MdOutlineEditCalendar } from "react-icons/md";
 
 
-const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewPopup, candidateDetails, jobId, jobsList, candidateList, setCandidateList}) => {
+const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup, candidateDetails, jobId, jobsList, candidateList, setCandidateList}) => {
     const [updateOfferStatus, setUpdateOfferStatus] = useState('');
     const [loading, setLoading] = useState(false)
     const {candidateName,candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy, interviewDate, companyName} = candidateDetails
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
-    const handleCandidateStatusChange = event => {
+    const handleCandidateStatusChange = async event => {
         if(event.target.value === '') return;
-        setUpdateOfferStatus(event.target.value)
-        const updateOfferStatus = event.target.value;
-        updateCandidateStatus(candidateId, jobId, updateOfferStatus)
+        if(event.target.value === 'Rescheduled') {
+            setUpdateOfferStatus(event.target.value)
+            await onShowScheduleInterviewPopup(jobId, candidateDetails, jobsList, setCandidateList, candidateList)
+            const updateOfferStatus = event.target.value;
+            updateCandidateStatus(candidateId, jobId, updateOfferStatus)
+        } else if(event.target.value === 'Joined' || event.target.value === 'Selected') {
+            setUpdateOfferStatus(event.target.value)
+            onShowSelectedOrJoinedPopup(appliedBy, candidateId, jobId, event.target.value)
+        } else {
+            setUpdateOfferStatus(event.target.value)
+            const updateOfferStatus = event.target.value;
+            updateCandidateStatus(candidateId, jobId, updateOfferStatus)
+        }
     }
 
     const updateCandidateStatus = async (candidateId, jobId, updateOfferStatus) => {
@@ -22,7 +32,8 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
           candidateId,
           jobId,
           email: appliedBy,
-          offerStatus: updateOfferStatus
+          offerStatus: updateOfferStatus,
+          offeredDate: null
         }
         console.log(candidateData)
         // return;
@@ -92,7 +103,7 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
                     {
                         !loading ? 
                         (
-                            <select className="homepage-input candidate-input-select" id='offerStatus' disabled={offerStatus === 'Accepted' || offerStatus === 'Rejected'} value={updateOfferStatus} onChange={handleCandidateStatusChange}>
+                            <select className="homepage-input candidate-input-select" id='offerStatus' disabled={offerStatus === 'Joined' || offerStatus === 'Rejected'} value={updateOfferStatus} onChange={handleCandidateStatusChange}>
                                 <option value=''>Select Offer Status</option>
                                 <option value='Selected'>Selected</option>
                                 <option value='Attended'>Attended</option>

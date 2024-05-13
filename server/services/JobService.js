@@ -499,9 +499,9 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
 }
 
 const updateCandidateOfferStatus = async (candidate) => {
-    const {candidateId, jobId, email, offerStatus} = candidate;
-    const query = 'UPDATE applications SET offer_status = ? WHERE job_id = ? AND candidate_id = ? AND applied_by = ?';
-    const result = await db.query(query, [offerStatus, jobId, candidateId, email]);
+    const {candidateId, jobId, email, offerStatus, offeredDate} = candidate;
+    const query = 'UPDATE applications SET offer_status = ?, offered_date = ? WHERE job_id = ? AND candidate_id = ? AND applied_by = ?';
+    const result = await db.query(query, [offerStatus, offeredDate, jobId, candidateId, email]);
     if (result[0].affectedRows > 0) {
         return {success: 'Candidate offer status updated successfully'};
     } else {         
@@ -610,6 +610,73 @@ const getCandidateDetails = async (candidateId) => {
     }
 }
 
+const getOfferStatusCandidatesCount = async (email, offerStatus, role, search) => {
+    const query = `
+    SELECT
+        count(*) as count
+    FROM candidates
+    INNER JOIN applications ON
+    candidates.id = applications.candidate_id
+    INNER JOIN users ON
+    users.email = applications.applied_by
+    INNER JOIN jobs ON
+    jobs.id = applications.job_id
+    WHERE applications.offer_status = ?
+    AND applications.applied_by IN (?)
+    ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}`;
+    let result = []
+    try {
+        result = await db.query(query, [offerStatus, email]);
+    } catch (error) {
+        console.log(error)
+    }
+    return result[0][0].count;
+}
+
+const getOfferStatusCandidates = async (email, offerStatus, role, search, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const query = `
+    SELECT 
+        applications.id as application_id,
+        applications.job_id as job_id,
+        candidates.id as candidate_id,
+        users.username as hr_name,
+        candidates.name as name,
+        candidates.phone as phone,
+        offered_date,
+        applied_by,
+        company_name
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.offer_status = ?
+    AND applications.applied_by IN (?)
+    ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
+    order by candidates.created_at desc
+    Limit ? offset ?`;
+    const hrEmails = await getHirignManagerHrEmails(email);
+    let result = []
+    let count = 0;
+    try {
+        if(role === 'AC') {
+            const hrEmailsArr = hrEmails.map(hr => hr.email);
+            result = await db.query(query, [offerStatus, [email, ...hrEmailsArr], pageSize, startIndex]);
+            count = await getOfferStatusCandidatesCount(hrEmails, offerStatus, role, search);
+        } else {
+            result = await db.query(query, [offerStatus, email, pageSize, startIndex]);
+            count = await getOfferStatusCandidatesCount(email, offerStatus, role, search);
+        }
+    } catch (error) {
+        console.log(error)
+    }
+    return {candidates: result[0], count};
+}
+
 module.exports = {
     addJobDetials,
     editJobDetials,
@@ -629,5 +696,6 @@ module.exports = {
     updateCandidateOfferStatus,
     getInitialCandidates,
     getCandidateDetails,
-    updateInterviewDate
+    updateInterviewDate,
+    getOfferStatusCandidates,
 }

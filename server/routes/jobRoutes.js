@@ -24,5 +24,6 @@ router.put('/candidate/interview', authenticateToken, checkUserBlockStatus, addJ
 router.put('/candidate/status/update', authenticateToken, checkUserBlockStatus, addJobController.updateCandidateOfferStatus);
 router.get('/candidate/initial/:email', authenticateToken, checkUserBlockStatus, addJobController.getInitialCandidates);
 router.get('/candidate/details/:candidateId', authenticateToken, checkUserBlockStatus, addJobController.getCandidateDetails);
+router.get('/candidate', authenticateToken, checkUserBlockStatus, addJobController.getOfferStatusCandidates);
 
 module.exports = router;
