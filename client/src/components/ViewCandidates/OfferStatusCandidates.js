@@ -12,8 +12,15 @@ const apiStatusConstant = {
     failure: 'FAILURE',
 }
 
-const SelectedCandidates = ({ selectedCandidates, setShowCandidateForm }) => {
-
+const OfferStatusCandidates = ({showCandidateForm, setShowCandidateForm }) => {
+    let offerStatus = '';
+    if(showCandidateForm === 5) offerStatus = 'Selected';
+    else if(showCandidateForm === 6) offerStatus = 'Joined';
+    else if(showCandidateForm === 7) offerStatus = 'Ongoing';
+    else if(showCandidateForm === 8) offerStatus = 'Rescheduled';
+    else if(showCandidateForm === 9) offerStatus = 'Attended';
+    else if(showCandidateForm === 10) offerStatus = 'Not Attended';
+    else if(showCandidateForm === 11) offerStatus = 'Rejected';
     const [searchInput, setSearchInput] = useState('');
     const [candidateList, setCandidateList] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
@@ -22,7 +29,7 @@ const SelectedCandidates = ({ selectedCandidates, setShowCandidateForm }) => {
 
     useEffect(() => {
         getOfferStatusCandidates()
-    }, [page])
+    }, [page, offerStatus])
 
     const itemsPerPage = 10; 
 
@@ -37,13 +44,14 @@ const SelectedCandidates = ({ selectedCandidates, setShowCandidateForm }) => {
     const onClickEnter = (event) => {
         if (event.key === 'Enter') {
             getOfferStatusCandidates();
+            setPage(1);
         }
     };
 
     const getOfferStatusCandidates = async () => {
         setApiStatus(apiStatusConstant.inProgress);
         const role = Cookies.get('role');
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate?search=${searchInput}&role=${role}&offerStatus=Selected&page=${page}`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate?search=${searchInput}&role=${role}&offerStatus=${offerStatus}&page=${page}`
         const options = {
             method: 'GET',
             headers: {
@@ -58,7 +66,6 @@ const SelectedCandidates = ({ selectedCandidates, setShowCandidateForm }) => {
             if(data.error) {
                 setApiStatus(apiStatusConstant.failure);
             } else {
-                console.log(data)
                 setCandidateList(data.candidates);
                 setTotalItems(data.count);
                 setApiStatus(apiStatusConstant.success);
@@ -130,7 +137,7 @@ const SelectedCandidates = ({ selectedCandidates, setShowCandidateForm }) => {
 
     return (
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
-            <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>Selected Candidates</span></h1>
+            <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>{offerStatus} Candidates</span></h1>
             <div className="job-section-select-filter-container my-hr-recruiters-filter-con selected-candidate-con">
               <div className="user-view-search-con my-hr-recruiters-search-con">
                   <input className="user-view-search-input my-hr-recruiter-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} onKeyDown={onClickEnter} placeholder="Search by name, email, or phone" />
@@ -185,4 +192,4 @@ const SelectedCandidates = ({ selectedCandidates, setShowCandidateForm }) => {
     )
 }
 
-export default SelectedCandidates;
+export default OfferStatusCandidates;
