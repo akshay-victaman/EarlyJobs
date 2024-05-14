@@ -66,7 +66,6 @@ const OfferStatusCandidates = ({showCandidateForm, setShowCandidateForm, onShowC
             if(data.error) {
                 setApiStatus(apiStatusConstant.failure);
             } else {
-                console.log(data.candidates)
                 setCandidateList(data.candidates);
                 setTotalItems(data.count);
                 setApiStatus(apiStatusConstant.success);
