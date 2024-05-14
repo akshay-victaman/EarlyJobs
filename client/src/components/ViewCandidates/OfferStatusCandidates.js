@@ -12,7 +12,7 @@ const apiStatusConstant = {
     failure: 'FAILURE',
 }
 
-const OfferStatusCandidates = ({showCandidateForm, setShowCandidateForm }) => {
+const OfferStatusCandidates = ({showCandidateForm, setShowCandidateForm, onShowCandidateDetails }) => {
     let offerStatus = '';
     if(showCandidateForm === 5) offerStatus = 'Selected';
     else if(showCandidateForm === 6) offerStatus = 'Joined';
@@ -66,6 +66,7 @@ const OfferStatusCandidates = ({showCandidateForm, setShowCandidateForm }) => {
             if(data.error) {
                 setApiStatus(apiStatusConstant.failure);
             } else {
+                console.log(data.candidates)
                 setCandidateList(data.candidates);
                 setTotalItems(data.count);
                 setApiStatus(apiStatusConstant.success);
@@ -157,16 +158,18 @@ const OfferStatusCandidates = ({showCandidateForm, setShowCandidateForm }) => {
                     <th className="job-details-candidates-table-heading-cell">Company Name</th>
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
                     <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>
-                    <th className="job-details-candidates-table-heading-cell">Selected Date</th>
+                    { (showCandidateForm === 5 || showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">{offerStatus} Date</th>}
                   </tr>
                   {
                     candidateList.length > 0 && candidateList.map(eachItem => (
                         <tr key={eachItem.email} className="job-details-candidates-table-row">
-                            <td className="job-details-candidates-table-cell">{eachItem.name}</td>
+                            <td className="job-details-candidates-table-cell job-details-candidates-table-cell-hover" onClick={() => onShowCandidateDetails(eachItem.candidate_id)}>
+                                {eachItem.name}
+                            </td>
                             <td className="job-details-candidates-table-cell">{eachItem.company_name}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.phone}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.applied_by}</td>
-                            <td className="job-details-candidates-table-cell">{eachItem.offered_date && formatDate(eachItem.offered_date)}</td>
+                            { (showCandidateForm === 5 || showCandidateForm === 6) && <td className="job-details-candidates-table-cell">{eachItem.offered_date ? formatDate(eachItem.offered_date) : "Null"}</td>}
                         </tr>
                     ))
                   }
