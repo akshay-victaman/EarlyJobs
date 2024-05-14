@@ -610,7 +610,7 @@ const getCandidateDetails = async (candidateId) => {
     }
 }
 
-const getOfferStatusCandidatesCount = async (email, offerStatus, role, search) => {
+const getOfferStatusCandidatesCount = async (email, offerStatus, search) => {
     const query = `
     SELECT
         count(*) as count
@@ -623,7 +623,7 @@ const getOfferStatusCandidatesCount = async (email, offerStatus, role, search) =
     jobs.id = applications.job_id
     WHERE applications.offer_status = ?
     AND applications.applied_by IN (?)
-    ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}`;
+    ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""};`;
     let result = []
     try {
         result = await db.query(query, [offerStatus, email]);
@@ -666,10 +666,10 @@ const getOfferStatusCandidates = async (email, offerStatus, role, search, page) 
         if(role === 'AC') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             result = await db.query(query, [offerStatus, [email, ...hrEmailsArr], pageSize, startIndex]);
-            count = await getOfferStatusCandidatesCount(hrEmails, offerStatus, role, search);
+            count = await getOfferStatusCandidatesCount(hrEmailsArr, offerStatus, search);
         } else {
             result = await db.query(query, [offerStatus, email, pageSize, startIndex]);
-            count = await getOfferStatusCandidatesCount(email, offerStatus, role, search);
+            count = await getOfferStatusCandidatesCount(email, offerStatus, search);
         }
     } catch (error) {
         console.log(error)

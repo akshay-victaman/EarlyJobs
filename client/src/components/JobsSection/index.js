@@ -18,7 +18,7 @@ import { HiringManagerDetailsForm } from '../HiringManagerDetailsForm';
 import MyHrRecruiters from '../MyHrRecruiters';
 import CollegeAgencyForm from '../CollegeAgencyForm';
 import app from "../../firebase";
-import SelectedCandidates from '../ViewCandidates/SelectedCandidates';
+import OfferStatusCandidates from '../ViewCandidates/OfferStatusCandidates';
 
 
 const apiStatusConstant = {
@@ -56,7 +56,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
   useEffect(() => {
     if(showCandidateForm === 4) {
       getHirignReqCard()
-    } else {
+    } else if(showCandidateForm === 4 || showCandidateForm === 0) {
       getJobsCard()
     }
     updateUrl(page, showCandidateForm);
@@ -518,7 +518,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
             : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
             : showCandidateForm===3 ? <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
             : showCandidateForm===4 ? renderAllSections()
-            : showCandidateForm===5 ? <SelectedCandidates />
+            : showCandidateForm >= 5 && showCandidateForm <= 11 ? <OfferStatusCandidates key={showCandidateForm} showCandidateForm={showCandidateForm} setShowCandidateForm={setShowCandidateForm} />
             : renderAllSections()
           }
           {/* <Footer /> */}
