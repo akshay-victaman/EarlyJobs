@@ -602,7 +602,7 @@ const JobDetailsPage = () => {
           <p className="job-detials-misc"><span className='misc-head'>Status:</span> {status}</p>
           <p className="job-detials-misc"><span className='misc-head'>Assigned By:</span> {postedBy}</p>
           {
-            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${(commissionFee/100)*70} Per Joining` : `${(commissionFee/100)*50}% of Annual CTC` }</p>
+            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${((commissionFee/100)*70).toFixed(2)} Per Joining` : `${((commissionFee/100)*50).toFixed(2)}% of Annual CTC` }</p>
           }
           {
             (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Tenure:</span> {tenureInDays} days</p>
