@@ -521,7 +521,6 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
             : showCandidateForm >= 5 && showCandidateForm <= 11 ? <OfferStatusCandidates key={showCandidateForm} showCandidateForm={showCandidateForm} onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} />
             : renderAllSections()
           }
-          {/* <Footer /> */}
         </div>
       </div>
     )
