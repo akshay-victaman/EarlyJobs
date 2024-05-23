@@ -74,7 +74,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
         if (response.ok === true) {
           if(data.error) {
             setApiStatus(apiStatusConstant.failure)
-            alert(data.error)
+            toast.error(data.error)
           } else {
             const formattedData = data.users.map(eachItem => ({
               name: eachItem.username,
@@ -91,7 +91,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
             setApiStatus(apiStatusConstant.success)
           }
         } else {
-          alert(data.error)
+          toast.error(data.error)
           setApiStatus(apiStatusConstant.failure)
         }
     }
@@ -116,7 +116,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       const data = await response.json();
       if(response.ok === true) {
           if(data.error) {
-              alert(data.error);
+              toast.error(data.error);
           } else {
               setRecruiterList(recruiterList.map(eachItem => {
                   if(eachItem.email === email) {
@@ -125,11 +125,11 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                       return eachItem;
                   }
               }))
-              alert(data.message);
+              toast.success(data.message);
               close();
           }
       } else {
-          alert(data.error);
+          toast.error(data.error);
       }
       setBlockStatus(false);
     }
@@ -148,7 +148,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
         const data = await response.json();
         if(response.ok === true) {
             if(data.error) {
-                alert(data.error);
+                toast.error(data.error);
             } else {
                 setRecruiterList(recruiterList.map(eachItem => {
                     if(eachItem.email === email) {
@@ -157,24 +157,24 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                         return eachItem;
                     }
                 }))
-                alert(data.message);
+                toast.success(data.message);
                 close();
             }
         } else {
-            alert(data.error);
+            toast.error(data.error);
         }
         setBlockStatus(false);
     }
 
     const changePassword = async (close, email) => {
       if(passwordDetails.password.trim().length < 6) {
-          alert('Password should be atleast 6 characters long');
+          toast.warn('Password should be atleast 6 characters long');
           return;
       } else if(passwordDetails.password !== passwordDetails.confirmPassword) {
-          alert('Passwords do not match');
+          toast.warn('Passwords do not match');
           return;
       }
-      console.log(email, passwordDetails.password, passwordDetails.confirmPassword)
+      
       const url = `${backendUrl}/admin/user/change-password`;
       const options = {
           method: 'PUT',
@@ -188,9 +188,9 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       const data = await response.json();
       if(response.ok === true) {
           if(data.error) {
-              alert(data.error);
+              toast.error(data.error);
           } else {
-              alert(data.message);
+              toast.success(data.message);
               setPasswordDetails({
                   password: '',
                   confirmPassword: ''
@@ -198,7 +198,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
               close();
           }
       } else {
-          alert(data.error);
+          toast.error(data.error);
       }
     }
 
