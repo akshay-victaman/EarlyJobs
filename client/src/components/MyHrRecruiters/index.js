@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import {Oval} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
 import { format, parseISO } from 'date-fns';
+import { toast } from 'react-toastify';
 import Popup from 'reactjs-popup';
 import { IoSearchSharp } from 'react-icons/io5';
 import './style.css'
@@ -22,6 +23,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
     const [blockStatus, setBlockStatus] = useState(false);
     const [totalItems, setTotalItems] = useState(0);
     const [searchInput, setSearchInput] = useState('');
+    const [hiringFor, setHiringFor] = useState('Intern HR Recruiter');
     const [passwordDetails, setPasswordDetails] = useState({
       password: '',
       confirmPassword: ''
@@ -43,6 +45,10 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
 
     const handleChangeSearchInput = (event) => {
       setSearchInput(event.target.value);
+    }
+
+    const handleHiringFor = (event) => {
+      setHiringFor(event.target.value);
     }
 
     const formatDate = (date) => {
@@ -195,6 +201,42 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
           alert(data.error);
       }
     }
+
+    const handleChangeHiringFor = async (close, email) => {
+      const url = `${backendUrl}/api/users/change-hiring-for`;
+      const options = {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          },
+          body: JSON.stringify({email, hiringFor})
+      };
+      const response = await fetch(url, options);
+      const data = await response.json();
+      try {
+        if(response.ok === true) {
+            if(data.error) {
+              toast.error(data.error);
+            } else {
+                toast.success(data.success);
+                setRecruiterList(recruiterList.map(eachItem => {
+                  if(eachItem.email === email) {
+                      return {...eachItem, hiringFor}
+                  } else {
+                      return eachItem;
+                  }
+                }))
+                close();
+            }
+        } else {
+            toast.error(data.error);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    }
+
     const itemsPerPage = 10; 
 
     const handlePageChange = (page) => {
@@ -283,6 +325,23 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       </div>
     )
 
+    const renderChangeRole = (close, email, name) => (
+      <div className="modal-form">
+          <button className="modal-close-button" onClick={close}>&times;</button>
+          <label className="homepage-label" style={{marginBottom: '15px'}}>Change role for {name} - ({email})</label>
+          <label className="homepage-label">Select new role</label>
+          <select className="homepage-input" name='hiringFor' id='hiringFor' value={hiringFor} onChange={handleHiringFor} >
+              <option value='Intern HR Recruiter'>Intern HR Recruiter</option>
+              <option value='Fulltime HR Recruiter'>Fulltime HR Recruiter</option>
+              <option value='Freelance HR Recruiter'>Freelance HR Recruiter</option>
+          </select>
+          <div className='achieve-button-con' style={{marginTop: '0px'}}>
+              <button className='job-details-upload-candidate-button' onClick={() => handleChangeHiringFor(close, email)}>Change</button>
+              <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>Cancel</button>
+          </div>
+      </div>
+    )
+
     return (
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
             <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>My HR Recruiters</span></h1>
@@ -318,6 +377,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                     <th className="job-details-candidates-table-heading-cell">Created At</th>
                     <th className="job-details-candidates-table-heading-cell">Change Password</th>
                     <th className="job-details-candidates-table-heading-cell">Block/Unblock HR</th>
+                    <th className="job-details-candidates-table-heading-cell">Change Role</th>
                   </tr>
                   {
                     recruiterList.length > 0 && recruiterList.map(eachItem => (
@@ -339,19 +399,31 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                                   </div>
                                   )}
                               </Popup>
-                          </td>
+                            </td>
+                            <td className="job-details-candidates-table-cell">
+                                <Popup
+                                    trigger={<button className="block-user-button">{eachItem.isBlocked === 0 ? "Block" : "Unblock"}</button>}
+                                    modal
+                                >
+                                    {close => (
+                                    <div className="modal">
+                                        {renderBlockUnblockPopup(close, eachItem.email, eachItem.isBlocked)}
+                                    </div>
+                                    )}
+                                </Popup>
+                            </td>
                             <td className="job-details-candidates-table-cell">
                               <Popup
-                                  trigger={<button className="block-user-button">{eachItem.isBlocked === 0 ? "Block" : "Unblock"}</button>}
+                                  trigger={<button className="block-user-button">Change</button>}
                                   modal
                               >
                                   {close => (
                                   <div className="modal">
-                                      {renderBlockUnblockPopup(close, eachItem.email, eachItem.isBlocked)}
+                                      {renderChangeRole(close, eachItem.email, eachItem.name)}
                                   </div>
                                   )}
                               </Popup>
-                          </td>
+                            </td>
                         </tr>
                     ))
                   }
