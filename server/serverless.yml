@@ -1,3 +1,31 @@
+# service: gcloud-service
+
+# provider:
+#   name: google
+#   stage: prod
+#   runtime: nodejs16
+#   region: asia-south1
+#   project: earlyjobs
+#   # credentials: ~/.gcloud/keyfile.json
+
+# frameworkVersion: '3'
+
+# plugins:
+#   - serverless-google-cloudfunctions
+
+# package:
+#   exclude:
+#     - node_modules/**
+#     - .gitignore
+#     - .git/**
+
+# functions:
+#   server:
+#     handler: server
+#     events:
+#       - http: path
+
+
 service: earlyjobs
 
 frameworkVersion: "3"

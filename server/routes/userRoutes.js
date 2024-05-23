@@ -21,5 +21,6 @@ router.get('/users/hr-for-hm/:email', authenticateToken, checkUserBlockStatus, u
 router.get('/users/hr-assigned-hm/:email', authenticateToken, checkUserBlockStatus, userController.getHrAssignedHm);
 router.post('/users/complaints', authenticateToken, userController.createComplaint);
 router.put('/users/gender', authenticateToken, userController.updateGender);
+router.put('/users/change-hiring-for', authenticateToken, checkUserBlockStatus, userController.changeUserRole);
 
 module.exports = router;

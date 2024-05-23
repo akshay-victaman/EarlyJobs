@@ -219,13 +219,15 @@ const getCandidateDetails = async (req, res) => {
 }
 
 const getOfferStatusCandidates = async (req, res) => {
-    const email = req.email;
+    const email = req.query.email;
+    const hmEmail = req.email;
     const offerStatus = req.query.offerStatus;
     const role = req.query.role;
     const search = req.query.search;
+    const jobId = req.query.jobId;
     const page = parseInt(req.query.page) || 1;
     try {
-      const candidates = await jobService.getOfferStatusCandidates(email, offerStatus, role, search, page);
+      const candidates = await jobService.getOfferStatusCandidates(email, hmEmail, offerStatus, role, search, jobId, page);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });
