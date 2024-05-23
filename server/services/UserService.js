@@ -224,6 +224,25 @@ const updateGender = async (email, gender) => {
     }
 }
 
+const changeUserRole = async (email, hiringFor) => {
+    const user = await getUserByEmail(email);
+    if(user.length === 0) {
+        const error = new Error('User not found');
+        error.statusCode = 404;
+        throw error;
+    }
+    const query = 'UPDATE users SET hiring_for = ? WHERE email = ?';
+    try {
+        const result = await db.query(query, [hiringFor, email]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Role updated successfully'};
+        }
+        return {error: 'Role update failed'};
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 module.exports = {
   getAllUsers,
@@ -241,5 +260,6 @@ module.exports = {
   getAllHRsForHiringManager,
   getHrAssignedHm,
   createComplaint,
-  updateGender
+  updateGender,
+  changeUserRole
 };
