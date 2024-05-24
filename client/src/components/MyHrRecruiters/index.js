@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import Popup from 'reactjs-popup';
 import { IoSearchSharp } from 'react-icons/io5';
 import './style.css'
+import ExcelDownloadButton from "../ExcelDownloadButton";
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -361,6 +362,11 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                       <IoSearchSharp className="search-icon my-hr-recruiter-search-icon" />
                   </div>
               </div>
+              {recruiterList.length > 0 && 
+                <div className="excel-download-button"> 
+                  <ExcelDownloadButton  data={recruiterList} /> 
+                </div>
+              }
               <div className="rows-count-con">
                   <span className="rows-count-text">Total Results:</span>
                   <span className="rows-count-number">`{totalItems}`</span>

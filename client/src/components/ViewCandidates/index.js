@@ -6,6 +6,7 @@ import { format, parseISO } from 'date-fns'
 import { IoSearchSharp } from 'react-icons/io5';
 import UpdateCandidateStatus from "./UpdateCandidateStatus"
 import './style.css'
+import ExcelDownloadButton from "../ExcelDownloadButton";
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -371,6 +372,11 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
                       <IoSearchSharp className="search-icon my-hr-recruiter-search-icon" />
                   </div>
               </div>
+              {candidateList.length > 0 && 
+                <div className="excel-download-button" style={{marginTop: "0px", marginBottom: "10px"}}> 
+                  <ExcelDownloadButton  data={candidateList} /> 
+                </div>
+              }
               <div className="rows-count-con">
                 <span className="rows-count-text">Total Results:</span>
                 <span className="rows-count-number">`{totalItems}`</span>
