@@ -1,6 +1,6 @@
 .my-hr-recruiters-search-con {
     margin-bottom: 0px;
-    margin-right: 0px;
+    margin-right: 20px;
     width: 50%;
     height: 35px;
     margin-top: 4px;
@@ -28,11 +28,21 @@
     padding-left: 10px;
 }
 
+.excel-download-button {
+    margin-top: 4px;
+}
+
 @media screen and (max-width: 768px) {
     .my-hr-recruiters-search-con {
         width: 100%;
         margin-top: 0px;
         margin-bottom: 15px;
+        margin-right: 6px;
+    }
+
+    .excel-download-button {
+        margin-top: 0px;
+        margin-bottom: 10px;
     }
     
 }

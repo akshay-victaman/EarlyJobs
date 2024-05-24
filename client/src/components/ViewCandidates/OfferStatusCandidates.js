@@ -5,6 +5,7 @@ import { Oval } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
 import { format, parseISO } from 'date-fns';
 import { MdOutlineEditCalendar } from 'react-icons/md';
+import ExcelDownloadButton from '../ExcelDownloadButton';
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -149,7 +150,19 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 setApiStatus(apiStatusConstant.failure);
             } else {
                 console.log(data.candidates)
-                setCandidateList(data.candidates);
+                const updatedData = data.candidates.map(eachItem => ({
+                  applicationId: eachItem.application_id,
+                  candidateId: eachItem.candidate_id,
+                  name: eachItem.name,
+                  companyName: eachItem.company_name,
+                  phone: eachItem.phone,
+                  appliedBy: eachItem.applied_by,
+                  interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
+                  offeredDate: eachItem.offered_date ? formatDate(eachItem.offered_date) : null,
+                  jobId: eachItem.job_id,
+                  hrName: eachItem.hr_name,
+                }))
+                setCandidateList(updatedData);
                 setHrList(data.hrEmails)
                 setTotalItems(data.count);
                 setApiStatus(apiStatusConstant.success);
@@ -263,6 +276,11 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                       <IoSearchSharp className="search-icon my-hr-recruiter-search-icon" />
                   </div>
               </div>
+              {candidateList.length > 0 && 
+                <div className="excel-download-button" style={{marginTop: "0px", marginBottom: "10px"}}> 
+                  <ExcelDownloadButton  data={candidateList} /> 
+                </div>
+              }
               <div className="rows-count-con">
                 <span className="rows-count-text">Total Results:</span>
                 <span className="rows-count-number">`{totalItems}`</span>
@@ -281,44 +299,20 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   </tr>
                   {
                     candidateList.length > 0 && candidateList.map(eachItem => {
-                      const jobId1 = jobId==='' ? eachItem.job_id : jobId;
-                      // const {candidateId, jobId, interviewDate, hrEmail, offerStatus} = candidate;
-
-                      // application_id
-                      // applied_by
-                      // candidate_id
-                      // company_name
-                      // hr_name
-                      // interview_date
-                      // job_id
-                      // name
-                      // offered_date
-                      // phone
-                      const candidateDetails = {
-                        applicationId: eachItem.application_id,
-                        candidateId: eachItem.candidate_id,
-                        name: eachItem.name,
-                        companyName: eachItem.company_name,
-                        phone: eachItem.phone,
-                        appliedBy: eachItem.applied_by,
-                        interviewDate: eachItem.interview_date,
-                        offeredDate: eachItem.offered_date,
-                        jobId: eachItem.job_id,
-                        hrName: eachItem.hr_name,
-                      }
+                      const jobId1 = jobId==='' ? eachItem.jobId : jobId;
                       return (
                         <tr key={eachItem.email} className="job-details-candidates-table-row">
                             <td className="job-details-candidates-table-cell job-details-candidates-table-cell-hover" onClick={() => onShowCandidateDetails(eachItem.candidate_id)}>
                                 {eachItem.name}
                             </td>
-                            <td className="job-details-candidates-table-cell">{eachItem.company_name}</td>
+                            <td className="job-details-candidates-table-cell">{eachItem.companyName}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.phone}</td>
-                            <td className="job-details-candidates-table-cell">{eachItem.applied_by}</td>
+                            <td className="job-details-candidates-table-cell">{eachItem.appliedBy}</td>
                             {(showCandidateForm !== 7) && 
                               <td className="job-details-candidates-table-cell">
-                                {(showCandidateForm === 8 || showCandidateForm === 9 || showCandidateForm === 10 || showCandidateForm === 11) ? formatDate(eachItem.interview_date) : eachItem.offered_date ? formatDate(eachItem.offered_date) : "Null"}
+                                {(showCandidateForm === 8 || showCandidateForm === 9 || showCandidateForm === 10 || showCandidateForm === 11) ? eachItem.interviewDate : eachItem.offeredDate !== null ? eachItem.offeredDate.slice(0, -8) : "Null"}
                                 {showCandidateForm === 11 &&
-                                  <button type="button" className="shedule-interview-button" onClick={() => onShowScheduleInterviewPopup(jobId1, candidateDetails, allJobsList, setCandidateList, candidateList)} >
+                                  <button type="button" className="shedule-interview-button" onClick={() => onShowScheduleInterviewPopup(jobId1, eachItem, allJobsList, setCandidateList, candidateList)} >
                                       <MdOutlineEditCalendar className="shedule-icon" />
                                   </button>
                                 }
