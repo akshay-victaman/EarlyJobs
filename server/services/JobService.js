@@ -610,42 +610,77 @@ const getCandidateDetails = async (candidateId) => {
     }
 }
 
-const getOfferStatusCandidatesCount = async (email, hmEmail, offerStatus, search, jobId) => {
-    const query = `
-    SELECT
-        count(*) as count
-    FROM candidates
-    INNER JOIN applications ON
-    candidates.id = applications.candidate_id
-    INNER JOIN users ON
-    users.email = applications.applied_by
-    INNER JOIN jobs ON
-    jobs.id = applications.job_id
-    WHERE applications.offer_status = ?
-    AND applications.applied_by IN (?)
-    ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
-    ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""};`;
-    let result = []
-    let params = [];
-    try {
-        if((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
-            params = [offerStatus, [hmEmail], jobId];
-            // params = [offerStatus, jobId, email];
-        } else if(jobId !== 'undefined' && jobId !== "") {
-            params = [offerStatus, [email, hmEmail], jobId];
-        } else if(hmEmail !== email) {
-            console.log("triggered")
-            params = [offerStatus, [hmEmail]];
-        } else {
-            params = [offerStatus, email];
-        }
+// const getOfferStatusCandidatesCount = async (email, hmEmail, offerStatus, search, jobId) => {
+//     const query = `
+//     SELECT
+//         count(*) as count
+//     FROM candidates
+//     INNER JOIN applications ON
+//     candidates.id = applications.candidate_id
+//     INNER JOIN users ON
+//     users.email = applications.applied_by
+//     INNER JOIN jobs ON
+//     jobs.id = applications.job_id
+//     WHERE applications.offer_status = ?
+//     AND applications.applied_by IN (?)
+//     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
+//     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""};`;
+//     let result = []
+//     let params = [];
+//     try {
+//         if((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
+//             params = [offerStatus, [hmEmail], jobId];
+//             // params = [offerStatus, jobId, email];
+//         } else if(jobId !== 'undefined' && jobId !== "") {
+//             params = [offerStatus, [email, hmEmail], jobId];
+//         } else if(hmEmail !== email) {
+//             console.log("triggered")
+//             params = [offerStatus, [hmEmail]];
+//         } else {
+//             params = [offerStatus, email];
+//         }
 
-        result = await db.query(query, params);
+//         result = await db.query(query, params);
+//     } catch (error) {
+//         console.log(error)
+//     }
+//     return result[0][0].count;
+// }
+
+const getOfferStatusCandidatesCount = async (
+    email,
+    hmEmail,
+    offerStatus,
+    search,
+    jobId
+  ) => {
+    const appliedBy = Array.isArray(email) ? email : [email, ...hmEmail];
+  
+    const query = `
+      SELECT COUNT(*) as count
+      FROM candidates
+      INNER JOIN applications ON candidates.id = applications.candidate_id
+      INNER JOIN users ON users.email = applications.applied_by
+      INNER JOIN jobs ON jobs.id = applications.job_id
+      WHERE applications.offer_status = ?
+        AND applications.applied_by IN (?) 
+        ${jobId !== 'undefined' && jobId !== "" ? "AND applications.job_id = ?" : ""}
+        ${search !== 'undefined' && search !== ""
+        ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')`
+        : ""};
+    `;
+     
+      const params = [offerStatus, appliedBy];
+      if (jobId !== 'undefined' && jobId !== "") params.push(jobId); 
+  
+    try {
+      const result = await db.query(query, params);
+      return result[0][0].count;
     } catch (error) {
-        console.log(error)
+      console.log(error);
+      return 0; // Return 0 in case of error
     }
-    return result[0][0].count;
-}
+};
 
 const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, search, jobId, page) => {
     const pageSize = 10;
@@ -692,7 +727,8 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
                 params = [offerStatus, [email, ...hrEmailsArr], pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesCount(hrEmailsArr, hmEmail, offerStatus, search, jobId);
+            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, jobId);
+            // count = await getOfferStatusCandidatesCount(hrEmailsArr, hmEmail, offerStatus, search, jobId);
         } else {
             if(jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, email, jobId, pageSize, startIndex];
