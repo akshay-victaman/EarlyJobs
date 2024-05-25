@@ -184,6 +184,18 @@ const changeUserRole = async (req, res) => {
     }
 }
 
+const mingrateHrAssignedHm = async (req, res) => {
+    try {
+      const hrEmail = req.body.hrEmail;
+      const currentHM = req.email;
+      const newHM = req.body.newHmEmail;
+      const result = await userService.mingrateHrAssignedHm(hrEmail, currentHM, newHM);
+      res.json(result);
+    } catch (error) {
+      res.status(error.statusCode || 500).json({ error: error.message });
+    }
+}
+
 module.exports = {
   getAllUsers,
   getUserByEmailPhone,
@@ -201,5 +213,6 @@ module.exports = {
   getHrAssignedHm,
   createComplaint,
   updateGender,
-  changeUserRole
+  changeUserRole,
+  mingrateHrAssignedHm
 };

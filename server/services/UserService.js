@@ -243,6 +243,32 @@ const changeUserRole = async (email, hiringFor) => {
     }
 }
 
+const mingrateHrAssignedHm = async (hrEmail, currentHM, newHM) => {
+    const user = await getUserByEmail(hrEmail);
+    if(user.length === 0) {
+        const error = new Error('User not found');
+        error.statusCode = 404;
+        throw error;
+    }
+    const hmAssignmentQuery = 'UPDATE hrassignedhm SET hm_email = ? WHERE hr_email = ? AND hm_email = ?';
+    const jobAssignmentQuery = 'UPDATE jobassignments SET assigned_by = ? WHERE assigned_to = ? AND assigned_by = ?';
+
+    try {
+        const result = await db.query(hmAssignmentQuery, [newHM, hrEmail, currentHM]);
+        if (result[0].affectedRows > 0) {
+            const result2 = await db.query(jobAssignmentQuery, [newHM, hrEmail, currentHM]);
+            if (result2[0].affectedRows > 0) {
+                return {success: 'HR migrated to new HM successfully'};
+            } else {
+                return {error: 'HR migration failed'};
+            }
+        }
+        return {error: 'HR migration failed'};
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 module.exports = {
   getAllUsers,
@@ -261,5 +287,6 @@ module.exports = {
   getHrAssignedHm,
   createComplaint,
   updateGender,
-  changeUserRole
+  changeUserRole,
+  mingrateHrAssignedHm
 };

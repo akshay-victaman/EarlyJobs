@@ -25,6 +25,8 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
     const [totalItems, setTotalItems] = useState(0);
     const [searchInput, setSearchInput] = useState('');
     const [hiringFor, setHiringFor] = useState('Intern HR Recruiter');
+    const [hmEmails, setHmEmails] = useState([]);
+    const [newHmEmail, setNewHmEmail] = useState('');
     const [passwordDetails, setPasswordDetails] = useState({
       password: '',
       confirmPassword: ''
@@ -34,6 +36,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
 
     useEffect(() => {
         getHrRecruiters()
+        getHiringManagers();
     }, [hrRoleType, page])
 
     const handleSelectHrRoleType = (event) => {
@@ -50,6 +53,10 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
 
     const handleHiringFor = (event) => {
       setHiringFor(event.target.value);
+    }
+
+    const handleChangeHMEmail = (event) => {
+      setNewHmEmail(event.target.value);
     }
 
     const formatDate = (date) => {
@@ -95,6 +102,38 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
           toast.error(data.error)
           setApiStatus(apiStatusConstant.failure)
         }
+    }
+
+    const getHiringManagers = async () => {
+      const jwtToken = Cookies.get('jwt_token')
+      const email = Cookies.get('email')
+      const apiUrl = `${backendUrl}/api/users/all/account-managers`
+      const options = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwtToken}`
+        },
+      }
+
+      try {
+        const response = await fetch(apiUrl, options)
+        const data = await response.json()
+        if (response.ok === true) {
+          if(data.error) {
+            toast.error(data.error)
+          } else {
+            console.log(data)
+            const emails = data.filter(eachItem => eachItem.email !== email);
+            console.log(emails)
+            setHmEmails(emails)
+          }
+        } else {
+          toast.error(data.error)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
     }
 
     const onClickEnter = (event) => {
@@ -238,6 +277,45 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       }
     }
 
+    const handleMigrateHr = async (close, hrEmail) => {
+
+      if(newHmEmail === '') {
+        toast.error('Please select a hiring manager');
+        return;
+      }
+
+      const url = `${backendUrl}/api//users/mingrate-hr-assigned-hm`;
+      const options = {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          },
+          body: JSON.stringify({hrEmail, newHmEmail})
+      };
+
+      console.log(hrEmail, newHmEmail)
+
+      try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+        if(response.ok === true) {
+            if(data.error) {
+              toast.error(data.error);
+            } else {
+                toast.success(data.success);
+                setRecruiterList(recruiterList.filter(eachItem => eachItem.email !== hrEmail));
+                setTotalItems(totalItems - 1);
+                close();
+            }
+        } else {
+            toast.error(data.error);
+        }
+      } catch(error) {
+          toast.error(error.message);
+        }
+      }
+
     const itemsPerPage = 10; 
 
     const handlePageChange = (page) => {
@@ -343,6 +421,26 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       </div>
     )
 
+    const renderMigrateHr = (close, email, name) => (
+      <div className="modal-form">
+          <button className="modal-close-button" onClick={close}>&times;</button>
+          <label className="homepage-label" style={{marginBottom: '15px'}}>Migrate HR {name} to {newHmEmail}</label>
+          <label className="homepage-label">Select new Hiring Manager</label>
+          <select className="homepage-input" name='hiringFor' id='hiringFor' value={newHmEmail} onChange={handleChangeHMEmail} >
+              <option value=''>Select hiring manager</option>
+              {
+                hmEmails.map(eachItem => (
+                  <option value={eachItem.email}>{eachItem.username} - {eachItem.email}</option>
+                ))
+              }
+          </select>
+          <div className='achieve-button-con' style={{marginTop: '0px'}}>
+              <button className='job-details-upload-candidate-button' onClick={() => handleMigrateHr(close, email)}>Change</button>
+              <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>Cancel</button>
+          </div>
+      </div>
+    )
+
     return (
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
             <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>My HR Recruiters</span></h1>
@@ -384,6 +482,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                     <th className="job-details-candidates-table-heading-cell">Change Password</th>
                     <th className="job-details-candidates-table-heading-cell">Block/Unblock HR</th>
                     <th className="job-details-candidates-table-heading-cell">Change Role</th>
+                    <th className="job-details-candidates-table-heading-cell">Migrate HR</th>
                   </tr>
                   {
                     recruiterList.length > 0 && recruiterList.map(eachItem => (
@@ -426,6 +525,18 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                                   {close => (
                                   <div className="modal">
                                       {renderChangeRole(close, eachItem.email, eachItem.name)}
+                                  </div>
+                                  )}
+                              </Popup>
+                            </td>
+                            <td className="job-details-candidates-table-cell">
+                              <Popup
+                                  trigger={<button className="block-user-button">Migrate</button>}
+                                  modal
+                              >
+                                  {close => (
+                                  <div className="modal">
+                                      {renderMigrateHr(close, eachItem.email, eachItem.name)}
                                   </div>
                                   )}
                               </Popup>
