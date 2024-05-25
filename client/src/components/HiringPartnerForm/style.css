@@ -327,6 +327,19 @@
     color: #EB6A4D;
 }
 
+.success-counter-message {
+    font-size: 14px;
+    font-weight: 600;
+    color: #030324;
+    text-align: center;
+}
+
+.counter-span {
+    color: #EB6A4D;
+    font-size: 24px;
+    margin: 0px 2px;
+}
+
 @media screen and (max-width: 768px) {
     .hr-form {
         width: 90%;

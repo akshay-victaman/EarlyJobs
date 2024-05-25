@@ -16,6 +16,7 @@ import Victaman_intern_offer_letter from "../../assets/Joining_Letter_for_Intern
 import Victaman_Freelance_Contract from "../../assets/Freelance_Recruiter_Contract.pdf"
 
 import app from '../../firebase';
+import RenderSuccess from '../HiringPartnerForm/RenderSuccess';
 
 const customStyles = {
     control: (provided, state) => ({
@@ -1012,7 +1013,7 @@ const HiringManagerDetailsForm = () => {
                                 onSubmitIdentityProof={onSubmitIdentityProof}
                                 loading={loading}
                             />;
-            case 5: return renderSuccess();
+            case 5: return <RenderSuccess />;
             default: return null;
         }
     }
