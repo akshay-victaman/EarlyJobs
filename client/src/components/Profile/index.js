@@ -85,13 +85,13 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
 
     const renderFailure = () => (
         <div className="profile-failure-con">
-        <button
-            type="button"
-            className="profile-failure-button"
-            onClick={getProfileData}
-        >
-            Retry
-        </button>
+            <button
+                type="button"
+                className="profile-failure-button"
+                onClick={getProfileData}
+            >
+                Retry
+            </button>
         </div>
     )
 
@@ -164,6 +164,7 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
     return (
         <div className="profile-container">
             {renderSwitch()}
+            <hr className="line" />
             {
                 userRole !== 'BDE' ?
             <div className='profile-button-con'>

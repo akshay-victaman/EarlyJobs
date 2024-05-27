@@ -4,6 +4,7 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import Loader from '../components/Loader/index.js';
 import RequestJobDetailsPage from '../components/RequestJobDetailsPage/index.js';
 import ComplaintDetails from '../components/CompliantDetails/index.js';
+import PartnerWithUs from '../pages/PartnerWithUs/index.js';
 
 const HomePage = lazy(() => import("../components/HomePage"));
 const JobsPage = lazy(() => import("../components/JobsPage"));
@@ -150,6 +151,14 @@ const EachRoute = () => {
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <HiringPartnerDetails />
+                    </Suspense>
+                }
+            />
+
+            <Route path="/partner-with-us"
+                render={() =>
+                    <Suspense fallback={<Loader />}>
+                        <PartnerWithUs />
                     </Suspense>
                 }
             />

@@ -1,0 +1,145 @@
+.partner-with-us-con {
+    margin-top: 15vh;
+    min-height: 85vh;
+    width: 100%;
+    padding: 25px 6%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.partner-heading {
+    font-size: 30px;
+    font-weight: 600;
+    color: #EB6A4D;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.partner-with-us-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 550px;
+    width: 100%;
+    border: 1px solid #EB6A4D;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.partner-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #3a3a3a;
+}
+
+.partner-required {
+    color: red;
+}
+
+.partner-input {
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #EB6A4D;
+    width: 100%;
+    padding-left: 12px;
+    font-size: 14px;
+    outline: none;
+    background-color: transparent;
+}
+
+.partner-input-disabled {
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #88706a;
+    width: 100%;
+    padding-left: 12px;
+    font-size: 14px;
+    outline: none;
+    background-color: #e8e3e3;
+}
+
+.partner-file-label {
+    border: 2px dashed #EB6A4D;
+    border-radius: 5px;
+    color: #EB6A4D;
+    font-size: 13px;
+    padding: 8px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    margin-top: 5px;
+    margin-bottom: 12px;
+    
+}
+
+.partner-submit-button {
+    background-color: #EB6A4D;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    margin-top: 10px;
+}
+
+.partner-error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.partner-success {
+    height: 60vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-message {
+    font-size: 18px;
+    font-weight: 600;
+    color: #EB6A4D;
+    text-align: center;
+}
+
+@media screen and (max-width: 768px){
+    .partner-with-us-con {
+        padding: 20px 4%;
+        margin-top: 10vh;
+        min-height: 90vh;
+    }
+
+    .partner-heading {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .partner-with-us-form {
+        padding: 10px;
+    }
+
+    .partner-label {
+        font-size: 12px;
+    }
+    
+}
