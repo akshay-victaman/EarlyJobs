@@ -1,5 +1,6 @@
 import {Link, useHistory} from 'react-router-dom'
 import { useState } from 'react';
+import { Puff } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import './style.css'
@@ -55,7 +56,16 @@ const NavBar = ({handleShowComplaintsForm, handleShowGenderForm}) => {
                     {
                         (jwtToken !== undefined && role !== 'ADMIN') &&
                         <li className='nav-item'>
-                            <span className='gender-urgency'>Urgent</span>
+                            <Puff
+                                visible={true}
+                                height="20"
+                                width="20"
+                                color="#000"
+                                ariaLabel="puff-loading"
+                                wrapperStyle={{position: 'absolute', top: '-11px', left: '4px', backgroundColor: "#f1f1f1"}}
+                                wrapperClass=""
+                                
+                            />
                             <button type='button' className='signup-button gender-btn' onClick={handleShowGenderForm}>Gender</button>
                         </li>
                     }
@@ -120,7 +130,16 @@ const NavBar = ({handleShowComplaintsForm, handleShowGenderForm}) => {
 {
                         (jwtToken !== undefined && role !== 'ADMIN') &&
                             <li className='nav-item-mobile'>
-                                <span className='gender-urgency'>Urgent</span>
+                                <Puff
+                                    visible={true}
+                                    height="20"
+                                    width="20"
+                                    color="#000"
+                                    ariaLabel="puff-loading"
+                                    wrapperStyle={{position: 'absolute', top: '-5px', left: '4px', backgroundColor: "#f1f1f1"}}
+                                    wrapperClass=""
+                                    
+                                />
                                 <button type='button' className='signup-button gender-btn' onClick={handleShowGenderForm}>Gender</button>
                             </li>
                         }
