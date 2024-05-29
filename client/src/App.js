@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
+import Cookies from 'js-cookie';
 import EachRoute from './routes/EachRoute';
 import ScrollUp from './components/ScrollUp';
 import NavBar from './components/NavBar';
@@ -42,6 +43,7 @@ import './components/ContactForm/style.css'
 import './components/MyHrRecruiters/style.css'
 import './pages/PartnerWithUs/style.css'
 import './App.css';
+import SubNavBar from './components/SubNavBar';
 
 
 const App = () => {
@@ -65,6 +67,7 @@ const App = () => {
   return (
     <>
       <NavBar handleShowComplaintsForm={handleShowComplaintsForm} handleShowGenderForm={handleShowGenderForm} />
+      {Cookies.get('jwt_token') === undefined && <SubNavBar handleShowContactForm={handleShowContactForm} />}
       { showContactForm && <ContactForm handleShowContactForm={handleShowContactForm} /> }
       { showComplaintsForm && <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} /> }
       { showGenderForm && <GenderForm handleShowGenderForm={handleShowGenderForm} /> }

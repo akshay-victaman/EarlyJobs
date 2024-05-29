@@ -1,5 +1,5 @@
 .partner-with-us-con {
-    margin-top: 15vh;
+    margin-top: calc(15vh + 40px);
     min-height: 85vh;
     width: 100%;
     padding: 25px 6%;
@@ -158,7 +158,7 @@
 @media screen and (max-width: 768px){
     .partner-with-us-con {
         padding: 20px 4%;
-        margin-top: 10vh;
+        margin-top: calc(10vh + 30px);
         min-height: 90vh;
     }
 

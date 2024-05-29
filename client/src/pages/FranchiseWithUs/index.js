@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Oval } from 'react-loader-spinner';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import app from '../../firebase'
@@ -24,6 +24,10 @@ const FranchiseWithUs = () => {
         resume: '',
         linkedIn: ''
     })
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
 
     const handleChange = (e) => {
         const { name, value } = e.target
