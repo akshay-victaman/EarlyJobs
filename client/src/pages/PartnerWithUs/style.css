@@ -15,6 +15,7 @@
     color: #EB6A4D;
     margin-bottom: 20px;
     text-align: center;
+    border-bottom: 3px solid #EB6A4D;
 }
 
 .partner-with-us-form {
@@ -41,6 +42,7 @@
     font-weight: 600;
     margin-bottom: 5px;
     color: #3a3a3a;
+    line-height: 1.5;
 }
 
 .partner-required {
@@ -53,6 +55,21 @@
     border: 1px solid #EB6A4D;
     width: 100%;
     padding-left: 12px;
+    font-size: 14px;
+    outline: none;
+    background-color: transparent;
+}
+
+.partner-textarea {
+    height: 90px;
+    min-height: 90px;
+    max-height: 200px;
+    border-radius: 5px;
+    border: 1px solid #EB6A4D;
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    padding: 12px;
     font-size: 14px;
     outline: none;
     background-color: transparent;
@@ -99,6 +116,9 @@
     cursor: pointer;
     outline: none;
     margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .partner-error {
@@ -122,6 +142,19 @@
     text-align: center;
 }
 
+.partner-disclaimer {
+    font-size: 20px;
+    color: #3a3a3a;
+    margin-top: 20px;
+}
+
+.partner-disclaimer-text {
+    font-size: 14px;
+    color: #3a3a3a;
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
 @media screen and (max-width: 768px){
     .partner-with-us-con {
         padding: 20px 4%;
@@ -140,6 +173,16 @@
 
     .partner-label {
         font-size: 12px;
+    }
+
+    .partner-disclaimer {
+        font-size: 16px;
+        margin-top: 15px;
+    }
+
+    .partner-disclaimer-text {
+        font-size: 12px;
+        margin-top: 5px;
     }
     
 }

@@ -1,16 +1,23 @@
 import { useState } from 'react'
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Oval } from 'react-loader-spinner';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import app from '../../firebase'
-import './style.css'
 
-const PartnerWithUs = () => {
+const FranchiseWithUs = () => {
     const [error, setError] = useState('')
     const [success, setSuccess] = useState(false)
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
-        currentlyWorking: 'yes',
-        orgName: '',
+        franchiseLocation: '',
+        expectation: '',
+        previousBusiness: '',
+        plRole: '',
+        fullTime: '',
+        b2bExp: '',
+        HrExp: '',
+        teamExp: '',
+        officeSetup: '',
+        finance: '',
         name: '',
         email: '',
         phone: '',
@@ -70,11 +77,20 @@ const PartnerWithUs = () => {
 
     const sendEmail = async (resumeUrl) => {
         const message = `
+            <p><strong>Franchise location:</strong> ${formData.franchiseLocation}</p>
+            <p><strong>Expectation:</strong> ${formData.expectation}</p>
+            <p><strong>Previous business:</strong> ${formData.previousBusiness}</p>
+            <p><strong>P&L role:</strong> ${formData.plRole}</p>
+            <p><strong>Full time:</strong> ${formData.fullTime}</p>
+            <p><strong>B2B experience:</strong> ${formData.b2bExp}</p>
+            <p><strong>HR experience:</strong> ${formData.HrExp}</p>
+            <p><strong>Team management experience:</strong> ${formData.teamExp}</p>
+            <p><strong>Office setup:</strong> ${formData.officeSetup}</p>
+            <p><strong>Financial resources:</strong> ${formData.finance}</p>
+            <h2>Contact details</h2>
             <p><strong>Name:</strong> ${formData.name}</p>
             <p><strong>Email:</strong> ${formData.email}</p>
             <p><strong>Phone:</strong> ${formData.phone}</p>
-            <p><strong>Currently working:</strong> ${formData.currentlyWorking}</p>
-            <p><strong>Organization name:</strong> ${formData.orgName}</p>
             <p><strong>LinkedIn profile:</strong> ${formData.linkedIn}</p>
             <p><strong>Resume URL:</strong> ${resumeUrl}</p>
         `
@@ -85,9 +101,9 @@ const PartnerWithUs = () => {
             password: 'LEP9yt',
             v: '1.1',
             contentType: 'text/html',
-            name: 'Partner with us request',
+            name: 'Franchise with us request',
             fromEmailId: 'no-reply@earlyjobs.in',
-            subject: `New partner request from ${formData.name}`,
+            subject: `New Franchise request from ${formData.name}`,
             recipients: `hr@earlyjobs.in,no-reply@earlyjobs.in`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'
@@ -100,8 +116,35 @@ const PartnerWithUs = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
-        if (formData.currentlyWorking === 'yes' && formData.orgName === '') {
-            setError('Please enter your organization name')
+        if (formData.franchiseLocation === '') {
+            setError('Please enter the location you are planning to own up a franchisee for')
+            return
+        } else if (formData.expectation === '') {
+            setError('Please enter your expectation out of this partnership')
+            return
+        } else if (formData.previousBusiness === '') {
+            setError('Please enter if you are currently running a business or ever ran a business')
+            return
+        } else if (formData.plRole === '') {
+            setError('Please enter if you have handled a P&L role in your career')
+            return
+        } else if (formData.fullTime === '') {
+            setError('Please enter if you would manage it on a full time basis')
+            return
+        } else if (formData.b2bExp === '') {
+            setError('Please enter if you have any B2B sales experience')
+            return
+        } else if (formData.HrExp === '') {
+            setError('Please enter if you have any form of experience in HR')
+            return
+        } else if (formData.teamExp === '') {
+            setError('Please enter your experience of managing a team currently or in the past')
+            return
+        } else if (formData.officeSetup === '') {
+            setError('Please enter if you are willing to take an office / few seats in a business centre & recruit few people to start this business')
+            return
+        } else if (formData.finance === '') {
+            setError('Please enter if you have enough financial resources to sustain till you break-even')
             return
         } else if (formData.name === '') {
             setError('Please enter your name')
@@ -128,8 +171,16 @@ const PartnerWithUs = () => {
         await sendEmail(resumeUrl)
 
         setFormData({
-            currentlyWorking: 'yes',
-            orgName: '',
+            franchiseLocation: '',
+            expectation: '',
+            previousBusiness: '',
+            plRole: '',
+            fullTime: '',
+            b2bExp: '',
+            HrExp: '',
+            teamExp: '',
+            officeSetup: '',
+            finance: '',
             name: '',
             email: '',
             phone: '',
@@ -151,23 +202,108 @@ const PartnerWithUs = () => {
     const renderForm = () => (
         <form className='partner-with-us-form' onSubmit={handleSubmit}>
             <div className="form-group">
-                <label htmlFor="currentlyWorking" className='partner-label'>Are you currently working? <span className='partner-required'> *</span></label>
-                <select name="currentlyWorking" id="currentlyWorking" className='partner-input' value={formData.currentlyWorking} onChange={handleChange}>
+                <label htmlFor="franchiseLocation" className='partner-label'>Location, you are planning to own up a franchisee for <span className='partner-required'> *</span></label>
+                <input
+                    type="text"
+                    name="franchiseLocation"
+                    id="franchiseLocation"
+                    placeholder='Enter Franchise location'
+                    value={formData.franchiseLocation}
+                    onChange={handleChange}
+                    className='partner-input'
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="expectation" className='partner-label'>Your expectation out of this partnership. <span className='partner-required'> *</span></label>
+                <textarea
+                    name="expectation"
+                    id="expectation"
+                    placeholder='Enter your expectation'
+                    value={formData.expectation}
+                    onChange={handleChange}
+                    className='partner-textarea'
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="previousBusiness" className='partner-label'>Are you currently running a business or ever ran a business? Please elaborate. <span className='partner-required'> *</span></label>
+                <textarea
+                    name="previousBusiness"
+                    id="previousBusiness"
+                    placeholder='Enter your business details'
+                    value={formData.previousBusiness}
+                    onChange={handleChange}
+                    className='partner-textarea'
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="plRole" className='partner-label'>Please elaborate if you have handled a P&L role in your career. <span className='partner-required'> *</span></label>
+                <textarea
+                    name="plRole"
+                    id="plRole"
+                    placeholder='Enter your P&L role details'
+                    value={formData.plRole}
+                    onChange={handleChange}
+                    className='partner-textarea'
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="fullTime" className='partner-label'>If you become a EarlyJobs partner, would you manage it on a full time basis? <span className='partner-required'> *</span></label>
+                <select name="fullTime" id="fullTime" className='partner-input' value={formData.fullTime} onChange={handleChange}>
+                    <option value="">Select</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                 </select>
             </div>
             <div className="form-group">
-                <label htmlFor="orgName" className='partner-label'>If yes, your current organization's name <span className='partner-required'> *</span></label>
-                <input
-                    type="text"
-                    name="orgName"
-                    id="orgName"
-                    placeholder='Enter your organization name'
-                    value={formData.orgName}
+                <label htmlFor="b2bExp" className='partner-label'>Please elaborate if you have any B2B sales experience. <span className='partner-required'> *</span></label>
+                <textarea
+                    name="b2bExp"
+                    id="b2bExp"
+                    placeholder='Enter your B2B sales experience'
+                    value={formData.b2bExp}
                     onChange={handleChange}
-                    className={formData.currentlyWorking === 'yes' ? 'partner-input' : 'partner-input partner-input-disabled'}
-                    disabled={formData.currentlyWorking === 'no'}
+                    className='partner-textarea'
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="HrExp" className='partner-label'>Please elaborate if you have any form of experience in HR (internal HR) or HR services (staffing/consulting/ recruitment)? <span className='partner-required'> *</span></label>
+                <textarea
+                    name="HrExp"
+                    id="HrExp"
+                    placeholder='Enter your HR experience'
+                    value={formData.HrExp}
+                    onChange={handleChange}
+                    className='partner-textarea'
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="teamExp" className='partner-label'>Please elaborate your experience of managing a team currently or in the past. <span className='partner-required'> *</span></label>
+                <textarea
+                    name="teamExp"
+                    id="teamExp"
+                    placeholder='Enter your team management experience'
+                    value={formData.teamExp}
+                    onChange={handleChange}
+                    className='partner-textarea'
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="officeSetup" className='partner-label'>Are you willing to take an office / few seats in a business centre & recruit few people to start this business? <span className='partner-required'> *</span></label>
+                <select name="officeSetup" id="officeSetup" className='partner-input' value={formData.officeSetup} onChange={handleChange}>
+                    <option value="">Select</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div className="form-group">
+                <label htmlFor="finance" className='partner-label'>Do you have enough financial resources to sustain till you break-even (typically 6 months) <span className='partner-required'> *</span></label>
+                <textarea
+                    name="finance"
+                    id="finance"
+                    placeholder='Enter your financial resources'
+                    value={formData.finance}
+                    onChange={handleChange}
+                    className='partner-textarea'
                 />
             </div>
             <div className="form-group">
@@ -255,10 +391,10 @@ const PartnerWithUs = () => {
 
     return (
         <div className="partner-with-us-con">
-            <h1 className='partner-heading'>Partner with us</h1>
+            <h1 className='partner-heading'>Franchise with us</h1>
             {success ? renderSuccess() : renderForm()}
         </div>
     )
 }
 
-export default PartnerWithUs
+export default FranchiseWithUs
