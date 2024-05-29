@@ -44,9 +44,6 @@ const NavBar = ({handleShowComplaintsForm, handleShowGenderForm}) => {
                             <li className='nav-item'>
                                 <Link to='/' className='nav-link'>Home</Link>
                             </li>
-                            {/* <li className='nav-item'>
-                                <Link to='/jobs' className='nav-link'>My Earnings</Link>
-                            </li> */}
                             <li className='nav-item'>
                                 <Link to='/jobs' className='nav-link'>Jobs</Link>
                             </li>
@@ -118,9 +115,6 @@ const NavBar = ({handleShowComplaintsForm, handleShowGenderForm}) => {
                                 <li className='nav-item-mobile'>
                                     <Link to='/' className='nav-link'>Home</Link>
                                 </li>
-                                {/* <li className='nav-item-mobile'>
-                                    <Link to='/jobs' className='nav-link'>My Earnings</Link>
-                                </li> */}
                                 <li className='nav-item-mobile'>
                                     <Link to='/jobs' className='nav-link'>Jobs</Link>
                                 </li>
@@ -166,9 +160,6 @@ const NavBar = ({handleShowComplaintsForm, handleShowGenderForm}) => {
                                     <button type='button' className='signup-button'>Apply as a Recruiter</button>
                                 </Link>
                             }
-                            {/* <Link to={isLoggedIn ? '/' : '/apply-as-a-hiring-partner'} className='nav-link'>
-                                <button type='button' className='signup-button'>{isLoggedIn ? 'Logout' : 'Apply as a hiring partner'}</button>
-                            </Link> */}
                         </li>
                     </ul>
                 </div>

@@ -2,10 +2,6 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from '../components/ProtectedRoute';
 import Loader from '../components/Loader/index.js';
-import RequestJobDetailsPage from '../components/RequestJobDetailsPage/index.js';
-import ComplaintDetails from '../components/CompliantDetails/index.js';
-import PartnerWithUs from '../pages/PartnerWithUs/index.js';
-import FranchiseWithUs from '../pages/FranchiseWithUs/index.js';
 
 const HomePage = lazy(() => import("../components/HomePage"));
 const JobsPage = lazy(() => import("../components/JobsPage"));
@@ -22,6 +18,12 @@ const NotFoundPage = lazy(() => import("../components/NotFoundPage"));
 const PrivacyPolicyPage = lazy(() => import("../components/PrivacyPolicyPage"));
 const TermsPage = lazy(() => import("../components/TermsPage"));
 const ComplaintsPage = lazy(() => import("../components/CompliantsPage"));
+const ComplaintDetails = lazy(() => import("../components/CompliantDetails"));
+const RequestJobDetailsPage = lazy(() => import("../components/RequestJobDetailsPage"));
+const PartnerWithUs = lazy(() => import("../pages/PartnerWithUs"));
+const FranchiseWithUs = lazy(() => import("../pages/FranchiseWithUs"));
+const AboutUs = lazy(() => import("../pages/AboutUs"));
+
 
 
 const EachRoute = () => {
@@ -64,6 +66,30 @@ const EachRoute = () => {
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <AddJobVacanciesPage />
+                    </Suspense>
+                }
+            />
+
+            <Route path="/partner-with-us"
+                render={() =>
+                    <Suspense fallback={<Loader />}>
+                        <PartnerWithUs />
+                    </Suspense>
+                }
+            />
+
+            <Route path="/franchise-with-us"
+                render={() =>
+                    <Suspense fallback={<Loader />}>
+                        <FranchiseWithUs />
+                    </Suspense>
+                }
+            />
+
+            <Route path="/about"
+                render={() =>
+                    <Suspense fallback={<Loader />}>
+                        <AboutUs />
                     </Suspense>
                 }
             />
@@ -152,22 +178,6 @@ const EachRoute = () => {
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <HiringPartnerDetails />
-                    </Suspense>
-                }
-            />
-
-            <Route path="/partner-with-us"
-                render={() =>
-                    <Suspense fallback={<Loader />}>
-                        <PartnerWithUs />
-                    </Suspense>
-                }
-            />
-
-            <Route path="/franchise-with-us"
-                render={() =>
-                    <Suspense fallback={<Loader />}>
-                        <FranchiseWithUs />
                     </Suspense>
                 }
             />

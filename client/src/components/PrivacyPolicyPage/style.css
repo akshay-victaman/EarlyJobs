@@ -1,5 +1,5 @@
 .privacy-policy-page {
-    margin-top: 15vh;
+    margin-top: calc(15vh + 40px);
     min-height: 85vh;
     background-color: white;
 }
@@ -34,6 +34,7 @@
     line-height: 1.6;
     color: #000;
     margin-bottom: 14px;
+    text-align: justify;
 }
 
 .privacy-policy-list {
@@ -47,6 +48,7 @@
     line-height: 1.6;
     color: #6d6d6d;
     margin-bottom: 9px;
+    text-align: justify;
 }
 
 .privacy-policy-item-span {
@@ -54,14 +56,105 @@
     margin-right: 6px;
 }
 
+.privacy-policy-founder {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+.privacy-policy-image-con {
+    width: 30%;
+}
+
+.privacy-policy-founder-image {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.privacy-policy-founder-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #EB6A4D;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.privacy-policy-founder-title {
+    font-size: 12px;
+    font-weight: 400;
+    color: #6d6d6d;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.founder-content {
+    width: 70%;
+    margin-right: 25px;
+    margin-top: 15px;
+}
+
+.strong-text {
+    font-weight: 700;
+    color: #EB6A4D;
+}
+
+.privacy-policy-founder-linkedin {
+    text-decoration: none;
+    margin-top: 6px;
+    width: 100%;
+    display: block;
+}
+
+.linkedin-icon {
+    font-size: 18px;
+    color: #EB6A4D;
+    margin: auto;
+    display: block;
+}
+
 @media screen and (max-width: 768px){
     .privacy-policy-page {
-        margin-top: 10vh;
+        margin-top: calc(10vh + 30px);
         min-height: 90vh;
     }
 
     .privacy-policy-page__content {
         padding: 50px 6%;
+    }
+
+    .privacy-policy-founder {
+        flex-direction: column;
+        margin-top: 10px;
+    }
+
+    .privacy-policy-image-con {
+        width: 100%;
+    }
+
+    .privacy-policy-founder-name {
+        text-align: left;
+        margin-top: 10px;
+    }
+
+    .founder-content {
+        width: 100%;
+        margin-right: 0;
+        margin-top: 15px;
+    }
+
+    .privacy-policy-founder-title {
+        text-align: left;
+        margin-top: 5px;
+    }
+
+    .privacy-policy-founder-linkedin {
+        margin-top: 6px;
+        width: 100%;
+        display: block;
+    }
+
+    .linkedin-icon {
+        margin: 0;
     }
 
 }

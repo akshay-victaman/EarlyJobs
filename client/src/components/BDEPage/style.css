@@ -61,7 +61,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 18vh;
+    margin-top: calc(18vh + 40px);
+
  }
 
  .bde-form-btn {
@@ -169,7 +170,7 @@
         padding: 0px 15px;
     }
     .bde-content {
-        margin-top: 12vh;
+        margin-top: calc(12vh + 30px);
     }
     .bde-heading-another-job {
         font-size: 18px;

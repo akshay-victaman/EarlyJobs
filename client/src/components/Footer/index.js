@@ -31,9 +31,13 @@ const Footer = ({handleShowContactForm}) => {
                 <div className="footer-link-wrapper">
                     {/* <a href="/RefundPolicy/index.html" className="footer-link">Refund Policy</a> */}
                     {/* <a href="" class="footer-link">Support</a> */}
+                    <Link to='/about' className="footer-link">About Us</Link>
+                    <Link to='/' className="footer-link">Team</Link>
+                    <Link to='/franchise-with-us' className="footer-link">Franchise With Us</Link>
+                    <Link to='/partner-with-us' className="footer-link">Partner With Us</Link>
                     <Link to='/terms-and-conditions' className="footer-link">Terms & Conditions</Link>
                     <Link to='/privacy-policy' className="footer-link">Privacy Policy</Link>
-                    <a className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact</a>
+                    <a className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact Us</a>
                 </div>
             </div>
         </footer>
