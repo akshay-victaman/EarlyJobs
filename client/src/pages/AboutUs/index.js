@@ -15,7 +15,7 @@ const AboutUs = () => {
 
             <div className="privacy-policy-page__content">
                 <div className='privacy-policy-content-sub'>
-                    <h3 className='privacy-policy-subheading'>EarlyJobs, an innovative venture spearheaded by Victaman Services Pvt. Ltd., offers a unique platform tailored for freelance recruiters to operate from anywhere, harnessing the power of remote work. Moreover, it doubles up as a valuable resource hub catering to students enrolled in degree or MBA programs, providing them with extensive training opportunities and avenues for internships.</h3>
+                    <h3 className='privacy-policy-subheading'>EarlyJobs, is an innovative venture spearheaded by Victaman Services Pvt. Ltd., offers a unique platform tailored for freelance recruiters to operate from anywhere, harnessing the power of remote work. Moreover, it doubles up as a valuable resource hub catering to students enrolled in degree or MBA programs, providing them with extensive training opportunities and avenues for internships.</h3>
                 </div>
 
                 <div className='privacy-policy-content-sub'>
