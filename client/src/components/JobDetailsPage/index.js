@@ -117,6 +117,10 @@ const JobDetailsPage = () => {
           noOfOpenings: data.no_of_openings,
           employmentType: data.employment_type,
           jobDescription: data.description,
+          area: data.area,
+          streetAddress: data.street,
+          city: data.city,
+          pincode: data.pincode,
           location: data.location,
           locationLink: data.location_link,
           role: data.title,
@@ -133,6 +137,7 @@ const JobDetailsPage = () => {
           minAge: data.min_age,
           maxAge: data.max_age
         }
+        console.log(data)
         console.log(formattedData)
         setJobDetails(formattedData)
         setApiStatus(apiStatusConstant.success)
