@@ -72,7 +72,10 @@ const AddJobVacanciesPage = () => {
     const [categoryError, setCategoryError] = useState(false)
     const [shiftTimingError, setShiftTimingError] = useState(false)
     const [descriptionError, setDescriptionError] = useState(false)
-    const [locationError, setLocationError] = useState(false)
+    const [streetAddressError, setStreetAddressError] = useState(false)
+    const [areaError, setAreaError] = useState(false)
+    const [cityError, setCityError] = useState(false)
+    const [pincodeError, setPincodeError] = useState(false)
     const [locationLinkError, setLocationLinkError] = useState(false)
     const [salaryError, setSalaryError] = useState(false)
     const [skillsError, setSkillsError] = useState(false)
@@ -96,7 +99,10 @@ const AddJobVacanciesPage = () => {
         category: '',
         shiftTimings: '',
         jobDescription: '',
-        jobLocation: '',
+        streetAddress: '',
+        area: '',
+        city: '',
+        pincode: '',
         locationLink: '',
         salaryMin: '',
         salaryMax: '',
@@ -255,7 +261,10 @@ const AddJobVacanciesPage = () => {
                 shiftTimings: '',
                 category: '',
                 jobDescription: '',
-                jobLocation: '',
+                streetAddress: '',
+                area: '',
+                city: '',
+                pincode: '',
                 locationLink: '',
                 salaryMin: '',
                 salaryMax: '',
@@ -295,7 +304,10 @@ const AddJobVacanciesPage = () => {
           category: addJobVacancies.category.trim().length === 0,
           shiftTimings: addJobVacancies.shiftTimings.trim().length === 0,
           description: addJobVacancies.jobDescription.split(/\s+/).length < 150,
-          location: addJobVacancies.jobLocation.trim().length === 0,
+          streetAddress: addJobVacancies.streetAddress.trim().length === 0,
+          area: addJobVacancies.area.trim().length === 0,
+          city: addJobVacancies.city.trim().length === 0,
+          pincode: addJobVacancies.pincode.trim().length === 0,
           locationLink: addJobVacancies.locationLink.trim().length === 0,
           salary: addJobVacancies.salaryMin.trim().length === 0 || addJobVacancies.salaryMax.trim().length === 0,
           skills: addJobVacancies.skills.length === 0,
@@ -323,7 +335,10 @@ const AddJobVacanciesPage = () => {
         setCategoryError(errors.category);
         setShiftTimingError(errors.shiftTimings);
         setDescriptionError(errors.description);
-        setLocationError(errors.location);
+        setStreetAddressError(errors.streetAddress);
+        setAreaError(errors.area);
+        setCityError(errors.city);
+        setPincodeError(errors.pincode);
         setLocationLinkError(errors.locationLink);
         setSalaryError(errors.salary);
         setSkillsError(errors.skills);
@@ -363,7 +378,11 @@ const AddJobVacanciesPage = () => {
             category: addJobVacancies.category,
             shiftTimings: addJobVacancies.shiftTimings,
             description: addJobVacancies.jobDescription,
-            location: addJobVacancies.jobLocation,
+            streetAddress: addJobVacancies.streetAddress,
+            area: addJobVacancies.area,
+            city: addJobVacancies.city,
+            pincode: addJobVacancies.pincode,
+            location: `${addJobVacancies.streetAddress}, ${addJobVacancies.area}, ${addJobVacancies.city}, ${addJobVacancies.pincode}`,
             locationLink: addJobVacancies.locationLink,
             salaryMin: addJobVacancies.salaryMin,
             salaryMax: addJobVacancies.salaryMax,
@@ -423,11 +442,32 @@ const AddJobVacanciesPage = () => {
             <EditorComponent content={addJobVacancies.jobDescription} handleEditorChange={handleEditorChange} />
             {descriptionError && <p className='hr-error'>*Please enter job description minimum of 150 words</p>}
 
-            
-            <label className='bde-form-label' htmlFor='job-location'>Job Location<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='job-location'  onChange={handleInputChange} value={addJobVacancies.jobLocation} name='jobLocation' type='text' placeholder='Enter Job Location' />
-            {locationError && <p className='hr-error'>*Please enter job location</p>}
+            <div className='salary-container'>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='streetAddress'>Street Address<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='streetAddress'  onChange={handleInputChange} value={addJobVacancies.streetAddress} name='streetAddress' type='text' placeholder='Enter Street Address' />
+                    {streetAddressError && <p className='hr-error'>*Please enter street address</p>}
+                </div>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='area'>Area<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='area'  onChange={handleInputChange} value={addJobVacancies.area} name='area' type='text' placeholder='Enter Area' />
+                    {areaError && <p className='hr-error'>*Please enter area</p>}
+                </div>
+            </div>
 
+            <div className='salary-container'>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='city'>City<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='city'  onChange={handleInputChange} value={addJobVacancies.city} name='city' type='text' placeholder='Enter City' />
+                    {cityError && <p className='hr-error'>*Please enter city</p>}
+                </div>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='pincode'>Pincode<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='pincode'  onChange={handleInputChange} value={addJobVacancies.pincode} name='pincode' type='text' placeholder='Enter Pincode' />
+                    {pincodeError && <p className='hr-error'>*Please enter pincode</p>}
+                </div>
+            </div>
+            
             <label className='bde-form-label' htmlFor='location-link'>Location Link<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='location-link'  onChange={handleInputChange} value={addJobVacancies.locationLink} name='locationLink' type='text' placeholder='Enter Location Link' />
             {locationLinkError && <p className='hr-error'>*Please enter location link</p>}
