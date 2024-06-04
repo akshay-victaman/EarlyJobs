@@ -6,7 +6,7 @@ import './style.css'
 import Cookies from 'js-cookie';
 
 const JobsCard = props => {
-  const {jobsItem, showCandidateForm} = props
+  const {jobsItem, showCandidateForm, url} = props
 
   const hiringFor = Cookies.get('hiring_for')
   const userRole = Cookies.get('role')
@@ -20,13 +20,26 @@ const JobsCard = props => {
     maxSalary,
     employmentType,
     location,
+    city,
     role,
     category,
     workType,
     hiringNeed,
   } = jobsItem
+
+  let linkUrl;
+  if (url === '/jobs') {
+    if (showCandidateForm === 4) {
+      linkUrl = `job-request-details/${id}`;
+    } else {
+      linkUrl = `/jobs/${id}`;
+    }
+  } else {
+      linkUrl = `${url}/${role}_${compname}_${city}_${id}`;
+  }
+
   return (
-    <Link to={showCandidateForm === 4 ? `job-request-details/${id}` : `/jobs/${id}`} className="link-item">
+    <Link to={linkUrl} className="link-item">
       <li className="jobs-list-item-container">
         <div className="jobs-logo-name-con">
           <FiBriefcase className="jobs-logo" />
@@ -50,14 +63,12 @@ const JobsCard = props => {
           <p className="job-salary">{minSalary} - {maxSalary} LPA</p>
         </div>
         <hr className="jobs-line" />
-        {
-          (hiringFor === "Freelance HR Recruiter" || userRole !== "HR") && <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${((commissionFee/100)*70).toFixed(2)} Per Joining` : `${((commissionFee/100)*50).toFixed(2)}% of Annual CTC` }</p>
+        { 
+          (url === '/jobs' && (hiringFor === "Freelance HR Recruiter" || userRole !== "HR")) && <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${((commissionFee/100)*70).toFixed(2)} Per Joining` : `${((commissionFee/100)*50).toFixed(2)}% of Annual CTC` }</p>
         }
         
         <p className="job-detials">Notice Period: {hiringNeed}</p>
         <p className="job-detials">Work Type: {workType}</p>
-        {/* <h1 className="job-desc-heading">Description</h1>
-        <p className="job-description">{jobDescription}</p> */}
       </li>
     </Link>
   )

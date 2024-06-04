@@ -7,7 +7,7 @@ const SubNavBar = ({handleShowContactForm}) => {
             <Link to="/" className="subNavBar__link">Home</Link>
             <Link to="/about" className="subNavBar__link">About</Link>
             <Link to="/" className="subNavBar__link">Team</Link>
-            <Link to="/" className="subNavBar__link">Career</Link>
+            <Link to="/view-openings" className="subNavBar__link">View Openings</Link>
             <a className="subNavBar__link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact</a>
         </div>
     )

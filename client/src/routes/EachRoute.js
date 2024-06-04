@@ -23,6 +23,8 @@ const RequestJobDetailsPage = lazy(() => import("../components/RequestJobDetails
 const PartnerWithUs = lazy(() => import("../pages/PartnerWithUs"));
 const FranchiseWithUs = lazy(() => import("../pages/FranchiseWithUs"));
 const AboutUs = lazy(() => import("../pages/AboutUs"));
+const OpeningsPage = lazy(() => import("../pages/OpeningsPage"));
+const PublicJobDetailsPage = lazy(() => import("../pages/PublicJobDetailsPage"));
 
 
 
@@ -70,7 +72,7 @@ const EachRoute = () => {
                 }
             />
 
-            <Route path="/partner-with-us"
+            <Route exact path="/partner-with-us"
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <PartnerWithUs />
@@ -78,7 +80,7 @@ const EachRoute = () => {
                 }
             />
 
-            <Route path="/franchise-with-us"
+            <Route exact path="/franchise-with-us"
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <FranchiseWithUs />
@@ -86,10 +88,26 @@ const EachRoute = () => {
                 }
             />
 
-            <Route path="/about"
+            <Route exact path="/about"
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <AboutUs />
+                    </Suspense>
+                }
+            />
+
+            <Route exact path="/view-openings"
+                render={() =>
+                    <Suspense fallback={<Loader />}>
+                        <OpeningsPage />
+                    </Suspense>
+                }
+            />
+
+            <Route exact path="/view-openings/:id"
+                render={() =>
+                    <Suspense fallback={<Loader />}>
+                        <PublicJobDetailsPage />
                     </Suspense>
                 }
             />

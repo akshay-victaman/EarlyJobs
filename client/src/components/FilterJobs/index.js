@@ -116,7 +116,8 @@ const FilterJobs = props => {
     onClickButton,
     onShowCandidateForm,
     onClickFilter,
-    showCandidateForm
+    showCandidateForm,
+    pageType
   } = props
   return (
     <div className="profile-filters-container">
@@ -137,22 +138,29 @@ const FilterJobs = props => {
           <BsSearch className="search-icon" />
         </button>
       </div> */}
-      <Profile onShowCandidateForm={onShowCandidateForm} onClickFilter={onClickFilter} showCandidateForm={showCandidateForm} />
-      <hr className="line" />
-      <h1 className="filter-jobs-heading">Archieve</h1>
-      <ul className="filter-jobs-employment-type-list">
-        <li className="job-filter-employment-type-con">
-          <input
-            type="checkbox"
-            id='ARCHIEVED'
-            className="job-filter-input-checkbox"
-            checked={archieve}
-            onChange={onSelectArchieve}
-          />
-          <label htmlFor='ARCHIEVED' className="job-filter-input-label">Archieved</label>
-        </li>
-      </ul>
-      <hr className="line" />
+      {
+        pageType === 'JOBS' && (
+          <>
+            <Profile onShowCandidateForm={onShowCandidateForm} onClickFilter={onClickFilter} showCandidateForm={showCandidateForm} />
+            <hr className="line" />
+            <h1 className="filter-jobs-heading">Archieve</h1>
+            <ul className="filter-jobs-employment-type-list">
+              <li className="job-filter-employment-type-con">
+                <input
+                  type="checkbox"
+                  id='ARCHIEVED'
+                  className="job-filter-input-checkbox"
+                  checked={archieve}
+                  onChange={onSelectArchieve}
+                />
+                <label htmlFor='ARCHIEVED' className="job-filter-input-label">Archieved</label>
+              </li>
+            </ul>
+            <hr className="line" />
+          </>
+        )
+      }
+      
       <h1 className="filter-jobs-heading">Type of Employment</h1>
       <ul className="filter-jobs-employment-type-list">
         {employmentTypesList.map(eachItem => (

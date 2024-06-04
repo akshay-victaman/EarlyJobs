@@ -1,0 +1,22 @@
+.public-apply-job-form {
+    margin-top: calc(15vh + 55px);
+    min-height: calc(85vh - 40px);
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .public-apply-job-form {
+        margin-top: calc(10vh + 30px);
+        min-height: calc(90vh - 30px);
+    }
+
+    .public-apply-form {
+        width: 94%;
+    }
+
+    .public-application-button-con {
+        display: flex;
+        flex-direction: row;
+    }
+}
