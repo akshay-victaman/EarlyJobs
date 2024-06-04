@@ -1,8 +1,6 @@
-import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import {ThreeCircles} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
-import { query, limit, collection, getFirestore, getDocs, orderBy, Timestamp, startAfter } from "firebase/firestore";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import {BsSearch} from 'react-icons/bs'
 import { FaFilter } from "react-icons/fa6";
@@ -10,15 +8,8 @@ import { IoClose } from "react-icons/io5";
 import { IoFilter } from "react-icons/io5";
 import JobsCard from '../JobsCard'
 import FilterJobs from '../FilterJobs'
-import './style.css'
+// import './style.css'
 import SalaryRangeList from '../SalaryRangeList'
-import UploadCandidatePage from '../UploadCandidatePage';
-import ViewCandidates from '../ViewCandidates';
-import { HiringManagerDetailsForm } from '../HiringManagerDetailsForm';
-import MyHrRecruiters from '../MyHrRecruiters';
-import CollegeAgencyForm from '../CollegeAgencyForm';
-import app from "../../firebase";
-import OfferStatusCandidates from '../ViewCandidates/OfferStatusCandidates';
 
 
 const apiStatusConstant = {
@@ -29,12 +20,11 @@ const apiStatusConstant = {
 }
 
 
-const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup}) => {
+const OpeningsSection = () => {
 
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const initialPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
-    const view = parseInt(new URLSearchParams(window.location.search).get('view')) || 0;
 
     const [jobsList, setJobsList] = useState([])
     const [employmentTypeList, setEmploymentTypeList] = useState([])
@@ -45,45 +35,20 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
     const [searchInput, setSearchInput] = useState('')
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [toggleFilter, setToggleFilter] = useState(false)
-    const [archieve, setArchieve] = useState(false)
-    const [showCandidateForm, setShowCandidateForm] = useState(view)
     const [page, setPage] = useState(initialPage)
     const [totalItems, setTotalItems] = useState(0);
     const [showFilter, setShowFilter] = useState(false)
-    const [lastVisible, setLastVisible] = useState(null)
 
 
   useEffect(() => {
-    if(showCandidateForm === 4) {
-      getHirignReqCard()
-    } else if(showCandidateForm === 4 || showCandidateForm === 0) {
       getJobsCard()
-    }
-    updateUrl(page, showCandidateForm);
-    }, [employmentTypeList, minimumPackageList, page, showCandidateForm])
-
-  const archieveJobs = () => {
-    console.log(archieve)
-    if(archieve) {
-      setJobsList(jobsList.filter(eachJob => eachJob.status === 'ARCHIVED'))
-    } else {
-      getJobsCard()
-    }
-  }
-
-  const onShowCandidateForm = (status) => {
-    setShowCandidateForm(status)
-    setPage(1)
-  }
+      updateUrl(page);
+  }, [employmentTypeList, minimumPackageList, page])
 
   const onClickFilter = () => {
     setShowFilter(!showFilter)
   }
 
-  const onSelectArchieve = async () => {
-    await setArchieve(!archieve, archieveJobs())
-    // archieveJobs()
-  }
 
   const onSelectEmploymentType = event => {
     if (employmentTypeList.includes(event.target.value)) {
@@ -160,26 +125,9 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
 
   const getJobsCard = async () => {
     setApiStatus(apiStatusConstant.inProgress)
-    const email = Cookies.get('email')
-    const role = Cookies.get('role')
-    let apiUrl = ""
-    if (role === 'AC') {
-      apiUrl = `${backendUrl}/jobs/account-manager/${email}/?page=${page}`
-    } else if (role === 'HR') {
-      apiUrl = `${backendUrl}/jobs/hr/${email}/?page=${page}`
-    } else if (role === 'BDE') {
-      apiUrl = `${backendUrl}/jobs/bde/${email}/?page=${page}`
-    } else {
-      apiUrl = `${backendUrl}/admin/get-jobs/all/?page=${page}`
-    }
-    const jwtToken = Cookies.get('jwt_token')
-    const options = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-    }
-    const response = await fetch(apiUrl, options)
+    let apiUrl = `${backendUrl}/api/public/jobs?page=${page}`
+    
+    const response = await fetch(apiUrl)
     const data = await response.json()
     console.log('api data', data)
     
@@ -200,6 +148,10 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
           noOfOpenings: eachItem.no_of_openings,
           employmentType: eachItem.employment_type,
           jobDescription: eachItem.description,
+          street: eachItem.street,
+          area: eachItem.area,
+          city: eachItem.city,
+          pincode: eachItem.pincode,
           location: eachItem.location,
           role: eachItem.title,
           workType: eachItem.work_type,
@@ -218,86 +170,6 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
     } else {
       setApiStatus(apiStatusConstant.failure)
       alert(data.error)
-    }
-  }
-
-  const getHirignReqCard = async () => {
-    setApiStatus(apiStatusConstant.inProgress)
-    const db = getFirestore(app);
-    
-    let queryRef;
-    if (page === 1) { // If it's the first page, no need to use startAfter
-      queryRef = query(
-        collection(db, "AddJobVacancies"),
-        orderBy("postDateTime", "desc"),
-        limit(10)
-      );
-    } else { // If it's not the first page, start after the last document from the previous page
-      console.log('lastVisible', lastVisible)
-      queryRef = query(
-        collection(db, "AddJobVacancies"),
-        orderBy("postDateTime", "desc"),
-        startAfter(lastVisible),
-        limit(10)
-      );
-    }
-
-    const queryRefForCount = query(collection(db, "AddJobVacancies"));
-    const querySnapForCount = await getDocs(queryRefForCount);
-    setTotalItems(querySnapForCount.size);
-
-    const querySnap = await getDocs(queryRef);
-    if (!querySnap.empty) {
-      setLastVisible(querySnap.docs[querySnap.docs.length - 1])
-      const documents = querySnap.docs.map((doc) => {
-          const timestamp = doc.data().postDateTime;
-        
-          // Check if AppliedDate is a Timestamp object:
-          if (!(timestamp instanceof Timestamp)) {
-            console.error("AppliedDate is not a valid Timestamp. Skipping conversion.");
-            return doc.data();
-          }
-        
-          // Convert Timestamp to human-readable format:
-          const options = { // Configure formatting options as needed
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true, // Use appropriate time format
-            timeZone: 'Asia/Kolkata' // Replace with your preferred time zone
-          };
-          const formattedDate = timestamp.toDate().toLocaleString('en-US', options);
-        
-          return {
-            // Original document data
-            ...doc.data(),
-            // Add `formattedDate` property with converted string
-            formattedDate
-          };
-      });
-      const formattedData = documents.map(eachItem => ({
-        id: eachItem.docId,
-        category: eachItem.category,
-        commissionType: eachItem.commissionType,
-        commissionFee: eachItem.commission,
-        compname: eachItem.companyName,
-        employmentType: eachItem.employmentType,
-        hiringNeed: eachItem.hiringNeed,
-        location: eachItem.location,
-        minSalary: eachItem.salaryMax,
-        maxSalary: eachItem.salaryMin,
-        role: eachItem.title,
-        workType: eachItem.workType,
-        postedBy: eachItem.postedBy,
-      })
-      )
-      setJobsList(formattedData)
-      setApiStatus(apiStatusConstant.success)
-      console.log('formatted data',formattedData)
-    } else {
-        console.log("No such documents!");
     }
   }
 
@@ -340,9 +212,8 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
     return element;
   };
 
-  const updateUrl = (page, view) => {
+  const updateUrl = (page) => {
     const url = new URL(window.location.href);
-    url.searchParams.set('view', view);
     url.searchParams.set('page', page);
     window.history.pushState({}, '', url);
   };
@@ -358,7 +229,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
           ) : (
             <ul className="jobs-card-list">
               {jobsList.map(eachJob => (
-                <JobsCard key={eachJob.id} jobsItem={eachJob} showCandidateForm={showCandidateForm} url={"/jobs"}  />
+                    <JobsCard key={eachJob.id} jobsItem={eachJob} url={"/view-openings"} />
               ))}
             </ul>
           )}
@@ -430,8 +301,6 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
     }
   }
 
-    const role = Cookies.get('role')
-    const userDetailsId = Cookies.get('user_details_id')
     return (
       <div className="jobs-section-container">
         {/* <div className='filter-button-con'>
@@ -470,8 +339,6 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
         <div className={`jobs-section-filter-mobile-overlay ${showFilter===false ? "jobs-section-filter-mobile-hidden" : ""}`} onClick={onClickFilter}></div>
         <div className={`jobs-section-profile-filter-con jobs-section-filter-mobile ${showFilter===false ? "jobs-section-filter-mobile-hidden" : ""}`}>
               <FilterJobs
-              onSelectArchieve={onSelectArchieve}
-              archieve={archieve}
               onSelectEmploymentType={onSelectEmploymentType}
               onChangeSalaryRange={onChangeSalaryRange}
               onSelectIndustryType={onSelectIndustryType}
@@ -480,10 +347,8 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
               onChangeInput={onChangeInput}
               onKeyEnter={onKeyEnter}
               onClickButton={onClickButton}
-              onShowCandidateForm={onShowCandidateForm}
               onClickFilter={onClickFilter}
-              showCandidateForm={showCandidateForm}
-              pageType={'JOBS'}
+              pageType={'OPENINGS'}
             />
             <button type='button' className='job-section-filter-close-button' onClick={onClickFilter}><MdKeyboardDoubleArrowLeft className='job-section-filter-close-icon' /></button>
         </div>
@@ -493,7 +358,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
           <span className='filter-text-btn'>Filter Jobs</span>
         </button>
         
-        <div className={`job-section-search-card-con ${(showCandidateForm === 2 || showCandidateForm === 3) ? "job-section-view-candidate-con" : ""} ${showCandidateForm === 1 ? "job-section-candidate": ""}`}>
+        <div className="job-section-search-card-con">
           {/* <div className="search-box-desk-con">
             <input
               type="search"
@@ -513,18 +378,11 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
             </button>
           </div> */}
           {
-            userDetailsId === 'TBF' ? <HiringManagerDetailsForm />
-            : (userDetailsId === 'CLG' || userDetailsId === 'AGY') ? <CollegeAgencyForm />
-            : showCandidateForm===1 ? <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
-            : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
-            : showCandidateForm===3 ? <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
-            : showCandidateForm===4 ? renderAllSections()
-            : showCandidateForm >= 5 && showCandidateForm <= 11 ? <OfferStatusCandidates key={showCandidateForm} showCandidateForm={showCandidateForm} onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} />
-            : renderAllSections()
+            renderAllSections()
           }
         </div>
       </div>
     )
 }
 
-export default JobsSection
+export default OpeningsSection

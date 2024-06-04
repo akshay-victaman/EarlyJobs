@@ -1,0 +1,12 @@
+.openings-page-container {
+    margin-top: calc(15vh + 40px)!important;
+    min-height: calc(85vh - 40px)!important;
+}
+
+@media screen and (max-width: 768px) {
+    .openings-page-container {
+        margin-top: calc(10vh + 30px)!important;
+        min-height: calc(90vh - 30px)!important;
+    }
+    
+}
