@@ -253,6 +253,46 @@
     margin-bottom: 15px;
 }
 
+.action-dropdown {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.application-action-button-2 {
+    padding: 0px;
+    border: 0px;
+    outline: none;
+    color: #EB6A4D;
+    cursor: pointer;
+    background-color: transparent;
+    width: 100%;
+    height: 30px;
+    padding: 6px;
+    border-right: 1px solid #EB6A4D;
+}
+
+.application-action-button-2:hover {
+    background-color: #f7f2eb;
+}
+
+.shortlist-modal-heading {
+    font-size: 18px;
+    color: #EB6A4D;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #EB6A4D;
+}
+
+.shortlist-modal-form {
+    z-index: 10000000;
+}
+
+.application-modal {
+    width: 100%;
+}
+
 @media screen and (max-width: 768px) {
     .job-section-select-filter-container {
         justify-content: space-between;
@@ -311,5 +351,9 @@
 
     .selected-candidate-con {
         margin-bottom: 0px;
+    }
+
+    .application-modal {
+        width: 100%;
     }
 }

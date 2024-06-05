@@ -105,8 +105,74 @@ const addPublicApplicationForJob = async (applicationData) => {
     }
 }
 
+const getPublicApplications = async (jobId, email, search, createdTo, createdFrom, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const query = `
+        SELECT public_applications.*, company_name, title FROM public_applications INNER JOIN jobs ON public_applications.job_id = jobs.id
+        WHERE DATE(public_applications.created_at) >= ? 
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)
+        AND hm_emails LIKE ?
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        order by created_at desc Limit ? offset ?;`;
+    const countQuery = `
+        SELECT count(*) as count FROM public_applications INNER JOIN jobs ON public_applications.job_id = jobs.id
+        WHERE DATE(public_applications.created_at) >= ?
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)
+        AND hm_emails LIKE ?
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ""}
+        `;
+    try {
+        let params = [createdFrom, createdTo, `%${email}%`];
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        params.push(pageSize);
+        params.push(startIndex);
+        const result = await db.query(query, params);
+        let countParams = [createdFrom, createdTo, `%${email}%`];
+        if(jobId) {
+            countParams.push(jobId);
+        }
+        if (search) {
+            countParams.push(`%${search}%`);
+            countParams.push(`%${search}%`);
+            countParams.push(`%${search}%`);
+        }
+        const countResult = await db.query(countQuery, countParams);
+        return {applications: result[0], count: countResult[0][0].count};
+    } catch (error) {
+        console.log(error);
+        return {error: error.message};
+    }
+}
+
+const deletePublicApplication = async (applicationId) => {
+    const query = 'DELETE FROM public_applications WHERE id = ?';
+    try {
+        const result = await db.query(query, [applicationId]);
+        if(result[0].affectedRows > 0) {
+            return {success: "Application deleted successfully"};
+        }
+        else {
+            return {error: "Application deletion failed"};
+        }
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
 module.exports = {
     getAllJobs,
     getJobDetails,
-    addPublicApplicationForJob
+    addPublicApplicationForJob,
+    getPublicApplications,
+    deletePublicApplication
 }

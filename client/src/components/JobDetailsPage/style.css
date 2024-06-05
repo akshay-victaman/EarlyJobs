@@ -442,7 +442,7 @@
   color: #000000;
   border-top: 1px solid #EB6A4D;
   padding: .5rem 1rem;
-
+  position: relative;
 }
 
 .update-button {
