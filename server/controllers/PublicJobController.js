@@ -30,8 +30,35 @@ const addPublicApplicationForJob = async (req, res) => {
     }
 }
 
+const getPublicApplications = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const email = req.email;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const page = req.query.page || 1;
+        const result = await publicJobService.getPublicApplications(jobId, email, search, createdTo, createdFrom, page);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const deletePublicApplication = async (req, res) => {
+    try {
+        const applicationId = req.params.applicationId;
+        const result = await publicJobService.deletePublicApplication(applicationId);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getAllJobs,
     getJobDetails,
-    addPublicApplicationForJob
+    addPublicApplicationForJob,
+    getPublicApplications,
+    deletePublicApplication
 }

@@ -181,7 +181,11 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
                 <button type="button" className={`profile-button ${showCandidateForm === 11 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(11)}>Rejected Candidates</button>
 
                 {
-                    userRole === 'AC' && <button type="button" className={`profile-button ${showCandidateForm === 3 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(3)}>My {hmType === "CLG" ? "Interns" : "HR Recruiters"}</button>
+                    userRole === 'AC' && 
+                    <>
+                        <button type="button" className={`profile-button ${showCandidateForm === 12 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(12)}>View Applications</button>
+                        <button type="button" className={`profile-button ${showCandidateForm === 3 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(3)}>My {hmType === "CLG" ? "Interns" : "HR Recruiters"}</button>
+                    </>
                 }
                 {
                     (userRole === 'HR' && offerLetterURL !== '') && <a href={offerLetterURL} style={{textDecoration: 'none', display: 'inline-flex'}} className="profile-button" >Download Joining Letter</a>
