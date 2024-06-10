@@ -1,6 +1,7 @@
 import Cookies from "js-cookie"
 import { useEffect, useState } from "react"
 import {Oval} from 'react-loader-spinner'
+import { toast } from "react-toastify";
 import Pagination from 'rc-pagination';
 import { format, parseISO } from 'date-fns'
 import { IoSearchSharp } from 'react-icons/io5';
@@ -169,6 +170,46 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
       }
     }
 
+    const getInitialCandidatesForExcel = async (hrEmail, status, page) => {
+      if(!dateValidation(fromDate, toDate)) return;
+      const jwtToken = Cookies.get('jwt_token')
+      let email = Cookies.get('email')
+      const role = Cookies.get('role')
+      const apiUrl = `${backendUrl}/jobs/candidates/initial/excel/${email}/?&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&role=${role}&search=${searchInput}`
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+      const response = await fetch(apiUrl, options)
+      const data = await response.json()
+      if (response.ok === true) {
+        if(data.error) {
+          toast.error(data.error)
+        } else {
+          console.log("get candidates raw api data", data)
+          const formattedData = data.map(eachItem => ({
+            applicationId: eachItem.application_id,
+            jobId: eachItem.job_id,
+            candidateId: eachItem.candidate_id,
+            candidateName: eachItem.name,
+            candidateEmail: eachItem.email,
+            candidatePhone: eachItem.phone,
+            hrName: eachItem.hr_name,
+            offerStatus: eachItem.offer_status,
+            offeredDate: eachItem.offered_date,
+            appliedBy: eachItem.applied_by,
+            interviewDate: formatDate(eachItem.interview_date),
+            companyName: eachItem.company_name
+          }))
+          return formattedData
+        }
+      } else {
+        toast.error(data.error)
+      }
+    }
+
     const getCandidates = async (hrEmail, status, page) => {
         if(!dateValidation(fromDate, toDate)) return;
         setApiStatus(apiStatusConstant.inProgress)
@@ -214,6 +255,48 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
           setApiStatus(apiStatusConstant.failure)
         }
     }
+
+    const getCandidatesForExcel = async (hrEmail, status) => {
+      if(!dateValidation(fromDate, toDate)) return;
+      setApiStatus(apiStatusConstant.inProgress)
+      const jwtToken = Cookies.get('jwt_token')
+      let email = Cookies.get('email')
+      const role = Cookies.get('role')
+      if(role === 'HR') hrEmail = email
+      const apiUrl = `${backendUrl}/jobs/candidates/excel/${jobId}?email=${hrEmail}&role=${role}&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}`
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+      const response = await fetch(apiUrl, options)
+      const data = await response.json()
+      if (response.ok === true) {
+        if(data.error) {
+          toast.error(data.error)
+        } else {
+          console.log("get candidates raw api data", data)
+          const formattedData = data.map(eachItem => ({
+            applicationId: eachItem.application_id,
+            jobId: eachItem.job_id,
+            candidateId: eachItem.candidate_id,
+            candidateName: eachItem.name,
+            candidateEmail: eachItem.email,
+            candidatePhone: eachItem.phone,
+            hrName: eachItem.hr_name,
+            offerStatus: eachItem.offer_status,
+            offeredDate: eachItem.offered_date,
+            appliedBy: eachItem.applied_by,
+            interviewDate: formatDate(eachItem.interview_date),
+            companyName: eachItem.company_name
+          }))
+          return formattedData
+        }
+      } else {
+        toast.error(data.error)
+      }
+  }
 
     const getAllJobsList = async () => {
       const email = Cookies.get('email')
@@ -374,7 +457,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
               </div>
               {candidateList.length > 0 && 
                 <div className="excel-download-button" style={{marginTop: "0px", marginBottom: "10px"}}> 
-                  <ExcelDownloadButton  data={candidateList} /> 
+                  <ExcelDownloadButton  getData={jobId === "" ? getInitialCandidatesForExcel : getCandidatesForExcel} /> 
                 </div>
               }
               <div className="rows-count-con">

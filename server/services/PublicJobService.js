@@ -53,8 +53,27 @@ const getPublicApplicationForJob = async (jobId, email, phone) => {
     } catch (error) {
         return {error: error.message};
     }
-
 }
+
+const getPublicApplicationForJobApproved = async (jobId, email, phone) => {
+    const query = `SELECT * FROM candidates 
+        INNER JOIN applications ON candidates.id = applications.candidate_id
+        WHERE job_id = ? AND (email = ? OR phone = ?)`;
+    try {
+        const result = await db.query(query, [jobId, email, phone]);
+        if (result[0].length > 0) {
+            return result[0][0];
+        } else {
+            const error = new Error('Application not found');
+            error.statusCode = 404;
+            throw error;
+        }
+    }
+    catch (error) {
+        return {error: error.message};
+    }
+}
+    
 
 const addPublicApplicationForJob = async (applicationData) => {
     const {
@@ -87,7 +106,8 @@ const addPublicApplicationForJob = async (applicationData) => {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
     try {
         const application = await getPublicApplicationForJob(jobId, email, phone);
-        if(application.error === undefined) {
+        const existingApplication = await getPublicApplicationForJobApproved(jobId, email, phone);
+        if(application.error === undefined || existingApplication.error === undefined) {
             const error = new Error('Application already exists');
             error.statusCode = 409;
             throw error;
@@ -154,6 +174,32 @@ const getPublicApplications = async (jobId, email, search, createdTo, createdFro
     }
 }
 
+const getPublicApplicationsForExcel = async (jobId, email, search, createdTo, createdFrom) => {
+    const query = `
+        SELECT public_applications.*, company_name, title FROM public_applications INNER JOIN jobs ON public_applications.job_id = jobs.id
+        WHERE DATE(public_applications.created_at) >= ? 
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)
+        AND hm_emails LIKE ?
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        order by created_at desc;`;
+    try {
+        let params = [createdFrom, createdTo, `%${email}%`];
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        const result = await db.query(query, params);
+        return result[0];
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
 const deletePublicApplication = async (applicationId) => {
     const query = 'DELETE FROM public_applications WHERE id = ?';
     try {
@@ -174,5 +220,6 @@ module.exports = {
     getJobDetails,
     addPublicApplicationForJob,
     getPublicApplications,
+    getPublicApplicationsForExcel,
     deletePublicApplication
 }

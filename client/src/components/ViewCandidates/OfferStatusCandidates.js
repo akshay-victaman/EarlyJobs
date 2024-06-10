@@ -3,6 +3,7 @@ import { IoSearchSharp } from 'react-icons/io5';
 import Pagination from 'rc-pagination';
 import { Oval } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 import { format, parseISO } from 'date-fns';
 import { MdOutlineEditCalendar } from 'react-icons/md';
 import ExcelDownloadButton from '../ExcelDownloadButton';
@@ -174,6 +175,51 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
         setApiStatus(apiStatusConstant.failure);
         }
     }
+
+    const getOfferStatusCandidatesForExcel = async () => {
+      const role = Cookies.get('role');
+      let email = Cookies.get('email');
+      if(selectHr !== '') {
+        email = selectHr
+      }
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidates/excel?email=${email}&search=${searchInput}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}`
+      const options = {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          }
+      }
+      try {
+      const response = await fetch(url, options)
+      const data = await response.json()
+      console.log('data', data)
+      if(response.ok === true) {
+          if(data.error) {
+              toast.error(data.error);
+          } else {
+              console.log(data)
+              const updatedData = data.map(eachItem => ({
+                applicationId: eachItem.application_id,
+                candidateId: eachItem.candidate_id,
+                name: eachItem.name,
+                companyName: eachItem.company_name,
+                phone: eachItem.phone,
+                appliedBy: eachItem.applied_by,
+                interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
+                offeredDate: eachItem.offered_date ? formatDate(eachItem.offered_date) : null,
+                jobId: eachItem.job_id,
+                hrName: eachItem.hr_name,
+              }))
+              return updatedData;
+          }
+      } else {
+          toast.error("Failed to download excel");
+      }
+      } catch (error) {
+        toast.error("Failed to download excel");
+      }
+  }
   
     const itemRender = (current, type, element) => {
       if (type === 'page') {
@@ -278,7 +324,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
               </div>
               {candidateList.length > 0 && 
                 <div className="excel-download-button" style={{marginTop: "0px", marginBottom: "10px"}}> 
-                  <ExcelDownloadButton  data={candidateList} /> 
+                    <ExcelDownloadButton getData={getOfferStatusCandidatesForExcel} /> 
                 </div>
               }
               <div className="rows-count-con">
@@ -302,7 +348,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                       const jobId1 = jobId==='' ? eachItem.jobId : jobId;
                       return (
                         <tr key={eachItem.email} className="job-details-candidates-table-row">
-                            <td className="job-details-candidates-table-cell job-details-candidates-table-cell-hover" onClick={() => onShowCandidateDetails(eachItem.candidate_id)}>
+                            <td className="job-details-candidates-table-cell job-details-candidates-table-cell-hover" onClick={() => onShowCandidateDetails(eachItem.candidateId)}>
                                 {eachItem.name}
                             </td>
                             <td className="job-details-candidates-table-cell">{eachItem.companyName}</td>
