@@ -38,18 +38,18 @@ const HomePage = () => {
     }
 
     const onSubmitSuccess = (jwtToken, username, role, email, userDetailsId, hiringFor, hmType) => {
-        Cookies.set('jwt_token', jwtToken, {expires: 30})
-        Cookies.set('email', email, {expires: 30})
-        Cookies.set('username', username, {expires: 30})
-        Cookies.set('role', role, {expires: 30})
+        Cookies.set('jwt_token', jwtToken, {expires: 1/6})
+        Cookies.set('email', email, {expires: 1/6})
+        Cookies.set('username', username, {expires: 1/6})
+        Cookies.set('role', role, {expires: 1/6})
         if(userDetailsId === "TBF" || userDetailsId === "AGY" || userDetailsId === "CLG") {
-            Cookies.set('user_details_id', userDetailsId, {expires: 30})
+            Cookies.set('user_details_id', userDetailsId, {expires: 1/6})
         }
         if(role === 'HR') {
-            Cookies.set('hiring_for', hiringFor, {expires: 30})
+            Cookies.set('hiring_for', hiringFor, {expires: 1/6})
         }
         if(hmType === 'CLG' || hmType === 'AGY') {
-            Cookies.set('hm_type', hmType, {expires: 30})
+            Cookies.set('hm_type', hmType, {expires: 1/6})
         }
         if(role === 'ADMIN') {
             history.replace('/admin')
