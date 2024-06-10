@@ -178,6 +178,21 @@ const getAllHRsForHiringManager = async (email, hiringFor, search, page) => {
     return {users: result[0], count: countResult[0][0].count};
 }
 
+const getAllHRsForHiringManagerForExcel = async (email, hiringFor, search) => {
+    let query = `
+        SELECT username, email, phone, created_at, hiring_for, last_login, is_blocked
+        FROM users INNER JOIN hrassignedhm ON
+        users.email=hrassignedhm.hr_email
+        WHERE hm_email = ?
+        ${hiringFor !== 'undefined' && hiringFor !== '' ? `AND hiring_for = ? ` : ''}
+        ${search !== 'undefined' && search !== '' ? `AND (username LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%') ` : ''}
+        ORDER BY created_at DESC, username ASC
+    `;
+    const params = (hiringFor !== 'undefined' && hiringFor !== '') ? [email, hiringFor] : [email];
+    const result = await db.query(query, params);
+    return result[0];
+}
+
 const getHrAssignedHm = async (email, role) => {
     const HRQuery = `
         SELECT username, phone 
@@ -284,6 +299,7 @@ module.exports = {
   getAllAccountManagers,
   getAllHRs,
   getAllHRsForHiringManager,
+  getAllHRsForHiringManagerForExcel,
   getHrAssignedHm,
   createComplaint,
   updateGender,

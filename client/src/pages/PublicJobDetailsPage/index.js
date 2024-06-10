@@ -1,7 +1,5 @@
-import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import { formatDistanceToNow } from 'date-fns';
-import {Oval} from 'react-loader-spinner'
 import { FiBriefcase } from "react-icons/fi";
 import { IoMdPaperPlane } from "react-icons/io";
 import { useParams } from 'react-router-dom'
@@ -11,6 +9,7 @@ import {HiOutlineExternalLink} from 'react-icons/hi'
 import {ThreeCircles} from 'react-loader-spinner'
 import './style.css'
 import PublicApplicationForm from '../PublicApplicationForm';
+import ShareButton from '../../components/ShareButton';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -22,9 +21,7 @@ const apiStatusConstant = {
 const PublicJobDetailsPage = () => {
   const [jobDetails, setJobDetails] = useState({})
   const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
-  const [loading, setLoading] = useState(false)
   const [apply, setApply] = useState(false)
-
 
 
   const backendUrl = process.env.REACT_APP_BACKEND_API_URL
@@ -86,6 +83,7 @@ const PublicJobDetailsPage = () => {
         console.log(formattedData)
         setJobDetails(formattedData)
         setApiStatus(apiStatusConstant.success)
+        document.title = `EarlyJobs - ${formattedData.role} - ${formattedData.compname}`
       }
     } else {
       setApiStatus(apiStatusConstant.failure)
@@ -100,6 +98,7 @@ const PublicJobDetailsPage = () => {
 
   const renderJobDetails = () => {
     const {
+      id,
       companyLogoUrl,
       compname,
       minSalary,
@@ -108,6 +107,7 @@ const PublicJobDetailsPage = () => {
       employmentType,
       jobDescription,
       location,
+      city,
       locationLink,
       role,
       category,
@@ -137,9 +137,18 @@ const PublicJobDetailsPage = () => {
                 <p className="job-details-rating">{category}</p>
               </div>
             </div>
-            <button className='edit-job-button' onClick={() => setApply(true)}>
-                <IoMdPaperPlane className='edit-icon' /> Apply
-            </button>
+            <div className='job-details-apply-con'>
+              <div className='job-details-share-con'>
+                <ShareButton 
+                  title={role} 
+                  text={role} 
+                  url={`https://earlyjobs.in/view-openings/${role}_${compname}_${city}_${id}`} 
+                />
+              </div>
+              <button className='public-job-apply-btn mobile-apply-btn-top' onClick={() => setApply(true)}>
+                  <IoMdPaperPlane className='apply-icon' /> Apply
+              </button>
+            </div>
           </div>
           <div className="job-details-location-type-salary-con">
             <div className="job-details-location-type-con">
@@ -179,9 +188,11 @@ const PublicJobDetailsPage = () => {
             </a>
           </div>
           <p className="job-details-desc" dangerouslySetInnerHTML={{__html: jobDescription}}></p> 
-            <button className='edit-job-button' onClick={() => setApply(true)}>
-                <IoMdPaperPlane className='edit-icon' /> Apply
+          <div className="job-details-apply-con">
+            <button className='public-job-apply-btn mobile-apply-btn' onClick={() => setApply(true)}>
+                <IoMdPaperPlane className='apply-icon' /> Apply
             </button>
+          </div>
           <p className="job-details-posted-at">Posted {formattedDate}</p>
         </div>
       </div>

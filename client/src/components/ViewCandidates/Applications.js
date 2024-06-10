@@ -170,6 +170,59 @@ const Applications = ({ setShowCandidateForm }) => {
         }
     }
 
+    const getApplicationsForExcel = async () => {
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/public/applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+      const options = {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          }
+      }
+      try {
+      const response = await fetch(url, options)
+      const data = await response.json()
+      console.log('data', data)
+      if(response.ok === true) {
+          if(data.error) {
+              toast.error(data.error)
+          } else {
+              console.log(data)
+
+              const updatedData = data.map(eachItem => ({
+                applicationId: eachItem.id,
+                jobId: eachItem.job_id,
+                fullName: eachItem.name,
+                companyName: eachItem.company_name,
+                title: eachItem.title,
+                phone: eachItem.phone,
+                createdAt: eachItem.created_at ? formatDate(eachItem.created_at) : null,
+                email: eachItem.email,
+                fatherName: eachItem.father_name,
+                offerStatus: eachItem.offer_status,
+                dateOfBirth: eachItem.date_of_birth,
+                gender: eachItem.gender,
+                aadharNumber: eachItem.aadhar_number,
+                highestQualification: eachItem.highest_qualification,
+                currentLocation: eachItem.current_location,
+                spokenLanguages: eachItem.spoken_languages,
+                experienceInYears: eachItem.experience_in_years,
+                experienceInMonths: eachItem.experience_in_months,
+                skills: eachItem.skills,
+                jobCategory: eachItem.job_category,
+                shiftTimings: eachItem.shift_timings,
+                employmentType: eachItem.employment_type,
+              }))
+              return updatedData;
+          }
+      } else {
+          toast.error(data.error)
+      }
+      } catch (error) {
+        toast.error(error.message)
+      }
+  }
+
     const sendEmailAck = async (candidateDetails) => {
       const username = Cookies.get('username')
       const jobName = candidateDetails.title
@@ -663,7 +716,7 @@ const Applications = ({ setShowCandidateForm }) => {
               </div>
               {candidateList.length > 0 && 
                 <div className="excel-download-button" style={{marginTop: "0px", marginBottom: "10px"}}> 
-                  <ExcelDownloadButton  data={candidateList} /> 
+                  <ExcelDownloadButton  getData={getApplicationsForExcel} /> 
                 </div>
               }
               <div className="rows-count-con">

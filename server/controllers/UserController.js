@@ -139,6 +139,18 @@ const getAllHRsForHiringManager = async (req, res) => {
     }
 }
 
+const getAllHRsForHiringManagerForExcel = async (req, res) => {
+    try {
+      const email = req.params.email;
+      const hiringFor = req.query.hiringFor;
+      const search = req.query.search;
+      const users = await userService.getAllHRsForHiringManagerForExcel(email, hiringFor, search);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const getHrAssignedHm = async (req, res) => {
     try {
       const email = req.params.email;
@@ -210,6 +222,7 @@ module.exports = {
   getAllAccountManagers,
   getAllHRs,
   getAllHRsForHiringManager,
+  getAllHRsForHiringManagerForExcel,
   getHrAssignedHm,
   createComplaint,
   updateGender,

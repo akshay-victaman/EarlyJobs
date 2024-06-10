@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
 import ExcelJS from "exceljs";
+import { Oval } from "react-loader-spinner";
 
 const buttonStyle = {
     padding: "10px 16px",
@@ -13,9 +14,14 @@ const buttonStyle = {
     fontWeight: 600,
 }
 
-const ExcelDownloadButton = ({data}) => {
-    
+const ExcelDownloadButton = ({getData}) => {
+  
+  const [loading, setLoading] = useState(false);
+
   const handleDownload = async () => {
+    setLoading(true);
+    const data = await getData();
+    console.log(data)
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Sheet 1");
 
@@ -42,9 +48,29 @@ const ExcelDownloadButton = ({data}) => {
     link.href = url;
     link.download = "data.xlsx";
     link.click();
+    setLoading(false);
   };
 
-  return <button onClick={handleDownload} style={buttonStyle}>Download Excel</button>;
+  return (
+    <button onClick={handleDownload} disabled={loading} style={buttonStyle}>
+      {loading ?
+        <Oval
+            visible={true}
+            height="20"
+            width="20"
+            color="#ffffff"
+            strokeWidth="4"
+            ariaLabel="oval-loading"
+            wrapperStyle={{}}
+            secondaryColor="#ffffff"
+            wrapperClass=""
+            className='hr-oval'
+        />
+        :
+        'Download Excel'
+      }
+    </button>
+  )
 };
 
 export default ExcelDownloadButton;

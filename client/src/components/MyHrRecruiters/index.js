@@ -104,6 +104,39 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
         }
     }
 
+    const getHrRecruitersForExcel = async () => {
+      const jwtToken = Cookies.get('jwt_token')
+      const email = Cookies.get('email')
+      const apiUrl = `${backendUrl}/api/users/hrs-for-hm/excel/${email}?hiringFor=${hrRoleType}&search=${searchInput}`
+      const options = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwtToken}`
+        },
+      }
+      const response = await fetch(apiUrl, options)
+      const data = await response.json()
+      if (response.ok === true) {
+        if(data.error) {
+          toast.error(data.error)
+        } else {
+          const formattedData = data.map(eachItem => ({
+            name: eachItem.username,
+            email: eachItem.email,
+            phone: eachItem.phone,
+            createdAt: formatDate(eachItem.created_at),
+            hiringFor: eachItem.hiring_for,
+            lastLogin: eachItem.last_login ? formatDate(eachItem.last_login) : '--',
+            isBlocked: eachItem.is_blocked
+          }))
+          return formattedData;
+        }
+      } else {
+        toast.error(data.error)
+      }
+  }
+
     const getHiringManagers = async () => {
       const jwtToken = Cookies.get('jwt_token')
       const email = Cookies.get('email')
@@ -462,7 +495,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
               </div>
               {recruiterList.length > 0 && 
                 <div className="excel-download-button"> 
-                  <ExcelDownloadButton  data={recruiterList} /> 
+                  <ExcelDownloadButton  getData={getHrRecruitersForExcel} /> 
                 </div>
               }
               <div className="rows-count-con">

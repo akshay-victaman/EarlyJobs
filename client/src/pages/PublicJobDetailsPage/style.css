@@ -3,10 +3,52 @@
     min-height: calc(85vh - 40px)!important;
 }
 
+.public-job-apply-btn {
+    background-color: #EB6A4D;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.apply-icon {
+    font-size: 17px;
+    margin-right: 6px;
+}
+
+.job-details-apply-con {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.job-details-share-con {
+    height: 36px;
+    border-radius: 15px;
+    margin-bottom: 4px;
+    margin-right: 14px;
+}
+
 @media screen and (max-width: 768px) {
     .public-job-details-con {
         margin-top: calc(10vh + 30px)!important;
         min-height: calc(90vh - 30px)!important;
+    }
+
+    .mobile-apply-btn {
+        width: 100%;
+        margin-top: 0px;
+    }
+
+    .mobile-apply-btn-top {
+        padding: 6px 14px;
+        font-size: 14px;
     }
     
 }

@@ -45,6 +45,20 @@ const getPublicApplications = async (req, res) => {
     }
 }
 
+const getPublicApplicationsForExcel = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const email = req.email;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const result = await publicJobService.getPublicApplicationsForExcel(jobId, email, search, createdTo, createdFrom);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 const deletePublicApplication = async (req, res) => {
     try {
         const applicationId = req.params.applicationId;
@@ -60,5 +74,6 @@ module.exports = {
     getJobDetails,
     addPublicApplicationForJob,
     getPublicApplications,
+    getPublicApplicationsForExcel,
     deletePublicApplication
 }

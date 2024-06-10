@@ -181,6 +181,22 @@ const getJobCandidates = async (req, res) => {
     }
 }
 
+const getJobCandidatesForExcel = async (req, res) => {
+    const jobId = req.params.jobId;
+    const email = req.query.email;
+    const role = req.query.role;
+    const offerStatus = req.query.offerStatus;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
+    const search = req.query.search;
+    try {
+      const candidates = await jobService.getJobCandidatesForExcel(jobId, email, role, offerStatus, fromDate, toDate, search);
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const updateCandidateOfferStatus = async (req, res) => {
     const candidate = req.body;
     try {
@@ -202,6 +218,21 @@ const getInitialCandidates = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     try {
       const candidates = await jobService.getInitialCandidates(email, offerStatus, fromDate, toDate, role, search, page);
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getInitialCandidatesForExcel = async (req, res) => {
+    const email = req.params.email;
+    const offerStatus = req.query.offerStatus;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
+    const role = req.query.role;
+    const search = req.query.search;
+    try {
+      const candidates = await jobService.getInitialCandidatesForExcel(email, offerStatus, fromDate, toDate, role, search);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -234,6 +265,21 @@ const getOfferStatusCandidates = async (req, res) => {
     }
 }
 
+const getOfferStatusCandidatesForExcel = async (req, res) => {
+    const email = req.query.email;
+    const hmEmail = req.email;
+    const offerStatus = req.query.offerStatus;
+    const role = req.query.role;
+    const search = req.query.search;
+    const jobId = req.query.jobId;
+    try {
+      const candidates = await jobService.getOfferStatusCandidatesForExcel(email, hmEmail, offerStatus, role, search, jobId);
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getAllJobs,
     addJobDetials,
@@ -251,9 +297,12 @@ module.exports = {
     getAllHRJobs,
     addCandidateDetailsForJob,
     getJobCandidates,
+    getJobCandidatesForExcel,
     updateCandidateOfferStatus,
     getInitialCandidates,
+    getInitialCandidatesForExcel,
     getCandidateDetails,
     updateInterviewDate,
-    getOfferStatusCandidates
+    getOfferStatusCandidates,
+    getOfferStatusCandidatesForExcel
 }

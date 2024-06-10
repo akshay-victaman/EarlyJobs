@@ -1,0 +1,33 @@
+.job-item-share-btn {
+    height: 38px;
+    width: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    outline: 0px;
+    border: 0px;
+    margin: 0px -3px 0px 0px;
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+    appearance: none;
+    text-decoration: none;
+    text-align: center;
+    flex: 0 0 auto;
+    overflow: visible;
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 1.125rem;
+    background-color: #EB6A4D95;
+    border-radius: 50%;
+}
+
+.job-item-share-btn:hover {
+    background-color: #EB6A4D;
+}
+
+.share-icon {
+    color: white;
+    font-size: 18px;
+}

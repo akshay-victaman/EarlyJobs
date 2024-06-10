@@ -20,10 +20,13 @@ router.get('/hr/:email', authenticateToken, checkUserBlockStatus, jobController.
 router.get('/hr/all/:email', authenticateToken, checkUserBlockStatus, jobController.getAllHRJobs);
 router.post('/candidate/add', authenticateToken, checkUserBlockStatus, jobController.addCandidateDetailsForJob);
 router.get('/candidate/:jobId', authenticateToken, checkUserBlockStatus, jobController.getJobCandidates);
+router.get('/candidates/excel/:jobId', authenticateToken, checkUserBlockStatus, jobController.getJobCandidatesForExcel);
 router.put('/candidate/interview', authenticateToken, checkUserBlockStatus, jobController.updateInterviewDate);
 router.put('/candidate/status/update', authenticateToken, checkUserBlockStatus, jobController.updateCandidateOfferStatus);
 router.get('/candidate/initial/:email', authenticateToken, checkUserBlockStatus, jobController.getInitialCandidates);
+router.get('/candidates/initial/excel/:email', authenticateToken, checkUserBlockStatus, jobController.getInitialCandidatesForExcel);
 router.get('/candidate/details/:candidateId', authenticateToken, checkUserBlockStatus, jobController.getCandidateDetails);
 router.get('/candidate', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidates);
+router.get('/candidates/excel', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForExcel);
 
 module.exports = router;
