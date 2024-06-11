@@ -280,6 +280,16 @@ const getOfferStatusCandidatesForExcel = async (req, res) => {
     }
 }
 
+const updateTenureStatus = async (req, res) => {
+    const candidate = req.body;
+    try {
+      const updatedCandidate = await jobService.updateTenureStatus(candidate);
+      res.json(updatedCandidate);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getAllJobs,
     addJobDetials,
@@ -304,5 +314,6 @@ module.exports = {
     getCandidateDetails,
     updateInterviewDate,
     getOfferStatusCandidates,
-    getOfferStatusCandidatesForExcel
+    getOfferStatusCandidatesForExcel,
+    updateTenureStatus
 }

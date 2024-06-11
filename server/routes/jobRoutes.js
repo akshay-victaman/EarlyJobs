@@ -28,5 +28,6 @@ router.get('/candidates/initial/excel/:email', authenticateToken, checkUserBlock
 router.get('/candidate/details/:candidateId', authenticateToken, checkUserBlockStatus, jobController.getCandidateDetails);
 router.get('/candidate', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidates);
 router.get('/candidates/excel', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForExcel);
+router.put('/candidate/tenure-status/update', authenticateToken, checkUserBlockStatus, jobController.updateTenureStatus);
 
 module.exports = router;
