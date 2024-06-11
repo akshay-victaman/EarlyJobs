@@ -46,7 +46,8 @@ const addJobDetials = async (job) => {
         maxExperience,
         minExperience,
         minAge,
-        maxAge
+        maxAge,
+        keywords
     } = job;
     const id = uuidv4();
     const query = `
@@ -80,9 +81,10 @@ const addJobDetials = async (job) => {
         min_experience,
         max_experience,
         min_age,
-        max_age
-        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge]);
+        max_age,
+        keywords
+        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge, keywords]);
 
     if (result[0].affectedRows > 0) {
         return assignJobToHMByBDE(id, assignedTo);
@@ -132,7 +134,8 @@ const editJobDetials = async (job) => {
         minExperience,
         maxExperience,
         minAge,
-        maxAge
+        maxAge,
+        keywords
     } = job;
     const query = `
     UPDATE jobs SET
@@ -163,14 +166,20 @@ const editJobDetials = async (job) => {
         min_experience = ?,
         max_experience = ?,
         min_age = ?,
-        max_age = ?
+        max_age = ?,
+        keywords = ?
     WHERE id = ?`;
-    const result = await db.query(query, [companyName, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, jobId]);
-    if (result[0].affectedRows > 0) {
-        await updateJobAssignmentByBde(jobId, assignedTo);
-        return {success: 'Job updated successfully'};
-    } else {
-        return {error: 'Job updation failed'};
+    try {
+        const result = await db.query(query, [companyName, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, keywords, jobId]);
+        if (result[0].affectedRows > 0) {
+            await updateJobAssignmentByBde(jobId, assignedTo);
+            return {success: 'Job updated successfully'};
+        } else {
+            return {error: 'Job updation failed'};
+        }
+    } catch (error) {
+        console.log(error)
+        return {error: error.message};
     }
 }
 
@@ -513,7 +522,6 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
 }
 
 const getJobCandidatesForExcel = async (jobId, email, role, offerStatus, fromDate, toDate, search) => {
-    console.log("triggered")
     const query = `
     SELECT
         applications.id as application_id,

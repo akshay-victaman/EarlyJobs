@@ -135,7 +135,8 @@ const JobDetailsPage = () => {
           minExperience: data.min_experience,
           maxExperience: data.max_experience,
           minAge: data.min_age,
-          maxAge: data.max_age
+          maxAge: data.max_age,
+          keywords: data.keywords ? data.keywords.split(', ') : []
         }
         console.log(data)
         console.log(formattedData)
@@ -283,7 +284,8 @@ const JobDetailsPage = () => {
             minExperience,
             maxExperience,
             minAge,
-            maxAge
+            maxAge,
+            keywords
             } = updatedData
     setJobDetails({
       ...jobDetails, 
@@ -313,7 +315,8 @@ const JobDetailsPage = () => {
         minExperience: minExperience,
         maxExperience: maxExperience,
         minAge: minAge,
-        maxAge: maxAge
+        maxAge: maxAge,
+        keywords: keywords.split(', ')
       }
     )
   }
@@ -633,8 +636,15 @@ const JobDetailsPage = () => {
               <HiOutlineExternalLink />
             </a>
           </div>
-          {/* <p className="job-details-desc">{jobDescription}</p> */}
           <p className="job-details-desc" dangerouslySetInnerHTML={{__html: jobDescription}}></p> 
+          <h1 className="job-details-desc-heading">Keywords</h1>
+          <div className="job-details-keywords-con">
+            {
+              jobDetails.keywords.map((eachItem, index) => (
+                <p key={index} className="job-details-keywords">{eachItem}</p>
+              ))
+            }
+          </div>
           <p className="job-details-posted-at">Posted {formattedDate}</p>
           {renderButtons()}
         </div>

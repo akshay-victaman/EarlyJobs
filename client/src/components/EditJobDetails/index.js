@@ -61,6 +61,7 @@ const customStyles = {
 const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
 
     const [accountManagers, setAccountManagers] = useState([])
+    const [keyword, setKeyword] = useState('');
     const [skills, setSkills] = useState('');
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -117,7 +118,8 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         minExperience: jobDetails.minExperience,
         maxExperience: jobDetails.maxExperience,
         minAge: jobDetails.minAge,
-        maxAge: jobDetails.maxAge
+        maxAge: jobDetails.maxAge,
+        keywords: jobDetails.keywords
     })
 
     useEffect(() => {
@@ -187,6 +189,27 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
 
     const onRemoveSkills = (id) => {
         setEditJob({ ...editJob, skills: editJob.skills.filter(skill => skill.id !== id)})
+    }
+
+    const onChangeKeyword = (e) => {
+        setKeyword(e.target.value)
+    }
+
+    const onAddKeyword = () => {
+        if(editJob.keywords.length > 30) return
+        if(editJob.keywords.includes(keyword)) return
+        const trimmedKeyword = keyword.trim()
+        if(trimmedKeyword === '') {
+            return
+        }
+        setEditJob({ ...editJob, keywords: [...editJob.keywords, trimmedKeyword]})
+        setKeyword('')
+    }
+
+    const onRemoveKeyword = (index) => {
+        const keywords = editJob.keywords
+        keywords.splice(index, 1)
+        setEditJob({ ...editJob, keywords: keywords})
     }
 
     const handleAddLanguage = (e) => {
@@ -317,7 +340,8 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             minExperience: editJob.minExperience,
             maxExperience: editJob.maxExperience,
             minAge: editJob.minAge,
-            maxAge: editJob.maxAge
+            maxAge: editJob.maxAge,
+            keywords: editJob.keywords.join(', ')
         }
         console.log(newJob)
         setLoading(true)
@@ -618,6 +642,23 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                 }
             </select>
             {assignedToError && <p className='hr-error'>*Please select account manager</p>}
+
+            <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
+            <div className='hr-input-list-con'>
+                {
+                    editJob.keywords.map((keyword, index) => (
+                        <div className='hr-input-list' key={index}>
+                            <p className='hr-input-list-item'>{keyword}</p>
+                            <button type='button' className='hr-remove-item-button' onClick={() => onRemoveKeyword(index)}><IoIosClose className='hr-close-icon' /></button>
+                        </div>
+                    ))
+                }
+            </div>
+            <div className='hr-input-con'>
+                <input type='text' placeholder="Ex: Customer Support" className='hr-input-sub' value={keyword} id='keywords' name='keywords'  onChange={onChangeKeyword} />
+                <button type='button' className='hr-form-btn-add' onClick={onAddKeyword}>+Add</button>
+            </div>
+
             <div className='hr-submit-con'>
                     <button type='button' className='hr-form-btn' onClick={() => setIsEditJob(false)}>Cancel</button>
                     <button type='submit' className='hr-form-btn' disabled={loading}>

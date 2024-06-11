@@ -64,6 +64,7 @@ const customStyles = {
 const AddJobVacanciesPage = () => {
 
     const [skills, setSkills] = useState('');
+    const [keyword, setKeyword] = useState('');
     const [showJobForm, setShowJobForm] = useState(true)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -121,6 +122,7 @@ const AddJobVacanciesPage = () => {
         maxExperience: '',
         minAge: '',
         maxAge: '',
+        keywords: [],
         companyDetails: {
             name: '',
             email: '',
@@ -162,6 +164,27 @@ const AddJobVacanciesPage = () => {
 
     const onRemoveSkills = (id) => {
         setAddJobVacancies({ ...addJobVacancies, skills: addJobVacancies.skills.filter(skill => skill.id !== id)})
+    }
+
+    const onChangeKeyword = (e) => {
+        setKeyword(e.target.value)
+    }
+
+    const onAddKeyword = () => {
+        if(addJobVacancies.keywords.length > 30) return
+        if(addJobVacancies.keywords.includes(keyword)) return
+        const trimmedKeyword = keyword.trim()
+        if(trimmedKeyword === '') {
+            return
+        }
+        setAddJobVacancies({ ...addJobVacancies, keywords: [...addJobVacancies.keywords, trimmedKeyword]})
+        setKeyword('')
+    }
+
+    const onRemoveKeyword = (index) => {
+        const keywords = addJobVacancies.keywords
+        keywords.splice(index, 1)
+        setAddJobVacancies({ ...addJobVacancies, keywords: keywords})
     }
 
     const handleAddLanguage = (e) => {
@@ -283,6 +306,7 @@ const AddJobVacanciesPage = () => {
                 maxExperience: '',
                 minAge: '',
                 maxAge: '',
+                keywords: [],
                 companyDetails: {
                     name: '',
                     email: '',
@@ -401,7 +425,8 @@ const AddJobVacanciesPage = () => {
             minExperience: addJobVacancies.minExperience,
             maxExperience: addJobVacancies.maxExperience,
             minAge: addJobVacancies.minAge,
-            maxAge: addJobVacancies.maxAge
+            maxAge: addJobVacancies.maxAge,
+            keywords: addJobVacancies.keywords.join(', ')
         }
 
         console.log(newJob)
@@ -478,24 +503,6 @@ const AddJobVacanciesPage = () => {
                 <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMax} name='salaryMax' type='number' placeholder='Maximum - INR' />
             </div>
             {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary</p>}
-
-            {/* <label htmlFor='skills' className='hr-label'>Skills<span className='hr-form-span'> *</span></label>
-            <div className='hr-input-list-con'>
-                {
-                    addJobVacancies.skills.map((skill) => (
-                        <div className='hr-input-list' key={skill.id}>
-                            <p className='hr-input-list-item'>{skill.value}</p>
-                            <button type='button' className='hr-remove-item-button' onClick={() => onRemoveSkills(skill.id)}><IoIosClose className='hr-close-icon' /></button>
-                        </div>
-                    ))
-                }
-            </div>
-            <div className='hr-input-con'>
-                <input type='text' placeholder="Ex: MS Excel" className='hr-input-sub' value={skills} id='skills' name='skills'  onChange={onChangeSkills} />
-                <button type='button' className='hr-form-btn-add' onClick={onAddSkills}>+Add</button>
-            </div>
-            <p className='hr-size'>Type a Skill and click 'Add' button to add it to the list</p>
-            {skillsError && <p className='hr-error'>*Please enter skills</p>} */}
 
             <div className="upload-candidate-sub-con">
                 <div className="upload-candidate-input-con salary-input">
@@ -662,6 +669,22 @@ const AddJobVacanciesPage = () => {
                 <input className='bde-form-input salary-input'  onChange={handleInputChange} value={addJobVacancies.maxAge} name='maxAge' type='number' placeholder='Maximum age' />
             </div>
             {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
+            
+            <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
+            <div className='hr-input-list-con'>
+                {
+                    addJobVacancies.keywords.map((keyword, index) => (
+                        <div className='hr-input-list' key={index}>
+                            <p className='hr-input-list-item'>{keyword}</p>
+                            <button type='button' className='hr-remove-item-button' onClick={() => onRemoveKeyword(index)}><IoIosClose className='hr-close-icon' /></button>
+                        </div>
+                    ))
+                }
+            </div>
+            <div className='hr-input-con'>
+                <input type='text' placeholder="Ex: Customer Support" className='hr-input-sub' value={keyword} id='keywords' name='keywords'  onChange={onChangeKeyword} />
+                <button type='button' className='hr-form-btn-add' onClick={onAddKeyword}>+Add</button>
+            </div>
 
             <label className='bde-form-label spoc-label'>Your Company Details<span className='hr-form-span'> *</span></label>
             <label className='bde-form-label' htmlFor='company'>Comapany Name<span className='hr-form-span'> *</span></label>

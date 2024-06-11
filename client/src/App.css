@@ -4,8 +4,20 @@
   font-family: 'Roboto';
 }
 
+.ql-container {
+  min-height: 100px!important;
+}
+
+.ql-snow {
+  border: none!important;
+}
+
+.ql-toolbar {
+  border-bottom: 1px solid #EB6A4D!important;
+}
+
 ::selection {
-  background-color: rgb(235, 105, 76, 85%);
+  background-color: rgba(235, 105, 77, 0.85);
   color: white;
 }
  
