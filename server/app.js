@@ -13,11 +13,11 @@ app.use('/jobs', jobRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/public', publicJobRoutes);
 
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
-module.exports.server = sls(app)
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+// module.exports.server = sls(app)
 
 
 

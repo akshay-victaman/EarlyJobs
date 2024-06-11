@@ -10,6 +10,7 @@ import JobsCard from '../JobsCard'
 import FilterJobs from '../FilterJobs'
 // import './style.css'
 import SalaryRangeList from '../SalaryRangeList'
+import PublicJobsCard from '../PublicJobsCard';
 
 
 const apiStatusConstant = {
@@ -229,7 +230,7 @@ const OpeningsSection = () => {
           ) : (
             <ul className="jobs-card-list">
               {jobsList.map(eachJob => (
-                    <JobsCard key={eachJob.id} jobsItem={eachJob} url={"/view-openings"} />
+                    <PublicJobsCard key={eachJob.id} jobsItem={eachJob} />
               ))}
             </ul>
           )}

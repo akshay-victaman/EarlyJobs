@@ -6,7 +6,7 @@ import './style.css'
 import Cookies from 'js-cookie';
 
 const JobsCard = props => {
-  const {jobsItem, showCandidateForm, url} = props
+  const {jobsItem, showCandidateForm} = props
 
   const hiringFor = Cookies.get('hiring_for')
   const userRole = Cookies.get('role')
@@ -20,7 +20,6 @@ const JobsCard = props => {
     maxSalary,
     employmentType,
     location,
-    city,
     role,
     category,
     workType,
@@ -28,14 +27,10 @@ const JobsCard = props => {
   } = jobsItem
 
   let linkUrl;
-  if (url === '/jobs') {
-    if (showCandidateForm === 4) {
-      linkUrl = `job-request-details/${id}`;
-    } else {
-      linkUrl = `/jobs/${id}`;
-    }
+  if (showCandidateForm === 4) {
+    linkUrl = `job-request-details/${id}`;
   } else {
-      linkUrl = `${url}/${role}_${compname}_${city}_${id}`;
+    linkUrl = `/jobs/${id}`;
   }
 
   return (
@@ -64,7 +59,7 @@ const JobsCard = props => {
         </div>
         <hr className="jobs-line" />
         { 
-          (url === '/jobs' && (hiringFor === "Freelance HR Recruiter" || userRole !== "HR")) && <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${((commissionFee/100)*70).toFixed(2)} Per Joining` : `${((commissionFee/100)*50).toFixed(2)}% of Annual CTC` }</p>
+          (hiringFor === "Freelance HR Recruiter" || userRole !== "HR") && <p className="job-detials">Commission: {commissionType === "Fixed" ? `₹ ${((commissionFee/100)*70).toFixed(2)} Per Joining` : `${((commissionFee/100)*50).toFixed(2)}% of Annual CTC` }</p>
         }
         
         <p className="job-detials">Notice Period: {hiringNeed}</p>

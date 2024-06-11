@@ -359,7 +359,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
           ) : (
             <ul className="jobs-card-list">
               {jobsList.map(eachJob => (
-                <JobsCard key={eachJob.id} jobsItem={eachJob} showCandidateForm={showCandidateForm} url={"/jobs"}  />
+                <JobsCard key={eachJob.id} jobsItem={eachJob} showCandidateForm={showCandidateForm} />
               ))}
             </ul>
           )}
