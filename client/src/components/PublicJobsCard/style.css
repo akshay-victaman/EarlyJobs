@@ -1,0 +1,87 @@
+.public-job-title {
+    color: #000000;
+    font-size: 20px;
+    font-family: 'Roboto';
+    margin: 0px;
+    margin-bottom: 10px;
+}
+
+.public-jobs-loc-type-salary-con {
+    display: flex;
+    margin-top: 0px;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+.public-jobs-location-con {
+    display: flex;
+    align-items: center;
+}
+
+.public-job-dot {
+    margin: 0px 7px;
+    font-size: 20px;
+    color: #777e85;
+}
+
+.public-job-location {
+    color: #777e85;
+    font-size: 12px;
+    font-family: 'Roboto';
+    margin: 0px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.public-job-type-icon {
+    font-size: 18px;
+    color: #EB6A4D;
+    margin-right: 7px;
+}
+
+.public-job-location-icon {
+    font-size: 20px;
+    min-width: 22px;
+    max-height: 22px;
+    color: #EB6A4D;
+    margin-right: 7px;
+}
+
+.public-list-item-container {
+    margin-bottom: 10px;
+}
+
+.public-jobs-loc-type-con {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .public-jobs-loc-type-con {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .job-dot-mobile {
+        display: none;
+    }
+
+    .public-job-dot {
+        font-size: 15px;
+    }
+
+    .public-jobs-location-con {
+        margin-bottom: 3px;
+    }
+
+    .public-job-title {
+        font-size: 16px;
+    }
+
+    .public-job-location {
+        font-size: 11px;
+    }
+    
+}
