@@ -83,7 +83,9 @@ const PublicJobDetailsPage = () => {
         console.log(formattedData)
         setJobDetails(formattedData)
         setApiStatus(apiStatusConstant.success)
-        document.title = `EarlyJobs - ${formattedData.role} - ${formattedData.compname}`
+        const title = `${formattedData.role} - ${formattedData.compname} - Earlyjobs`
+        document.title = title
+        document.querySelector('meta[name="description"]').setAttribute('content', title)
       }
     } else {
       setApiStatus(apiStatusConstant.failure)
