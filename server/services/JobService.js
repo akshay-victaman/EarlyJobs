@@ -752,7 +752,9 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
         offered_date,
         applied_by,
         company_name,
-        interview_date
+        interview_date,
+        tenure_in_days,
+        tenure_status
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
@@ -854,6 +856,21 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
     return result[0];
 }
 
+const updateTenureStatus = async (candidate) => {
+    const {applicationId, tenureStatus} = candidate;
+    const query = 'UPDATE applications SET tenure_status = ? WHERE id = ?';
+    try {
+        const result = await db.query(query, [tenureStatus, applicationId]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Candidate tenure status updated successfully'};
+        } else {         
+            return {error: 'Candidate tenure status updation failed'};
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     addJobDetials,
     editJobDetials,
@@ -878,4 +895,5 @@ module.exports = {
     updateInterviewDate,
     getOfferStatusCandidates,
     getOfferStatusCandidatesForExcel,
+    updateTenureStatus,
 }
