@@ -77,7 +77,8 @@ const PublicJobDetailsPage = () => {
           minExperience: data.min_experience,
           maxExperience: data.max_experience,
           minAge: data.min_age,
-          maxAge: data.max_age
+          maxAge: data.max_age,
+          keywords: data.keywords ? data.keywords.split(', ') : [],
         }
         console.log(data)
         console.log(formattedData)
@@ -123,7 +124,8 @@ const PublicJobDetailsPage = () => {
       minExperience,
       maxExperience,
       minAge,
-      maxAge
+      maxAge,
+      keywords
     } = jobDetails
     const formattedDate = formatDistanceToNow(createdAt, { addSuffix: true });
 
@@ -190,6 +192,14 @@ const PublicJobDetailsPage = () => {
             </a>
           </div>
           <p className="job-details-desc" dangerouslySetInnerHTML={{__html: jobDescription}}></p> 
+          <h1 className="job-details-desc-heading">Keywords</h1>
+          <div className="job-details-keywords-con">
+            {
+              jobDetails.keywords.map((eachItem, index) => (
+                <p key={index} className="job-details-keywords">{eachItem}</p>
+              ))
+            }
+          </div>
           <div className="job-details-apply-con">
             <button className='public-job-apply-btn mobile-apply-btn' onClick={() => setApply(true)}>
                 <IoMdPaperPlane className='apply-icon' /> Apply

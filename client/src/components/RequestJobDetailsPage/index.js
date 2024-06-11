@@ -128,6 +128,7 @@ const RequestJobDetailsPage = () => {
             maxExperience: documents[0].maxExperience,
             minAge: documents[0].minAge,
             maxAge: documents[0].maxAge,
+            keywords: documents[0].keywords ? documents[0].keywords.split(', ') : [],
             assignedTo: []
           }
           console.log(formattedData)
@@ -201,7 +202,8 @@ const handleRemoveHiringManager = (email) => {
         maxExperience: jobDetails.maxExperience,
         minExperience: jobDetails.minExperience,
         minAge: jobDetails.minAge,
-        maxAge: jobDetails.maxAge
+        maxAge: jobDetails.maxAge,
+        keywords: jobDetails.keywords.join(', '),
     }
     setError("");
     setRejectApproveStatus(true)
@@ -400,6 +402,14 @@ const renderRejectPopup = (close) => {
             </a>
           </div>
           <p className="job-details-desc" dangerouslySetInnerHTML={{__html: jobDescription}}></p> 
+          <h1 className="job-details-desc-heading">Keywords</h1>
+          <div className="job-details-keywords-con">
+            {
+              jobDetails.keywords.map((eachItem, index) => (
+                <p key={index} className="job-details-keywords">{eachItem}</p>
+              ))
+            }
+          </div>
           <hr className="line" style={{marginTop: '0px'}} />
           <div className='job-details-comapany-details-con'>
             <h1 className="job-details-company-details-heading">Company Details</h1>

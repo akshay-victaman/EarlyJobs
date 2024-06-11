@@ -65,6 +65,7 @@ const BDEPage = () => {
     const [accountManagers, setAccountManagers] = useState([])
 
     const [skills, setSkills] = useState('');
+    const [keyword, setKeyword] = useState('');
     const [showJobForm, setShowJobForm] = useState(true)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -120,7 +121,8 @@ const BDEPage = () => {
         minExperience: '',
         maxExperience: '',
         minAge: '',
-        maxAge: ''
+        maxAge: '',
+        keywords: []
     })
 
     useEffect(() => {
@@ -180,6 +182,27 @@ const BDEPage = () => {
 
     const onRemoveSkills = (id) => {
         setPostNewJob({ ...postNewJob, skills: postNewJob.skills.filter(skill => skill.id !== id)})
+    }
+
+    const onChangeKeyword = (e) => {
+        setKeyword(e.target.value)
+    }
+
+    const onAddKeyword = () => {
+        if(postNewJob.keywords.length > 30) return
+        if(postNewJob.keywords.includes(keyword)) return
+        const trimmedKeyword = keyword.trim()
+        if(trimmedKeyword === '') {
+            return
+        }
+        setPostNewJob({ ...postNewJob, keywords: [...postNewJob.keywords, trimmedKeyword]})
+        setKeyword('')
+    }
+
+    const onRemoveKeyword = (index) => {
+        const keywords = postNewJob.keywords
+        keywords.splice(index, 1)
+        setPostNewJob({ ...postNewJob, keywords: keywords})
     }
 
     const handleAddLanguage = (e) => {
@@ -317,7 +340,8 @@ const BDEPage = () => {
             minExperience: postNewJob.minExperience,
             maxExperience: postNewJob.maxExperience,
             minAge: postNewJob.minAge,
-            maxAge: postNewJob.maxAge
+            maxAge: postNewJob.maxAge,
+            keywords: postNewJob.keywords.join(', ')
         }
         console.log(newJob)
         // return
@@ -363,7 +387,8 @@ const BDEPage = () => {
                     qualification: '',
                     minExperience: '',
                     maxExperience: '',
-                    age: ''
+                    age: '',
+                    keywords: []
                 })
                 setShowJobForm(false)
             }
@@ -637,6 +662,23 @@ const BDEPage = () => {
                 }
             </select>
             {assignedToError && <p className='hr-error'>*Please select account manager</p>}
+
+            <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
+            <div className='hr-input-list-con'>
+                {
+                    postNewJob.keywords.map((keyword, index) => (
+                        <div className='hr-input-list' key={index}>
+                            <p className='hr-input-list-item'>{keyword}</p>
+                            <button type='button' className='hr-remove-item-button' onClick={() => onRemoveKeyword(index)}><IoIosClose className='hr-close-icon' /></button>
+                        </div>
+                    ))
+                }
+            </div>
+            <div className='hr-input-con'>
+                <input type='text' placeholder="Ex: Customer Support" className='hr-input-sub' value={keyword} id='keywords' name='keywords'  onChange={onChangeKeyword} />
+                <button type='button' className='hr-form-btn-add' onClick={onAddKeyword}>+Add</button>
+            </div>
+
             <button className='bde-form-btn' type='submit' disabled={loading} > 
                 {loading ? 
                     <Oval
@@ -675,14 +717,12 @@ const BDEPage = () => {
     return (
         <>
             <div className='bde-container'>
-                {/* <NavBar /> */}
                 <div className='bde-content'>
                     <h1 className='bde-heading'>Welcome to <span className='head-span'>Business Development Executive</span> Portal</h1>
                     { showJobForm ? renderJobForm() : renderAnotherJobButton()}
                 </div>
 
             </div>
-            {/* <Footer /> */}
         </>
     )
 }

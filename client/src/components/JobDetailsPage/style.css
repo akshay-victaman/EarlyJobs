@@ -498,6 +498,23 @@
   font-weight: 400;
 }
 
+.job-details-keywords-con {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.job-details-keywords {
+  background-color: #EB6A4D30;
+  border: 1px solid #EB6A4D;
+  color: #000000;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 14px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
 @media screen and (max-width: 500px) {
   .modal {
     width: 90%;
@@ -670,6 +687,13 @@
   
   .job-details-company-details-item-value {
     font-size: 13px;
+  }
+
+  .job-details-keywords {
+    font-size: 12px;
+    padding: 3px 7px;
+    margin-right: 7px;
+    margin-bottom: 7px;
   }
 }
 
