@@ -84,7 +84,7 @@ const PublicJobDetailsPage = () => {
         console.log(formattedData)
         setJobDetails(formattedData)
         setApiStatus(apiStatusConstant.success)
-        const title = `${formattedData.role} - ${formattedData.compname} - Earlyjobs`
+        const title = `${formattedData.role} - ${formattedData.compname} | Earlyjobs`
         document.title = title
         document.querySelector('meta[name="description"]').setAttribute('content', title)
       }
@@ -195,7 +195,7 @@ const PublicJobDetailsPage = () => {
           <h1 className="job-details-desc-heading">Keywords</h1>
           <div className="job-details-keywords-con">
             {
-              jobDetails.keywords.map((eachItem, index) => (
+              keywords.map((eachItem, index) => (
                 <p key={index} className="job-details-keywords">{eachItem}</p>
               ))
             }

@@ -1,0 +1,389 @@
+.control-homepage-con {
+    min-height: 85vh;
+    margin-top: 15vh;
+    padding: 25px 6%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.team-heading {
+    align-self: flex-start;
+    color: #EB6A4D;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.add-team-button {
+    background-color: #EB6A4D;
+    border: none;
+    border-radius: 5px;
+    color: #fff7fc;
+    cursor: pointer;
+    display: block;
+    font-size: 15px;
+    margin-left: 15px;
+    padding: 8px 15px;
+    text-decoration: none;
+    width: -moz-fit-content;
+    width: -webkit-fit-content;
+    width: fit-content;
+}
+
+.team-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.team-item {
+    align-items: center;
+    background-color: #EB6A4D15;
+    border: 1px solid #EB6A4D;
+    border-radius: 10px;
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.team-image {
+    width: 190px;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 10px 0 0 10px;
+}
+
+.team-details {
+    padding: 20px;
+}
+
+.member-name {
+    color: #EB6A4D;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.member-designation {
+    color: #141e46;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.member-span {
+    color: #EB6A4D;
+    margin-right: 5px;
+}
+
+.faculty-buttons-con {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.faculty-button {
+    background-color: #EB6A4D;
+    color: #FFF7FC;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none;
+    display: block;
+    width: fit-content;
+    margin-right: 10px;
+}
+
+.faculty-popup {
+    width: 100%!important;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    background-color: #FFF7FC;
+    padding: 20px;
+    position: relative;
+    border-radius: 10px;
+}
+
+
+.popup-content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    position: relative;
+    margin: auto;
+    pointer-events: auto;
+}
+
+.popup-overlay {
+    background-color: #00000030;
+}
+
+.faculty-popup-heading {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #EB6A4D;
+    text-align: center;
+}
+
+.faculty-popup-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.faculty-popup-label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #EB6A4D;
+}
+
+.faculty-popup-input {
+    padding: 8px;
+    border: 1px solid #EB6A4D;
+    border-radius: 5px;
+    margin-bottom: 12px;
+    background-color: transparent;
+    outline: none;
+}
+
+.faculty-popup-button {
+    background-color: #EB6A4D;
+    color: #FFF7FC;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none;
+    display: block;
+    width: fit-content;
+    margin-top: 10px;
+    align-self: flex-end;
+}
+
+.facutly-sub-btn {
+    margin-right: 10px;
+}
+
+.faculty-popup-close {
+    background-color: #EB6A4D;
+    color: #FFF7FC;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+}
+
+.faculty-popup-error {
+    color: red;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.faculty-head-con {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+
+}
+
+.faculty-head-buttons-con {
+    display: flex;
+    align-items: center;
+}
+
+.member-linkedin {
+    text-decoration: none;
+    color: #EB6A4D;
+}
+
+.linkedin-iconn {
+    font-size: 20px;
+    color: #EB6A4D;
+}
+
+.no-members-con {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 60vh;
+}
+
+.no-members-text {
+    font-size: 18px;
+    color: #EB6A4D;
+    text-align: center;
+}
+
+.retry-button {
+    background-color: #EB6A4D;
+    color: #FFF7FC;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none;
+    display: block;
+    width: fit-content;
+    margin-top: 20px;
+}
+
+.faculty-image-label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #EB6A4D;
+    border: 2px dashed #EB6A4D;
+    width: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.member-image-url {
+    background-color: #EB6A4D15;
+    border: 1px solid #EB6A4D;
+    border-radius: 10px;
+    display: flex;
+    color: #EB6A4D;
+    padding: 10px;
+}
+
+.team-popup-text {
+    font-size: 15px;
+    color: #141e46;
+    text-align: center;
+}
+
+.team-delete-popup-buttons-con {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+@media screen and (max-width: 768px) {
+    .control-homepage-con {
+        padding: 15px 5%;
+        min-height: 90vh;
+        margin-top: 10vh;
+    }
+
+    .team-heading {
+        font-size: 20px;
+    }
+
+    .add-team-button {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+
+    .team-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 0px;
+    }
+
+    .team-details {
+        padding: 15px;
+        width: 100%;
+    }
+
+    .member-name {
+        font-size: 18px;
+    }
+
+    .member-designation {
+        font-size: 13px;
+    }
+
+    .team-image {
+        width: 100%;
+        height: 300px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .faculty-button {
+        padding: 6px 12px;
+    }
+
+    .faculty-popup-heading {
+        margin-bottom: 10px;
+    }
+
+    .modal {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .faculty-popup-heading {
+        font-size: 18px;
+    }
+
+    .faculty-popup-label {
+        font-size: 13px;
+    }
+
+    .faculty-popup-button {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .facutly-sub-btn {
+        margin-right: 0px;
+        margin-bottom: 10px;
+    }
+
+    .faculty-head-buttons-con {
+        flex-direction: column;
+    }
+
+    .member-linkedin {
+        font-size: 13px;
+    }
+
+    .linkedin-iconn {
+        font-size: 15px;
+    }
+
+    .no-members-text {
+        font-size: 15px;
+    }
+
+    .retry-button {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+
+    .gen-img-btn {
+        margin-top: 10px;
+    }
+    
+}

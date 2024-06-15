@@ -18,5 +18,9 @@ router.get('/complaints/unread', authenticateToken, AdminController.getUnreadCom
 router.get('/complaints/read', authenticateToken, AdminController.getReadCompliants);
 router.get('/complaint/:id', authenticateToken, AdminController.getCompliantById);
 router.put('/complaint/mark-as-read/:id', authenticateToken, AdminController.markCompliantAsRead);
+router.get('/teams', AdminController.getMemberCards);
+router.post('/teams', authenticateToken, AdminController.addMemberCard);
+router.put('/teams', authenticateToken, AdminController.updateMemberCard);
+router.delete('/teams/:id', authenticateToken, AdminController.deleteMemberCard);
 
 module.exports = router;
