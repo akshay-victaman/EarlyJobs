@@ -152,7 +152,7 @@ const addMemberCard = async (req, res) => {
 
 const getMemberCards = async (req, res) => {
   try {
-      const memberCards = await adminService.getMemberCards();
+      const memberCards = await adminService.getMemberCards(req.query.category);
       res.status(200).json(memberCards);
   } catch (e) {
       console.log(e);

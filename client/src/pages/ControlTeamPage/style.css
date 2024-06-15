@@ -287,6 +287,28 @@
     margin-top: 16px;
 }
 
+.team-category-con {
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.team-category-text {
+    font-size: 16px;
+    color: #EB6A4D;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+.team-category-select {
+    padding: 6px;
+    border: 1px solid #EB6A4D;
+    border-radius: 5px;
+    background-color: transparent;
+    outline: none;
+    font-size: 13px;
+}
+
 @media screen and (max-width: 768px) {
     .control-homepage-con {
         padding: 15px 5%;
@@ -384,6 +406,18 @@
 
     .gen-img-btn {
         margin-top: 10px;
+    }
+
+    .team-category-con {
+        margin-bottom: 13px;
+    }
+
+    .team-category-select {
+        font-size: 11px;
+    }
+
+    .team-category-text {
+        font-size: 13px;
     }
     
 }

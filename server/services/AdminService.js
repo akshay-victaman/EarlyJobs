@@ -202,9 +202,14 @@ const addMemberCard = async (member) => {
     }
 }
 
-const getMemberCards = async () => {
+const getMemberCards = async (category) => {
+    console.log(category)
     try {
-        const query = 'SELECT * FROM team order by position asc';
+        const query = `
+            SELECT * FROM team 
+            ${(category !== '' && category !== undefined ) ? `WHERE category = '${category}'` : ''}
+            order by position asc
+        `;
         const result = await db.query(query);
         return result[0];
     } catch (error) {

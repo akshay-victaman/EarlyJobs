@@ -24,6 +24,7 @@ const ControlTeamPage = () => {
     const [file, setFile] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
     const [successUpload, setSuccessUpload] = useState(false);
+    const [category, setCategory] = useState('');
     const [editMember, setEditMember] = useState({
         id: '',
         name: '',
@@ -48,7 +49,7 @@ const ControlTeamPage = () => {
 
     useEffect(() => {
         fetchMemberCards();
-    }, []);
+    }, [category]);
 
     async function handleFileChange(event) {
         const file = event.target.files[0];
@@ -88,7 +89,7 @@ const ControlTeamPage = () => {
     const fetchMemberCards = async () => {
         try {
             setApiStatus(apiStatusConstants.loading);
-            const url = backendUrl + '/admin/teams';
+            const url = backendUrl + `/admin/teams?category=${category}`;
             const options = {
                 method: 'GET',
                 headers: {
@@ -466,6 +467,17 @@ const ControlTeamPage = () => {
                         )}
                     </Popup>
                 </div>
+            </div>
+            <div className='team-category-con'>
+                <p className='team-category-text'>Category:</p>
+                <select className='team-category-select' value={category} onChange={(e) => setCategory(e.target.value)}>
+                    <option value=''>All</option>
+                    <option value='Senior Recruiter'>Senior Recruiter</option>
+                    <option value='Lead Recruiter'>Lead Recruiter</option>
+                    <option value='Freelance Recruiter'>Freelance Recruiter</option>
+                    <option value='Agency'>Agency</option>
+                    <option value='Operating Team'>Operating Team</option>
+                </select>
             </div>
             {renderSwitch()}
         </div>
