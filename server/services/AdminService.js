@@ -185,19 +185,96 @@ const markCompliantAsRead = async (compliantId) => {
     }
 }
 
+
+const addMemberCard = async (member) => {
+    try {
+        const {name, imageUrl, designation, category, experience, certifiedBy, linkedInUrl, position} = member;
+        const id = uuidv4();
+        const query = 'INSERT INTO team (id, name, image_url, designation, category, experience_in_years, certified_by, linkedIn_url, position) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const result = await db.query(query, [id, name, imageUrl, designation, category, experience, certifiedBy, linkedInUrl, position]);
+        if (result[0].affectedRows === 0) {
+            return {error: 'Error adding member.'};
+        }
+        return {success: "New member added"};
+    } catch (error) {
+        console.error('Error adding member:', error);
+        throw error;
+    }
+}
+
+const getMemberCards = async () => {
+    try {
+        const query = 'SELECT * FROM team order by position asc';
+        const result = await db.query(query);
+        return result[0];
+    } catch (error) {
+        console.error('Error fetching Members:', error);
+        throw error;
+    }
+}
+
+const updateMemberCard = async (member) => {
+    try {
+        const {id, name, imageUrl, designation, category, experience, certifiedBy, linkedInUrl, position} = member;
+
+        const memberQuery = 'SELECT * FROM team WHERE id = ?';
+        const existingMember = await db.query(memberQuery, [id]);
+        if (!existingMember[0][0]) {
+            const error = new Error('Invalid member ID');
+            error.statusCode = 404;
+            throw error;
+        }
+        const query = 'UPDATE team SET name = ?, image_url = ?, designation = ?, category = ?, experience_in_years = ?, certified_by = ?, linkedIn_url = ?, position = ? WHERE id = ?';
+        const result = await db.query(query, [name, imageUrl, designation, category, experience, certifiedBy, linkedInUrl, position, id]);
+        if (result[0].affectedRows === 0) {
+            return {error: 'Error updating member.'};
+        }
+        return {success: "Member updated"};
+    } catch (error) {
+        console.error('Error updating member:', error);
+        throw error;
+    }
+}
+
+const deleteMemberCard = async (id) => {
+    console.log(id)
+    try {
+        const memberQuery = 'SELECT * FROM team WHERE id = ?';
+        const member = await db.query(memberQuery, [id]);
+        if (!member[0][0]) {
+            const error = new Error('Invalid member ID');
+            error.statusCode = 404;
+            throw error;
+        }
+        const query = 'DELETE FROM team WHERE id = ?';
+        const result = await db.query(query, [id]);
+        if (result[0].affectedRows === 0) {
+            return {error: 'Error deleting member.'};
+        } 
+        return {success: "Member deleted"};
+    } catch (error) {
+        console.error('Error deleting member:', error);
+        throw error;
+    }
+}
+
 module.exports = {
-  getAllUsers,
-  getAllCandidates,
-  getAllJobs,
-  getAllAdminJobs,
-  archiveJob,
-  blockUser,
-  unblockUser,
-  changePassword,
-  offerLetterCount,
-  updateOrInsertOfferLetterCount,
-  getUnreadCompliants,
-  getReadCompliants,
-  getCompliantById,
-  markCompliantAsRead
+    getAllUsers,
+    getAllCandidates,
+    getAllJobs,
+    getAllAdminJobs,
+    archiveJob,
+    blockUser,
+    unblockUser,
+    changePassword,
+    offerLetterCount,
+    updateOrInsertOfferLetterCount,
+    getUnreadCompliants,
+    getReadCompliants,
+    getCompliantById,
+    markCompliantAsRead,
+    addMemberCard,
+    getMemberCards,
+    updateMemberCard,
+    deleteMemberCard
 };

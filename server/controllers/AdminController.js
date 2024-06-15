@@ -140,6 +140,47 @@ const markCompliantAsRead = async (req, res) => {
   }
 }
 
+const addMemberCard = async (req, res) => {
+  try {
+      const result = await adminService.addMemberCard(req.body);
+      res.status(200).json(result);
+  } catch (e) {
+      console.log(e);
+      res.status(e.statusCode || 500).json({ error: e.message });
+  }
+}
+
+const getMemberCards = async (req, res) => {
+  try {
+      const memberCards = await adminService.getMemberCards();
+      res.status(200).json(memberCards);
+  } catch (e) {
+      console.log(e);
+      res.status(e.statusCode || 500).json({ error: e.message });
+  }
+}
+
+const updateMemberCard = async (req, res) => {
+  try {
+      const result = await adminService.updateMemberCard(req.body);
+      res.status(200).json(result);
+  } catch (e) {
+      console.log(e);
+      res.status(e.statusCode || 500).json({ error: e.message });
+  }
+}
+
+const deleteMemberCard = async (req, res) => {
+  try {
+      console.log('triggered');
+      const result = await adminService.deleteMemberCard(req.params.id);
+      res.status(200).json(result);
+  } catch (e) {
+      console.log(e);
+      res.status(e.statusCode || 500).json({ error: e.message });
+  }
+}
+
 module.exports = {
   getAllUsers,
   getAllCandidates,
@@ -154,5 +195,9 @@ module.exports = {
   getUnreadCompliants,
   getReadCompliants,
   getCompliantById,
-  markCompliantAsRead
+  markCompliantAsRead,
+  addMemberCard,
+  getMemberCards,
+  updateMemberCard,
+  deleteMemberCard
 };

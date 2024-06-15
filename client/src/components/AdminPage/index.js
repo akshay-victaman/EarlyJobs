@@ -5,6 +5,7 @@ import { BsMailbox2 } from "react-icons/bs";
 import Popup from 'reactjs-popup';
 import Cookie from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
+import { RiTeamFill } from "react-icons/ri";
 import {v4 as uuid} from 'uuid'
 import Cookies from "js-cookie";
 import './style.css'
@@ -333,6 +334,13 @@ const AdminPage = () => {
                             <Link to='/admin/compliants' className="admin-link">
                                 <BsMailbox2 className='admin-icon' />
                                 <p className="button-text">Compliants</p>
+                            </Link>
+                        </button>
+
+                        <button className='admin-btn'>
+                            <Link to='/admin/team' className="admin-link">
+                                <RiTeamFill className='admin-icon' />
+                                <p className="button-text">Control Team</p>
                             </Link>
                         </button>
 
