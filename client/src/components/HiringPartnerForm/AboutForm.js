@@ -21,13 +21,13 @@ const AboutForm = (props) => {
                 <p className='hr-form-subtitle'>( <span className='hr-form-span'>*</span> ) Indicates required field</p>
 
                 <label htmlFor='about' className='hr-label'>Tell us about yourself (minimum 100 words)<span className='hr-form-span'> *</span></label>
-                <textarea type='text' className='hr-textarea' required value={about.aboutYou} onChange={handleAboutInputChange} id='about' name='aboutYou' placeholder='Minimum of 100 words' ></textarea>
+                <textarea type='text' className='hr-textarea' onPaste={(event) => event.preventDefault()} required value={about.aboutYou} onChange={handleAboutInputChange} id='about' name='aboutYou' placeholder='Minimum of 100 words' ></textarea>
 
                 <label htmlFor='joinus' className='hr-label'>Why you want to join us as a {(userDetailsId === "TBF" && role === 'AC') ? "Hiring Manager" : "HR Recruiter"} (minimum 100 Words)<span className='hr-form-span'> *</span></label>
-                <textarea type='text' className='hr-textarea' required value={about.WhyJoinUs} onChange={handleAboutInputChange} id='joinus' name='WhyJoinUs' placeholder='Minimum of 100 words' ></textarea>
+                <textarea type='text' className='hr-textarea' onPaste={(event) => event.preventDefault()} required value={about.WhyJoinUs} onChange={handleAboutInputChange} id='joinus' name='WhyJoinUs' placeholder='Minimum of 100 words' ></textarea>
 
                 <label htmlFor='contribute' className='hr-label'>How you can contribute to society as a {(userDetailsId === "TBF" && role === 'AC') ? "Hiring Manager" : "Recruiter"} (minimum 100 words)<span className='hr-form-span'> *</span></label>
-                <textarea type='text' className='hr-textarea' required value={about.YourContribution} onChange={handleAboutInputChange} id='contribute' name='YourContribution' placeholder='Minimum of 100 words' ></textarea>
+                <textarea type='text' className='hr-textarea' onPaste={(event) => event.preventDefault()} required value={about.YourContribution} onChange={handleAboutInputChange} id='contribute' name='YourContribution' placeholder='Minimum of 100 words' ></textarea>
                 
                 <label htmlFor='hours' className='hr-label'>How many hours you can contribute daily as a {(userDetailsId === "TBF" && role === 'AC') ? "Hiring Manager" : "Recruiter"}? (in Hours)<span className='hr-form-span'> *</span></label>
                 <input type='number' className='hr-input' placeholder="Ex: 8" required id='hours' value={about.hours} onChange={handleAboutInputChange} name='hours' />

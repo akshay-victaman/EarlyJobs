@@ -130,10 +130,18 @@ const HiringPartnerForm = () => {
         phone: "",
         wtspNum: "",
         email: "",
-        currAddress: "",
-        currPincode: "",
-        permAddress: "",
-        permPincode: "",
+        currBuildingNo: "",
+        currStreet: "",
+        currArea: "",
+        currCity: "",
+        currState: "",
+        currPin: "",
+        permBuildingNo: "",
+        permStreet: "",
+        permArea: "",
+        permCity: "",
+        permState: "",
+        permPin: "",
         languages: [],
         applyFor: ""
     })
@@ -482,17 +490,41 @@ const HiringPartnerForm = () => {
         } else if(emailRegex.test(personalDetails.email) === false) {
             setError("*Please enter valid email address")
             return
-        } else if(personalDetails.currAddress.trim().length === 0) {
-            setError("*Please enter current address")
+        } else if(personalDetails.currBuildingNo.trim().length === 0) {
+            setError("*Please enter current building number")
             return
-        } else if(personalDetails.currPincode.trim().length === 0) {
-            setError("*Please enter current address pincode")
+        } else if(personalDetails.currStreet.trim().length === 0) {
+            setError("*Please enter current street")
             return
-        } else if(personalDetails.permAddress.trim().length === 0) {
-            setError("*Please enter permanent address")
+        } else if(personalDetails.currArea.trim().length === 0) {
+            setError("*Please enter current area")
             return
-        } else if(personalDetails.permPincode.trim().length === 0) {
-            setError("*Please enter permanent address pincode")
+        } else if(personalDetails.currCity.trim().length === 0) {
+            setError("*Please enter current city")
+            return
+        } else if(personalDetails.currState.trim().length === 0) {
+            setError("*Please enter current state")
+            return
+        } else if(personalDetails.currPin.trim().length === 0) {
+            setError("*Please enter current pincode")
+            return
+        } else if(personalDetails.permBuildingNo.trim().length === 0) {
+            setError("*Please enter permanent building number")
+            return
+        } else if(personalDetails.permStreet.trim().length === 0) {
+            setError("*Please enter permanent street")
+            return
+        } else if(personalDetails.permArea.trim().length === 0) {
+            setError("*Please enter permanent area")
+            return
+        } else if(personalDetails.permCity.trim().length === 0) {
+            setError("*Please enter permanent city")
+            return
+        } else if(personalDetails.permState.trim().length === 0) {
+            setError("*Please enter permanent state")
+            return
+        } else if(personalDetails.permPin.trim().length === 0) {
+            setError("*Please enter permanent pincode")
             return
         } else if(personalDetails.languages.length === 0) {
             setError("*Please enter languages you speak")
@@ -611,6 +643,18 @@ const HiringPartnerForm = () => {
         } else if(references.person3.know.trim().length === 0) {
             setError("*Please enter how person 3 know you")
             return
+        } else if(references.person1.phone === references.person2.phone || references.person1.phone === references.person3.phone || references.person2.phone === references.person3.phone) {
+            setError("*Phone numbers should be unique")
+            return
+        } else if(references.person1.email === references.person2.email || references.person1.email === references.person3.email || references.person2.email === references.person3.email) {
+            setError("*Emails should be unique")
+            return
+        } else if(references.person1.phone === personalDetails.phone || references.person2.phone === personalDetails.phone || references.person3.phone === personalDetails.phone) {
+            setError("*Reference phone numbers should not be same as your phone number")
+            return
+        } else if(references.person1.email === personalDetails.email || references.person2.email === personalDetails.email || references.person3.email === personalDetails.email) {
+            setError("*Reference emails should not be same as your email")
+            return
         }
         setError("")
 
@@ -686,8 +730,64 @@ const HiringPartnerForm = () => {
     const onSubmitIdentityProof = async (e) => {
         e.preventDefault()
 
-        console.log('triggered')
-
+        if(identityProof.aadharNumber.trim().length !== 12) {
+            setError("*Please enter valid aadhar number")
+            return
+        } else if(identityProof.panNumber.trim().length !== 10) {
+            setError("*Please enter valid pan number")
+            return
+        } else if(identityProof.emergencyNumber.trim().length !== 10) {
+            setError("*Please enter valid emergency number")
+            return
+        } else if(identityProof.familyMembers.member1.name.trim().length === 0) {
+            setError("*Please enter family member 1 name")
+            return
+        } else if(identityProof.familyMembers.member1.relationship.trim().length === 0) {
+            setError("*Please enter family member 1 relationship")
+            return
+        } else if(identityProof.familyMembers.member1.organization.trim().length === 0) {
+            setError("*Please enter family member 1 organization")
+            return
+        } else if(identityProof.familyMembers.member1.age.trim().length === 0) {
+            setError("*Please enter family member 1 age")
+            return
+        } else if(identityProof.familyMembers.member1.dependentOnYou1.trim().length === 0) {
+            setError("*Please enter family member 1 dependent on you")
+            return
+        } else if(identityProof.familyMembers.member2.name.trim().length === 0) {
+            setError("*Please enter family member 2 name")
+            return
+        } else if(identityProof.familyMembers.member2.relationship.trim().length === 0) {
+            setError("*Please enter family member 2 relationship")
+            return
+        } else if(identityProof.familyMembers.member2.organization.trim().length === 0) {
+            setError("*Please enter family member 2 organization")
+            return
+        } else if(identityProof.familyMembers.member2.age.trim().length === 0) {
+            setError("*Please enter family member 2 age")
+            return
+        } else if(identityProof.familyMembers.member2.dependentOnYou2.trim().length === 0) {
+            setError("*Please enter family member 2 dependent on you")
+            return
+        } else if(identityProof.familyMembers.member3.name.trim().length === 0) {
+            setError("*Please enter family member 3 name")
+            return
+        } else if(identityProof.familyMembers.member3.relationship.trim().length === 0) {
+            setError("*Please enter family member 3 relationship")
+            return
+        } else if(identityProof.familyMembers.member3.organization.trim().length === 0) {
+            setError("*Please enter family member 3 organization")
+            return
+        } else if(identityProof.familyMembers.member3.age.trim().length === 0) {
+            setError("*Please enter family member 3 age")
+            return
+        } else if(identityProof.familyMembers.member3.dependentOnYou3.trim().length === 0) {
+            setError("*Please enter family member 3 dependent on you")
+            return
+        }
+        setError("")
+        console.log(identityProof)
+        // return
         setLoading(true)
 
         const newIdentityProof = { ...identityProof };
@@ -795,6 +895,7 @@ const HiringPartnerForm = () => {
                                 handleCurrentStep={handleCurrentStep}
                                 onSubmitIdentityProof={onSubmitIdentityProof}
                                 loading={loading}
+                                error={error}
                             />;
             case 5: return renderSuccess();
             default: return null;

@@ -340,6 +340,26 @@
     margin: 0px 2px;
 }
 
+.hr-address-input-con {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.hr-address-input {
+    width: 49%;
+    display: flex;
+    flex-direction: column;
+}
+
+.address-label {
+    font-size: 15px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #EB6A4D;
+    padding-bottom: 5px;
+}
+
 @media screen and (max-width: 768px) {
     .hr-form {
         width: 90%;
