@@ -124,7 +124,6 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
       setApiStatus(apiStatusConstant.inProgress)
       const jwtToken = Cookies.get('jwt_token')
       let email = Cookies.get('email')
-      // if(hrEmail !== '') email = hrEmail
       const role = Cookies.get('role')
       const apiUrl = `${backendUrl}/jobs/candidate/initial/${email}/?&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&role=${role}&search=${searchInput}&page=${page}`
       const options = {
@@ -160,7 +159,6 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
             return appliedByList.includes(hr.email)
           })
           console.log("filtered hr list", filteredHrList)
-          // setHrList(data.hrList)
           setTotalItems(data.count)
           setCandidateList(formattedData)
           setApiStatus(apiStatusConstant.success)
