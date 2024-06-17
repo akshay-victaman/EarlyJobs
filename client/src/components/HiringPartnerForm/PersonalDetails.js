@@ -56,7 +56,7 @@ const PersonalDetailsForm = (props) => {
         handleInputChange,
         onChangeLanguage,
         personalDetails,
-        handleLanguageRemove, 
+        handleLanguageRemove,
         onSubmitPersonalDetails, 
         languageOptions,
         error 
@@ -133,19 +133,77 @@ const PersonalDetailsForm = (props) => {
                     </>
                 : null
                 }
-                
-                <label htmlFor='current-address' className='hr-label'>Current Address<span className='hr-form-span'> *</span></label>
-                <input type='text' placeholder="Address" onChange={handleInputChange} value={personalDetails.currAddress} required className='hr-input' id='current-address' name='currAddress' />
 
-                <label htmlFor='currPincode' className='hr-label'>Current Address Pincode<span className='hr-form-span'> *</span></label>
-                <input type='text' placeholder="Ex: 123456" onChange={handleInputChange} value={personalDetails.currPincode} required className='hr-input' id='currPincode' name='currPincode' />
+                <label htmlFor='currBuildingNo' className='hr-label address-label'>Current Address</label>
 
-                <label htmlFor='permanent-address' className='hr-label'>Permanent Address<span className='hr-form-span'> *</span></label>
-                <input type='text' placeholder="Address" onChange={handleInputChange} value={personalDetails.permAddress} required className='hr-input' id='permanent-address' name='permAddress' />
+                <div className='hr-address-input-con'>
+                    <div className="hr-address-input">
+                        <label htmlFor='currBuildingNo' className='hr-label'>Building/Flat No.<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="building number" onChange={handleInputChange} value={personalDetails.currBuildingNo} required className='hr-input' id='currBuildingNo' name='currBuildingNo' />
+                    </div>
+                    <div className="hr-address-input">
+                        <label htmlFor='currStreet' className='hr-label'>Street<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="street" onChange={handleInputChange} value={personalDetails.currStreet} required className='hr-input' id='currStreet' name='currStreet' />
+                    </div>
+                </div>
 
-                <label htmlFor='permPincode' className='hr-label'>Permanent Address Pincode<span className='hr-form-span'> *</span></label>
-                <input type='text' placeholder="Ex: 123456" onChange={handleInputChange} value={personalDetails.permPincode} required className='hr-input' id='permPincode' name='permPincode' />
-                
+                <div className='hr-address-input-con'>
+                    <div className="hr-address-input">
+                        <label htmlFor='currArea' className='hr-label'>Area/Village<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="city" onChange={handleInputChange} value={personalDetails.currArea} required className='hr-input' id='currArea' name='currArea' />
+                    </div>
+                    <div className="hr-address-input">
+                        <label htmlFor='currCity' className='hr-label'>City/Town/Block<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="city" onChange={handleInputChange} value={personalDetails.currCity} required className='hr-input' id='currCity' name='currCity' />
+                    </div>
+                </div>
+
+                <div className='hr-address-input-con'>
+                    <div className="hr-address-input">
+                        <label htmlFor='currState' className='hr-label'>State<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="state" onChange={handleInputChange} value={personalDetails.currState} required className='hr-input' id='currState' name='currState' />
+                    </div>
+                    <div className="hr-address-input">
+                        <label htmlFor='currPin' className='hr-label'>Pincode<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="Ex: 123456" onChange={handleInputChange} value={personalDetails.currPin} required className='hr-input' id='currPin' name='currPin' />
+                    </div>
+                </div>
+
+                <label htmlFor='permBuildingNo' className='hr-label address-label'>Permanent Address</label>
+
+                <div className='hr-address-input-con'>
+                    <div className="hr-address-input">
+                        <label htmlFor='permBuildingNo' className='hr-label'>Building/Flat No.<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="building number" onChange={handleInputChange} value={personalDetails.permBuildingNo} required className='hr-input' id='permBuildingNo' name='permBuildingNo' />
+                    </div>
+                    <div className="hr-address-input">
+                        <label htmlFor='permStreet' className='hr-label'>Street<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="street" onChange={handleInputChange} value={personalDetails.permStreet} required className='hr-input' id='permStreet' name='permStreet' />
+                    </div>
+                </div>
+
+                <div className='hr-address-input-con'>
+                    <div className="hr-address-input">
+                        <label htmlFor='permArea' className='hr-label'>Area/Village<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="city" onChange={handleInputChange} value={personalDetails.permArea} required className='hr-input' id='permArea' name='permArea' />
+                    </div>
+                    <div className="hr-address-input">
+                        <label htmlFor='permCity' className='hr-label'>City/Town/Block<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="city" onChange={handleInputChange} value={personalDetails.permCity} required className='hr-input' id='permCity' name='permCity' />
+                    </div>
+                </div>
+
+                <div className='hr-address-input-con'>
+                    <div className="hr-address-input">
+                        <label htmlFor='permState' className='hr-label'>State<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="state" onChange={handleInputChange} value={personalDetails.permState} required className='hr-input' id='permState' name='permState' />
+                    </div>
+                    <div className="hr-address-input">
+                        <label htmlFor='permPin' className='hr-label'>Pincode<span className='hr-form-span'> *</span></label>
+                        <input type='text' placeholder="Ex: 123456" onChange={handleInputChange} value={personalDetails.permPin} required className='hr-input' id='permPin' name='permPin' />
+                    </div>
+                </div>
+
                 <label htmlFor='languages' className='hr-label'>Languages you speak<span className='hr-form-span'> *</span></label>
                 <div className='hr-input-list-con'>
                         {

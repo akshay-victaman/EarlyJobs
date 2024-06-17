@@ -59,6 +59,7 @@ const HiringPartnerDetails = () => {
             if (!querySnap.empty) {
                 const documents = querySnap.docs.map((doc) => doc.data());
                 setHiringPartnerReqDetails(documents[0])
+                console.log(documents[0])
                 
             } else {
                 console.log("No such documents!");
@@ -75,7 +76,7 @@ const HiringPartnerDetails = () => {
                 ...signUpDetails, 
                 username: hiringPartnerReqDetails.formData.personalDetails.fullName, 
                 email: hiringPartnerReqDetails.formData.personalDetails.email, 
-                location: hiringPartnerReqDetails.formData.personalDetails.currAddress,
+                location: hiringPartnerReqDetails.formData.personalDetails.currAddress ? hiringPartnerReqDetails.formData.personalDetails.currAddress : `${hiringPartnerReqDetails.formData.personalDetails.currBuildingNo}, ${hiringPartnerReqDetails.formData.personalDetails.currStreet}, ${hiringPartnerReqDetails.formData.personalDetails.currArea}, ${hiringPartnerReqDetails.formData.personalDetails.currCity}, ${hiringPartnerReqDetails.formData.personalDetails.currState}, ${hiringPartnerReqDetails.formData.personalDetails.currPin}`,
                 phone: hiringPartnerReqDetails.formData.personalDetails.phone,
                 hiringFor: hiringPartnerReqDetails.formData.personalDetails.applyFor,
                 gender: hiringPartnerReqDetails.formData.personalDetails.gender
@@ -279,6 +280,7 @@ const HiringPartnerDetails = () => {
             const dateAfter3Days = addDays(currDate, 3);
             const lastJoiningDate = format(dateAfter3Days, 'MMMM dd, yyyy');
             const pdfDate = pdfDoc.getPages()[0];
+            const currAddress = hiringPartnerReqDetails.formData.personalDetails.currAddress ? hiringPartnerReqDetails.formData.personalDetails.currAddress : `${hiringPartnerReqDetails.formData.personalDetails.currBuildingNo}, ${hiringPartnerReqDetails.formData.personalDetails.currStreet}, ${hiringPartnerReqDetails.formData.personalDetails.currArea}, ${hiringPartnerReqDetails.formData.personalDetails.currCity}, ${hiringPartnerReqDetails.formData.personalDetails.currState}, ${hiringPartnerReqDetails.formData.personalDetails.currPin}`;
             pdfDate.drawText(currDateStr, {
                 x: 82, 
                 y: 743,
@@ -299,7 +301,7 @@ const HiringPartnerDetails = () => {
                 font: timesRomanFont,
             });
             const pdfAddress = pdfDoc.getPages()[0];
-            pdfAddress.drawText(hiringPartnerReqDetails.formData.personalDetails.currAddress, { 
+            pdfAddress.drawText(currAddress, { 
                 x: 92, 
                 y: 703,
                 size: 12,
@@ -555,11 +557,11 @@ const HiringPartnerDetails = () => {
                     </div>
                     <div className="hiring-partner-details-con">
                         <p className="hiring-partner-label">Current Address:</p>
-                        <p className="hiring-partner-value">{personalDetails.currAddress}</p>
+                        <p className="hiring-partner-value">{personalDetails.currAddress ? personalDetails.currAddress : `${personalDetails.currBuildingNo}, ${personalDetails.currStreet}, ${personalDetails.currArea}, ${personalDetails.currCity}, ${personalDetails.currState}, ${personalDetails.currPin}`}</p>
                     </div>
                     <div className="hiring-partner-details-con">
                         <p className="hiring-partner-label">Permanent Address:</p>
-                        <p className="hiring-partner-value">{personalDetails.permAddress}</p>
+                        <p className="hiring-partner-value">{personalDetails.permAddress ? personalDetails.permAddress : `${personalDetails.permBuildingNo}, ${personalDetails.permStreet}, ${personalDetails.permArea}, ${personalDetails.permCity}, ${personalDetails.permState}, ${personalDetails.permPin}`}</p>
                     </div>
                     <div className="hiring-partner-details-con">
                         <p className="hiring-partner-label">Languages:</p>
