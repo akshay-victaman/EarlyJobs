@@ -1,6 +1,7 @@
 import Cookies from "js-cookie"
 import { useState } from "react"
 import { MdOutlineEditCalendar } from "react-icons/md";
+import {toast} from 'react-toastify'
 
 
 const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup, candidateDetails, jobId, jobsList, candidateList, setCandidateList}) => {
@@ -18,7 +19,7 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
             updateCandidateStatus(candidateId, jobId, updateOfferStatus)
         } else if(event.target.value === 'Joined' || event.target.value === 'Selected') {
             setUpdateOfferStatus(event.target.value)
-            onShowSelectedOrJoinedPopup(appliedBy, candidateId, jobId, event.target.value)
+            onShowSelectedOrJoinedPopup(appliedBy, candidateId, jobId, event.target.value, jobsList, candidateDetails)
         } else {
             setUpdateOfferStatus(event.target.value)
             const updateOfferStatus = event.target.value;
@@ -51,7 +52,7 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
         const data = await response.json()
         if(response.ok === true) {
             if(data.error) {
-                alert(data.error)
+                toast.error(data.error)
             } else {
                 setCandidateList(candidateList.map(eachItem => {
                   if(eachItem.candidateId === candidateId) {
@@ -62,9 +63,10 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
                   }
                   return eachItem
                 }))
+                toast.success('Candidate status updated successfully')
             }
         } else {
-            alert(data.error)
+            toast.error(data.error)
         }
         setLoading(false)
     }

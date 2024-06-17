@@ -29,13 +29,15 @@ const JobsPage = () => {
     })
   }
 
-  const onShowSelectedOrJoinedPopup = (email, candidateId, jobId, offerStatus) => {
+  const onShowSelectedOrJoinedPopup = (email, candidateId, jobId, offerStatus, jobsList, candidateDetails) => {
     setViewSelectedOrJoinedPopup(!viewSelectedOrJoinedPopup)
     setSelectedJoined({
       email,
       candidateId,
       jobId,
-      offerStatus
+      offerStatus,
+      jobsList,
+      candidateDetails
     })
   }
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Cookies from 'js-cookie'
 import { formatISO, differenceInDays, parseISO, sub, parse, format, set } from 'date-fns';
 import { ThreeCircles } from 'react-loader-spinner'
+import {toast} from 'react-toastify'
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -244,7 +245,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
 
     const scheduleInterview = async () => {
         if(interviewDate === '' || interviewTime === '' || companyName === '') {
-            alert('Please fill all the fields to reschedule the interview')
+            toast.warn('Please fill all the fields to reschedule the interview')
             return;
         }
         const interviewDateTime = new Date(`${interviewDate}T${interviewTime}`);
@@ -273,7 +274,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
         const data = await response.json()
         if(response.ok === true) {
             if(data.error) {
-                alert(data.error)
+                toast.error(data.error)
             } else {
                 sendInterviewEmails()
                 if(jobId === companyName) {
@@ -290,7 +291,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
                 onShowScheduleInterviewPopup()
             }
         } else {
-            alert(data.error)
+            toast.error(data.error)
         }
         setLoading(false)
     }
