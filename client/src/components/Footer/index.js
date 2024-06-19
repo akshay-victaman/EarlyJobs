@@ -22,17 +22,12 @@ const Footer = ({handleShowContactForm}) => {
                 <a href="https://www.t.me/earlyjobsoffice/" className="footer-social-media-link" rel="noreferrer" target="_blank">
                     <FaTelegram className="footer-social-media-icon" />
                 </a>
-                {/* <a href="google.com" className="footer-social-media-link" rel="noreferrer" target="_blank">
-                    <FaYoutube className="footer-social-media-icon" />
-                </a> */}
             </div>
             <div className="footer-links">
                 <p className="footer-link-heading">© Early Jobs</p>
                 <div className="footer-link-wrapper">
-                    {/* <a href="/RefundPolicy/index.html" className="footer-link">Refund Policy</a> */}
-                    {/* <a href="" class="footer-link">Support</a> */}
                     <Link to='/about' className="footer-link">About Us</Link>
-                    <Link to='/' className="footer-link">Team</Link>
+                    <Link to='/team' className="footer-link">Team</Link>
                     <Link to='/franchise-with-us' className="footer-link">Franchise With Us</Link>
                     <Link to='/partner-with-us' className="footer-link">Partner With Us</Link>
                     <Link to='/terms-and-conditions' className="footer-link">Terms & Conditions</Link>

@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import {Oval} from 'react-loader-spinner'
 import {Redirect} from 'react-router-dom';
 import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
+import { toast } from 'react-toastify';
 import './style.css';
 import EditorComponent from '../TextEditorQuill';
 
@@ -63,6 +65,10 @@ const customStyles = {
 const BDEPage = () => {
 
     const [accountManagers, setAccountManagers] = useState([])
+    const [companies, setCompanies] = useState([])
+    const [showCompanyPopup, setShowCompanyPopup] = useState(false)
+    const [popupError, setPopupError] = useState('')
+    const [popupLoading, setPopupLoading] = useState(false)
 
     const [skills, setSkills] = useState('');
     const [keyword, setKeyword] = useState('');
@@ -93,8 +99,21 @@ const BDEPage = () => {
     const [ageError, setAgeError] = useState(false)
     const [tenureError, setTenureError] = useState(false)
 
+    const [companyDetails, setCompanyDetails] = useState({
+        name: '',
+        registeredAddress: '',
+        address: '',
+        phone: '',
+        email: '',
+        gstNo: '',
+        spocName: '',
+        spocEmail: '',
+        spocPhone: ''
+    })
+
     const [postNewJob, setPostNewJob] = useState({
         companyName: '',
+        companyId: '',
         jobTitle: '',
         category: '',
         shiftTimings: '',
@@ -126,37 +145,79 @@ const BDEPage = () => {
     })
 
     useEffect(() => {
-        const fetchAccountManagers = async () => {
-            const options = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${Cookies.get('jwt_token')}`
-                },
-            }
-            try {
-                const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-                const response = await fetch(`${backendUrl}/api/users/all/account-managers`, options)
-                const data = await response.json()
-                if(response.ok) {
-
-                setAccountManagers(data)
-                console.log(data)
-                } else {
-                    alert(data.error)
-                }
-                
-            } catch (error) {
-                console.log(error)
-            }
-        }
         fetchAccountManagers()
+        fetchCompanies()
     }, [])
 
+    const fetchCompanies = async () => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            },
+        }
+        try {
+            const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+            const response = await fetch(`${backendUrl}/api/companies`, options)
+            const data = await response.json()
+            if(response.ok) {
+                const options = data.companies.map(company => ({ value: company.name, label: company.name, id: company.id}))
+                setCompanies(options)
+            } else {
+                alert(data.error)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const fetchAccountManagers = async () => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            },
+        }
+        try {
+            const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+            const response = await fetch(`${backendUrl}/api/users/all/account-managers`, options)
+            const data = await response.json()
+            if(response.ok) {
+
+            setAccountManagers(data)
+            console.log(data)
+            } else {
+                alert(data.error)
+            }
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleCompanyChange = (newValue) => {
+        if(newValue !== null) {
+            if(newValue.__isNew__) {
+                setCompanyDetails({...companyDetails, name: newValue.value})
+                setShowCompanyPopup(true)
+            } else {
+                setPostNewJob({...postNewJob, companyName: newValue.value, companyId: newValue.id})
+            }
+        } else {
+            setPostNewJob({...postNewJob, companyName: '', companyId: ''})
+        }
+    };
 
     const handleInputChange = (e) => {
         const {name, value} = e.target
         setPostNewJob({...postNewJob, [name]: value})  
+    }
+
+    const handleCompanyInputChange = (e) => {
+        const {name, value} = e.target
+        setCompanyDetails({...companyDetails, [name]: value})
     }
 
     const handleEditorChange = (content) => {
@@ -309,10 +370,10 @@ const BDEPage = () => {
 
         setError("");
         console.log(postNewJob)
-        setLoading(true)
         const email = Cookies.get('email')
         const newJob = {
             companyName: postNewJob.companyName,
+            companyId: postNewJob.companyId,
             title: postNewJob.jobTitle,
             category: postNewJob.category,
             shiftTimings: postNewJob.shiftTimings,
@@ -345,6 +406,7 @@ const BDEPage = () => {
         }
         console.log(newJob)
         // return
+        setLoading(true)
         const options = {
             method: 'POST',
             headers: {
@@ -362,6 +424,7 @@ const BDEPage = () => {
             } else {
                 setPostNewJob({
                     companyName: '',
+                    companyId: '',
                     jobTitle: '',
                     category: '',
                     shiftTimings: '',
@@ -399,12 +462,151 @@ const BDEPage = () => {
         }
     }
 
+    const handleAddCompany = async () => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+        if(companyDetails.name.trim() === '') {
+            setPopupError("*Please enter company name")
+            return
+        } else if(companyDetails.registeredAddress.trim() === '') {
+            setPopupError("*Please enter registered address")
+            return
+        } else if(companyDetails.address.trim() === '') {
+            setPopupError("*Please enter address")
+            return
+        } else if(companyDetails.phone.trim().length !== 10) {
+            setPopupError("*Please enter valid phone number")
+            return
+        } else if(companyDetails.email.trim() === '' || !emailRegex.test(companyDetails.email)) {
+            setPopupError("*Please enter valid email")
+            return
+        } else if(companyDetails.gstNo.trim() === '') {
+            setPopupError("*Please enter GST No")
+            return
+        } else if(companyDetails.spocName.trim() === '') {
+            setPopupError("*Please enter SPOC Name")
+            return
+        } else if(companyDetails.spocEmail.trim() === '' || !emailRegex.test(companyDetails.spocEmail)) {
+            setPopupError("*Please enter valid SPOC Email")
+            return
+        } else if(companyDetails.spocPhone.trim().length !== 10) {
+            setPopupError("*Please enter valid SPOC Phone")
+            return
+        }
+        setPopupError("")
+        console.log(companyDetails)
+
+        const url = process.env.REACT_APP_BACKEND_API_URL + '/api/companies'
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            },
+            body: JSON.stringify(companyDetails)
+        }
+        try {
+            setPopupLoading(true)
+            const response = await fetch(url, options)
+            const data = await response.json()
+            console.log(data)
+            if(response.ok) {
+                if(data.error) {
+                    setPopupError(data.error)
+                    toast.error(data.error)
+                } else {
+                    setCompanies([...companies, { value: companyDetails.name, label: companyDetails.name, id: data.id}])
+                    setPostNewJob({...postNewJob, companyName: companyDetails.name, companyId: data.id})
+                    setShowCompanyPopup(false)
+                    setCompanyDetails({
+                        name: '',
+                        registeredAddress: '',
+                        address: '',
+                        phone: '',
+                        email: '',
+                        gstNo: '',
+                        spocName: '',
+                        spocEmail: '',
+                        spocPhone: ''
+                    })
+                    toast.success(data.message)
+                }
+            } else {
+                setPopupError(data.error)
+                toast.error(data.error)
+            }
+        } catch (error) {
+            toast.error(error)
+            console.log(error)
+        }
+        setPopupLoading(false)
+    }
+
+
+    const renderAddCompanyPopup = () => (
+        <div className='bde-add-company-popup'>
+            <div className='bde-add-company-popup-overlay'></div>
+            <div className='bde-add-company-popup-content'>
+                <button className='bde-add-company-popup-close' disabled={popupLoading} onClick={() => setShowCompanyPopup(false)}>&times;</button>
+                <h1 className='bde-add-company-popup-heading'>Add New Company</h1>
+                <label className='bde-form-label' htmlFor='name'>Company Name<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='name'  onChange={handleCompanyInputChange} value={companyDetails.name} name='name' type='text' placeholder='Enter Company Name' />
+                <label className='bde-form-label' htmlFor='registeredAddress'>Registered Address<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='registeredAddress'  onChange={handleCompanyInputChange} value={companyDetails.registeredAddress} name='registeredAddress' type='text' placeholder='Enter Registered Address' />
+                <label className='bde-form-label' htmlFor='address'>Address<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='address'  onChange={handleCompanyInputChange} value={companyDetails.address} name='address' type='text' placeholder='Enter Address' />
+                <label className='bde-form-label' htmlFor='phone'>Phone<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='phone'  onChange={handleCompanyInputChange} value={companyDetails.phone} name='phone' type='number' placeholder='Enter Phone' />
+                <label className='bde-form-label' htmlFor='email'>Email<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='email'  onChange={handleCompanyInputChange} value={companyDetails.email} name='email' type='text' placeholder='Enter Email' />
+                <label className='bde-form-label' htmlFor='gstNo'>GST No<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='gstNo'  onChange={handleCompanyInputChange} value={companyDetails.gstNo} name='gstNo' type='text' placeholder='Enter GST No' />
+                <label className='bde-form-label' htmlFor='spocName'>SPOC Name<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='spocName'  onChange={handleCompanyInputChange} value={companyDetails.spocName} name='spocName' type='text' placeholder='Enter SPOC Name' />
+                <label className='bde-form-label' htmlFor='spocEmail'>SPOC Email<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='spocEmail'  onChange={handleCompanyInputChange} value={companyDetails.spocEmail} name='spocEmail' type='text' placeholder='Enter SPOC Email' />
+                <label className='bde-form-label' htmlFor='spocPhone'>SPOC Phone<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='spocPhone'  onChange={handleCompanyInputChange} value={companyDetails.spocPhone} name='spocPhone' type='number' placeholder='Enter SPOC Phone' />
+                { popupError && <p className='hr-error'>{popupError}</p> }
+                <div className='bde-add-company-popup-btn-con'>
+                    <button className='bde-add-company-popup-btn' disabled={popupLoading} onClick={() => setShowCompanyPopup(false)}>Cancel</button>
+                    <button className='bde-add-company-popup-btn' disabled={popupLoading} onClick={handleAddCompany}>
+                    {popupLoading ? 
+                        <Oval
+                            height={20}
+                            width={20}
+                            color="#ffffff"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                            visible={true}
+                            ariaLabel='oval-loading'
+                            secondaryColor="#ffffff"
+                            strokeWidth={3}
+                            strokeWidthSecondary={3}
+                        />
+                        :
+                        "Add Company"
+                    }
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+
     const renderJobForm = () => (
         <form className='bde-job-form' onSubmit={handlePostJob}>
             <h1 className='bde-form-heading'>Post New Job</h1>
             <p className='hr-form-subtitle'>( <span className='hr-form-span'>*</span> ) Indicates required field</p>
             <label className='bde-form-label' htmlFor='company'>Comapany Name<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='company'  onChange={handleInputChange} value={postNewJob.companyName} name='companyName' type='text' placeholder='Enter Company Name' />
+            {/* <input className='bde-form-input' id='company'  onChange={handleInputChange} value={postNewJob.companyName} name='companyName' type='text' placeholder='Enter Company Name' /> */}
+
+            <CreatableSelect
+                isClearable
+                onChange={handleCompanyChange}
+                options={companies}
+                placeholder="Select Company"
+                styles={customStyles}
+                // value={postNewJob.companyName}
+            />
             {companyError && <p className='hr-error'>*Please enter company name</p>}
 
             <label className='bde-form-label' htmlFor='title'>Job Title<span className='hr-form-span'> *</span></label>
@@ -721,7 +923,7 @@ const BDEPage = () => {
                     <h1 className='bde-heading'>Welcome to <span className='head-span'>Business Development Executive</span> Portal</h1>
                     { showJobForm ? renderJobForm() : renderAnotherJobButton()}
                 </div>
-
+                {showCompanyPopup && renderAddCompanyPopup()}
             </div>
         </>
     )

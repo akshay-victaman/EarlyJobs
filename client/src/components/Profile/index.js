@@ -199,6 +199,7 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
             <div className='profile-button-con'>
                 <Link to="/bde-portal" style={{textDecoration: 'none', display: 'inline-flex'}} className="profile-button">Post New Job</Link>
                 <button type="button" className={`profile-button ${showCandidateForm === 0 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(0)}>My Job Openings</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 14 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(14)}>View Companies</button>
                 <button type="button" className={`profile-button ${showCandidateForm === 4 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(4)}>View Hiring Requests</button>
             </div>
             }

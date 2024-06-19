@@ -19,6 +19,7 @@ const assignJobToHMByBDE = async (jobId, assignedTo) => {
 const addJobDetials = async (job) => {
     const {
         companyName, 
+        companyId,
         title, 
         category, 
         shiftTimings,
@@ -54,6 +55,7 @@ const addJobDetials = async (job) => {
     INSERT INTO jobs (
         id, 
         company_name, 
+        company_id,
         title, 
         category, 
         shift_timings,
@@ -83,8 +85,8 @@ const addJobDetials = async (job) => {
         min_age,
         max_age,
         keywords
-        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const result = await db.query(query, [id, companyName, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge, keywords]);
+        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const result = await db.query(query, [id, companyName, companyId, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge, keywords]);
 
     if (result[0].affectedRows > 0) {
         return assignJobToHMByBDE(id, assignedTo);
@@ -107,6 +109,7 @@ const updateJobAssignmentByBde = async (jobId, assignedTo) => {
 const editJobDetials = async (job) => {
     const {
         companyName,
+        companyId,
         title,
         category,
         shiftTimings,
@@ -140,6 +143,7 @@ const editJobDetials = async (job) => {
     const query = `
     UPDATE jobs SET
         company_name = ?,
+        company_id = ?,
         title = ?,
         category = ?,
         shift_timings = ?,
@@ -170,7 +174,7 @@ const editJobDetials = async (job) => {
         keywords = ?
     WHERE id = ?`;
     try {
-        const result = await db.query(query, [companyName, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, keywords, jobId]);
+        const result = await db.query(query, [companyName, companyId, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, keywords, jobId]);
         if (result[0].affectedRows > 0) {
             await updateJobAssignmentByBde(jobId, assignedTo);
             return {success: 'Job updated successfully'};

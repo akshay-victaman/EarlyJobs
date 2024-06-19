@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import {Oval} from 'react-loader-spinner'
+import CreatableSelect from 'react-select/creatable';
+import { toast } from 'react-toastify';
 import Select from 'react-select';
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'js-cookie';
@@ -60,6 +62,11 @@ const customStyles = {
 
 const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
 
+    const [companies, setCompanies] = useState([])
+    const [selectedCompany, setSelectedCompany] = useState(null)
+    const [showCompanyPopup, setShowCompanyPopup] = useState(false)
+    const [popupError, setPopupError] = useState('')
+    const [popupLoading, setPopupLoading] = useState(false)
     const [accountManagers, setAccountManagers] = useState([])
     const [keyword, setKeyword] = useState('');
     const [skills, setSkills] = useState('');
@@ -90,8 +97,21 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const [tenureError, setTenureError] = useState(false)
     const [hmLoader, setHmLoader] = useState(false)
 
+    const [companyDetails, setCompanyDetails] = useState({
+        name: '',
+        registeredAddress: '',
+        address: '',
+        phone: '',
+        email: '',
+        gstNo: '',
+        spocName: '',
+        spocEmail: '',
+        spocPhone: ''
+    })
+
     const [editJob, setEditJob] = useState({
         companyName: jobDetails.compname,
+        companyId: jobDetails.companyId ? jobDetails.companyId : '',
         jobTitle: jobDetails.role,
         category: jobDetails.category,
         shiftTimings: jobDetails.shiftTimings,
@@ -124,8 +144,36 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
 
     useEffect(() => {
         fetchAccountManagers()
+        fetchCompanies()
         fetchAssignedHiringManagers()
     }, [])
+
+    const fetchCompanies = async () => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            },
+        }
+        console.log(editJob)
+        try {
+            const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+            const response = await fetch(`${backendUrl}/api/companies`, options)
+            const data = await response.json()
+            console.log(data)
+            if(response.ok) {
+                const options = data.companies.map(company => ({ value: company.name, label: company.name, id: company.id}))
+                setCompanies(options)
+                const companyName = data.companies.filter(company => company.id === jobDetails.companyId)
+                setSelectedCompany({ value: companyName[0].name, label: companyName[0].name, id: companyName[0].id})
+            } else {
+                alert(data.error)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const fetchAccountManagers = async () => {
         setHmLoader(true)
@@ -161,9 +209,29 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         console.log(data)
     }
 
+    const handleCompanyChange = (newValue) => {
+        if(newValue !== null) {
+            if(newValue.__isNew__) {
+                setCompanyDetails({...companyDetails, name: newValue.value})
+                setShowCompanyPopup(true)
+            } else {
+                setEditJob({...editJob, companyName: newValue.value, companyId: newValue.id})
+                setSelectedCompany(newValue)
+            }
+        } else {
+            setEditJob({...editJob, companyName: '', companyId: ''})
+            setSelectedCompany(null)
+        }
+    };
+
     const handleInputChange = (e) => {
         const {name, value} = e.target
         setEditJob({...editJob, [name]: value})  
+    }
+
+    const handleCompanyInputChange = (e) => {
+        const {name, value} = e.target
+        setCompanyDetails({...companyDetails, [name]: value})
     }
 
     const handleEditorChange = (content) => {
@@ -313,6 +381,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         const newJob = {
             jobId: jobDetails.id,
             companyName: editJob.companyName,
+            companyId: editJob.companyId,
             title: editJob.jobTitle,
             category: editJob.category,
             shiftTimings: editJob.shiftTimings,
@@ -344,8 +413,8 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             keywords: editJob.keywords.join(', ')
         }
         console.log(newJob)
-        setLoading(true)
         // return
+        setLoading(true)
         const options = {
             method: 'PUT',
             headers: {
@@ -376,7 +445,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const renderHiringManagerOptions = () => {
         if(editJob.assignedTo.length > 0 && accountManagers.length > 0) {
             return (editJob.assignedTo.map((email, index) => {
-                const hiringManagerName = accountManagers.find(item => item.email === email) 
+                const hiringManagerName = accountManagers.find(item => item.email === email)
                 return (
                     <div className='hr-input-list' key={index}>
                         <p className='hr-input-list-item'>{hiringManagerName.username}</p>
@@ -387,12 +456,152 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         }
     }
 
+    const handleAddCompany = async () => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+        if(companyDetails.name.trim() === '') {
+            setPopupError("*Please enter company name")
+            return
+        } else if(companyDetails.registeredAddress.trim() === '') {
+            setPopupError("*Please enter registered address")
+            return
+        } else if(companyDetails.address.trim() === '') {
+            setPopupError("*Please enter address")
+            return
+        } else if(companyDetails.phone.trim().length !== 10) {
+            setPopupError("*Please enter valid phone number")
+            return
+        } else if(companyDetails.email.trim() === '' || !emailRegex.test(companyDetails.email)) {
+            setPopupError("*Please enter valid email")
+            return
+        } else if(companyDetails.gstNo.trim() === '') {
+            setPopupError("*Please enter GST No")
+            return
+        } else if(companyDetails.spocName.trim() === '') {
+            setPopupError("*Please enter SPOC Name")
+            return
+        } else if(companyDetails.spocEmail.trim() === '' || !emailRegex.test(companyDetails.spocEmail)) {
+            setPopupError("*Please enter valid SPOC Email")
+            return
+        } else if(companyDetails.spocPhone.trim().length !== 10) {
+            setPopupError("*Please enter valid SPOC Phone")
+            return
+        }
+        setPopupError("")
+        console.log(companyDetails)
+
+        const url = process.env.REACT_APP_BACKEND_API_URL + '/api/companies'
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            },
+            body: JSON.stringify(companyDetails)
+        }
+        try {
+            setPopupLoading(true)
+            const response = await fetch(url, options)
+            const data = await response.json()
+            console.log(data)
+            if(response.ok) {
+                if(data.error) {
+                    setPopupError(data.error)
+                    toast.error(data.error)
+                } else {
+                    setCompanies([...companies, { value: companyDetails.name, label: companyDetails.name, id: data.id}])
+                    setSelectedCompany({ value: companyDetails.name, label: companyDetails.name, id: data.id})
+                    setEditJob({...editJob, companyName: companyDetails.name, companyId: data.id})
+                    setShowCompanyPopup(false)
+                    setCompanyDetails({
+                        name: '',
+                        registeredAddress: '',
+                        address: '',
+                        phone: '',
+                        email: '',
+                        gstNo: '',
+                        spocName: '',
+                        spocEmail: '',
+                        spocPhone: ''
+                    })
+                    toast.success(data.message)
+                }
+            } else {
+                setPopupError(data.error)
+                toast.error(data.error)
+            }
+        } catch (error) {
+            toast.error(error)
+            console.log(error)
+        }
+        setPopupLoading(false)
+    }
+
+
+    const renderAddCompanyPopup = () => (
+        <div className='bde-add-company-popup'>
+            <div className='bde-add-company-popup-overlay'></div>
+            <div className='bde-add-company-popup-content'>
+                <button className='bde-add-company-popup-close' disabled={popupLoading} onClick={() => setShowCompanyPopup(false)}>&times;</button>
+                <h1 className='bde-add-company-popup-heading'>Add New Company</h1>
+                <label className='bde-form-label' htmlFor='name'>Company Name<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='name'  onChange={handleCompanyInputChange} value={companyDetails.name} name='name' type='text' placeholder='Enter Company Name' />
+                <label className='bde-form-label' htmlFor='registeredAddress'>Registered Address<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='registeredAddress'  onChange={handleCompanyInputChange} value={companyDetails.registeredAddress} name='registeredAddress' type='text' placeholder='Enter Registered Address' />
+                <label className='bde-form-label' htmlFor='address'>Address<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='address'  onChange={handleCompanyInputChange} value={companyDetails.address} name='address' type='text' placeholder='Enter Address' />
+                <label className='bde-form-label' htmlFor='phone'>Phone<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='phone'  onChange={handleCompanyInputChange} value={companyDetails.phone} name='phone' type='number' placeholder='Enter Phone' />
+                <label className='bde-form-label' htmlFor='email'>Email<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='email'  onChange={handleCompanyInputChange} value={companyDetails.email} name='email' type='text' placeholder='Enter Email' />
+                <label className='bde-form-label' htmlFor='gstNo'>GST No<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='gstNo'  onChange={handleCompanyInputChange} value={companyDetails.gstNo} name='gstNo' type='text' placeholder='Enter GST No' />
+                <label className='bde-form-label' htmlFor='spocName'>SPOC Name<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='spocName'  onChange={handleCompanyInputChange} value={companyDetails.spocName} name='spocName' type='text' placeholder='Enter SPOC Name' />
+                <label className='bde-form-label' htmlFor='spocEmail'>SPOC Email<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='spocEmail'  onChange={handleCompanyInputChange} value={companyDetails.spocEmail} name='spocEmail' type='text' placeholder='Enter SPOC Email' />
+                <label className='bde-form-label' htmlFor='spocPhone'>SPOC Phone<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='spocPhone'  onChange={handleCompanyInputChange} value={companyDetails.spocPhone} name='spocPhone' type='number' placeholder='Enter SPOC Phone' />
+                { popupError && <p className='hr-error'>{popupError}</p> }
+                <div className='bde-add-company-popup-btn-con'>
+                    <button className='bde-add-company-popup-btn' disabled={popupLoading} onClick={() => setShowCompanyPopup(false)}>Cancel</button>
+                    <button className='bde-add-company-popup-btn' disabled={popupLoading} onClick={handleAddCompany}>
+                    {popupLoading ? 
+                        <Oval
+                            height={20}
+                            width={20}
+                            color="#ffffff"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                            visible={true}
+                            ariaLabel='oval-loading'
+                            secondaryColor="#ffffff"
+                            strokeWidth={3}
+                            strokeWidthSecondary={3}
+                        />
+                        :
+                        "Add Company"
+                    }
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+
     const renderJobForm = () => (
         <form className='bde-job-form' onSubmit={handleEditJob}>
             <h1 className='bde-form-heading'>Edit Job Details</h1>
             <p className='hr-form-subtitle'>( <span className='hr-form-span'>*</span> ) Indicates required field</p>
             <label className='bde-form-label' htmlFor='company'>Comapany Name<span className='hr-form-span'> *</span></label>
-            <input className='bde-form-input' id='company'  onChange={handleInputChange} value={editJob.companyName} name='companyName' type='text' placeholder='Enter Company Name' />
+            {/* <input className='bde-form-input' id='company'  onChange={handleInputChange} value={editJob.companyName} name='companyName' type='text' placeholder='Enter Company Name' /> */}
+            
+            <CreatableSelect
+                isClearable
+                onChange={handleCompanyChange}
+                options={companies}
+                placeholder="Select Company"
+                styles={customStyles}
+                value={selectedCompany}
+            />
             {companyError && <p className='hr-error'>*Please enter company name</p>}
 
             <label className='bde-form-label' htmlFor='title'>Job Title<span className='hr-form-span'> *</span></label>
@@ -706,6 +915,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                 :
                 renderJobForm()
             }
+            {showCompanyPopup && renderAddCompanyPopup()}
         </div>
     )
 }

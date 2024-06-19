@@ -20,6 +20,7 @@ import CollegeAgencyForm from '../CollegeAgencyForm';
 import app from "../../firebase";
 import OfferStatusCandidates from '../ViewCandidates/OfferStatusCandidates';
 import Applications from '../ViewCandidates/Applications';
+import ViewCompanies from '../ViewCompanies';
 
 
 const apiStatusConstant = {
@@ -522,6 +523,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
             : showCandidateForm===4 ? renderAllSections()
             : showCandidateForm >= 5 && showCandidateForm <= 12 ? <OfferStatusCandidates key={showCandidateForm} showCandidateForm={showCandidateForm} onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} />
             : showCandidateForm===13 ? <Applications setShowCandidateForm={setShowCandidateForm} />
+            : showCandidateForm===14 ? <ViewCompanies setShowCandidateForm={setShowCandidateForm} />
             : renderAllSections()
           }
         </div>
