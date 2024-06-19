@@ -112,6 +112,7 @@ const JobDetailsPage = () => {
           commissionFee: data.commission_fee,
           tenureInDays: data.tenure_in_days,
           compname: data.company_name,
+          companyId: data.company_id,
           minSalary: data.min_salary,
           maxSalary: data.max_salary,
           noOfOpenings: data.no_of_openings,
@@ -262,6 +263,7 @@ const JobDetailsPage = () => {
   const updateJobDetails = (updatedData) => {
     const {jobId,
             companyName,
+            companyId,
             title,
             category,
             shiftTimings,
@@ -296,6 +298,7 @@ const JobDetailsPage = () => {
         commissionFee: commissionFee,
         tenureInDays: tenureInDays,
         compname: companyName,
+        companyId: companyId,
         minSalary: minSalary,
         maxSalary: maxSalary,
         noOfOpenings: noOfOpenings,
