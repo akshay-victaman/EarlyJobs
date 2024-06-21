@@ -25,9 +25,7 @@ jobs:
         run: npm install
         working-directory: ./server
       - name: Generate Deployment Package
-        run: |
-          cd server
-          zip -r earlyjobs-app-build.zip .
+        run: zip -r earlyjobs-app-build.zip .
         working-directory: ./server
 
       - name: Deploy to EB
