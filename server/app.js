@@ -1,5 +1,5 @@
 const cors = require('cors');
-// const sls = require('serverless-http');
+const sls = require('serverless-http');
 const app = require('./config/express');
 const userRoutes = require('./routes/userRoutes');
 const jobRoutes = require('./routes/jobRoutes');
@@ -8,10 +8,6 @@ const publicJobRoutes = require('./routes/publicJobRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 
 app.use(cors());
-
-app.use(cors({
-    origin: ['https://earlyjobs.in', 'http://earlyjobs-prod.ap-south-1.elasticbeanstalk.com']
-}));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -28,13 +24,6 @@ app.use('/jobs', jobRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/public', publicJobRoutes);
 app.use('/api/companies', companyRoutes);
-
-
-
-
-
-
-
 
 
 const PORT = process.env.PORT || 5000;
