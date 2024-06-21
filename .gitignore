@@ -3,11 +3,13 @@
 # dependencies
 /client/node_modules
 /server/node_modules
+/server/jspm_packages
 /client/.env
 /server/.env
 /client/.pnp
 /server/app.http
 /server/.serverless
+/server/serverless.yml
 .pnp.js
 
 # testing
