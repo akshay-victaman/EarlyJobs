@@ -8,6 +8,11 @@ const publicJobRoutes = require('./routes/publicJobRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 
 app.use(cors());
+
+app.use(cors({
+    origin: ['https://earlyjobs.in', 'http://earlyjobs-prod.ap-south-1.elasticbeanstalk.com']
+}));
+
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
