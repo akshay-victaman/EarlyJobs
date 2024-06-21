@@ -13,16 +13,23 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-      - name: Navigate to Server Directory
-        run: cd server
+      
       - name: Setup Node
         uses: actions/setup-node@v4
         with: 
           node-version: 20
+      - name: Navigate to Server Directory
+        run: cd server
+
       - name: Install Dependencies
         run: npm install
+        working-directory: ./server
       - name: Generate Deployment Package
-        run: zip -r earlyjobs-app-build.zip .
+        run: |
+          cd server
+          zip -r earlyjobs-app-build.zip .
+        working-directory: ./server
+
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v22
         with:
@@ -32,5 +39,5 @@ jobs:
           environment_name: 'earlyjobs-prod-env'
           version_label: ${{ github.sha }}
           region: ap-south-1
-          deployment_package: earlyjobs-app-build.zip
+          deployment_package: server/earlyjobs-app-build.zip
         
