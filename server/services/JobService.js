@@ -245,7 +245,6 @@ const updateJobAssignmentByHM = async (jobAssignment) => {
 const getJobsForBDE = async (email, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    // const endIndex = startIndex + pageSize;
     const query = 'SELECT * FROM jobs WHERE posted_by = ? order by created_at desc Limit ? offset ?;';
     const countQuery = 'SELECT count(*) as count FROM jobs WHERE posted_by = ?';
     const result = await db.query(query, [email, pageSize, startIndex]);
@@ -269,7 +268,6 @@ const getAllJobsForBDE = async (email) => {
 const getAccountManagerJobs = async (email, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    // const endIndex = startIndex + pageSize;
     const query = 'SELECT jobs.* FROM jobs INNER JOIN job_assigned_by_bde ON job_assigned_by_bde.job_id = jobs.id WHERE hm_email = ? order by created_at desc Limit ? offset ?;';
     const countQuery = 'SELECT count(*) as count FROM job_assigned_by_bde WHERE hm_email = ?';
     const result = await db.query(query, [email, pageSize, startIndex]);
@@ -294,7 +292,6 @@ const getAllAccountManagerJobs = async (email) => {
 const getHRJobs = async (email, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    // const endIndex = startIndex + pageSize;
     const query = `
     SELECT 
         jobs.id as id,

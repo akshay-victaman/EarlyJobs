@@ -423,7 +423,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                             }
                             {showCandidateForm === 12 && 
                               <td className="job-details-candidates-table-cell">
-                                {eachItem.dayCount !== 0 ? eachItem.dayCount : "Expired"}
+                                {eachItem.dayCount > 0 ? eachItem.dayCount : "Expired"}
                                 {eachItem.tenureStatus !== null && " / " + eachItem.tenureStatus}
                               </td>
                             }
