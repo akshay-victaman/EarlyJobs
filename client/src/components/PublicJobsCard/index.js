@@ -16,8 +16,13 @@ const PublicJobsCard = ({jobsItem}) => {
     workType,
   } = jobsItem
 
+  let encodedUrl = encodeURI(`${role}_${compname}_${city}_${id}`)
+  if(encodedUrl.includes('/')) {
+    const newUrl = encodedUrl.replace(/\//g, '_')
+    encodedUrl = newUrl
+  }
   return (
-    <Link to={`/view-openings/${role}_${compname}_${city}_${id}`} className="link-item">
+    <Link to={`/view-openings/${encodedUrl}`} className="link-item">
       <li className="jobs-list-item-container public-list-item-container">
         <div className="jobs-logo-name-con">
             <h1 className="public-job-title">{role} - {compname} - {category}</h1>
