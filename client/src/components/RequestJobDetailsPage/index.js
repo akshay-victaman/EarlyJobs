@@ -174,6 +174,7 @@ const handleRemoveHiringManager = (email) => {
     const email = Cookies.get('email')
     const newJob = {
         companyName : jobDetails.compname,
+        companyId: "TBG",
         title: jobDetails.role,
         category: jobDetails.category,
         shiftTimings: jobDetails.shiftTimings,
@@ -375,7 +376,7 @@ const renderRejectPopup = (close) => {
           <hr className="line" />
           <p className="job-detials-misc"><span className='misc-head'>Status:</span> {status}</p>
           {
-            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${(commissionFee/100)*50} Per Joining` : `${(commissionFee/100)*70}% of Annual CTC` }</p>
+            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${commissionFee} Per Joining` : `${commissionFee}% of Annual CTC` }</p>
           }
           {
             (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Tenure:</span> {tenureInDays} days</p>
