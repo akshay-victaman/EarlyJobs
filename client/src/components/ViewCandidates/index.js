@@ -331,6 +331,8 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
             compname: eachItem.company_name,
             role: eachItem.title,
             location: eachItem.location,
+            city: eachItem.city,
+            area: eachItem.area,
           }))
           console.log('updated data',updatedData)
   
@@ -409,7 +411,7 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
                       <option value=''>All Jobs</option>
                       {
                           allJobsList.map(job => (
-                              <option key={job.id} value={job.id}>{job.role} - {job.compname}</option>
+                              <option key={job.id} value={job.id}>{job.role} - {job.compname} - {job.city} - {job.area}</option>
                           ))
                       }
                   </select>
