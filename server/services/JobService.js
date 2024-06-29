@@ -331,7 +331,9 @@ const getAllSeniorHMJobs = async (email) => {
         jobs.id as id,
         company_name,
         title,
-        location
+        location,
+        city,
+        area
     FROM jobs INNER JOIN job_assigned_by_bde 
     ON job_assigned_by_bde.job_id = jobs.id 
     WHERE shm_email = ? order by created_at desc;`;
@@ -361,7 +363,9 @@ const getAllHmJobs = async (email) => {
             jobs.id as id,
             company_name,
             title,
-            location
+            location,
+            city,
+            area
         FROM jobs
         INNER JOIN jobassignments ON
         jobs.id = jobassignments.job_id
@@ -412,7 +416,9 @@ const getAllHRJobs = async (email) => {
         jobs.id as id,
         company_name,
         title,
-        location
+        location,
+        city,
+        area
     FROM jobs
     INNER JOIN jobassignments ON
     jobs.id = jobassignments.job_id
