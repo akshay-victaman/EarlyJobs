@@ -81,9 +81,14 @@ const Applications = ({ setShowCandidateForm }) => {
     }
 
     const getAllJobsList = async () => {
-      const email = Cookies.get('email')
       const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-      let apiUrl = `${backendUrl}/jobs/account-manager/all/${email}`
+      const role = Cookies.get('role');
+      let apiUrl = ''
+      if (role === 'SHM') {
+        apiUrl = `${backendUrl}/jobs/senior-hm/all`
+      } else {
+        apiUrl = `${backendUrl}/jobs/hm/all`
+      }
       const jwtToken = Cookies.get('jwt_token')
       const options = {
         method: 'GET',
@@ -231,7 +236,6 @@ const Applications = ({ setShowCandidateForm }) => {
       // const interviewDateTime = new Date(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
       const interviewDateTime2 = parse(`${interviewDateTime.interviewDate} ${interviewDateTime.interviewTime}`, "yyyy-M-d HH:mm", new Date());
       const formattedDateTime = format(interviewDateTime2, 'EEE MMM dd yyyy hh:mm aa');
-
       let emailContent = `
           Hi ${candidateDetails.fullName},
           <br>

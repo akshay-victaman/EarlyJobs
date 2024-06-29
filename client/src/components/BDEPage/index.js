@@ -145,7 +145,7 @@ const BDEPage = () => {
     })
 
     useEffect(() => {
-        fetchAccountManagers()
+        fetchSeniorHiringManagers()
         fetchCompanies()
     }, [])
 
@@ -172,7 +172,7 @@ const BDEPage = () => {
         }
     }
 
-    const fetchAccountManagers = async () => {
+    const fetchSeniorHiringManagers = async () => {
         const options = {
             method: 'GET',
             headers: {
@@ -182,7 +182,7 @@ const BDEPage = () => {
         }
         try {
             const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-            const response = await fetch(`${backendUrl}/api/users/all/account-managers`, options)
+            const response = await fetch(`${backendUrl}/api/users/all/senior-hms`, options)
             const data = await response.json()
             if(response.ok) {
 
@@ -843,7 +843,7 @@ const BDEPage = () => {
             {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
                 
 
-            <label className='bde-form-label'>Assign To Account Manager<span className='hr-form-span'> *</span></label>
+            <label className='bde-form-label'>Assign To Senior Hiring Manager<span className='hr-form-span'> *</span></label>
             <div className='hr-input-list-con'>
                 {
                     postNewJob.assignedTo.map((email, index) => {
@@ -858,12 +858,12 @@ const BDEPage = () => {
                 }
             </div>
             <select className='bde-form-input' name='assignedTo' value={postNewJob.assignedTo} onChange={handleAddHiringManager}>
-                <option value=''>Select Account Manager</option>
+                <option value=''>Select Senior Hiring Manager</option>
                 {   accountManagers.length > 0 &&
                     accountManagers.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.phone + ' - ' + eachItem.hiring_category}</option>)
                 }
             </select>
-            {assignedToError && <p className='hr-error'>*Please select account manager</p>}
+            {assignedToError && <p className='hr-error'>*Please select Senior Hiring manager</p>}
 
             <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
             <div className='hr-input-list-con'>

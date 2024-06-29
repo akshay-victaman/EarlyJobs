@@ -43,7 +43,7 @@ const RequestJobDetailsPage = () => {
             Authorization: `Bearer ${Cookies.get('jwt_token')}`
         },
     }
-    const response = await fetch(`${backendUrl}/api/users/all/account-managers`, options)
+    const response = await fetch(`${backendUrl}/api/users/all/senior-hms`, options)
     const data = await response.json()
     setAccountManagers(data)
     console.log(data)

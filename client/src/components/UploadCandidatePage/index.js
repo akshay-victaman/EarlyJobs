@@ -146,6 +146,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
         }
         const response = await fetch(url, options)
         const data = await response.json()
+        console.log('hm hr data', data)
         if(response.ok === true) {
             if(data.error) {
                 setError(data.error)
@@ -158,17 +159,19 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
     }
 
     const getAllJobsList = async () => {
-        const email = Cookies.get('email')
         const role = Cookies.get('role')
         let apiUrl = ""
-        if (role === 'AC') {
-          apiUrl = `${backendUrl}/jobs/account-manager/all/${email}`
+        if (role === 'SHM') {
+          apiUrl = `${backendUrl}/jobs/senior-hm/all`
+        } else if (role === 'AC') {
+          apiUrl = `${backendUrl}/jobs/hm/all`
         } else if (role === 'HR') {
-          apiUrl = `${backendUrl}/jobs/hr/all/${email}`
+          apiUrl = `${backendUrl}/jobs/hr/all/`
         } else if (role === 'BDE') {
-          apiUrl = `${backendUrl}/jobs/bde/all/${email}`
+          apiUrl = `${backendUrl}/jobs/bde/all/`
         } else {
           apiUrl = `${backendUrl}/admin/get-admin-jobs/all`
+          console.log('api url', apiUrl)
         }
         const jwtToken = Cookies.get('jwt_token')
         const options = {
@@ -210,13 +213,14 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
 
     const sendEmailAck = async () => {
         const username = Cookies.get('username')
+        console.log(hmHrData)
         const jobName = jobsList.find(job => job.id === candidateDetails.jobId).role
         const companyName = jobsList.find(job => job.id === candidateDetails.jobId).compname
         const location = jobsList.find(job => job.id === candidateDetails.jobId).location
         // const interviewDateTime = new Date(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
         const interviewDateTime = parse(`${candidateDetails.interviewDate} ${candidateDetails.interviewTime}`, "yyyy-M-d HH:mm", new Date());
         const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
-
+        const role = Cookies.get('role')
         let emailContent = `
             Hi ${candidateDetails.fullName},
             <br>
@@ -224,7 +228,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
             Your interview for the position of ${jobName} with ${companyName} is scheduled for <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
             <br>
             <br>
-            If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username} Victaman, at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
+            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}` : `${username} Victaman, at ${hmHrData.hr[0].phone} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}`}.
             <br>
             <br>
             Regards,
@@ -264,7 +268,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
         const interviewDateTime = new Date(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
         const yesterday = sub(interviewDateTime, { days: 1 });
         const yesterdayDate = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
-
+        const role = Cookies.get('role')
         const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
         let emailContent = `
             Hi ${candidateDetails.fullName},
@@ -273,7 +277,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
             Just a friendly reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for tomorrow, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
             <br>
             <br>
-            If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username}, Victaman at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
+            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}` : `${username} Victaman, at ${hmHrData.hr[0].phone} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}`}.
             <br>
             <br>
             Regards,
@@ -315,7 +319,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
 
         // const interviewDateTime = parse(`${candidateDetails.interviewDate} ${candidateDetails.interviewTime}`, new Date());
         const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
-
+        const role = Cookies.get('role')
         let emailContent = `
             Good morning ${candidateDetails.fullName},
             <br>
@@ -323,7 +327,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
             This is a gentle reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for today, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
             <br>
             <br>
-            If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username}, Victaman at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
+            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}` : `${username} Victaman, at ${hmHrData.hr[0].phone} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}`}.
             <br>
             <br>
             Regards,
@@ -376,8 +380,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
 
 
     const postCandidateDetails = async (event) => {
-        event.preventDefault()
-
+        event.preventDefault()        
         const dob = new Date(candidateDetails.dateOfBirth);
         const today = new Date();
         let age = today.getFullYear() - dob.getFullYear();

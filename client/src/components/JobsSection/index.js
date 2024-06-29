@@ -162,15 +162,16 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
 
   const getJobsCard = async () => {
     setApiStatus(apiStatusConstant.inProgress)
-    const email = Cookies.get('email')
     const role = Cookies.get('role')
     let apiUrl = ""
-    if (role === 'AC') {
-      apiUrl = `${backendUrl}/jobs/account-manager/${email}/?page=${page}`
+    if (role === 'SHM') {
+      apiUrl = `${backendUrl}/jobs/senior-hm/?page=${page}`
+    } else if (role === 'AC') {
+      apiUrl = `${backendUrl}/jobs/hm/?page=${page}`
     } else if (role === 'HR') {
-      apiUrl = `${backendUrl}/jobs/hr/${email}/?page=${page}`
+      apiUrl = `${backendUrl}/jobs/hr/?page=${page}`
     } else if (role === 'BDE') {
-      apiUrl = `${backendUrl}/jobs/bde/${email}/?page=${page}`
+      apiUrl = `${backendUrl}/jobs/bde/?page=${page}`
     } else {
       apiUrl = `${backendUrl}/admin/get-jobs/all/?page=${page}`
     }

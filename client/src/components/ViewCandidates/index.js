@@ -214,7 +214,8 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
         const jwtToken = Cookies.get('jwt_token')
         let email = Cookies.get('email')
         const role = Cookies.get('role')
-        if(role === 'HR') hrEmail = email
+        if(role === 'HR' || role === 'AC') hrEmail = email
+        console.log("email", hrEmail)
         const apiUrl = `${backendUrl}/jobs/candidate/${jobId}?email=${hrEmail}&role=${role}&offerStatus=${status}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&page=${page}`
         const options = {
           method: 'GET',
@@ -297,15 +298,16 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
   }
 
     const getAllJobsList = async () => {
-      const email = Cookies.get('email')
       const role = Cookies.get('role')
       let apiUrl = ""
-      if (role === 'AC') {
-        apiUrl = `${backendUrl}/jobs/account-manager/all/${email}`
+      if (role === 'SHM') {
+        apiUrl = `${backendUrl}/jobs/senior-hm/all`
+      } else if (role === 'AC') {
+        apiUrl = `${backendUrl}/jobs/hm/all`
       } else if (role === 'HR') {
-        apiUrl = `${backendUrl}/jobs/hr/all/${email}`
+        apiUrl = `${backendUrl}/jobs/hr/all/`
       } else if (role === 'BDE') {
-        apiUrl = `${backendUrl}/jobs/bde/all/${email}`
+        apiUrl = `${backendUrl}/jobs/bde/all/`
       } else {
         apiUrl = `${backendUrl}/admin/get-admin-jobs/all`
       }

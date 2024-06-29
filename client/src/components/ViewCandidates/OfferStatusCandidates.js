@@ -86,16 +86,17 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
     }
 
     const getAllJobsList = async () => {
-      const email = Cookies.get('email')
       const role = Cookies.get('role')
       const backendUrl = process.env.REACT_APP_BACKEND_API_URL
       let apiUrl = ""
-      if (role === 'AC') {
-        apiUrl = `${backendUrl}/jobs/account-manager/all/${email}`
+      if (role === 'SHM') {
+        apiUrl = `${backendUrl}/jobs/senior-hm/all/`
+      } else if (role === 'AC') {
+        apiUrl = `${backendUrl}/jobs/hm/all/`
       } else if (role === 'HR') {
-        apiUrl = `${backendUrl}/jobs/hr/all/${email}`
+        apiUrl = `${backendUrl}/jobs/hr/all/`
       } else if (role === 'BDE') {
-        apiUrl = `${backendUrl}/jobs/bde/all/${email}`
+        apiUrl = `${backendUrl}/jobs/bde/all/`
       } else {
         apiUrl = `${backendUrl}/admin/get-admin-jobs/all`
       }
@@ -415,7 +416,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                               <td className="job-details-candidates-table-cell">
                                 {(showCandidateForm === 8 || showCandidateForm === 9 || showCandidateForm === 10 || showCandidateForm === 11) ? eachItem.interviewDate : eachItem.offeredDate !== null ? eachItem.offeredDate.slice(0, -8) : "Null"}
                                 {showCandidateForm === 11 &&
-                                  <button type="button" className="shedule-interview-button" onClick={() => onShowScheduleInterviewPopup(jobId1, eachItem, allJobsList, setCandidateList, candidateList)} >
+                                  <button type="button" className="shedule-interview-button" onClick={() => onShowScheduleInterviewPopup(jobId1, {...eachItem, candidateName: eachItem.name}, allJobsList, setCandidateList, candidateList)} >
                                       <MdOutlineEditCalendar className="shedule-icon" />
                                   </button>
                                 }

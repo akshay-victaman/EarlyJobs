@@ -107,9 +107,28 @@ const loginUser = async (req, res) => {
     }
 }
 
-const getAllAccountManagers = async (req, res) => {
+const getAllSeniorHMs = async (req, res) => {
     try {
-      const users = await userService.getAllAccountManagers();
+      const users = await userService.getAllSeniorHMs();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getAllHMs = async (req, res) => {
+    try {
+      const users = await userService.getAllHMs();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getAllHMsForSHM = async (req, res) => {
+    try {
+      const email = req.email;
+      const users = await userService.getAllHMsForSHM(email);
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -128,7 +147,7 @@ const getAllHRs = async (req, res) => {
 
 const getAllHRsForHiringManager = async (req, res) => {
     try {
-      const email = req.params.email;
+      const email = req.email;
       const hiringFor = req.query.hiringFor;
       const search = req.query.search;
       const page = parseInt(req.query.page) || 1;
@@ -141,10 +160,33 @@ const getAllHRsForHiringManager = async (req, res) => {
 
 const getAllHRsForHiringManagerForExcel = async (req, res) => {
     try {
-      const email = req.params.email;
+      const email = req.email;
       const hiringFor = req.query.hiringFor;
       const search = req.query.search;
       const users = await userService.getAllHRsForHiringManagerForExcel(email, hiringFor, search);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getAllHMsForSeniorHM = async (req, res) => {
+    try {
+      const email = req.email;
+      const search = req.query.search;
+      const page = parseInt(req.query.page) || 1;
+      const users = await userService.getAllHMsForSeniorHM(email, search, page);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getAllHMsForSeniorHMForExcel = async (req, res) => {
+    try {
+      const email = req.email;
+      const search = req.query.search;
+      const users = await userService.getAllHMsForSeniorHMForExcel(email, search);
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -174,7 +216,6 @@ const createComplaint = async (req, res) => {
 }
 
 const updateGender = async (req, res) => {
-    console.log(req)
     const gender = req.body.gender;
     const email = req.email;
     try {
@@ -196,12 +237,24 @@ const changeUserRole = async (req, res) => {
     }
 }
 
-const mingrateHrAssignedHm = async (req, res) => {
+const migrateHrAssignedHm = async (req, res) => {
     try {
       const hrEmail = req.body.hrEmail;
       const currentHM = req.email;
       const newHM = req.body.newHmEmail;
-      const result = await userService.mingrateHrAssignedHm(hrEmail, currentHM, newHM);
+      const result = await userService.migrateHrAssignedHm(hrEmail, currentHM, newHM);
+      res.json(result);
+    } catch (error) {
+      res.status(error.statusCode || 500).json({ error: error.message });
+    }
+}
+
+const migrateHmAssignedShm = async (req, res) => {
+    try {
+      const hmEmail = req.body.hrEmail;
+      const currentSHM = req.email;
+      const newSHM = req.body.newHmEmail;
+      const result = await userService.migrateHmAssignedShm(hmEmail, currentSHM, newSHM);
       res.json(result);
     } catch (error) {
       res.status(error.statusCode || 500).json({ error: error.message });
@@ -219,13 +272,18 @@ module.exports = {
   updatePassword,
   updateDocId,
   loginUser,
-  getAllAccountManagers,
+  getAllSeniorHMs,
+  getAllHMs,
+  getAllHMsForSHM,
   getAllHRs,
   getAllHRsForHiringManager,
   getAllHRsForHiringManagerForExcel,
+  getAllHMsForSeniorHM,
+  getAllHMsForSeniorHMForExcel,
   getHrAssignedHm,
   createComplaint,
   updateGender,
   changeUserRole,
-  mingrateHrAssignedHm
+  migrateHrAssignedHm,
+  migrateHmAssignedShm
 };

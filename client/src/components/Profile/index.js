@@ -179,12 +179,12 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
                 <button type="button" className={`profile-button ${showCandidateForm === 9 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(9)}>Attended Candidates</button>
                 <button type="button" className={`profile-button ${showCandidateForm === 10 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(10)}>Not-Attended Candidates</button>
                 <button type="button" className={`profile-button ${showCandidateForm === 11 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(11)}>Rejected Candidates</button>
-                {(userRole === 'AC' || profileData.hiringFor === 'Freelance HR Recruiter') && <button type="button" className={`profile-button ${showCandidateForm === 12 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(12)}>View Tenure Status</button>}
+                {(userRole === 'AC' || userRole === "SHM" || profileData.hiringFor === 'Freelance HR Recruiter') && <button type="button" className={`profile-button ${showCandidateForm === 12 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(12)}>View Tenure Status</button>}
                 {
-                    userRole === 'AC' && 
+                    (userRole === 'AC' || userRole === "SHM") && 
                     <>
                         <button type="button" className={`profile-button ${showCandidateForm === 13 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(13)}>View Applications</button>
-                        <button type="button" className={`profile-button ${showCandidateForm === 3 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(3)}>My {hmType === "CLG" ? "Interns" : "HR Recruiters"}</button>
+                        <button type="button" className={`profile-button ${showCandidateForm === 3 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(3)}>My {hmType === "CLG" ? "Interns" : userRole === "SHM" ? "Hiring Managers" : "HR Recruiters"}</button>
                     </>
                 }
                 {

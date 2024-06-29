@@ -92,6 +92,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
         // const interviewDateTime = new Date(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
         const interviewDateTime = parse(`${interviewDate} ${interviewTime}`, "yyyy-M-d HH:mm", new Date());
         const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
+        const role = Cookies.get('role')
 
         let emailContent = `
             Hi ${candidateDetails.candidateName},
@@ -100,7 +101,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             Your interview for the position of ${jobName} with ${companyName} is scheduled for <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
             <br>
             <br>
-            If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username} Victaman, at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
+            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}` : `${username} Victaman, at ${hmHrData.hr[0].phone} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}`}.
             <br>
             <br>
             Regards,
@@ -119,7 +120,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             name: 'Interview Scheduled Acknowledgement Mail',
             fromEmailId: 'no-reply@earlyjobs.in',
             subject: `Interview Scheduled by Earlyjobs Victaman`,
-            recipients: `${candidateDetails.candidateEmail}`,
+            recipients: `${candidateDetails.candidateEmail}, akkiakshay440@gmail.com`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'
         }
@@ -137,6 +138,8 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
         const yesterdayDate = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
 
         const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
+        const role = Cookies.get('role')
+
         let emailContent = `
             Hi ${candidateDetails.fullName},
             <br>
@@ -144,7 +147,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             Just a friendly reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for tomorrow, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
             <br>
             <br>
-            If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username}, Victaman at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
+            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}` : `${username} Victaman, at ${hmHrData.hr[0].phone} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}`}.
             <br>
             <br>
             Regards,
@@ -182,6 +185,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
 
         // const interviewDateTime = parse(`${candidateDetails.interviewDate} ${candidateDetails.interviewTime}`, new Date());
         const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
+        const role = Cookies.get('role')
 
         let emailContent = `
             Good morning ${candidateDetails.fullName},
@@ -190,7 +194,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             This is a gentle reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for today, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
             <br>
             <br>
-            If you need any help, please coordinate with ${hmHrData.hr !== undefined ? `${username}, Victaman at ${hmHrData.hr[0].phone} or ` : ""}${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}.
+            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}` : `${username} Victaman, at ${hmHrData.hr[0].phone} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}`}.
             <br>
             <br>
             Regards,

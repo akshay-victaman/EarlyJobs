@@ -38,6 +38,7 @@
     border-top-right-radius: 5px;
     height: 260px;
     user-select: none;
+    object-fit: cover;
 }
 
 .team-member-content {
