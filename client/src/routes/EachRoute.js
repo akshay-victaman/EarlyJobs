@@ -2,7 +2,6 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from '../components/ProtectedRoute';
 import Loader from '../components/Loader/index.js';
-import ControlTeamPage from '../pages/ControlTeamPage/index.js';
 
 const HomePage = lazy(() => import("../components/HomePage"));
 const JobsPage = lazy(() => import("../components/JobsPage"));
@@ -27,6 +26,7 @@ const AboutUs = lazy(() => import("../pages/AboutUs"));
 const OpeningsPage = lazy(() => import("../pages/OpeningsPage"));
 const PublicJobDetailsPage = lazy(() => import("../pages/PublicJobDetailsPage"));
 const TeamPage = lazy(() => import("../pages/TeamPage"));
+const ControlTeamPage = lazy(() => import("../pages/ControlTeamPage"));
 
 
 

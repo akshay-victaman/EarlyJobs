@@ -25,6 +25,7 @@ const AdminPage = () => {
     const [createStatus, setCreateStatus] = useState(false)
     const [error, setError] = useState('')
     const [hiringManagersList, setHiringManagersList] = useState([])
+    const [seniorHMsList, setSeniorHMsList] = useState([])
 
     const [signUpDetails, setSignUpDetails] = useState({
         docId: "TBF",
@@ -49,10 +50,11 @@ const AdminPage = () => {
 
     useEffect(() => {
         fetchHiringManagers()
+        fetchSeniorHMs()
     }, [])
 
     const fetchHiringManagers = async () => {
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/all/account-managers`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/all/hms`
         const options = {
             method: 'GET',
             headers: {
@@ -63,8 +65,27 @@ const AdminPage = () => {
         }
         const response = await fetch(url, options)
         const data = await response.json()
+        console.log(data)
         if(response.ok === true) {
             setHiringManagersList(data)
+        }
+    }
+
+    const fetchSeniorHMs = async () => {
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/all/senior-hms`
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                Authorization: 'Bearer ' + Cookie.get('jwt_token')
+            }
+        }
+        const response = await fetch(url, options)
+        const data = await response.json()
+        console.log(data)
+        if(response.ok === true) {
+            setSeniorHMsList(data)
         }
     }
 
@@ -124,8 +145,7 @@ const AdminPage = () => {
         if(signUpDetails.role !== 'HR') {
             setSignUpDetails({ ...signUpDetails, location: 'TBF' })
         }
-        console.log(signUpDetails)
-        // return
+
         const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if(signUpDetails.role === "") {
             setError('*Role is required')
@@ -159,8 +179,20 @@ const AdminPage = () => {
             setError('*Select atleast one hiring category')
             return
         }
+        const hmEmails = hiringManagersList.map((hm) => hm.email)
+        const seniorHmEmails = seniorHMsList.map((hm) => hm.email)
+        if(!hmEmails.includes(signUpDetails.assignHM) && signUpDetails.role === "HR") {
+            setSignUpDetails({ ...signUpDetails, assignHM: '' })
+            setError('*Assign Hiring Manager is not valid')
+            return
+        }
+        if(!seniorHmEmails.includes(signUpDetails.assignHM) && signUpDetails.role === "AC") {
+            setSignUpDetails({ ...signUpDetails, assignHM: '' })
+            setError('*Assign Senior Hiring Manager is not valid')
+            return
+        }
         setError('')
-        
+
         let updatedSignUpDetails = signUpDetails
         if(signUpDetails.role === "AGENCY" || signUpDetails.role === "COLLEGE") {
             updatedSignUpDetails = { ...signUpDetails, role: 'AC', hiringFor: 'Fulltime Hiring Manager', hmType: '' }
@@ -171,7 +203,11 @@ const AdminPage = () => {
         if(signUpDetails.role === "COLLEGE") {
             updatedSignUpDetails = { ...updatedSignUpDetails, docId: "CLG", hmType: 'CLG'}
         }
+        if(signUpDetails.role === "SHM") {
+            updatedSignUpDetails = { ...updatedSignUpDetails, hiringFor: 'Fulltime Senior Hiring Manager' }
+        }
         console.log(updatedSignUpDetails)
+        // return
         setCreateStatus(true)
         
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
@@ -223,6 +259,7 @@ const AdminPage = () => {
                 <label className="homepage-label" style={{marginTop: "10px"}}>User Type (Role)</label>
                 <select className="homepage-input" id="role" name="role" required value={signUpDetails.role} onChange={handleInputChange} >
                     <option value="">select</option>
+                    <option value="SHM">Senior Hiring Manager</option>
                     <option value="AC">Hiring Manager</option>
                     <option value="HR">HR Recruiter</option>
                     <option value="ADMIN">Admin</option>
@@ -260,6 +297,22 @@ const AdminPage = () => {
                         <label className="homepage-label" htmlFor="location">Address</label>
                         <input className="homepage-input" type="text" id="location" required name="location" value={signUpDetails.location} onChange={handleInputChange} />
                     </>
+                    )
+                }
+
+                {
+                    signUpDetails.role === 'AC' && (
+                        <>
+                            <label className="homepage-label" htmlFor="assignHM">Assign Senior Hiring Manager</label>
+                            <select className="homepage-input" id="assignHM" name="assignHM" required value={signUpDetails.assignHM} onChange={handleInputChange} >
+                                <option value="">select</option>
+                                {
+                                    seniorHMsList.map((hm) => (
+                                        <option key={hm.email} value={hm.email}>{hm.username} - {hm.phone}</option>
+                                    ))
+                                }
+                            </select>
+                        </>
                     )
                 }
 

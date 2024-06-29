@@ -30,6 +30,17 @@ const hrAssignedHm = async (email, hrEmail) => {
     return result[0].affectedRows > 0;
 }
 
+const hmAssignedShm = async (email, shmEmail) => {
+    try {
+        const query = 'INSERT INTO hm_assigned_shm (hm_email, shm_email) VALUES (?, ?)';
+        const result = await db.query(query, [email, shmEmail]);
+        return result[0].affectedRows > 0;
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
 const hrResumes = async (hrEmail, resumeUrl) => {
     const query = 'INSERT INTO hr_resume (hr_email, resume_url) VALUES (?, ?)';
     const result = await db.query(query, [hrEmail, resumeUrl]);
@@ -52,7 +63,9 @@ const createUser = async (user) => {
         const query = 'INSERT INTO users (id, user_details_id, username, gender, email, phone, password, role, hiring_for, location, hiring_category, is_blocked, hm_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         const result = await db.query(query, [id, docId, username, gender, email, phone, hashedPassword, role, hiringFor, location, hiringCategory1, 0, hmType]);
         if (result[0].affectedRows > 0) {
-            if(role === 'HR') {
+            if(role === 'AC') {
+                hmAssignedShm(email, assignHM);
+            } else if(role === 'HR') {
                 hrAssignedHm(email, assignHM);
             }
             return {success: 'User created successfully'};
@@ -116,7 +129,7 @@ const loginUser = async (user) => {
     if (dbUser.length > 0) {
         const match = bcrypt.compareSync(password, dbUser[0].password);
         if (match) {
-            if(dbUser[0].role === 'HR') {
+            if(dbUser[0].role === 'HR' || dbUser[0].role === 'AC') {
                 const isUpdated = await updateHRLastLogin(email);
                 if(!isUpdated) {
                     return {error: 'Login failed'};
@@ -132,10 +145,43 @@ const loginUser = async (user) => {
     }
 }
 
-const getAllAccountManagers = async () => {
-    const query = 'SELECT username, email, phone, location, hiring_ctc, hiring_category FROM users WHERE role = ? order by username asc';
-    const result = await db.query(query, ['AC']);
-    return result[0]; 
+const getAllSeniorHMs = async () => {
+    try {
+        const query = 'SELECT username, email, phone, location, hiring_ctc, hiring_category FROM users WHERE role = ? order by username asc';
+        const result = await db.query(query, ['SHM']);
+        return result[0];
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+const getAllHMs = async () => {
+    try {
+        const query = 'SELECT username, email, phone, location, hiring_ctc, hiring_category FROM users WHERE role = ? order by username asc';
+        const result = await db.query(query, ['AC']);
+        return result[0];
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+const getAllHMsForSHM = async (email) => {
+    try {
+        const query = `
+            SELECT username, email, location, hiring_ctc, hiring_category 
+            FROM users INNER JOIN hm_assigned_shm ON 
+            users.email=hm_assigned_shm.hm_email
+            WHERE shm_email = ?
+            ORDER BY username ASC
+        `;
+        const result = await db.query(query, [email]);
+        return result[0];
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
 }
 
 const getAllHRs = async (email) => {
@@ -143,10 +189,10 @@ const getAllHRs = async (email) => {
         SELECT username, email, location, hiring_ctc, hiring_category 
         FROM users INNER JOIN hrassignedhm ON 
         users.email=hrassignedhm.hr_email 
-        WHERE role = ? AND hm_email = ? 
+        WHERE hm_email = ? 
         order by username asc
     `;
-    const result = await db.query(query, ['HR', email]);
+    const result = await db.query(query, [email]);
     return result[0]; 
 }
 
@@ -189,27 +235,83 @@ const getAllHRsForHiringManagerForExcel = async (email, hiringFor, search) => {
         ORDER BY created_at DESC, username ASC
     `;
     const params = (hiringFor !== 'undefined' && hiringFor !== '') ? [email, hiringFor] : [email];
+    try {
+        const result = await db.query(query, params);
+        return result[0];
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+const getAllHMsForSeniorHM = async (email, search, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize; 
+    let query = `
+        SELECT username, email, phone, created_at, hiring_for, last_login, is_blocked
+        FROM users INNER JOIN hm_assigned_shm ON 
+        users.email=hm_assigned_shm.hm_email 
+        WHERE shm_email = ? 
+        ${search !== 'undefined' && search !== '' ? `AND (username LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%') ` : ''}
+        ORDER BY created_at DESC, username ASC 
+        LIMIT ? OFFSET ? ;
+    `;
+    let countQuery = `
+        SELECT count(*) as count 
+        FROM users INNER JOIN hm_assigned_shm ON 
+        users.email=hm_assigned_shm.hm_email 
+        WHERE shm_email = ? 
+        ${search !== 'undefined' && search !== '' ? `AND (username LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%') ` : ''}
+    `;
+    const params = [email, pageSize, startIndex];
+    const result = await db.query(query, params);
+    const params2 = [email];
+    const countResult = await db.query(countQuery, params2);
+    return {users: result[0], count: countResult[0][0].count};
+}
+
+const getAllHMsForSeniorHMForExcel = async (email, search) => {
+    let query = `
+        SELECT username, email, phone, created_at, hiring_for, last_login, is_blocked
+        FROM users INNER JOIN hm_assigned_shm ON
+        users.email=hm_assigned_shm.hm_email
+        WHERE shm_email = ?
+        ${search !== 'undefined' && search !== '' ? `AND (username LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%') ` : ''}
+        ORDER BY created_at DESC, username ASC
+    `;
+    const params = [email];
     const result = await db.query(query, params);
     return result[0];
 }
 
 const getHrAssignedHm = async (email, role) => {
-    const HRQuery = `
+    const userQuery = `
         SELECT username, phone 
         FROM users
         WHERE email = ?
     `;
-    if(role === 'AC') {
-        const result = await db.query(HRQuery, [email]);
-        return {hm: result[0]};
+    if(role === 'SHM') {
+        const result = await db.query(userQuery, [email]);
+        return {shm: result[0]};
     }
-    const result1 = await db.query(HRQuery, [email]);
+    if(role === 'AC') {
+        const SHMQuery = `
+            SELECT username, phone
+            FROM users INNER JOIN hm_assigned_shm ON
+            users.email = hm_assigned_shm.shm_email
+            WHERE hm_email = ?
+        `;
+        const result = await db.query(SHMQuery, [email]);
+        const result1 = await db.query(userQuery, [email]);
+        return {shm: result[0], hm: result1[0]};
+    }
     const HMQuery = `
         SELECT username, phone 
         FROM users INNER JOIN hrassignedhm ON 
         users.email = hrassignedhm.hm_email 
         WHERE hr_email = ?
     `;
+    const result1 = await db.query(userQuery, [email]);
     const result = await db.query(HMQuery, [email]);
     return {hm: result[0], hr: result1[0]};
 }
@@ -258,7 +360,7 @@ const changeUserRole = async (email, hiringFor) => {
     }
 }
 
-const mingrateHrAssignedHm = async (hrEmail, currentHM, newHM) => {
+const migrateHrAssignedHm = async (hrEmail, currentHM, newHM) => {
     const user = await getUserByEmail(hrEmail);
     if(user.length === 0) {
         const error = new Error('User not found');
@@ -284,6 +386,31 @@ const mingrateHrAssignedHm = async (hrEmail, currentHM, newHM) => {
     }
 }
 
+const migrateHmAssignedShm = async (hmEmail, currentSHM, newSHM) => {
+    const user = await getUserByEmail(hmEmail);
+    if(user.length === 0) {
+        const error = new Error('User not found');
+        error.statusCode = 404;
+        throw error;
+    }
+    const hmAssignmentQuery = 'UPDATE hm_assigned_shm SET shm_email = ? WHERE hm_email = ? AND shm_email = ?';
+    const jobAssignmentQuery = 'UPDATE jobassignments SET assigned_by = ? WHERE assigned_to = ? AND assigned_by = ?';
+
+    try {
+        const result = await db.query(hmAssignmentQuery, [newSHM, hmEmail, currentSHM]);
+        if (result[0].affectedRows > 0) {
+            const result2 = await db.query(jobAssignmentQuery, [newSHM, hmEmail, currentSHM]);
+            if (result2[0].affectedRows > 0) {
+                return {success: 'HM migrated to new Senior HM successfully'};
+            } else {
+                return {error: 'HM migration failed'};
+            }
+        }
+        return {error: 'HM migration failed'};
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports = {
   getAllUsers,
@@ -296,13 +423,18 @@ module.exports = {
   updatePassword,
   updateDocId,
   loginUser,
-  getAllAccountManagers,
+  getAllSeniorHMs,
+  getAllHMs,
+  getAllHMsForSHM,
   getAllHRs,
   getAllHRsForHiringManager,
   getAllHRsForHiringManagerForExcel,
+  getAllHMsForSeniorHM,
+  getAllHMsForSeniorHMForExcel,
   getHrAssignedHm,
   createComplaint,
   updateGender,
   changeUserRole,
-  mingrateHrAssignedHm
+  migrateHrAssignedHm,
+  migrateHmAssignedShm
 };

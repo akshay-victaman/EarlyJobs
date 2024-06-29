@@ -29,10 +29,10 @@ const editJobDetials = async (req, res) => {
     }
 }
 
-const getAssignedHMsForJob = async (req, res) => {
+const getAssignedSHMsForJob = async (req, res) => {
     const jobId = req.params.jobId;
     try {
-      const assignedHMs = await jobService.getAssignedHMsForJob(jobId);
+      const assignedHMs = await jobService.getAssignedSHMsForJob(jobId);
       res.json(assignedHMs);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -60,12 +60,33 @@ const assignJobToHrByAccountManager = async (req, res) => {
     }
 }
 
+const getAssignedHMsForJob = async (req, res) => {
+  const jobId = req.params.jobId;
+  const email = req.email;
+  try {
+    const assignedHMs = await jobService.getAssignedHMsForJob(jobId, email);
+    res.json(assignedHMs);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 const getAssignedHRsForJob = async (req, res) => {
     const jobId = req.params.jobId;
     const email = req.params.email;
     try {
       const assignedHRs = await jobService.getAssignedHRsForJob(jobId, email);
       res.json(assignedHRs);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const updateJobAssignmentBySHM = async (req, res) => {
+    const jobAssignment = req.body;
+    try {
+      const jobAssigned = await jobService.updateJobAssignmentBySHM(jobAssignment);
+      res.json(jobAssigned);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -82,7 +103,7 @@ const updateJobAssignmentByHM = async (req, res) => {
 }
 
 const getJobsForBDE = async (req, res) => {
-    const email = req.params.email;
+    const email = req.email;
     const page = parseInt(req.query.page) || 1;
     try {
       const jobs = await jobService.getJobsForBDE(email, page);
@@ -102,21 +123,42 @@ const getAllJobsForBDE = async (req, res) => {
     }
 }
 
-const getAccountManagerJobs = async (req, res) => {
-    const email = req.params.email;
+const getSeniorHMJobs = async (req, res) => {
+    const email = req.email;
     const page = parseInt(req.query.page) || 1;
     try {
-      const jobs = await jobService.getAccountManagerJobs(email, page);
+      const jobs = await jobService.getSeniorHMJobs(email, page);
       res.json(jobs);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
 }
 
-const getAllAccountManagerJobs = async (req, res) => {
-    const email = req.params.email;
+const getAllSeniorHMJobs = async (req, res) => {
+    const email = req.email;
     try {
-      const jobs = await jobService.getAllAccountManagerJobs(email);
+      const jobs = await jobService.getAllSeniorHMJobs(email);
+      res.json(jobs);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getHmJobs = async (req, res) => {
+    const email = req.email;
+    const page = parseInt(req.query.page) || 1;
+    try {
+      const jobs = await jobService.getHmJobs(email, page);
+      res.json(jobs);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getAllHmJobs = async (req, res) => {
+    const email = req.email;
+    try {
+      const jobs = await jobService.getAllHmJobs(email);
       res.json(jobs);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -124,7 +166,7 @@ const getAllAccountManagerJobs = async (req, res) => {
 }
 
 const getHRJobs = async (req, res) => {
-    const email = req.params.email;
+    const email = req.email;
     const page = parseInt(req.query.page) || 1;
     try {
       const jobs = await jobService.getHRJobs(email, page);
@@ -135,7 +177,7 @@ const getHRJobs = async (req, res) => {
 }
 
 const getAllHRJobs = async (req, res) => {
-    const email = req.params.email;
+    const email = req.email;
     try {
       const jobs = await jobService.getAllHRJobs(email);
       res.json(jobs);
@@ -294,15 +336,19 @@ module.exports = {
     getAllJobs,
     addJobDetials,
     editJobDetials,
-    getAssignedHMsForJob,
+    getAssignedSHMsForJob,
     getJobDetails,
     assignJobToHrByAccountManager,
+    getAssignedHMsForJob,
     getAssignedHRsForJob,
+    updateJobAssignmentBySHM,
     updateJobAssignmentByHM,
     getJobsForBDE,
     getAllJobsForBDE,
-    getAccountManagerJobs,
-    getAllAccountManagerJobs,
+    getSeniorHMJobs,
+    getAllSeniorHMJobs,
+    getHmJobs,
+    getAllHmJobs,
     getHRJobs,
     getAllHRJobs,
     addCandidateDetailsForJob,

@@ -67,7 +67,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const [showCompanyPopup, setShowCompanyPopup] = useState(false)
     const [popupError, setPopupError] = useState('')
     const [popupLoading, setPopupLoading] = useState(false)
-    const [accountManagers, setAccountManagers] = useState([])
+    const [seniorHiringManagers, setSeniorHiringManagers] = useState([])
     const [keyword, setKeyword] = useState('');
     const [skills, setSkills] = useState('');
     const [loading, setLoading] = useState(false)
@@ -143,9 +143,9 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     })
 
     useEffect(() => {
-        fetchAccountManagers()
+        fetchSeniorHiringManagers()
         fetchCompanies()
-        fetchAssignedHiringManagers()
+        fetchAssignedSeniorHiringManagers()
     }, [])
 
     const fetchCompanies = async () => {
@@ -175,7 +175,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         }
     }
 
-    const fetchAccountManagers = async () => {
+    const fetchSeniorHiringManagers = async () => {
         setHmLoader(true)
         const options = {
             method: 'GET',
@@ -185,16 +185,16 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             },
         }
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-        const response = await fetch(`${backendUrl}/api/users/all/account-managers`, options)
+        const response = await fetch(`${backendUrl}/api/users/all/senior-hms`, options)
         const data = await response.json()
-        setAccountManagers(data)
+        setSeniorHiringManagers(data)
         console.log(data)
         setTimeout(() => {
             setHmLoader(false)
         }, 1000);
     }
 
-    const fetchAssignedHiringManagers = async () => {
+    const fetchAssignedSeniorHiringManagers = async () => {
         const options = {
             method: 'GET',
             headers: {
@@ -203,9 +203,9 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             },
         }
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-        const response = await fetch(`${backendUrl}/jobs/assigned-hm/${jobDetails.id}`, options)
+        const response = await fetch(`${backendUrl}/jobs/assigned-shm/${jobDetails.id}`, options)
         const data = await response.json()
-        setEditJob({ ...editJob, assignedTo: data.map(item => item.hm_email) })
+        setEditJob({ ...editJob, assignedTo: data.map(item => item.shm_email) })
         console.log(data)
     }
 
@@ -443,9 +443,10 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     }
 
     const renderHiringManagerOptions = () => {
-        if(editJob.assignedTo.length > 0 && accountManagers.length > 0) {
+        if(editJob.assignedTo.length > 0 && seniorHiringManagers.length > 0) {
+            console.log(seniorHiringManagers)
             return (editJob.assignedTo.map((email, index) => {
-                const hiringManagerName = accountManagers.find(item => item.email === email)
+                const hiringManagerName = seniorHiringManagers.find(item => item.email === email)
                 return (
                     <div className='hr-input-list' key={index}>
                         <p className='hr-input-list-item'>{hiringManagerName.username}</p>
@@ -838,19 +839,19 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
                
 
-            <label className='bde-form-label'>Assign To Account Manager<span className='hr-form-span'> *</span></label>
+            <label className='bde-form-label'>Assign To Senior Hiring Manager<span className='hr-form-span'> *</span></label>
             <div className='hr-input-list-con'>
                 {
                     renderHiringManagerOptions()
                 }
             </div>
             <select className='bde-form-input' name='assignedTo' value={editJob.assignedTo} onChange={handleAddHiringManager}>
-                <option value=''>Select Account Manager</option>
-                {   accountManagers.length > 0 &&
-                    accountManagers.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.phone + ' - ' + eachItem.hiring_category}</option>)
+                <option value=''>Select Senior Hiring Manager</option>
+                {   seniorHiringManagers.length > 0 &&
+                    seniorHiringManagers.map(eachItem => <option value={eachItem.email}>{eachItem.username + ' - ' + eachItem.phone + ' - ' + eachItem.hiring_category}</option>)
                 }
             </select>
-            {assignedToError && <p className='hr-error'>*Please select account manager</p>}
+            {assignedToError && <p className='hr-error'>*Please select Senior Hiring manager</p>}
 
             <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
             <div className='hr-input-list-con'>

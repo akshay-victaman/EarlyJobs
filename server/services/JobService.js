@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const db = require('../config/database');
 
 const assignJobToHMByBDE = async (jobId, assignedTo) => {
-    const assingmentQuery = 'INSERT INTO job_assigned_by_bde (job_id, hm_email) VALUES ';
+    const assingmentQuery = 'INSERT INTO job_assigned_by_bde (job_id, shm_email) VALUES ';
     let multiAssingmentQuery = '';
     for (let i = 0; i < assignedTo.length; i++) {
         multiAssingmentQuery += `('${jobId}', '${assignedTo[i]}'),`;
@@ -86,12 +86,18 @@ const addJobDetials = async (job) => {
         max_age,
         keywords
         ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const result = await db.query(query, [id, companyName, companyId, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge, keywords]);
+    
+    try {
+        const result = await db.query(query, [id, companyName, companyId, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge, keywords]);
 
-    if (result[0].affectedRows > 0) {
-        return assignJobToHMByBDE(id, assignedTo);
-    } else {         
-        return {error: 'Job creation failed'};
+        if (result[0].affectedRows > 0) {
+            return assignJobToHMByBDE(id, assignedTo);
+        } else {
+            return {error: 'Job creation failed'};
+        }
+    } catch (error) {
+        console.log(error)
+        return {error: error.message};
     }
 }
 
@@ -187,12 +193,11 @@ const editJobDetials = async (job) => {
     }
 }
 
-const getAssignedHMsForJob = async (jobId) => {
-    const query = 'SELECT * FROM job_assigned_by_bde WHERE job_id = ?';
+const getAssignedSHMsForJob = async (jobId) => {
+    const query = 'SELECT * FROM job_assigned_by_bde WHERE job_id = ? AND shm_email IS NOT NULL';
     const result = await db.query(query, [jobId]);
     return result[0];
 }
-        
 
 const getJobDetails = async (jobId) => {
     const query = 'SELECT * FROM jobs WHERE id = ?';
@@ -204,13 +209,30 @@ const getJobDetails = async (jobId) => {
     }
 }
 
-const assignJobToHrByAccountManager = async (jobAssignment) => {
+const assignJobToHmByShm = async (jobAssignment) => {
     const {jobId, assignedTo, assignedBy} = jobAssignment;
-    const assignmentQuery = 'INSERT INTO jobassignments (id, job_id, assigned_to, assigned_by) VALUES ';
+    const assignmentQuery = 'INSERT INTO jobassignments (id, job_id, assigned_to, assigned_by, role) VALUES ';
     let multiAssingmentQuery = '';
     for (let i = 0; i < assignedTo.length; i++) {
         const id = uuidv4();
-        multiAssingmentQuery += `('${id}', '${jobId}', '${assignedTo[i]}', '${assignedBy}'),`;
+        multiAssingmentQuery += `('${id}', '${jobId}', '${assignedTo[i]}', '${assignedBy}', 'HM'),`;
+    }
+    const query = assignmentQuery + multiAssingmentQuery.slice(0, -1);
+    const result = await db.query(query);
+    if (result[0].affectedRows > 0) {
+        return {success: 'Job assigned successfully to HM'};
+    } else {
+        return {error: 'Job assignment failed'};
+    }
+}
+
+const assignJobToHrByAccountManager = async (jobAssignment) => {
+    const {jobId, assignedTo, assignedBy} = jobAssignment;
+    const assignmentQuery = 'INSERT INTO jobassignments (id, job_id, assigned_to, assigned_by, role) VALUES ';
+    let multiAssingmentQuery = '';
+    for (let i = 0; i < assignedTo.length; i++) {
+        const id = uuidv4();
+        multiAssingmentQuery += `('${id}', '${jobId}', '${assignedTo[i]}', '${assignedBy}', 'HR'),`;
     }
     const query = assignmentQuery + multiAssingmentQuery.slice(0, -1);
     const result = await db.query(query);
@@ -221,15 +243,37 @@ const assignJobToHrByAccountManager = async (jobAssignment) => {
     }
 }
 
-const getAssignedHRsForJob = async (jobId, email) => {
-    const query = 'SELECT * FROM jobassignments WHERE job_id = ? AND assigned_by = ?';
+const getAssignedHMsForJob = async (jobId, email) => {
+    const query = 'SELECT * FROM jobassignments WHERE job_id = ? AND assigned_by = ? AND role = "HM"';
     const result = await db.query(query, [jobId, email]);
     return result[0];
 }
 
+
+const getAssignedHRsForJob = async (jobId, email) => {
+    const query = 'SELECT * FROM jobassignments WHERE job_id = ? AND assigned_by = ? AND role = "HR"';
+    const result = await db.query(query, [jobId, email]);
+    return result[0];
+}
+
+const updateJobAssignmentBySHM = async (jobAssignment) => {
+    const {jobId, assignedTo, assignedBy} = jobAssignment;
+    const deleteQuery = 'DELETE FROM jobassignments WHERE job_id = ? AND assigned_by = ? AND role = "HM"';
+    const deleteResult = await db.query(deleteQuery, [jobId, assignedBy]);
+    if (deleteResult[0].affectedRows >= 0) {
+        if(assignedTo.length > 0) {
+            return assignJobToHmByShm({jobId, assignedTo, assignedBy});
+        } else {
+            return {success: 'Job assigned successfully to HM'};
+        }
+    } else {
+        return {error: 'Job updation failed'};
+    }
+}
+
 const updateJobAssignmentByHM = async (jobAssignment) => {
     const {jobId, assignedTo, assignedBy} = jobAssignment;
-    const deleteQuery = 'DELETE FROM jobassignments WHERE job_id = ? AND assigned_by = ?';
+    const deleteQuery = 'DELETE FROM jobassignments WHERE job_id = ? AND assigned_by = ? AND role = "HR"';
     const deleteResult = await db.query(deleteQuery, [jobId, assignedBy]);
     if (deleteResult[0].affectedRows >= 0) {
         if(assignedTo.length > 0) {
@@ -265,17 +309,23 @@ const getAllJobsForBDE = async (email) => {
     return result[0];
 }
 
-const getAccountManagerJobs = async (email, page) => {
+const getSeniorHMJobs = async (email, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    const query = 'SELECT jobs.* FROM jobs INNER JOIN job_assigned_by_bde ON job_assigned_by_bde.job_id = jobs.id WHERE hm_email = ? order by created_at desc Limit ? offset ?;';
-    const countQuery = 'SELECT count(*) as count FROM job_assigned_by_bde WHERE hm_email = ?';
+    const query = `
+        SELECT jobs.* 
+        FROM jobs INNER JOIN job_assigned_by_bde ON 
+        job_assigned_by_bde.job_id = jobs.id 
+        WHERE shm_email = ? 
+        order by created_at desc 
+        Limit ? offset ?;`;
+    const countQuery = 'SELECT count(*) as count FROM job_assigned_by_bde WHERE shm_email = ?';
     const result = await db.query(query, [email, pageSize, startIndex]);
     const countResult = await db.query(countQuery, [email]);
     return {jobs: result[0], count: countResult[0][0].count};
 }
 
-const getAllAccountManagerJobs = async (email) => {
+const getAllSeniorHMJobs = async (email) => {
     const query = `
     SELECT 
         jobs.id as id,
@@ -284,7 +334,39 @@ const getAllAccountManagerJobs = async (email) => {
         location
     FROM jobs INNER JOIN job_assigned_by_bde 
     ON job_assigned_by_bde.job_id = jobs.id 
-    WHERE hm_email = ? order by created_at desc;`;
+    WHERE shm_email = ? order by created_at desc;`;
+    const result = await db.query(query, [email]);
+    return result[0];
+}
+
+const getHmJobs = async (email, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const query = `
+        SELECT jobs.*
+        FROM jobs INNER JOIN jobassignments ON
+        jobs.id = jobassignments.job_id
+        WHERE jobassignments.assigned_to = ? AND jobassignments.role = 'HM'
+        order by created_at desc
+        Limit ? offset ?;`;
+    const countQuery = 'SELECT count(*) as count FROM jobassignments WHERE assigned_to = ? AND role = "HM"';
+    const result = await db.query(query, [email, pageSize, startIndex]);
+    const countResult = await db.query(countQuery, [email]);
+    return {jobs: result[0], count: countResult[0][0].count};
+}
+
+const getAllHmJobs = async (email) => {
+    const query = `
+        SELECT
+            jobs.id as id,
+            company_name,
+            title,
+            location
+        FROM jobs
+        INNER JOIN jobassignments ON
+        jobs.id = jobassignments.job_id
+        WHERE jobassignments.assigned_to = ? AND jobassignments.role = 'HM'
+        order by created_at desc;`;
     const result = await db.query(query, [email]);
     return result[0];
 }
@@ -315,10 +397,10 @@ const getHRJobs = async (email, page) => {
     FROM jobs 
     INNER JOIN jobassignments ON 
     jobs.id = jobassignments.job_id 
-    WHERE jobassignments.assigned_to = ? 
-    order by jobassignments.assigned_at desc
+    WHERE jobassignments.assigned_to = ? AND jobassignments.role = 'HR'
+    order by jobs.created_at desc
     Limit ? offset ?;`;
-    const countQuery = 'SELECT count(*) as count FROM jobassignments WHERE assigned_to = ?';
+    const countQuery = 'SELECT count(*) as count FROM jobassignments WHERE assigned_to = ? AND role = "HR"';
     const result = await db.query(query, [email, pageSize, startIndex]);
     const countResult = await db.query(countQuery, [email]);
     return {jobs: result[0], count: countResult[0][0].count};
@@ -334,8 +416,8 @@ const getAllHRJobs = async (email) => {
     FROM jobs
     INNER JOIN jobassignments ON
     jobs.id = jobassignments.job_id
-    WHERE jobassignments.assigned_to = ?
-    order by jobassignments.assigned_at desc;`;
+    WHERE jobassignments.assigned_to = ? AND jobassignments.role = 'HR'
+    order by jobs.created_at desc;`;
     const result = await db.query(query, [email]);
     return result[0];
 }
@@ -456,7 +538,7 @@ const getJobHMEmailAndUsername = async (jobId) => {
     return result[0];
 }
 
-const getCandidateCountForJob = async (jobId, email, offerStatus, fromDate, toDate, search) => {
+const getJobCandidatesCount = async (jobId, email, offerStatus, fromDate, toDate, search) => {
     const query = `
     SELECT 
         count(*) as count
@@ -507,15 +589,20 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
         WHERE applications.job_id = ? 
         AND DATE(applications.interview_date) >= ?
         AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
-        ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""} 
+        ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by IN (?) " : ""} 
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""} 
         order by candidates.created_at desc 
         LIMIT ? OFFSET ?`;
-        const params = ((email !== 'undefined' && email !== "") && (offerStatus !== 'undefined' && offerStatus !== "")) ? [jobId, fromDate, toDate, email, offerStatus, pageSize, startIndex] : (email !== 'undefined' && email !== "") ? [jobId, fromDate, toDate, email, pageSize, startIndex] : (offerStatus !== 'undefined' && offerStatus !== "") ? [jobId, fromDate, toDate, offerStatus, pageSize, startIndex] : [jobId, fromDate, toDate, pageSize, startIndex]
+        let hrEmails = []
+        if (role === 'AC') {
+            hrEmails = await getHirignManagerHrEmails(email);
+        }
+        const hrEmailsArr = hrEmails.map(hr => hr.email);
+        const params = ((email !== 'undefined' && email !== "") && (offerStatus !== 'undefined' && offerStatus !== "")) ? [jobId, fromDate, toDate, [email, ...hrEmailsArr], offerStatus, pageSize, startIndex] : (email !== 'undefined' && email !== "") ? [jobId, fromDate, toDate, [email, ...hrEmailsArr], pageSize, startIndex] : (offerStatus !== 'undefined' && offerStatus !== "") ? [jobId, fromDate, toDate, offerStatus, pageSize, startIndex] : [jobId, fromDate, toDate, pageSize, startIndex]
         const result = await db.query(query, params);
-        const hrEmails = await getjobHREmailAndUsername(jobId);
-        const count = await getCandidateCountForJob(jobId, email, offerStatus, fromDate, toDate, search);
+         hrEmails = await getjobHREmailAndUsername(jobId);
+        const count = await getJobCandidatesCount(jobId, email, offerStatus, fromDate, toDate, search);
         return {candidates: result[0], hrList: hrEmails, count};
     } catch (error) {
         console.log(error)
@@ -564,6 +651,22 @@ const updateCandidateOfferStatus = async (candidate) => {
         return {success: 'Candidate offer status updated successfully'};
     } else {         
         return {error: 'Candidate offer status updation failed'};
+    }
+}
+
+const getSeniorHmHMEmails = async (email) => {
+    const query = `
+        SELECT
+            hm_email as email,
+            users.username as username
+        FROM hm_assigned_shm INNER JOIN users ON
+        hm_assigned_shm.hm_email = users.email
+        WHERE shm_email = ?`;
+    try {
+        const result = await db.query(query, [email]);
+        return result[0];
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -638,12 +741,22 @@ const getInitialCandidates = async (email, offerStatus, fromDate, toDate, role, 
         ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
         order by candidates.created_at desc 
         Limit ? offset ?`;
-        const hrEmails = await getHirignManagerHrEmails(email);
+        let hrEmails = []
+        if (role === 'SHM') {
+            const hmEmails = await getSeniorHmHMEmails(email);
+            for (const hm of hmEmails) {
+                const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
+                hrEmails = [...hrEmails, ...hrEmailsArr];
+            }
+            hrEmails = [...hrEmails, ...hmEmails];
+        } else {
+            hrEmails = await getHirignManagerHrEmails(email);
+        }
         const hrEmailsArr = hrEmails.map(hr => hr.email);
         let params = [];
-        if (offerStatus !== 'undefined' && offerStatus !== "" && role === 'AC') {
+        if (offerStatus !== 'undefined' && offerStatus !== "" && (role === 'AC' || role === 'SHM')) {
             params = [[email, ...hrEmailsArr], fromDate, toDate, offerStatus, pageSize, startIndex];
-        } else if (role === 'AC') {
+        } else if (role === 'AC' || role === 'SHM') {
             params = [[email, ...hrEmailsArr], fromDate, toDate, pageSize, startIndex];
         } else if (offerStatus !== 'undefined' && offerStatus !== "") {
             params = [email, fromDate, toDate, offerStatus, pageSize, startIndex];
@@ -686,12 +799,22 @@ const getInitialCandidatesForExcel = async (email, offerStatus, fromDate, toDate
     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
     order by candidates.created_at desc`;
-    const hrEmails = await getHirignManagerHrEmails(email);
+    let hrEmails = []
+    if (role === 'SHM') {
+        const hmEmails = await getSeniorHmHMEmails(email);
+        for (const hm of hmEmails) {
+            const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
+            hrEmails = [...hrEmails, ...hrEmailsArr];
+        }
+        hrEmails = [...hrEmails, ...hmEmails];
+    } else {
+        hrEmails = await getHirignManagerHrEmails(email);
+    }
     const hrEmailsArr = hrEmails.map(hr => hr.email);
     let params = [];
-    if (offerStatus !== 'undefined' && offerStatus !== "" && role === 'AC') {
+    if (offerStatus !== 'undefined' && offerStatus !== "" && (role === 'AC' || role === 'SHM')) {
         params = [[email, ...hrEmailsArr], fromDate, toDate, offerStatus];
-    } else if (role === 'AC') {
+    } else if (role === 'AC' || role === 'SHM') {
         params = [[email, ...hrEmailsArr], fromDate, toDate];
     } else if (offerStatus !== 'undefined' && offerStatus !== "") {
         params = [email, fromDate, toDate, offerStatus];
@@ -777,12 +900,36 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
     order by candidates.created_at desc
     Limit ? offset ?`;
-    const hrEmails = await getHirignManagerHrEmails(hmEmail);
+    let hrEmails = []
+    let hmEmails = []
+    if(role === 'SHM') {
+        hmEmails = await getSeniorHmHMEmails(hmEmail);
+        for (const hm of hmEmails) {
+            const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
+            hrEmails = [...hrEmails, ...hrEmailsArr];
+        }
+        hrEmails = [...hrEmails, ...hmEmails];
+    } else if (role === 'AC') {
+        hrEmails = await getHirignManagerHrEmails(hmEmail);
+    }
     let params = [];
     let result = []
     let count = 0;
     try {
-        if(role === 'AC') {
+        if (role === 'SHM') {
+            const hrEmailsArr = hrEmails.map(hr => hr.email);
+            if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
+                params = [offerStatus, [email], jobId, pageSize, startIndex];
+            } else if(jobId !== 'undefined' && jobId !== "") {
+                params = [offerStatus, [email, ...hrEmailsArr], jobId, pageSize, startIndex];
+            } else if(hmEmail !== email) {
+                params = [offerStatus, [email], pageSize, startIndex];
+            } else {
+                params = [offerStatus, [email, ...hrEmailsArr], pageSize, startIndex];
+            }
+            result = await db.query(query, params);
+            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, jobId);
+        } else if(role === 'AC') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
                 params = [offerStatus, [email], jobId, pageSize, startIndex];
@@ -883,15 +1030,20 @@ const updateTenureStatus = async (candidate) => {
 module.exports = {
     addJobDetials,
     editJobDetials,
-    getAssignedHMsForJob,
+    getAssignedSHMsForJob,
     getJobDetails,
+    assignJobToHmByShm,
     assignJobToHrByAccountManager,
+    getAssignedHMsForJob,
     getAssignedHRsForJob,
+    updateJobAssignmentBySHM,
     updateJobAssignmentByHM,
     getJobsForBDE,
     getAllJobsForBDE,
-    getAccountManagerJobs,
-    getAllAccountManagerJobs,
+    getSeniorHMJobs,
+    getAllSeniorHMJobs,
+    getHmJobs,
+    getAllHmJobs,
     getHRJobs,
     getAllHRJobs,
     addCandidateDetailsForJob,

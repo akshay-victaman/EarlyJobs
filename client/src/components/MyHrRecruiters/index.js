@@ -17,7 +17,7 @@ const apiStatusConstant = {
 }
 
 const MyHrRecruiters = ({setShowCandidateForm}) => {
-    const [recruiterList, setRecruiterList] = useState([])
+    const [hmOrRecruiterList, setHmOrRecruiterList] = useState([])
     const [hrRoleType, setHrRoleType] = useState('')
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
     const [page, setPage] = useState(1)
@@ -25,18 +25,25 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
     const [totalItems, setTotalItems] = useState(0);
     const [searchInput, setSearchInput] = useState('');
     const [hiringFor, setHiringFor] = useState('Intern HR Recruiter');
-    const [hmEmails, setHmEmails] = useState([]);
+    const [shmOrHmEmails, setShmOrHmEmails] = useState([]);
     const [newHmEmail, setNewHmEmail] = useState('');
     const [passwordDetails, setPasswordDetails] = useState({
       password: '',
       confirmPassword: ''
     });
 
+    const role = Cookies.get('role');
+
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
 
     useEffect(() => {
+      if(role === 'AC') {
         getHrRecruiters()
         getHiringManagers();
+      } else {
+        getSeniorHiringManagers();
+        getHiringMangersForSeniorHm();
+      }
     }, [hrRoleType, page])
 
     const handleSelectHrRoleType = (event) => {
@@ -68,8 +75,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
     const getHrRecruiters = async () => {
         setApiStatus(apiStatusConstant.inProgress)
         const jwtToken = Cookies.get('jwt_token')
-        const email = Cookies.get('email')
-        const apiUrl = `${backendUrl}/api/users/hr-for-hm/${email}?hiringFor=${hrRoleType}&search=${searchInput}&page=${page}`
+        const apiUrl = `${backendUrl}/api/users/v2/hrs-for-hm?hiringFor=${hrRoleType}&search=${searchInput}&page=${page}`
         const options = {
           method: 'GET',
           headers: {
@@ -95,7 +101,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
             }))
             console.log(data)
             setTotalItems(data.count)
-            setRecruiterList(formattedData)
+            setHmOrRecruiterList(formattedData)
             setApiStatus(apiStatusConstant.success)
           }
         } else {
@@ -106,8 +112,79 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
 
     const getHrRecruitersForExcel = async () => {
       const jwtToken = Cookies.get('jwt_token')
-      const email = Cookies.get('email')
-      const apiUrl = `${backendUrl}/api/users/hrs-for-hm/excel/${email}?hiringFor=${hrRoleType}&search=${searchInput}`
+      const apiUrl = `${backendUrl}/api/users/v2/hrs-for-hm/excel?hiringFor=${hrRoleType}&search=${searchInput}`
+      console.log(apiUrl)
+      const options = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwtToken}`
+        },
+      }
+      const response = await fetch(apiUrl, options)
+      const data = await response.json()
+      if (response.ok === true) {
+        if(data.error) {
+          toast.error(data.error)
+        } else {
+          const formattedData = data.map(eachItem => ({
+            name: eachItem.username,
+            email: eachItem.email,
+            phone: eachItem.phone,
+            createdAt: formatDate(eachItem.created_at),
+            hiringFor: eachItem.hiring_for,
+            lastLogin: eachItem.last_login ? formatDate(eachItem.last_login) : '--',
+            isBlocked: eachItem.is_blocked
+          }))
+          return formattedData;
+        }
+      } else {
+        toast.error(data.error)
+      }
+  }
+
+  const getHiringMangersForSeniorHm = async () => {
+    setApiStatus(apiStatusConstant.inProgress)
+        const jwtToken = Cookies.get('jwt_token')
+        const apiUrl = `${backendUrl}/api/users/v2/hm-for-shm/?search=${searchInput}&page=${page}`
+        const options = {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwtToken}`
+          },
+        }
+        const response = await fetch(apiUrl, options)
+        const data = await response.json()
+        if (response.ok === true) {
+          if(data.error) {
+            setApiStatus(apiStatusConstant.failure)
+            toast.error(data.error)
+          } else {
+            console.log(data)
+            const formattedData = data.users.map(eachItem => ({
+              name: eachItem.username,
+              email: eachItem.email,
+              phone: eachItem.phone,
+              createdAt: formatDate(eachItem.created_at),
+              hiringFor: eachItem.hiring_for,
+              lastLogin: eachItem.last_login ? formatDate(eachItem.last_login) : '--',
+              isBlocked: eachItem.is_blocked
+            }))
+            console.log(data)
+            setTotalItems(data.count)
+            setHmOrRecruiterList(formattedData)
+            setApiStatus(apiStatusConstant.success)
+          }
+        } else {
+          toast.error(data.error)
+          setApiStatus(apiStatusConstant.failure)
+        }
+    }
+
+    const getHiringMangersForSeniorHmForExcel = async () => {
+      const jwtToken = Cookies.get('jwt_token')
+      const apiUrl = `${backendUrl}/api/users/v2/hm-for-shm/excel?search=${searchInput}`
       const options = {
         method: 'GET',
         headers: {
@@ -140,7 +217,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
     const getHiringManagers = async () => {
       const jwtToken = Cookies.get('jwt_token')
       const email = Cookies.get('email')
-      const apiUrl = `${backendUrl}/api/users/all/account-managers`
+      const apiUrl = `${backendUrl}/api/users/all/hms`
       const options = {
         method: 'GET',
         headers: {
@@ -159,7 +236,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
             console.log(data)
             const emails = data.filter(eachItem => eachItem.email !== email);
             console.log(emails)
-            setHmEmails(emails)
+            setShmOrHmEmails(emails)
           }
         } else {
           toast.error(data.error)
@@ -169,9 +246,46 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       }
     }
 
+    const getSeniorHiringManagers = async () => {
+      const jwtToken = Cookies.get('jwt_token')
+      const email = Cookies.get('email')
+      const apiUrl = `${backendUrl}/api/users/all/senior-hms`
+      const options = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwtToken}`
+        },
+      }
+
+      try {
+        const response = await fetch(apiUrl, options)
+        const data = await response.json()
+        if (response.ok === true) {
+          if(data.error) {
+            toast.error(data.error)
+          } else {
+            console.log(data)
+            const emails = data.filter(eachItem => eachItem.email !== email);
+            console.log(emails)
+            setShmOrHmEmails(emails)
+          }
+        } else {
+          toast.error(data.error)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+    }
+
+
     const onClickEnter = (event) => {
       if (event.key === 'Enter') {
-        getHrRecruiters()
+        if(role === 'AC') {
+          getHrRecruiters()
+        } else {
+          getHiringMangersForSeniorHm();
+        }
       }
     }
 
@@ -191,7 +305,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
           if(data.error) {
               toast.error(data.error);
           } else {
-              setRecruiterList(recruiterList.map(eachItem => {
+            setHmOrRecruiterList(hmOrRecruiterList.map(eachItem => {
                   if(eachItem.email === email) {
                       return {...eachItem, isBlocked: 1}
                   } else {
@@ -223,7 +337,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
             if(data.error) {
                 toast.error(data.error);
             } else {
-                setRecruiterList(recruiterList.map(eachItem => {
+              setHmOrRecruiterList(hmOrRecruiterList.map(eachItem => {
                     if(eachItem.email === email) {
                         return {...eachItem, isBlocked: 0}
                     } else {
@@ -293,7 +407,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
               toast.error(data.error);
             } else {
                 toast.success(data.success);
-                setRecruiterList(recruiterList.map(eachItem => {
+                setHmOrRecruiterList(hmOrRecruiterList.map(eachItem => {
                   if(eachItem.email === email) {
                       return {...eachItem, hiringFor}
                   } else {
@@ -317,7 +431,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
         return;
       }
 
-      const url = `${backendUrl}/api//users/mingrate-hr-assigned-hm`;
+      const url = `${backendUrl}/api/users/migrate-hr-assigned-hm`;
       const options = {
           method: 'PUT',
           headers: {
@@ -337,7 +451,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
               toast.error(data.error);
             } else {
                 toast.success(data.success);
-                setRecruiterList(recruiterList.filter(eachItem => eachItem.email !== hrEmail));
+                setHmOrRecruiterList(hmOrRecruiterList.filter(eachItem => eachItem.email !== hrEmail));
                 setTotalItems(totalItems - 1);
                 close();
             }
@@ -347,6 +461,45 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
       } catch(error) {
           toast.error(error.message);
         }
+      }
+
+      const handleMigrateHm = async (close, hrEmail) => {
+
+        if(newHmEmail === '') {
+          toast.error('Please select a senior hiring manager');
+          return;
+        }
+  
+        const url = `${backendUrl}/api/users/migrate-hm-assigned-shm`;
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            },
+            body: JSON.stringify({hrEmail, newHmEmail})
+        };
+  
+        console.log(hrEmail, newHmEmail)
+  
+        try {
+          const response = await fetch(url, options);
+          const data = await response.json();
+          if(response.ok === true) {
+              if(data.error) {
+                toast.error(data.error);
+              } else {
+                  toast.success(data.success);
+                  setHmOrRecruiterList(hmOrRecruiterList.filter(eachItem => eachItem.email !== hrEmail));
+                  setTotalItems(totalItems - 1);
+                  close();
+              }
+          } else {
+              toast.error(data.error);
+          }
+        } catch(error) {
+            toast.error(error.message);
+          }
       }
 
     const itemsPerPage = 10; 
@@ -457,18 +610,18 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
     const renderMigrateHr = (close, email, name) => (
       <div className="modal-form">
           <button className="modal-close-button" onClick={close}>&times;</button>
-          <label className="homepage-label" style={{marginBottom: '15px'}}>Migrate HR {name} to {newHmEmail}</label>
-          <label className="homepage-label">Select new Hiring Manager</label>
+          <label className="homepage-label" style={{marginBottom: '15px'}}>Migrate {role === "SHM" ? "Hiring Manger" : "HR"} {name} to {newHmEmail}</label>
+          <label className="homepage-label">Select new {role === "SHM" ? "Senior" : ""} Hiring Manager</label>
           <select className="homepage-input" name='hiringFor' id='hiringFor' value={newHmEmail} onChange={handleChangeHMEmail} >
-              <option value=''>Select hiring manager</option>
+              <option value=''>Select {role === "SHM" ? "senior" : ""} hiring manager</option>
               {
-                hmEmails.map(eachItem => (
-                  <option value={eachItem.email}>{eachItem.username} - {eachItem.email}</option>
+                shmOrHmEmails.map(eachItem => (
+                  <option key={eachItem.email} value={eachItem.email}>{eachItem.username} - {eachItem.email}</option>
                 ))
               }
           </select>
           <div className='achieve-button-con' style={{marginTop: '0px'}}>
-              <button className='job-details-upload-candidate-button' onClick={() => handleMigrateHr(close, email)}>Change</button>
+              <button className='job-details-upload-candidate-button' onClick={() => role === "AC" ? handleMigrateHr(close, email) : handleMigrateHm(close, email)}>Change</button>
               <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>Cancel</button>
           </div>
       </div>
@@ -476,26 +629,28 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
 
     return (
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
-            <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>My HR Recruiters</span></h1>
+            <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>My {role === "AC" ? "HR Recruiters" : "Hiring Managers"}</span></h1>
             <div className="job-section-select-filter-container my-hr-recruiters-filter-con">
-              <div className="job-section-select-container"> 
-                <label className="homepage-label" htmlFor='resume'>Hiring For</label>
-                <select className="homepage-input" name='jobId' id='jobId' value={hrRoleType} onChange={handleSelectHrRoleType}>
-                    <option value=''>All Roles</option>
-                    <option value='Intern HR Recruiter'>Intern HR Recruiter</option>
-                    <option value='Fulltime HR Recruiter'>Fulltime HR Recruiter</option>
-                    <option value='Freelance HR Recruiter'>Freelance HR Recruiter</option>
-                </select>
-              </div>
+              { role === 'AC' && 
+                <div className="job-section-select-container"> 
+                  <label className="homepage-label" htmlFor='resume'>Hiring For</label>
+                  <select className="homepage-input" name='jobId' id='jobId' value={hrRoleType} onChange={handleSelectHrRoleType}>
+                      <option value=''>All Roles</option>
+                      <option value='Intern HR Recruiter'>Intern HR Recruiter</option>
+                      <option value='Fulltime HR Recruiter'>Fulltime HR Recruiter</option>
+                      <option value='Freelance HR Recruiter'>Freelance HR Recruiter</option>
+                  </select>
+                </div>
+              }
               <div className="user-view-search-con my-hr-recruiters-search-con">
                   <input className="user-view-search-input my-hr-recruiter-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} onKeyDown={onClickEnter} placeholder="Search by name, email, or phone" />
-                  <div className="user-view-search-button my-hr-recruiters-search-btn" onClick={getHrRecruiters}>
+                  <div className="user-view-search-button my-hr-recruiters-search-btn" onClick={role === "AC" ? getHrRecruiters : getHiringMangersForSeniorHm}>
                       <IoSearchSharp className="search-icon my-hr-recruiter-search-icon" />
                   </div>
               </div>
-              {recruiterList.length > 0 && 
+              {hmOrRecruiterList.length > 0 && 
                 <div className="excel-download-button"> 
-                  <ExcelDownloadButton  getData={getHrRecruitersForExcel} /> 
+                  <ExcelDownloadButton  getData={role === "AC" ? getHrRecruitersForExcel : getHiringMangersForSeniorHmForExcel} /> 
                 </div>
               }
               <div className="rows-count-con">
@@ -504,26 +659,26 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
               </div>
             </div>
             <div className='table-candidate-container'>
-               <table className={`job-details-candidates-table candidate-table-job-section ${recruiterList.length === 0 && "empty-candidates"}`}>
+               <table className={`job-details-candidates-table candidate-table-job-section ${hmOrRecruiterList.length === 0 && "empty-candidates"}`}>
                   <tr className="job-details-candidates-table-heading">
                     <th className="job-details-candidates-table-heading-cell">Name</th>
                     <th className="job-details-candidates-table-heading-cell">Email</th>
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
-                    <th className="job-details-candidates-table-heading-cell">Hiring For</th>
+                    { role === 'AC' && <th className="job-details-candidates-table-heading-cell">Hiring For</th>}
                     <th className="job-details-candidates-table-heading-cell">Last Login</th>
                     <th className="job-details-candidates-table-heading-cell">Created At</th>
                     <th className="job-details-candidates-table-heading-cell">Change Password</th>
-                    <th className="job-details-candidates-table-heading-cell">Block/Unblock HR</th>
-                    <th className="job-details-candidates-table-heading-cell">Change Role</th>
-                    <th className="job-details-candidates-table-heading-cell">Migrate HR</th>
+                    <th className="job-details-candidates-table-heading-cell">Block/Unblock {role === "SHM" ? "HM" : "HR"}</th>
+                    { role === 'AC' && <th className="job-details-candidates-table-heading-cell">Change Role</th>}
+                    <th className="job-details-candidates-table-heading-cell">Migrate {role === "SHM" ? "HM" : "HR"}</th>
                   </tr>
                   {
-                    recruiterList.length > 0 && recruiterList.map(eachItem => (
+                      hmOrRecruiterList.length > 0 && hmOrRecruiterList.map(eachItem => (
                         <tr key={eachItem.email} className="job-details-candidates-table-row">
                             <td className="job-details-candidates-table-cell">{eachItem.name}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.email}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.phone}</td>
-                            <td className="job-details-candidates-table-cell">{eachItem.hiringFor}</td>
+                            { role === 'AC' && <td className="job-details-candidates-table-cell">{eachItem.hiringFor}</td>}
                             <td className="job-details-candidates-table-cell">{eachItem.lastLogin}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.createdAt}</td>
                             <td className="job-details-candidates-table-cell">
@@ -550,18 +705,20 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                                     )}
                                 </Popup>
                             </td>
-                            <td className="job-details-candidates-table-cell">
-                              <Popup
-                                  trigger={<button className="block-user-button">Change</button>}
-                                  modal
-                              >
-                                  {close => (
-                                  <div className="modal">
-                                      {renderChangeRole(close, eachItem.email, eachItem.name)}
-                                  </div>
-                                  )}
-                              </Popup>
-                            </td>
+                            { role === 'AC' &&
+                              <td className="job-details-candidates-table-cell">
+                                <Popup
+                                    trigger={<button className="block-user-button">Change</button>}
+                                    modal
+                                >
+                                    {close => (
+                                    <div className="modal">
+                                        {renderChangeRole(close, eachItem.email, eachItem.name)}
+                                    </div>
+                                    )}
+                                </Popup>
+                              </td>
+                            }
                             <td className="job-details-candidates-table-cell">
                               <Popup
                                   trigger={<button className="block-user-button">Migrate</button>}
@@ -578,7 +735,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                     ))
                   }
                 </table>
-                {recruiterList.length === 0 &&
+                {hmOrRecruiterList.length === 0 &&
                 <p className='no-candidates-error'>
                     { renderNoCandidates() }
                 </p>}

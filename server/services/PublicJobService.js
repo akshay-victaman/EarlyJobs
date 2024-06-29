@@ -30,10 +30,15 @@ const getJobDetails = async (jobId) => {
 }
 
 const getAssignedHMsForJob = async (jobId) => {
-    const query = 'SELECT hm_email FROM job_assigned_by_bde WHERE job_id = ?';
+    const shmQuery = 'SELECT shm_email FROM job_assigned_by_bde WHERE job_id = ?';
+    const hmQuery = 'SELECT assigned_to FROM jobassignments WHERE role = "HM" AND job_id = ?';
     try {
-        const result = await db.query(query, [jobId]);
-        return result[0];
+        let result1 = await db.query(shmQuery, [jobId]);
+        let result2 = await db.query(hmQuery, [jobId]);
+        result1 = result1[0].map(shm => ({hm_email: shm.shm_email}));
+        result2 = result2[0].map(hm => ({hm_email: hm.assigned_to}));
+        const result = result1.concat(result2);
+        return result;
     } catch (error) {
         return {error: error.message};
     }
@@ -98,6 +103,7 @@ const addPublicApplicationForJob = async (applicationData) => {
     } = applicationData;
 
     const hmEmails = await getAssignedHMsForJob(jobId);
+    console.log(hmEmails)
     const hmEmailsString = hmEmails.map(hm => hm.hm_email).join(',');
     
     const query = `

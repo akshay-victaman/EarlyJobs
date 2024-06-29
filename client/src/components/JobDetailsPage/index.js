@@ -29,10 +29,10 @@ const apiStatusConstant = {
 const JobDetailsPage = () => {
   const [jobDetails, setJobDetails] = useState({})
   const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
-  const [humanResources, setHumanResources] = useState([])
+  const [hmOrHrList, setShmOrHrList] = useState([])
   const [selectedHR, setSelectedHR] = useState([])
   const [loading, setLoading] = useState(false)
-  const [hrAssigned, setHrAssigned] = useState(0)
+  const [hrOrHmAssigned, setHrOrHmAssigned] = useState(0)
   const [candidateList, setCandidateList] = useState([])
   const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
   const [viewScheduleInterviewPopup, setViewScheduleInterviewPopup] = useState(false)
@@ -65,9 +65,14 @@ const JobDetailsPage = () => {
   useEffect(() => {
     getJobDetails()
     window.scrollTo(0, 0)
-    if(Cookies.get('role') === 'AC') {
+    const role = Cookies.get('role')
+    if(role === 'AC') {
       fetchHumanResources()
       getHRsForJob()
+    }
+    if(role === 'SHM') {
+      fetchHiringManagers()
+      getHMsForJob()
     }
   }, [])
 
@@ -79,10 +84,10 @@ const JobDetailsPage = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setHrAssigned(0)
+      setHrOrHmAssigned(0)
     }, 5000)
     return () => clearTimeout(timer)
-  }, [hrAssigned])
+  }, [hrOrHmAssigned])
 
   const params = useParams()
   const {id} = params
@@ -198,7 +203,21 @@ const JobDetailsPage = () => {
     } else {
       // setApiStatus(apiStatusConstant.failure)
     }
-}
+  }
+
+  const fetchHiringManagers = async () => {
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${Cookies.get('jwt_token')}`
+        },
+    }
+    const response = await fetch(`${backendUrl}/api/users/all/hiring-managers`, options)
+    const data = await response.json()
+    console.log(data)
+    setShmOrHrList(data)
+  }
 
   const fetchHumanResources = async () => {
     const email = Cookies.get('email')
@@ -211,7 +230,41 @@ const JobDetailsPage = () => {
     }
     const response = await fetch(`${backendUrl}/api/users/all/hr/${email}`, options)
     const data = await response.json()
-    setHumanResources(data)
+    console.log(data)
+    setShmOrHrList(data)
+  }
+
+  const getHMsForJob = async () => {
+    setHrLoader(true)
+    const {id} = params
+    const jwtToken = Cookies.get('jwt_token')
+    const apiUrl = `${backendUrl}/jobs/assigned-hm/${id}`
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+    try {
+      const response = await fetch(apiUrl, options)
+      const data = await response.json()
+      console.log(data)
+      if (response.ok === true) {
+        if(data.error) {
+          alert(data.error)
+        } else {
+          const hmEmails = data.map(item => item.assigned_to)
+          setSelectedHR(hmEmails)
+        }
+      } else {
+        alert(data.error)
+      }
+    } catch (error) {
+      alert(error)
+    }
+    setTimeout(() => {
+      setHrLoader(false)
+    }, 2000);
   }
 
   const getHRsForJob = async () => {
@@ -324,6 +377,45 @@ const JobDetailsPage = () => {
     )
   }
 
+  const assignJobToHM = async () => {
+    setLoading(true)
+    const email = Cookies.get('email')
+    const assignedData = {
+      jobId: jobDetails.id,
+      assignedTo: selectedHR,
+      assignedBy: email,
+    }
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${Cookies.get('jwt_token')}`
+        },
+        body: JSON.stringify(assignedData)
+    }
+    try {
+      const response = await fetch(`${backendUrl}/jobs/assigned-hm/update`, options)
+      const data = await response.json()
+      if(response.ok === true) {
+        if(data.error) {
+            const hrEmails = data.hrEmails.map(item => {
+              const hrName = hmOrHrList.find(hr => hr.email === item)
+              return hrName.username
+            })
+            alert(`Job already assigned to ${hrEmails.join(', ')} HMs. Please remove them and try again.`)
+            setHrOrHmAssigned(2)
+        } else {
+          setHrOrHmAssigned(1)
+        }
+      } else {
+        setHrOrHmAssigned(2)
+      }
+    } catch (error) {
+      alert(error)
+    }
+    setLoading(false)
+  }
+
   const assignJobToHR = async () => {
     setLoading(true)
     const email = Cookies.get('email')
@@ -347,16 +439,16 @@ const JobDetailsPage = () => {
     if(response.ok === true) {
         if(data.error) {
             const hrEmails = data.hrEmails.map(item => {
-              const hrName = humanResources.find(hr => hr.email === item)
+              const hrName = hmOrHrList.find(hr => hr.email === item)
               return hrName.username
             })
             alert(`Job already assigned to ${hrEmails.join(', ')} HRs. Please remove them and try again.`)
-            setHrAssigned(2)
+            setHrOrHmAssigned(2)
         } else {
-            setHrAssigned(1)
+          setHrOrHmAssigned(1)
         }
     } else {
-        setHrAssigned(2)
+        setHrOrHmAssigned(2)
     }
   } catch (error) {
     alert(error)
@@ -435,7 +527,7 @@ const JobDetailsPage = () => {
     </div>
   )
 
-  const renderAssignToHR = () => (
+  const renderAssignToHmOrHr = () => (
     hrLoader ? 
     <Oval
         height={16}
@@ -453,16 +545,16 @@ const JobDetailsPage = () => {
     <>
       <div className='job-details-assign-con'>
         <div className='job-details-assign-sub-con'>
-          <label className='job-details-assign'>Assign to HR: </label>
+          <label className='job-details-assign'>Assign to {Cookies.get('role') === 'AC' ? "HR" : "HM"}: </label>
           <select className='job-details-select' value={selectedHR} onChange={handleAddHR}>
-            <option value=''>Select HR</option>
-              {   humanResources.length > 0 &&
-                  humanResources.map(eachItem => <option key={eachItem.email} value={eachItem.email}>{eachItem.username + ' - ' + eachItem.hiring_category}</option>)
+            <option value=''>Select {Cookies.get('role') === 'AC' ? "HR" : "HM"}</option>
+              {   hmOrHrList.length > 0 &&
+                  hmOrHrList.map(eachItem => <option key={eachItem.email} value={eachItem.email}>{eachItem.username + ' - ' + eachItem.hiring_category}</option>)
               }
           </select>
         </div>
         <div className='job-details-assign-sub-con'>
-          <button className='job-details-assign-button' disabled={loading} onClick={assignJobToHR} >
+          <button className='job-details-assign-button' disabled={loading} onClick={Cookies.get('role') === 'AC' ? assignJobToHR : assignJobToHM} >
             {loading ? 
               <Oval
                   height={16}
@@ -481,16 +573,16 @@ const JobDetailsPage = () => {
             }
           </button>
           <p className='job-details-assign-status'>
-            {hrAssigned === 1 && <FaCircleCheck className='check-icon' /> }
-            {hrAssigned === 2 && <IoIosCloseCircle className='cross-circle-icon' /> }
-            {hrAssigned === 2 && "Try Again"}
+            {hrOrHmAssigned === 1 && <FaCircleCheck className='check-icon' /> }
+            {hrOrHmAssigned === 2 && <IoIosCloseCircle className='cross-circle-icon' /> }
+            {hrOrHmAssigned === 2 && "Try Again"}
           </p>
         </div>
       </div>
       <div style={{marginTop: '12px'}} className='hr-input-list-con'>
             { selectedHR.length > 0 && 
               selectedHR.map((email, index) => {
-                    const hrName = humanResources.find(item => item.email === email) 
+                    const hrName = hmOrHrList.find(item => item.email === email) 
                     return (
                         <div className='hr-input-list' key={index}>
                             <p className='hr-input-list-item'>{hrName && hrName.username}</p>
@@ -594,7 +686,7 @@ const JobDetailsPage = () => {
               </button>
             }
           </div>
-          {userType === 'AC' && renderAssignToHR()}
+          {(userType === 'AC' || userType === 'SHM') && renderAssignToHmOrHr()}
           <div className="job-details-location-type-salary-con">
             <div className="job-details-location-type-con">
               <div className="job-details-location-type">

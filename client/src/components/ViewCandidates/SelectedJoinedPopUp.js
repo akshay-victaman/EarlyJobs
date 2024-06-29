@@ -10,7 +10,7 @@ const SelectedJoinedPopUp = ({ onShowSelectedOrJoinedPopup, selectedJoined }) =>
 
     const {candidateName, candidateEmail, appliedBy, companyName} = candidateDetails
 
-
+    console.log("selectedJoined", selectedJoined)
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const [selectedDate, setSelectedDate] = useState('')
@@ -47,7 +47,7 @@ const SelectedJoinedPopUp = ({ onShowSelectedOrJoinedPopup, selectedJoined }) =>
             name: `EarlyJobs - Candidate ${offerStatus === "Selected" ? "Selection" : "Joining"}`,
             fromEmailId: 'no-reply@earlyjobs.in',
             subject: `Congratulations! You have been ${offerStatus === "Selected" ? "selected" : "joined"}`,
-            recipients: `${candidateEmail}`,
+            recipients: `${candidateEmail}, akkiakshay440@gmail.com`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'
         }

@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { useHistory, Redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Oval } from 'react-loader-spinner';
-import NavBar from '../NavBar';
 import './style.css'
-import Footer from '../Footer';
 
 const loginTypes = {
     user: 'Recruiter',
@@ -59,7 +57,7 @@ const HomePage = () => {
             history.replace('/bde-portal')
             window.location.reload();
             return
-        } else if(role === 'AC' || role === 'HR') {
+        } else if(role === 'AC' || role === 'HR' || role === 'SHM') {
             history.replace('/jobs')
             window.location.reload();
             return
@@ -109,14 +107,13 @@ const HomePage = () => {
             return <Redirect to='/admin' />
         } else if(role === 'BDE') {
             return <Redirect to='/bde-portal' />
-        } else if(role === 'AC' || role === 'HR') {
+        } else if(role === 'AC' || role === 'HR' || role === 'SHM') {
             return <Redirect to='/jobs' />
         }
     }
 
     return (
         <div className="homepage-container">
-            {/* <NavBar isLoggedIn={false} /> */}
             <div className="homepage-sub-con">
                 <div className="homepage-card">
                     <div className='login-type-con'>
@@ -159,7 +156,6 @@ const HomePage = () => {
                 </div>
                 <img src='/homepage-bg.png' className='homepage-img' alt='homepage-img'/>
             </div>
-            {/* <Footer /> */}
         </div>
     )
 }
