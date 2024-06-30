@@ -447,9 +447,10 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             console.log(seniorHiringManagers)
             return (editJob.assignedTo.map((email, index) => {
                 const hiringManagerName = seniorHiringManagers.find(item => item.email === email)
+                console.log(email)
                 return (
                     <div className='hr-input-list' key={index}>
-                        <p className='hr-input-list-item'>{hiringManagerName.username}</p>
+                        <p className='hr-input-list-item'>{hiringManagerName && hiringManagerName.username}</p>
                         <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveHiringManager(email)}><IoIosClose className='hr-close-icon' /></button>
                     </div>
                 )}
