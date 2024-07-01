@@ -120,7 +120,7 @@ const ScheduleInterview = ({interviewDetails, onShowScheduleInterviewPopup}) => 
             name: 'Interview Scheduled Acknowledgement Mail',
             fromEmailId: 'no-reply@earlyjobs.in',
             subject: `Interview Scheduled by Earlyjobs Victaman`,
-            recipients: `${candidateDetails.candidateEmail}, akkiakshay440@gmail.com`,
+            recipients: `${candidateDetails.candidateEmail}`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'
         }

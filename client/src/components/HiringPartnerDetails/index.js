@@ -89,7 +89,7 @@ const HiringPartnerDetails = () => {
     }, [])
 
     const fetchHiringManagers = async () => {
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/all/account-managers`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/users/all/hms`
         const options = {
             method: 'GET',
             headers: {
