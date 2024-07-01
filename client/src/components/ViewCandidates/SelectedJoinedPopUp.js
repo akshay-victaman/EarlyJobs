@@ -47,7 +47,7 @@ const SelectedJoinedPopUp = ({ onShowSelectedOrJoinedPopup, selectedJoined }) =>
             name: `EarlyJobs - Candidate ${offerStatus === "Selected" ? "Selection" : "Joining"}`,
             fromEmailId: 'no-reply@earlyjobs.in',
             subject: `Congratulations! You have been ${offerStatus === "Selected" ? "selected" : "joined"}`,
-            recipients: `${candidateEmail}, akkiakshay440@gmail.com`,
+            recipients: `${candidateEmail}`,
             content: encodedContent,
             replyToEmailID: 'no-reply@earlyjobs.in'
         }
