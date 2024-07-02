@@ -28,7 +28,7 @@ const SelectedJoinedPopUp = ({ onShowSelectedOrJoinedPopup, selectedJoined }) =>
             Congratulations! You have been ${offerStatus === "Selected" ? "selected" : "joined"} for the position of ${jobName} with ${companyName} on ${selectedDate} at ${location}.
             <br>
             <br>
-            If you need any help, please coordinate with ${username} Victaman, at ${appliedBy}.
+            If you need any help, please coordinate with ${username} Victaman, at ${appliedBy} or Earlyjobs call/wtsp: 8217527926.
             <br>
             <br>
             Regards,

@@ -298,9 +298,11 @@ const getOfferStatusCandidates = async (req, res) => {
     const role = req.query.role;
     const search = req.query.search;
     const jobId = req.query.jobId;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
     const page = parseInt(req.query.page) || 1;
     try {
-      const candidates = await jobService.getOfferStatusCandidates(email, hmEmail, offerStatus, role, search, jobId, page);
+      const candidates = await jobService.getOfferStatusCandidates(email, hmEmail, offerStatus, role, search, jobId, fromDate, toDate, page);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -314,8 +316,10 @@ const getOfferStatusCandidatesForExcel = async (req, res) => {
     const role = req.query.role;
     const search = req.query.search;
     const jobId = req.query.jobId;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
     try {
-      const candidates = await jobService.getOfferStatusCandidatesForExcel(email, hmEmail, offerStatus, role, search, jobId);
+      const candidates = await jobService.getOfferStatusCandidatesForExcel(email, hmEmail, offerStatus, role, search, jobId, fromDate, toDate);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });

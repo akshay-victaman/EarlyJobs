@@ -245,7 +245,7 @@ const Applications = ({ setShowCandidateForm }) => {
           Your interview for the position of ${jobName} with ${companyName} is scheduled for <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
           <br>
           <br>
-          If you need any help, please coordinate with ${username} Victaman, at ${candidateDetails.hrEmail}.
+          If you need any help, please coordinate with ${username} Victaman, at ${candidateDetails.hrEmail} or Earlyjobs call/wtsp: 8217527926.
           <br>
           <br>
           Regards,
@@ -294,7 +294,7 @@ const Applications = ({ setShowCandidateForm }) => {
           Just a friendly reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for tomorrow, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
           <br>
           <br>
-          If you need any help, please coordinate with ${username}, Victaman at ${candidateDetails.hrEmail}.
+          If you need any help, please coordinate with ${username}, Victaman at ${candidateDetails.hrEmail} or Earlyjobs call/wtsp: 8217527926.
           <br>
           <br>
           Regards,
@@ -344,7 +344,7 @@ const Applications = ({ setShowCandidateForm }) => {
           This is a gentle reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for today, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
           <br>
           <br>
-          If you need any help, please coordinate with ${username}, Victaman at ${candidateDetails.hrEmail}.
+          If you need any help, please coordinate with ${username}, Victaman at ${candidateDetails.hrEmail} or Earlyjobs call/wtsp: 8217527926.
           <br>
           <br>
           Regards,

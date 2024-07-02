@@ -584,7 +584,9 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
             offered_date,
             applied_by,
             interview_date,
-            company_name
+            company_name,
+            city,
+            area
         FROM candidates 
         INNER JOIN applications ON 
         candidates.id = applications.candidate_id 
@@ -629,7 +631,9 @@ const getJobCandidatesForExcel = async (jobId, email, role, offerStatus, fromDat
         offered_date,
         applied_by,
         interview_date,
-        company_name
+        company_name,
+        city,
+        area
     FROM candidates
     INNER JOIN applications ON
     candidates.id = applications.candidate_id
@@ -732,7 +736,9 @@ const getInitialCandidates = async (email, offerStatus, fromDate, toDate, role, 
             offered_date,
             applied_by,
             interview_date,
-            company_name
+            company_name,
+            city,
+            area
         FROM candidates 
         INNER JOIN applications ON 
         candidates.id = applications.candidate_id 
@@ -791,7 +797,9 @@ const getInitialCandidatesForExcel = async (email, offerStatus, fromDate, toDate
         offered_date,
         applied_by,
         interview_date,
-        company_name
+        company_name,
+        city,
+        area
     FROM candidates
     INNER JOIN applications ON
     candidates.id = applications.candidate_id
@@ -846,6 +854,8 @@ const getOfferStatusCandidatesCount = async (
     hmEmail,
     offerStatus,
     search,
+    fromDate,
+    toDate,
     jobId
   ) => {
     const appliedBy = Array.isArray(email) ? email : [email, ...hmEmail];
@@ -858,13 +868,15 @@ const getOfferStatusCandidatesCount = async (
       INNER JOIN jobs ON jobs.id = applications.job_id
       WHERE applications.offer_status = ?
         AND applications.applied_by IN (?) 
+        AND DATE(applications.interview_date) >= ? 
+        AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
         ${jobId !== 'undefined' && jobId !== "" ? "AND applications.job_id = ?" : ""}
         ${search !== 'undefined' && search !== ""
         ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')`
         : ""};
     `;
      
-      const params = [offerStatus, appliedBy];
+      const params = [offerStatus, appliedBy, fromDate, toDate];
       if (jobId !== 'undefined' && jobId !== "") params.push(jobId); 
   
     try {
@@ -876,7 +888,7 @@ const getOfferStatusCandidatesCount = async (
     }
 };
 
-const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, search, jobId, page) => {
+const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, search, jobId, fromDate, toDate, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const query = `
@@ -892,7 +904,9 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
         company_name,
         interview_date,
         tenure_in_days,
-        tenure_status
+        tenure_status,
+        city,
+        area
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
@@ -902,6 +916,8 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
     jobs.id = applications.job_id 
     WHERE applications.offer_status = ?
     AND applications.applied_by IN (?)
+    AND DATE(applications.interview_date) >= ? 
+    AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
     order by candidates.created_at desc
@@ -925,37 +941,37 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
         if (role === 'SHM') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
-                params = [offerStatus, [email], jobId, pageSize, startIndex];
+                params = [offerStatus, [email], fromDate, toDate, jobId, pageSize, startIndex];
             } else if(jobId !== 'undefined' && jobId !== "") {
-                params = [offerStatus, [email, ...hrEmailsArr], jobId, pageSize, startIndex];
+                params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate, jobId, pageSize, startIndex];
             } else if(hmEmail !== email) {
-                params = [offerStatus, [email], pageSize, startIndex];
+                params = [offerStatus, [email], fromDate, toDate, pageSize, startIndex];
             } else {
-                params = [offerStatus, [email, ...hrEmailsArr], pageSize, startIndex];
+                params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, jobId);
+            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
         } else if(role === 'AC') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
-                params = [offerStatus, [email], jobId, pageSize, startIndex];
+                params = [offerStatus, [email], fromDate, toDate, jobId, pageSize, startIndex];
             } else if(jobId !== 'undefined' && jobId !== "") {
-                params = [offerStatus, [email, ...hrEmailsArr], jobId, pageSize, startIndex];
+                params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate, jobId, pageSize, startIndex];
             } else if(hmEmail !== email) {
-                params = [offerStatus, [email], pageSize, startIndex];
+                params = [offerStatus, [email], fromDate, toDate, pageSize, startIndex];
             } else {
-                params = [offerStatus, [email, ...hrEmailsArr], pageSize, startIndex];
+                params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, jobId);
+            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
         } else {
             if(jobId !== 'undefined' && jobId !== "") {
-                params = [offerStatus, email, jobId, pageSize, startIndex];
+                params = [offerStatus, email, fromDate, toDate, jobId, pageSize, startIndex];
             } else {
-                params = [offerStatus, email, pageSize, startIndex];
+                params = [offerStatus, email, fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesCount(email, hmEmail, offerStatus, search, jobId);
+            count = await getOfferStatusCandidatesCount(email, hmEmail, offerStatus, search, fromDate, toDate, jobId);
         }
     } catch (error) {
         console.log(error)
@@ -963,7 +979,7 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
     return {candidates: result[0], hrEmails, count};
 }
 
-const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, role, search, jobId) => {
+const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, role, search, jobId, fromDate, toDate,) => {
     const query = `
     SELECT 
         applications.id as application_id,
@@ -975,7 +991,11 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
         offered_date,
         applied_by,
         company_name,
-        interview_date
+        interview_date,
+        tenure_in_days,
+        tenure_status,
+        city,
+        area
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
@@ -985,30 +1005,55 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
     jobs.id = applications.job_id 
     WHERE applications.offer_status = ?
     AND applications.applied_by IN (?)
+    AND DATE(applications.interview_date) >= ? 
+    AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
     order by candidates.created_at desc`;
-    const hrEmails = await getHirignManagerHrEmails(hmEmail);
+    let hrEmails = []
+    let hmEmails = []
+    if(role === 'SHM') {
+        hmEmails = await getSeniorHmHMEmails(hmEmail);
+        for (const hm of hmEmails) {
+            const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
+            hrEmails = [...hrEmails, ...hrEmailsArr];
+        }
+        hrEmails = [...hrEmails, ...hmEmails];
+    } else if (role === 'AC') {
+        hrEmails = await getHirignManagerHrEmails(hmEmail);
+    }
     let params = [];
     let result = []
     try {
-        if(role === 'AC') {
+        if (role === 'SHM') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
-                params = [offerStatus, [email], jobId];
+                params = [offerStatus, [email], fromDate, toDate, jobId];
             } else if(jobId !== 'undefined' && jobId !== "") {
-                params = [offerStatus, [email, ...hrEmailsArr], jobId];
+                params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate, jobId];
             } else if(hmEmail !== email) {
-                params = [offerStatus, [email]];
+                params = [offerStatus, [email], fromDate, toDate];
             } else {
-                params = [offerStatus, [email, ...hrEmailsArr]];
+                params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate];
+            }
+            result = await db.query(query, params);
+        } else if(role === 'AC') {
+            const hrEmailsArr = hrEmails.map(hr => hr.email);
+            if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
+                params = [offerStatus, [email], fromDate, toDate, jobId];
+            } else if(jobId !== 'undefined' && jobId !== "") {
+                params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate, jobId];
+            } else if(hmEmail !== email) {
+                params = [offerStatus, [email], fromDate, toDate];
+            } else {
+                params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate];
             }
             result = await db.query(query, params);
         } else {
             if(jobId !== 'undefined' && jobId !== "") {
-                params = [offerStatus, email, jobId];
+                params = [offerStatus, email, fromDate, toDate, jobId];
             } else {
-                params = [offerStatus, email];
+                params = [offerStatus, email, fromDate, toDate];
             }
             result = await db.query(query, params);
         }
