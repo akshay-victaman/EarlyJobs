@@ -286,7 +286,7 @@ const getAllHMsForSeniorHMForExcel = async (email, search) => {
 
 const getHrAssignedHm = async (email, role) => {
     const userQuery = `
-        SELECT username, phone 
+        SELECT username, phone, email
         FROM users
         WHERE email = ?
     `;
@@ -296,7 +296,7 @@ const getHrAssignedHm = async (email, role) => {
     }
     if(role === 'AC') {
         const SHMQuery = `
-            SELECT username, phone
+            SELECT username, phone, email
             FROM users INNER JOIN hm_assigned_shm ON
             users.email = hm_assigned_shm.shm_email
             WHERE hm_email = ?
@@ -306,7 +306,7 @@ const getHrAssignedHm = async (email, role) => {
         return {shm: result[0], hm: result1[0]};
     }
     const HMQuery = `
-        SELECT username, phone 
+        SELECT username, phone, email
         FROM users INNER JOIN hrassignedhm ON 
         users.email = hrassignedhm.hm_email 
         WHERE hr_email = ?

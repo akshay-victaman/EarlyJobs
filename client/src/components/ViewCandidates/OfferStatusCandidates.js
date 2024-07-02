@@ -43,7 +43,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
     useEffect(() => {
         getOfferStatusCandidates()
         getAllJobsList()
-    }, [page, offerStatus, jobId, selectHr])
+    }, [page, offerStatus, jobId, selectHr,fromDate, toDate])
 
     const itemsPerPage = 10; 
 
@@ -83,6 +83,20 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
     const handleToDateChange = (event) => {
       setToDate(event.target.value)
       setPage(1)
+    }
+
+    const dateValidation = (fromDate, toDate) => {
+      const from = new Date(fromDate);
+      const to = new Date(toDate);
+      if(from.getTime() > to.getTime()) {
+        alert("FROM date should be less or equal to TO date")
+        const today = new Date();
+        const date = today.toISOString().split('T')[0];
+        setFromDate(date)
+        setToDate(date)
+        return false
+      }
+      return true
     }
 
     const getAllJobsList = async () => {
@@ -141,13 +155,14 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
 
 
     const getOfferStatusCandidates = async () => {
+        if(!dateValidation(fromDate, toDate)) return;
         setApiStatus(apiStatusConstant.inProgress);
         const role = Cookies.get('role');
         let email = Cookies.get('email');
         if(selectHr !== '') {
           email = selectHr
         }
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate?email=${email}&search=${searchInput}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}&page=${page}`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}&page=${page}`
         const options = {
             method: 'GET',
             headers: {
@@ -169,6 +184,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   candidateId: eachItem.candidate_id,
                   name: eachItem.name,
                   companyName: eachItem.company_name,
+                  area: eachItem.area,
+                  city: eachItem.city,
                   phone: eachItem.phone,
                   appliedBy: eachItem.applied_by,
                   interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
@@ -192,12 +209,13 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
     }
 
     const getOfferStatusCandidatesForExcel = async () => {
+        if(!dateValidation(fromDate, toDate)) return;
         const role = Cookies.get('role');
         let email = Cookies.get('email');
         if(selectHr !== '') {
           email = selectHr
         }
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidates/excel?email=${email}&search=${searchInput}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}`
         const options = {
             method: 'GET',
             headers: {
@@ -219,6 +237,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   candidateId: eachItem.candidate_id,
                   name: eachItem.name,
                   companyName: eachItem.company_name,
+                  area: eachItem.area,
+                  city: eachItem.city,
                   phone: eachItem.phone,
                   appliedBy: eachItem.applied_by,
                   interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
@@ -397,6 +417,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   <tr className="job-details-candidates-table-heading">
                     <th className="job-details-candidates-table-heading-cell">Name</th>
                     <th className="job-details-candidates-table-heading-cell">Company Name</th>
+                    <th className="job-details-candidates-table-heading-cell">Location</th>
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
                     <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>
                     { (showCandidateForm !== 7) && <th className="job-details-candidates-table-heading-cell">{showCandidateForm === 10 ? "Was Planned On" : `${offerStatus} Date`}</th>}
@@ -412,6 +433,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                                 {eachItem.name}
                             </td>
                             <td className="job-details-candidates-table-cell">{eachItem.companyName}</td>
+                            <td className="job-details-candidates-table-cell">{eachItem.area}, {eachItem.city}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.phone}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.appliedBy}</td>
                             {(showCandidateForm !== 7) && 

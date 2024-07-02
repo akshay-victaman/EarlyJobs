@@ -7,7 +7,7 @@ import {toast} from 'react-toastify'
 const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup, candidateDetails, jobId, jobsList, candidateList, setCandidateList}) => {
     const [updateOfferStatus, setUpdateOfferStatus] = useState('');
     const [loading, setLoading] = useState(false)
-    const {candidateName,candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy, interviewDate, companyName} = candidateDetails
+    const {candidateName, candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy, interviewDate, companyName, area, city} = candidateDetails
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const handleCandidateStatusChange = async event => {
@@ -78,6 +78,9 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
             </td>
             <td className="job-details-candidates-table-cell">
             {companyName}
+            </td>
+            <td className="job-details-candidates-table-cell">
+                {area}, {city}
             </td>
             <td className="job-details-candidates-table-cell">
             {candidatePhone}

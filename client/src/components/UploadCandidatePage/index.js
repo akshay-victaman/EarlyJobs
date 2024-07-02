@@ -230,7 +230,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
             Your interview for the position of ${jobName} with ${companyName} is scheduled for <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
             <br>
             <br>
-            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}` : `${username} Victaman, at ${hmHrData.hr[0].phone} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}`}.
+            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}, ${hmHrData.shm[0].email} or Earlyjobs call/wtsp: 8217527926` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone}, ${hmHrData.hm[0].email} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}, ${hmHrData.shm[0].email} or Earlyjobs call/wtsp: 8217527926` : `${username} Victaman, at ${hmHrData.hr[0].phone}, ${hmHrData.hr[0].email} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}, ${hmHrData.hm[0].email} or Earlyjobs call/wtsp: 8217527926`}.
             <br>
             <br>
             Regards,
@@ -279,7 +279,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
             Just a friendly reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for tomorrow, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
             <br>
             <br>
-            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}` : `${username} Victaman, at ${hmHrData.hr[0].phone} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}`}.
+            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}, ${hmHrData.shm[0].email}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone}, ${hmHrData.hm[0].email} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}, ${hmHrData.shm[0].email}` : `${username} Victaman, at ${hmHrData.hr[0].phone}, ${hmHrData.hr[0].email} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}, ${hmHrData.hm[0].email}`}.
             <br>
             <br>
             Regards,
@@ -329,7 +329,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
             This is a gentle reminder that your interview for the position of ${jobName} with ${companyName} is scheduled for today, <b>${formattedDateTime}</b>. Please ensure you arrive on time. The interview will be held at ${location}. Best of luck!
             <br>
             <br>
-            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}` : `${username} Victaman, at ${hmHrData.hr[0].phone} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}`}.
+            If you need any help, please coordinate with ${role === "SHM" ? `${username} Victaman, at ${hmHrData.shm[0].phone}, ${hmHrData.shm[0].email}` : role === "AC" ? `${username} Victaman, at ${hmHrData.hm[0].phone}, ${hmHrData.hm[0].email} or ${hmHrData.shm[0].username} Victaman, at ${hmHrData.shm[0].phone}, ${hmHrData.shm[0].email}` : `${username} Victaman, at ${hmHrData.hr[0].phone}, ${hmHrData.hr[0].email} or ${hmHrData.hm[0].username}, Victaman at ${hmHrData.hm[0].phone}, ${hmHrData.hm[0].email}`}.
             <br>
             <br>
             Regards,
@@ -382,7 +382,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
 
 
     const postCandidateDetails = async (event) => {
-        event.preventDefault()        
+        event.preventDefault()
         const dob = new Date(candidateDetails.dateOfBirth);
         const today = new Date();
         let age = today.getFullYear() - dob.getFullYear();

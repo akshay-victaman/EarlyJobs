@@ -151,7 +151,9 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
             offeredDate: eachItem.offered_date,
             appliedBy: eachItem.applied_by,
             interviewDate: formatDate(eachItem.interview_date),
-            companyName: eachItem.company_name
+            companyName: eachItem.company_name,
+            city: eachItem.city,
+            area: eachItem.area
           }))
           console.log(formattedData)
           const appliedByList = data.candidates.map(eachItem => eachItem.applied_by)
@@ -199,7 +201,9 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
             offeredDate: eachItem.offered_date,
             appliedBy: eachItem.applied_by,
             interviewDate: formatDate(eachItem.interview_date),
-            companyName: eachItem.company_name
+            companyName: eachItem.company_name,
+            city: eachItem.city,
+            area: eachItem.area
           }))
           return formattedData
         }
@@ -242,7 +246,9 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
               offeredDate: eachItem.offered_date,
               appliedBy: eachItem.applied_by,
               interviewDate: formatDate(eachItem.interview_date),
-              companyName: eachItem.company_name
+              companyName: eachItem.company_name,
+              city: eachItem.city,
+              area: eachItem.area
             }))
             console.log(formattedData)
             setHrList(data.hrList)
@@ -288,7 +294,9 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
             offeredDate: eachItem.offered_date,
             appliedBy: eachItem.applied_by,
             interviewDate: formatDate(eachItem.interview_date),
-            companyName: eachItem.company_name
+            companyName: eachItem.company_name,
+            city: eachItem.city,
+            area: eachItem.area
           }))
           return formattedData
         }
@@ -475,6 +483,9 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
                     </th>
                     <th className="job-details-candidates-table-heading-cell">
                       Company Name
+                    </th>
+                    <th className="job-details-candidates-table-heading-cell">
+                      Location
                     </th>
                     <th className="job-details-candidates-table-heading-cell">
                       Phone
