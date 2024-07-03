@@ -388,7 +388,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 )
               }
               <div className="job-section-select-container"> 
-                  <label className="homepage-label view-candidates-label" htmlFor='interview-date'>Filter By Interview Date (From - To)</label>
+                  <label className="homepage-label view-candidates-label" htmlFor='interview-date'>Filter By {showCandidateForm === 5 ? "Selection Date" : showCandidateForm === 6 ? "Joining Date" : "Interview Date"} (From - To)</label>
                   <div className="date-con"> 
                     <input className="homepage-input view-candidates-select interview-date-input" type='date' id='interview-date' value={fromDate} onChange={handleFromDateChange} />
                     <input className="homepage-input view-candidates-select interview-date-input" type='date' id='interview-date' value={toDate} onChange={handleToDateChange} />
