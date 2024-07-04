@@ -114,7 +114,7 @@ const getJobsForBDE = async (req, res) => {
 }
 
 const getAllJobsForBDE = async (req, res) => {
-    const email = req.params.email;
+    const email = req.email;
     try {
       const jobs = await jobService.getAllJobsForBDE(email);
       res.json(jobs);
@@ -326,10 +326,52 @@ const getOfferStatusCandidatesForExcel = async (req, res) => {
     }
 }
 
+const getOfferStatusCandidatesForBDE = async (req, res) => {
+    const email = req.query.email;
+    const offerStatus = req.query.offerStatus;
+    const search = req.query.search;
+    const jobId = req.query.jobId;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
+    const page = parseInt(req.query.page) || 1;
+
+    try {
+      const candidates = await jobService.getOfferStatusCandidatesForBDE(email, offerStatus, search, jobId, fromDate, toDate, page);
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getOfferStatusCandidatesForBDEExcel = async (req, res) => {
+    const email = req.query.email;
+    const offerStatus = req.query.offerStatus;
+    const search = req.query.search;
+    const jobId = req.query.jobId;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
+    try {
+      const candidates = await jobService.getOfferStatusCandidatesForBDEExcel(email, offerStatus, search, jobId, fromDate, toDate);
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const updateTenureStatus = async (req, res) => {
     const candidate = req.body;
     try {
       const updatedCandidate = await jobService.updateTenureStatus(candidate);
+      res.json(updatedCandidate);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const updateVerificationStatus = async (req, res) => {
+    const candidate = req.body;
+    try {
+      const updatedCandidate = await jobService.updateVerificationStatus(candidate);
       res.json(updatedCandidate);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -365,5 +407,8 @@ module.exports = {
     updateInterviewDate,
     getOfferStatusCandidates,
     getOfferStatusCandidatesForExcel,
-    updateTenureStatus
+    getOfferStatusCandidatesForBDE,
+    getOfferStatusCandidatesForBDEExcel,
+    updateTenureStatus,
+    updateVerificationStatus
 }
