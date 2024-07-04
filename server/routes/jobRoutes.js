@@ -32,6 +32,9 @@ router.get('/candidates/initial/excel/:email', authenticateToken, checkUserBlock
 router.get('/candidate/details/:candidateId', authenticateToken, checkUserBlockStatus, jobController.getCandidateDetails);
 router.get('/candidate', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidates);
 router.get('/candidates/excel', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForExcel);
+router.get('/bde/candidate', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForBDE);
+router.get('/bde/candidates/excel', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForBDEExcel);
 router.put('/candidate/tenure-status/update', authenticateToken, checkUserBlockStatus, jobController.updateTenureStatus);
+router.put('/candidate/verification-status/update', authenticateToken, checkUserBlockStatus, jobController.updateVerificationStatus);
 
 module.exports = router;

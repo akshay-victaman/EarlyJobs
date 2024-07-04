@@ -8,6 +8,7 @@ import { format, parseISO, differenceInDays } from 'date-fns';
 import { MdOutlineEditCalendar } from 'react-icons/md';
 import ExcelDownloadButton from '../ExcelDownloadButton';
 import UpdateTenureStatus from './UpdateTenureStatus';
+import UpdateVerificationStatus from './UpdateVerificationStatus';
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -41,7 +42,11 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
 
     useEffect(() => {
-        getOfferStatusCandidates()
+        if(Cookies.get('role') === 'BDE') {
+          getOfferStatusCandidatesForBDE()
+        } else {
+          getOfferStatusCandidates()
+        }
         getAllJobsList()
     }, [page, offerStatus, jobId, selectHr,fromDate, toDate])
 
@@ -65,7 +70,11 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
 
     const onClickEnter = (event) => {
         if (event.key === 'Enter') {
-            getOfferStatusCandidates();
+            if (Cookies.get('role') === 'BDE') {
+              getOfferStatusCandidatesForBDE()
+            } else {
+              getOfferStatusCandidates();
+            }
             setPage(1);
         }
     };
@@ -244,7 +253,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
                   offeredDate: eachItem.offered_date ? formatDate(eachItem.offered_date) : null,
                   jobId: eachItem.job_id,
-                  hrName: eachItem.hr_name,
+                  hrName: eachItem.hr_name
                 }))
                 return updatedData;
             }
@@ -255,6 +264,108 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
           toast.error("Failed to download excel");
         }
     }
+
+    const getOfferStatusCandidatesForBDE = async () => {
+      if(!dateValidation(fromDate, toDate)) return;
+      setApiStatus(apiStatusConstant.inProgress);
+      let email = null;
+      if(selectHr !== '') {
+        email = selectHr
+      }
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&offerStatus=${offerStatus}&page=${page}`
+      const options = {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          }
+      }
+      try {
+      const response = await fetch(url, options)
+      const data = await response.json()
+      console.log('data', data)
+      if(response.ok === true) {
+          if(data.error) {
+              setApiStatus(apiStatusConstant.failure);
+          } else {
+              console.log(data.candidates)
+              const updatedData = data.candidates.map(eachItem => ({
+                applicationId: eachItem.application_id,
+                candidateId: eachItem.candidate_id,
+                name: eachItem.name,
+                companyName: eachItem.company_name,
+                area: eachItem.area,
+                city: eachItem.city,
+                phone: eachItem.phone,
+                appliedBy: eachItem.applied_by,
+                interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
+                offeredDate: eachItem.offered_date ? formatDate(eachItem.offered_date) : null,
+                jobId: eachItem.job_id,
+                hrName: eachItem.hr_name,
+                dayCount: eachItem.offered_date ? calculateDayCount(eachItem.offered_date, eachItem.tenure_in_days) : null,
+                tenureStatus: eachItem.tenure_status,
+                verificationStatus: eachItem.verification_status,
+              }))
+              setCandidateList(updatedData);
+              setHrList(data.hrEmails)
+              setTotalItems(data.count);
+              setApiStatus(apiStatusConstant.success);
+          }
+      } else {
+          setApiStatus(apiStatusConstant.failure);
+      }
+      } catch (error) {
+      setApiStatus(apiStatusConstant.failure);
+      }
+    }
+
+    const getOfferStatusCandidatesForBDEExcel = async () => {
+      if(!dateValidation(fromDate, toDate)) return;
+      let email = null;
+      if(selectHr !== '') {
+        email = selectHr
+      }
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&offerStatus=${offerStatus}`
+      const options = {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          }
+      }
+      try {
+      const response = await fetch(url, options)
+      const data = await response.json()
+      console.log('data', data)
+      if(response.ok === true) {
+          if(data.error) {
+              toast.error(data.error);
+          } else {
+              console.log(data)
+              const updatedData = data.map(eachItem => ({
+                applicationId: eachItem.application_id,
+                candidateId: eachItem.candidate_id,
+                name: eachItem.name,
+                companyName: eachItem.company_name,
+                area: eachItem.area,
+                city: eachItem.city,
+                phone: eachItem.phone,
+                appliedBy: eachItem.applied_by,
+                interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
+                offeredDate: eachItem.offered_date ? formatDate(eachItem.offered_date) : null,
+                jobId: eachItem.job_id,
+                hrName: eachItem.hr_name,
+                verificationStatus: eachItem.verification_status,
+              }))
+              return updatedData;
+          }
+      } else {
+          toast.error("Failed to download excel");
+      }
+      } catch (error) {
+        toast.error("Failed to download excel");
+      }
+  }    
 
     const updateTenureStatus = async (applicationId, tenureStatus) => {
         setLoading(true);
@@ -298,6 +409,49 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
         }
         setLoading(false);
     }
+
+    const updateVerificationStatus = async (applicationId, verificationStatus) => {
+      setLoading(true);
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate/verification-status/update`
+      const options = {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          },
+          body: JSON.stringify({
+              applicationId,
+              verificationStatus
+          })
+      }
+      try {
+      const response = await fetch(url, options)
+      const data = await response.json()
+      console.log('data', data)
+      if(response.ok === true) {
+          if(data.error) {
+              toast.error(data.error);
+          } else {
+              toast.success(data.success);
+              const updatedData = candidateList.map(eachItem => {
+                  if(eachItem.applicationId === applicationId) {
+                      return {
+                          ...eachItem,
+                          verificationStatus
+                      }
+                  }
+                  return eachItem;
+              })
+              setCandidateList(updatedData);
+          }
+      } else {
+          toast.error("Failed to update verification status");
+      }
+      } catch (error) {
+      toast.error("Failed to update verification status");
+      }
+      setLoading(false);
+  }
   
     const itemRender = (current, type, element) => {
       if (type === 'page') {
@@ -396,13 +550,13 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
               </div>
               <div className="user-view-search-con my-hr-recruiters-search-con view-candidates-search-input-con">
                   <input className="user-view-search-input my-hr-recruiter-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} onKeyDown={onClickEnter} placeholder="Search by name, email, phone or company" />
-                  <div className="user-view-search-button my-hr-recruiters-search-btn" onClick={getOfferStatusCandidates} >
+                  <div className="user-view-search-button my-hr-recruiters-search-btn" onClick={Cookies.get('role') === 'BDE' ? getOfferStatusCandidatesForBDE : getOfferStatusCandidates} >
                       <IoSearchSharp className="search-icon my-hr-recruiter-search-icon" />
                   </div>
               </div>
               {candidateList.length > 0 && 
                 <div className="excel-download-button" style={{marginTop: "0px", marginBottom: "10px"}}> 
-                    <ExcelDownloadButton getData={getOfferStatusCandidatesForExcel} /> 
+                    <ExcelDownloadButton getData={Cookies.get('role') === 'BDE' ? getOfferStatusCandidatesForBDEExcel: getOfferStatusCandidatesForExcel} /> 
                 </div>
               }
               <div className="rows-count-con">
@@ -422,7 +576,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                     <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>
                     { (showCandidateForm !== 7) && <th className="job-details-candidates-table-heading-cell">{showCandidateForm === 10 ? "Was Planned On" : `${offerStatus} Date`}</th>}
                     {showCandidateForm === 12 && <th className="job-details-candidates-table-heading-cell">Days Left / Status</th>}
-                    {showCandidateForm === 12 && <th className="job-details-candidates-table-heading-cell">Update Status</th>}
+                    {((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE') && <th className="job-details-candidates-table-heading-cell">Verification Status</th>}
+                    {(showCandidateForm === 12 || ((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE')) && <th className="job-details-candidates-table-heading-cell">Update Status</th>}
                   </tr>
                   {
                     candidateList.length > 0 && candidateList.map(eachItem => {
@@ -452,11 +607,18 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                                 {eachItem.tenureStatus !== null && " / " + eachItem.tenureStatus}
                               </td>
                             }
-                            {showCandidateForm === 12 && 
+                            {((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE') && 
+                              <td className="job-details-candidates-table-cell">
+                                {eachItem.verificationStatus !== null ? eachItem.verificationStatus : "--"}
+                              </td>
+                            }
+                            {(showCandidateForm === 12 || ((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE')) && 
                               <td className="job-details-candidates-table-cell">
                                   {
                                       !loading ? 
-                                      (
+                                      (   Cookies.get('role') === 'BDE' ?
+                                          <UpdateVerificationStatus candidate={eachItem} onUpdate={updateVerificationStatus} />
+                                          :
                                           <UpdateTenureStatus candidate={eachItem} onUpdate={updateTenureStatus} />
                                       )
                                       :

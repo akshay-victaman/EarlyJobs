@@ -201,6 +201,9 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
                 <button type="button" className={`profile-button ${showCandidateForm === 0 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(0)}>My Job Openings</button>
                 <button type="button" className={`profile-button ${showCandidateForm === 14 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(14)}>View Companies</button>
                 <button type="button" className={`profile-button ${showCandidateForm === 4 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(4)}>View Hiring Requests</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 5 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(5)}>Selected Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 6 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(6)}>Joined Candidates</button>
+                <button type="button" className={`profile-button ${showCandidateForm === 11 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(11)}>Rejected Candidates</button>
             </div>
             }
         </div>

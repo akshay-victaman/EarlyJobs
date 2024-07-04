@@ -302,7 +302,9 @@ const getAllJobsForBDE = async (email) => {
         id,
         company_name,
         title,
-        location
+        location,
+        city,
+        area
     FROM jobs 
     WHERE posted_by = ? order by created_at desc;`;
     const result = await db.query(query, [email]);
@@ -600,7 +602,7 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
         ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by IN (?) " : ""} 
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""} 
-        order by candidates.created_at desc 
+        order by applications.interview_date desc 
         LIMIT ? OFFSET ?`;
         let hrEmails = []
         if (role === 'AC') {
@@ -647,7 +649,7 @@ const getJobCandidatesForExcel = async (jobId, email, role, offerStatus, fromDat
     ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""}
     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
-    order by candidates.created_at desc`;
+    order by applications.interview_date desc`;
     const params = ((email !== 'undefined' && email !== "") && (offerStatus !== 'undefined' && offerStatus !== "")) ? [jobId, fromDate, toDate, email, offerStatus] : (email !== 'undefined' && email !== "") ? [jobId, fromDate, toDate, email] : (offerStatus !== 'undefined' && offerStatus !== "") ? [jobId, fromDate, toDate, offerStatus] : [jobId, fromDate, toDate]
     const result = await db.query(query, params);
     return result[0];
@@ -662,6 +664,14 @@ const updateCandidateOfferStatus = async (candidate) => {
     } else {         
         return {error: 'Candidate offer status updation failed'};
     }
+}
+
+const getBdeShmEmails = async () => {
+    const query = `
+        SELECT email, username
+        FROM users WHERE role = 'SHM'`;
+    const result = await db.query(query);
+    return result[0];
 }
 
 const getSeniorHmHMEmails = async (email) => {
@@ -751,7 +761,7 @@ const getInitialCandidates = async (email, offerStatus, fromDate, toDate, role, 
         AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
-        order by candidates.created_at desc 
+        order by applications.interview_date desc 
         Limit ? offset ?`;
         let hrEmails = []
         if (role === 'SHM') {
@@ -812,7 +822,7 @@ const getInitialCandidatesForExcel = async (email, offerStatus, fromDate, toDate
     AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)
     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
-    order by candidates.created_at desc`;
+    order by applications.interview_date desc`;
     let hrEmails = []
     if (role === 'SHM') {
         const hmEmails = await getSeniorHmHMEmails(email);
@@ -906,6 +916,7 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
         interview_date,
         tenure_in_days,
         tenure_status,
+        verification_status,
         city,
         area
     FROM candidates 
@@ -996,6 +1007,7 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
         interview_date,
         tenure_in_days,
         tenure_status,
+        verification_status,
         city,
         area
     FROM candidates 
@@ -1065,6 +1077,213 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
     return result[0];
 }
 
+const getOfferStatusCandidatesForBDECount = async (email, offerStatus, search, jobId, fromDate, toDate) => {
+    const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
+    const query = `
+    SELECT 
+        count(*) as count
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.offer_status = ?
+    ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
+    AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+    AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
+    ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}`;
+    let hrEmails = []
+    const shmEmails = await getBdeShmEmails();
+    if(email !== 'null') {
+        
+        let hmEmails = []
+        const hmEmailsArr = await getSeniorHmHMEmails(email);
+        hmEmails = [...hmEmails, ...hmEmailsArr];
+
+        for (const hm of hmEmails) {
+            const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
+            hrEmails = [...hrEmails, ...hrEmailsArr];
+        }
+        hrEmails = [...hrEmails, ...hmEmails];
+    }
+    let params = [];
+    let result = []
+    try {
+        if (email !== 'null') {
+            const hrEmailsArr = hrEmails.map(hr => hr.email);
+            if ((jobId !== 'undefined' && jobId !== "")) {
+                params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate, jobId];
+            } else {
+                params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate];
+            }
+            result = await db.query(query, params);
+        } else {
+            if(jobId !== 'undefined' && jobId !== "") {
+                params = [offerStatus, fromDate, toDate, jobId];
+            } else {
+                params = [offerStatus, fromDate, toDate];
+            }
+            result = await db.query(query, params);
+        }
+        return result[0][0].count;
+    } catch (error) {
+        console.log(error)
+    }        
+}
+
+const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId, fromDate, toDate, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
+    const query = `
+    SELECT 
+        applications.id as application_id,
+        applications.job_id as job_id,
+        candidates.id as candidate_id,
+        users.username as hr_name,
+        candidates.name as name,
+        candidates.phone as phone,
+        offered_date,
+        applied_by,
+        company_name,
+        interview_date,
+        tenure_in_days,
+        tenure_status,
+        verification_status,
+        city,
+        area
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.offer_status = ?
+    ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
+    AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+    AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
+    ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
+    order by applications.${offeredOrInterviewDate} desc
+    Limit ? offset ?`;
+    let hrEmails = []
+    const shmEmails = await getBdeShmEmails();
+    if(email !== 'null') {
+        
+        let hmEmails = []
+        const hmEmailsArr = await getSeniorHmHMEmails(email);
+        hmEmails = [...hmEmails, ...hmEmailsArr];
+
+        for (const hm of hmEmails) {
+            const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
+            hrEmails = [...hrEmails, ...hrEmailsArr];
+        }
+        hrEmails = [...hrEmails, ...hmEmails];
+    }
+    let params = [];
+    let result = []
+    let count = 0;
+    try {
+        if (email !== 'null') {
+            const hrEmailsArr = hrEmails.map(hr => hr.email);
+            if ((jobId !== 'undefined' && jobId !== "")) {
+                params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate, jobId, pageSize, startIndex];
+            } else {
+                params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate, pageSize, startIndex];
+            }
+            result = await db.query(query, params);
+            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, search, jobId, fromDate, toDate);
+        } else {
+            if(jobId !== 'undefined' && jobId !== "") {
+                params = [offerStatus, fromDate, toDate, jobId, pageSize, startIndex];
+            } else {
+                params = [offerStatus, fromDate, toDate, pageSize, startIndex];
+            }
+            result = await db.query(query, params);
+            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, search, jobId, fromDate, toDate);
+        }
+    } catch (error) {
+        console.log(error)
+    }
+    return {candidates: result[0], hrEmails: shmEmails, count};
+}
+
+const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, search, jobId, fromDate, toDate) => {
+    const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
+    const query = `
+    SELECT 
+        applications.id as application_id,
+        applications.job_id as job_id,
+        candidates.id as candidate_id,
+        users.username as hr_name,
+        candidates.name as name,
+        candidates.phone as phone,
+        offered_date,
+        applied_by,
+        company_name,
+        interview_date,
+        tenure_in_days,
+        tenure_status,
+        verification_status,
+        city,
+        area
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.offer_status = ?
+    ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
+    AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+    AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
+    ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
+    order by applications.${offeredOrInterviewDate} desc`;
+    let hrEmails = []
+    const shmEmails = await getBdeShmEmails();
+    if(email !== 'null') {
+        
+        let hmEmails = []
+        const hmEmailsArr = await getSeniorHmHMEmails(email);
+        hmEmails = [...hmEmails, ...hmEmailsArr];
+
+        for (const hm of hmEmails) {
+            const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
+            hrEmails = [...hrEmails, ...hrEmailsArr];
+        }
+        hrEmails = [...hrEmails, ...hmEmails];
+    }
+    let params = [];
+    let result = []
+    try {
+        if (email !== 'null') {
+            const hrEmailsArr = hrEmails.map(hr => hr.email);
+            if ((jobId !== 'undefined' && jobId !== "")) {
+                params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate, jobId];
+            } else {
+                params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate];
+            }
+            result = await db.query(query, params);
+        } else {
+            if(jobId !== 'undefined' && jobId !== "") {
+                params = [offerStatus, fromDate, toDate, jobId];
+            } else {
+                params = [offerStatus, fromDate, toDate];
+            }
+            result = await db.query(query, params);
+        }
+        return result[0];
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 const updateTenureStatus = async (candidate) => {
     const {applicationId, tenureStatus} = candidate;
     const query = 'UPDATE applications SET tenure_status = ? WHERE id = ?';
@@ -1074,6 +1293,21 @@ const updateTenureStatus = async (candidate) => {
             return {success: 'Candidate tenure status updated successfully'};
         } else {         
             return {error: 'Candidate tenure status updation failed'};
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const updateVerificationStatus = async (candidate) => {
+    const {applicationId, verificationStatus} = candidate;
+    const query = 'UPDATE applications SET verification_status = ? WHERE id = ?';
+    try {
+        const result = await db.query(query, [verificationStatus, applicationId]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Candidate verification status updated successfully'};
+        } else {         
+            return {error: 'Candidate verification status updation failed'};
         }
     } catch (error) {
         console.log(error)
@@ -1109,5 +1343,8 @@ module.exports = {
     updateInterviewDate,
     getOfferStatusCandidates,
     getOfferStatusCandidatesForExcel,
+    getOfferStatusCandidatesForBDE,
+    getOfferStatusCandidatesForBDEExcel,
     updateTenureStatus,
+    updateVerificationStatus
 }
