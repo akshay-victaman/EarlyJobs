@@ -697,7 +697,7 @@ const getHirignManagerHrEmails = async (email) => {
             users.username as username
         FROM hrassignedhm INNER JOIN users ON
         hrassignedhm.hr_email = users.email
-        WHERE hm_email = ?`;
+        WHERE hrassignedhm.hm_email = ?`;
     const result = await db.query(query, [email]);
     return result[0];
 }

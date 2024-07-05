@@ -81,6 +81,21 @@ const changePassword = async (email, password) => {
     }
 }
 
+const changePhone = async (email, phone) => {
+    const query = `UPDATE users SET phone = ? WHERE email = ?`;
+    try {
+        const result = await db.query(query, [phone, email]);
+        if (result[0].affectedRows === 0) {
+            return {error: 'User not found.'};
+        } else {
+            return {message: 'Phone number changed.'};
+        }
+    } catch (error) {
+        console.error('Error in changePhone:', error);
+        throw error;
+    }
+}
+
 const offerLetterCount = async (date) => {
     try {
         const query = 'SELECT count FROM offer_letter_ref_count WHERE date = ?';
@@ -271,6 +286,7 @@ module.exports = {
     blockUser,
     unblockUser,
     changePassword,
+    changePhone,
     offerLetterCount,
     updateOrInsertOfferLetterCount,
     getUnreadCompliants,

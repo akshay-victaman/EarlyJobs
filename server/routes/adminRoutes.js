@@ -12,6 +12,7 @@ router.put('/archive-job/:id', authenticateToken, AdminController.archiveJob);
 router.put('/block-user/:email', authenticateToken, AdminController.blockUser);
 router.put('/unblock-user/:email', authenticateToken, AdminController.unblockUser);
 router.put('/user/change-password', authenticateToken, AdminController.changePassword);
+router.put('/user/change-phone', authenticateToken, AdminController.changePhone);
 router.get('/offer-letter-count/:date', authenticateToken, AdminController.offerLetterCount);
 router.put('/offer-letter-count/update/:date', authenticateToken, AdminController.updateOrInsertOfferLetterCount);
 router.get('/complaints/unread', authenticateToken, AdminController.getUnreadCompliants);

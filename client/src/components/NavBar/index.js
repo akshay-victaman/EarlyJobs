@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import './style.css'
 
-const NavBar = ({handleShowComplaintsForm, handleShowGenderForm}) => {
+const NavBar = ({handleShowComplaintsForm}) => {
 
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -48,23 +48,6 @@ const NavBar = ({handleShowComplaintsForm, handleShowGenderForm}) => {
                                 <Link to='/jobs' className='nav-link'>Jobs</Link>
                             </li>
                         </>
-                    }
-
-                    {
-                        (jwtToken !== undefined && role !== 'ADMIN') &&
-                        <li className='nav-item'>
-                            <Puff
-                                visible={true}
-                                height="20"
-                                width="20"
-                                color="#000"
-                                ariaLabel="puff-loading"
-                                wrapperStyle={{position: 'absolute', top: '-11px', left: '4px', backgroundColor: "#f1f1f1"}}
-                                wrapperClass=""
-                                
-                            />
-                            <button type='button' className='signup-button gender-btn' onClick={handleShowGenderForm}>Gender</button>
-                        </li>
                     }
 
                     {
@@ -119,23 +102,6 @@ const NavBar = ({handleShowComplaintsForm, handleShowGenderForm}) => {
                                     <Link to='/jobs' className='nav-link'>Jobs</Link>
                                 </li>
                             </>
-                        }
-
-{
-                        (jwtToken !== undefined && role !== 'ADMIN') &&
-                            <li className='nav-item-mobile'>
-                                <Puff
-                                    visible={true}
-                                    height="20"
-                                    width="20"
-                                    color="#000"
-                                    ariaLabel="puff-loading"
-                                    wrapperStyle={{position: 'absolute', top: '-5px', left: '4px', backgroundColor: "#f1f1f1"}}
-                                    wrapperClass=""
-                                    
-                                />
-                                <button type='button' className='signup-button gender-btn' onClick={handleShowGenderForm}>Gender</button>
-                            </li>
                         }
                         
                         <li className='nav-item-mobile'>

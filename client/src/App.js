@@ -7,7 +7,6 @@ import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import ContactForm from './components/ContactForm';
 import ComplaintsForm from './components/ComplaintsForm';
-import GenderForm from './components/GenderForm';
 import SubNavBar from './components/SubNavBar';
 import 'react-toastify/dist/ReactToastify.min.css';
 import './components/AddJobsPage/style.css'
@@ -59,7 +58,6 @@ const App = () => {
 
   const [showContactForm, setShowContactForm] = useState(false)
   const [showComplaintsForm, setShowComplaintsForm] = useState(false)
-  const [showGenderForm, setShowGenderForm] = useState(false)
 
   const handleShowContactForm = () => {
     setShowContactForm(!showContactForm)
@@ -69,17 +67,12 @@ const App = () => {
     setShowComplaintsForm(!showComplaintsForm)
   }
 
-  const handleShowGenderForm = () => {
-    setShowGenderForm(!showGenderForm)
-  }
-
   return (
     <>
-      <NavBar handleShowComplaintsForm={handleShowComplaintsForm} handleShowGenderForm={handleShowGenderForm} />
+      <NavBar handleShowComplaintsForm={handleShowComplaintsForm} />
       {Cookies.get('jwt_token') === undefined && <SubNavBar handleShowContactForm={handleShowContactForm} />}
       { showContactForm && <ContactForm handleShowContactForm={handleShowContactForm} /> }
       { showComplaintsForm && <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} /> }
-      { showGenderForm && <GenderForm handleShowGenderForm={handleShowGenderForm} /> }
       <EachRoute />
       <Footer handleShowContactForm={handleShowContactForm} />
       <ScrollUp />

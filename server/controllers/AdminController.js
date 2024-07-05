@@ -90,6 +90,17 @@ const changePassword = async (req, res) => {
   }
 }
 
+const changePhone = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const users = await adminService.changePhone(email, phone);
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 const updateOrInsertOfferLetterCount = async (req, res) => {
   try {
     const date = req.params.date;
@@ -190,6 +201,7 @@ module.exports = {
   blockUser,
   unblockUser,
   changePassword,
+  changePhone,
   offerLetterCount,
   updateOrInsertOfferLetterCount,
   getUnreadCompliants,
