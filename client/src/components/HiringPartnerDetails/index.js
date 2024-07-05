@@ -348,7 +348,7 @@ const HiringPartnerDetails = () => {
             name: 'EarlyJobs Application Approved',
             fromEmailId: 'no-reply@earlyjobs.in',
             subject: `Successfully approved your application as a ${signUpDetails.hiringFor} in Earlyjobs.in portal`,
-            recipients: `${signUpDetails.email},hr@earlyjobs.in,no-reply@earlyjobs.in`,
+            recipients: `${signUpDetails.email},${hiringPartnerReqDetails.formData.personalDetails.email},hr@earlyjobs.in,no-reply@earlyjobs.in`,
             content: encodeURIComponent(content),
             replyToEmailID: 'no-reply@earlyjobs.in',
             // attachment1: pdfFile
@@ -402,8 +402,9 @@ const HiringPartnerDetails = () => {
     }
 
     const onClickApprove = async () => {
-        const pdfURL = await generatePDF();
+        console.log(signUpDetails)
         // return;
+        const pdfURL = await generatePDF();
         if(signUpDetails.hiringCategory.length === 0 || signUpDetails.hiringFor === "" || signUpDetails.assignHM === "") {
             setError("All fields are required")
             return
@@ -468,8 +469,8 @@ const HiringPartnerDetails = () => {
                 </button>
                 <label className="homepage-label">Create credentials for {hiringPartnerReqDetails.formData.personalDetails.fullName}'s Application?</label>
                 <label className="homepage-label">Credentials will be sent to {hiringPartnerReqDetails.formData.personalDetails.email}</label>
-                <label className="homepage-label">Login Email</label>
-                <input className="homepage-input" type="text" disabled value={signUpDetails.email} />
+                <label className="homepage-label" htmlFor="email">Login Email</label>
+                <input className="homepage-input" type="text" id="email" name="email" required value={signUpDetails.email} onChange={handleInputChange} />
                 <label className="homepage-label">Login Password</label>
                 <input className="homepage-input" type="text" disabled value={signUpDetails.password} />
 

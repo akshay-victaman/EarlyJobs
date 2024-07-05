@@ -5,9 +5,10 @@ import { format, parseISO } from 'date-fns';
 import Cookies from 'js-cookie';
 import { Redirect } from 'react-router-dom';
 import { Oval } from 'react-loader-spinner';
-import './style.css'
 import { useState, useEffect } from 'react';
 import UsersItem from '../UsersItem';
+import {toast} from 'react-toastify';
+import './style.css'
 
 
 const UsersPage = () => {
@@ -17,6 +18,7 @@ const UsersPage = () => {
     const [userStatus, setUserStatus] = useState(null);
     const [loading, setLoading] = useState(false);
     const [blockStatus, setBlockStatus] = useState(false);
+    const [phone, setPhone] = useState('');
     const [passwordDetails, setPasswordDetails] = useState({
         password: '',
         confirmPassword: ''
@@ -42,6 +44,10 @@ const UsersPage = () => {
 
     const handleChangePasswordDetails = (event) => {
         setPasswordDetails({...passwordDetails, [event.target.name]: event.target.value});
+    }
+
+    const handleChangePhone = (event) => {
+        setPhone(event.target.value);
     }
 
     const formatDate = (date) => {
@@ -184,6 +190,46 @@ const UsersPage = () => {
         }
     }
 
+    const changePhone = async (close, email) => {
+        if(phone.trim().length !== 10) {
+            toast.error('Phone number should be 10 digits long');
+            return;
+        }
+        const url = `${backendUrl}/admin/user/change-phone`;
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            },
+            body: JSON.stringify({email, phone})
+        };
+        try {
+            const response = await fetch(url, options);
+            const data = await response.json();
+            if(response.ok === true) {
+                if(data.error) {
+                    toast.error(data.error);
+                } else {
+                    toast.success(data.message);
+                    setPhone('');
+                    setUsers(users.map(eachItem => {
+                        if(eachItem.email === email) {
+                            return {...eachItem, phone}
+                        }
+                        return eachItem;
+                    }))
+                    close();
+                }
+            } else {
+                toast.error(data.error);
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message);
+        }
+    }
+
     const renderBlockUnblockPopup = (close, email, isBlocked) => (
         <div className="modal-form">
             <button className="modal-close-button" disabled={blockStatus} onClick={close}>&times;</button>
@@ -215,6 +261,19 @@ const UsersPage = () => {
         </div>
     )
 
+    const renderChangePhonePopup = (close, email) => (
+        <div className="modal-form">
+            <button className="modal-close-button" onClick={close}>&times;</button>
+            <label className="homepage-label" style={{marginBottom: '15px'}}>Change phone number for {email}</label>
+            <label className="homepage-label" htmlFor='phone'>Enter new phone number</label>
+            <input className="homepage-input" type="number" id='phone' name='phone' value={phone} onChange={handleChangePhone} />
+            <div className='achieve-button-con' style={{marginTop: '0px'}}>
+                <button className='job-details-upload-candidate-button' onClick={() => changePhone(close, email)}>Change</button>
+                <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>Cancel</button>
+            </div>
+        </div>
+    )
+
     const renderGetUsers = () => { 
         const filteredUsers = users.filter(eachItem => 
             eachItem.username.toLowerCase().includes(searchInput.toLowerCase()) || 
@@ -238,7 +297,7 @@ const UsersPage = () => {
                         </tr>
                         {
                             filteredUsers.map(eachItem => (
-                                <UsersItem key={eachItem.id} userDetails={eachItem} renderBlockUnblockPopup={renderBlockUnblockPopup} renderChangePasswordPopup={renderChangePasswordPopup} />
+                                <UsersItem key={eachItem.id} userDetails={eachItem} renderBlockUnblockPopup={renderBlockUnblockPopup} renderChangePasswordPopup={renderChangePasswordPopup} renderChangePhonePopup={renderChangePhonePopup} />
                         ))}
                 </table>
                 {
@@ -270,7 +329,6 @@ const UsersPage = () => {
 
     return (
         <div className="homepage-container">
-            {/* <NavBar /> */}
             <div className="user-view-container">
                 <h1 className='user-heading'>Users View</h1>
                 <div className="user-view-search-filter-con">
@@ -316,7 +374,6 @@ const UsersPage = () => {
                 </div>
                 {renderGetUsers()}
             </div>
-            {/* <Footer /> */}
         </div>
     )
 }
