@@ -286,13 +286,34 @@ const updateJobAssignmentByHM = async (jobAssignment) => {
     }
 }
 
-const getJobsForBDE = async (email, page) => {
+const getJobsForBDE = async (email, company, location, title, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
-    const query = 'SELECT * FROM jobs WHERE posted_by = ? order by created_at desc Limit ? offset ?;';
-    const countQuery = 'SELECT count(*) as count FROM jobs WHERE posted_by = ?';
-    const result = await db.query(query, [email, pageSize, startIndex]);
-    const countResult = await db.query(countQuery, [email]);
+    const query = `
+        SELECT * FROM jobs 
+        WHERE posted_by = ? 
+        ${company ? 'AND company_name = ?' : ''}
+        ${location ? 'AND city = ?' : ''}
+        ${title ? 'AND title = ?' : ''}
+        order by created_at desc Limit ? offset ?;`;
+    const countQuery = `
+        SELECT count(*) as count FROM jobs 
+         WHERE posted_by = ?
+         ${company ? 'AND company_name = ?' : ''}
+         ${location ? 'AND city = ?' : ''}
+         ${title ? 'AND title = ?' : ''};`;
+    const params = [email]
+    if (company) params.push(company);
+    if (location) params.push(location);
+    if (title) params.push(title);
+    params.push(pageSize);
+    params.push(startIndex);
+    const result = await db.query(query, params);
+    const countParams = [email]
+    if (company) countParams.push(company);
+    if (location) countParams.push(location);
+    if (title) countParams.push(title);
+    const countResult = await db.query(countQuery, countParams);
     return {jobs: result[0], count: countResult[0][0].count};
 }
 
@@ -311,7 +332,7 @@ const getAllJobsForBDE = async (email) => {
     return result[0];
 }
 
-const getSeniorHMJobs = async (email, page) => {
+const getSeniorHMJobs = async (email,company, location, title, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const query = `
@@ -319,11 +340,31 @@ const getSeniorHMJobs = async (email, page) => {
         FROM jobs INNER JOIN job_assigned_by_bde ON 
         job_assigned_by_bde.job_id = jobs.id 
         WHERE shm_email = ? 
+        ${company ? 'AND jobs.company_name = ?' : ''}
+        ${location ? 'AND jobs.city = ?' : ''}
+        ${title ? 'AND jobs.title = ?' : ''}
         order by created_at desc 
         Limit ? offset ?;`;
-    const countQuery = 'SELECT count(*) as count FROM job_assigned_by_bde WHERE shm_email = ?';
-    const result = await db.query(query, [email, pageSize, startIndex]);
-    const countResult = await db.query(countQuery, [email]);
+    const countQuery = `
+        SELECT count(*) as count 
+        FROM jobs INNER JOIN job_assigned_by_bde ON
+        job_assigned_by_bde.job_id = jobs.id 
+        WHERE shm_email = ?
+        ${company ? 'AND jobs.company_name = ?' : ''}
+        ${location ? 'AND jobs.city = ?' : ''}
+        ${title ? 'AND jobs.title = ?' : ''};`;
+    const params = [email]
+    if (company) params.push(company);
+    if (location) params.push(location);
+    if (title) params.push(title);
+    params.push(pageSize);
+    params.push(startIndex);
+    const result = await db.query(query, params);
+    const countParams = [email]
+    if (company) countParams.push(company);
+    if (location) countParams.push(location);
+    if (title) countParams.push(title);
+    const countResult = await db.query(countQuery, countParams);
     return {jobs: result[0], count: countResult[0][0].count};
 }
 
@@ -343,7 +384,7 @@ const getAllSeniorHMJobs = async (email) => {
     return result[0];
 }
 
-const getHmJobs = async (email, page) => {
+const getHmJobs = async (email,company, location, title, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const query = `
@@ -351,11 +392,30 @@ const getHmJobs = async (email, page) => {
         FROM jobs INNER JOIN jobassignments ON
         jobs.id = jobassignments.job_id
         WHERE jobassignments.assigned_to = ? AND jobassignments.role = 'HM'
+        ${company ? 'AND company_name = ?' : ''}
+        ${location ? 'AND city = ?' : ''}
+        ${title ? 'AND title = ?' : ''}
         order by created_at desc
         Limit ? offset ?;`;
-    const countQuery = 'SELECT count(*) as count FROM jobassignments WHERE assigned_to = ? AND role = "HM"';
-    const result = await db.query(query, [email, pageSize, startIndex]);
-    const countResult = await db.query(countQuery, [email]);
+    const countQuery = `
+        SELECT count(*) as count 
+        FROM jobassignments 
+        WHERE assigned_to = ? AND role = "HM"
+        ${company ? 'AND company_name = ?' : ''}
+        ${location ? 'AND city = ?' : ''}
+        ${title ? 'AND title = ?' : ''};`;
+    const params = [email]
+    if (company) params.push(company);
+    if (location) params.push(location);
+    if (title) params.push(title);
+    params.push(pageSize);
+    params.push(startIndex);
+    const result = await db.query(query, params);
+    const countParams = [email]
+    if (company) countParams.push(company);
+    if (location) countParams.push(location);
+    if (title) countParams.push(title);
+    const countResult = await db.query(countQuery, countParams);
     return {jobs: result[0], count: countResult[0][0].count};
 }
 
@@ -377,7 +437,7 @@ const getAllHmJobs = async (email) => {
     return result[0];
 }
 
-const getHRJobs = async (email, page) => {
+const getHRJobs = async (email,company, location, title, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const query = `
@@ -404,11 +464,30 @@ const getHRJobs = async (email, page) => {
     INNER JOIN jobassignments ON 
     jobs.id = jobassignments.job_id 
     WHERE jobassignments.assigned_to = ? AND jobassignments.role = 'HR'
+    ${company ? 'AND company_name = ?' : ''}
+    ${location ? 'AND city = ?' : ''}
+    ${title ? 'AND title = ?' : ''}
     order by jobs.created_at desc
     Limit ? offset ?;`;
-    const countQuery = 'SELECT count(*) as count FROM jobassignments WHERE assigned_to = ? AND role = "HR"';
-    const result = await db.query(query, [email, pageSize, startIndex]);
-    const countResult = await db.query(countQuery, [email]);
+    const countQuery = `
+        SELECT count(*) as count 
+        FROM jobassignments 
+        WHERE assigned_to = ? AND role = "HR"
+        ${company ? 'AND company_name = ?' : ''}
+        ${location ? 'AND city = ?' : ''}
+        ${title ? 'AND title = ?' : ''};`;
+    const params = [email]
+    if (company) params.push(company);
+    if (location) params.push(location);
+    if (title) params.push(title);
+    params.push(pageSize);
+    params.push(startIndex);
+    const result = await db.query(query, params);
+    const countParams = [email]
+    if (company) countParams.push(company);
+    if (location) countParams.push(location);
+    if (title) countParams.push(title);
+    const countResult = await db.query(countQuery, countParams);
     return {jobs: result[0], count: countResult[0][0].count};
 }
 

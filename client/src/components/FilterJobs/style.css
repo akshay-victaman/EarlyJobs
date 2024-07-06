@@ -19,6 +19,13 @@
     color: #000000;
     margin-bottom: 16px;
   }
+
+  .filter-jobs-heading-search {
+    font-size: 15px;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 5px;
+  }
   
   .filter-jobs-employment-type-list {
     padding-left: 0px;

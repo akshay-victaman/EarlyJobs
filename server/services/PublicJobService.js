@@ -1,14 +1,54 @@
 const { v4: uuidv4 } = require('uuid');
 const db = require('../config/database');
 
-const getAllJobs = async (page) => {
-    const pageSize = 10;
+const getAllJobs = async (company, location, title, page) => {
+    const pageSize = 20;
     const startIndex = (page - 1) * pageSize;
-    const query = `SELECT * FROM jobs where status != 'ARCHIVED' order by created_at desc Limit ? offset ?;`;
-    const countQuery = 'SELECT count(*) as count FROM jobs where status != "ARCHIVED";';
+    const query = `
+        SELECT * FROM jobs 
+        where status != 'ARCHIVED'
+        ${company ? 'AND company_name = ?' : ''}
+        ${location ? 'AND city = ?' : ''}
+        ${title ? 'AND title = ?' : ''}
+        order by created_at desc Limit ? offset ?;`;
+    const countQuery = `
+        SELECT count(*) as count FROM jobs
+        where status != 'ARCHIVED'
+        ${company ? 'AND company_name = ?' : ''}
+        ${location ? 'AND city = ?' : ''}
+        ${title ? 'AND title = ?' : ''};`;
     try {
-        const result = await db.query(query, [pageSize, startIndex]);
-        const countResult = await db.query(countQuery);
+        let params = [];
+        if(company) params.push(company);
+        if(location) params.push(location);
+        if(title) params.push(title);
+        params.push(pageSize);
+        params.push(startIndex);
+
+        // if(company && location && title) {
+        //     params = [company, location, title, pageSize, startIndex];
+        // } else if(company) {
+        //     params = [company, pageSize, startIndex];
+        // } else if(location) {
+        //     params = [location, pageSize, startIndex];
+        // } else if(title) {
+        //     params = [title, pageSize, startIndex];
+        // } else {
+        //     params = [pageSize, startIndex];
+        // }
+        const result = await db.query(query, params);
+        let countParams = [];
+        // if(company && location) {
+        //     countParams = [company, location];
+        // } else if(company) {
+        //     countParams = [company];
+        // } else if(location) {
+        //     countParams = [location];
+        // }
+        if(company) countParams.push(company);
+        if(location) countParams.push(location);
+        if(title) countParams.push(title);
+        const countResult = await db.query(countQuery, countParams);
         return {jobs: result[0], count: countResult[0][0].count};
     } catch (error) {
         return {error: error.message};
@@ -221,11 +261,61 @@ const deletePublicApplication = async (applicationId) => {
     }
 }
 
+const getCompanyListWithJobCount = async () => {
+    const query = `
+        SELECT company_name, count(*) as count FROM jobs
+        WHERE status != 'ARCHIVED'
+        GROUP BY company_name
+        ORDER BY count desc, company_name asc;`;
+    try {
+        const result = await db.query(query);
+        return result[0];
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const getLocationListWithJobCount = async () => {
+    const query = `
+        SELECT city, count(*) as count FROM jobs
+        WHERE status != 'ARCHIVED'
+        GROUP BY city
+        ORDER BY count desc, city asc;`;
+    try {
+        const result = await db.query(query);
+        return result[0];
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const getTitleListWithJobCount = async () => {
+    const query = `
+        SELECT title, count(*) as count FROM jobs
+        WHERE status != 'ARCHIVED'
+        GROUP BY title
+        ORDER BY count desc, title asc;`;
+    try {
+        const result = await db.query(query);
+        return result[0];
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const getLocationTitleAndCompanyListWithJobCount = async () => {
+    const companyList = await getCompanyListWithJobCount();
+    const locationList = await getLocationListWithJobCount();
+    const titleList = await getTitleListWithJobCount();
+    return {companyList, locationList, titleList};
+}
+
 module.exports = {
     getAllJobs,
     getJobDetails,
     addPublicApplicationForJob,
     getPublicApplications,
     getPublicApplicationsForExcel,
-    deletePublicApplication
+    deletePublicApplication,
+    getLocationTitleAndCompanyListWithJobCount
 }

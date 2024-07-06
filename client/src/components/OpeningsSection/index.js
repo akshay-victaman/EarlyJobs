@@ -6,9 +6,7 @@ import {BsSearch} from 'react-icons/bs'
 import { FaFilter } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { IoFilter } from "react-icons/io5";
-import JobsCard from '../JobsCard'
 import FilterJobs from '../FilterJobs'
-// import './style.css'
 import SalaryRangeList from '../SalaryRangeList'
 import PublicJobsCard from '../PublicJobsCard';
 
@@ -39,12 +37,20 @@ const OpeningsSection = () => {
     const [page, setPage] = useState(initialPage)
     const [totalItems, setTotalItems] = useState(0);
     const [showFilter, setShowFilter] = useState(false)
+    const [companyList, setCompanyList] = useState([]);
+    const [locationList, setLocationList] = useState([]);
+    const [titleList, setTitleList] = useState([]);
+    const [companyName, setCompanyName] = useState('');
+    const [location, setLocation] = useState('');
+    const [title, setTitle] = useState('');
+  
 
 
   useEffect(() => {
       getJobsCard()
+      getCompanyTitleAndLocationList()
       updateUrl(page);
-  }, [employmentTypeList, minimumPackageList, page])
+  }, [employmentTypeList, minimumPackageList, page, companyName, location, title])
 
   const onClickFilter = () => {
     setShowFilter(!showFilter)
@@ -124,9 +130,51 @@ const OpeningsSection = () => {
     getJobsCard()
   }
 
+  const onChangecompanyName = companyName => {
+    const value = companyName.split('&').join('%26')
+    setCompanyName(value)
+    console.log(companyName)
+    setPage(1)
+  }
+
+  const onChangelocation = location => {
+    const value = location.split('&').join('%26')
+    setLocation(value)
+    console.log(location)
+    setPage(1)
+  }
+
+  const onChangetitle = title => {
+    const value = title.split('&').join('%26')
+    setTitle(value)
+    console.log(title)
+    setPage(1)
+  }
+
+  const getCompanyTitleAndLocationList = async () => {
+    const url = `${backendUrl}/api/public/companies-and-locations`;
+    try {
+      const response = await fetch(url);
+      if(response.ok === true) {
+        const data = await response.json();
+        let options = data.companyList.map(company => ({ value: company.company_name, label: `${company.company_name} - ${company.count} opening(s)`}))
+        setCompanyList(options);
+        options = data.locationList.map(location => ({ value: location.city, label: `${location.city} - ${location.count} opening(s)`}))
+        setLocationList(options);
+        options = data.titleList.map(title => ({ value: title.title, label: `${title.title} - ${title.count} opening(s)`}))
+        setTitleList(options);
+        console.log(data)
+      } else {
+        console.error('Failed to fetch company list');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const getJobsCard = async () => {
     setApiStatus(apiStatusConstant.inProgress)
-    let apiUrl = `${backendUrl}/api/public/jobs?page=${page}`
+    let apiUrl = `${backendUrl}/api/public/jobs?company=${companyName}&location=${location}&title=${title}&page=${page}`
     
     const response = await fetch(apiUrl)
     const data = await response.json()
@@ -175,7 +223,7 @@ const OpeningsSection = () => {
   }
 
 
-  const itemsPerPage = 10; 
+  const itemsPerPage = 20; 
 
   const handlePageChange = (page) => {
     setPage(page)
@@ -350,6 +398,12 @@ const OpeningsSection = () => {
               onClickButton={onClickButton}
               onClickFilter={onClickFilter}
               pageType={'OPENINGS'}
+              companyList={companyList}
+              locationList={locationList}
+              titleList={titleList}
+              onChangecompanyName={onChangecompanyName}
+              onChangelocation={onChangelocation}
+              onChangetitle={onChangetitle}
             />
             <button type='button' className='job-section-filter-close-button' onClick={onClickFilter}><MdKeyboardDoubleArrowLeft className='job-section-filter-close-icon' /></button>
         </div>
@@ -359,7 +413,7 @@ const OpeningsSection = () => {
           <span className='filter-text-btn'>Filter Jobs</span>
         </button>
         
-        <div className="job-section-search-card-con">
+        <div className="public-job-section-search-card-con">
           {/* <div className="search-box-desk-con">
             <input
               type="search"

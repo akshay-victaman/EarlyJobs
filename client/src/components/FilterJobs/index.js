@@ -1,11 +1,48 @@
-import {BsSearch} from 'react-icons/bs'
+import Select from 'react-select';
 import Profile from '../Profile'
 import EmploymentTypeList from '../EmploymentTypeList'
 import SalaryRangeList from '../SalaryRangeList'
-import './style.css'
 import IndustryTypeList from '../IndustryTypeList'
-import LocationTypeList from '../LocationTypeList'
 import WorkPlaceTypeList from '../WorkPlaceTypeList'
+import './style.css'
+
+const customStyles = {
+  control: (provided, state) => ({
+      ...provided,
+      border: '1px solid #EB6A4D',
+      borderRadius: '5px',
+      boxShadow: null,
+      '&:hover': {
+          borderColor: '#EB6A4D',
+      },
+      marginBottom: '16px',
+      width: '100%',
+      height: '35px',
+      minHeight: '35px',
+      fontSize: '14px'
+  }),
+  menu: (provided, state) => ({
+      ...provided,
+      marginTop: '0px',
+      paddingTop: '0px',
+  }),
+  dropdownIndicator: (provided) => ({
+      ...provided,
+      color: '#EB6A4D',
+      '&:hover': {
+          color: '#EB6A4D',
+      },
+      width: '15px',
+      padding: '0px',
+      margin: '0px',
+      border: '0px',
+  }),
+  option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? '#EB6A4D' : null,
+      color: state.isSelected ? 'white' : 'black',
+  }),
+};
 
 const employmentTypesList = [
   {
@@ -49,29 +86,6 @@ const salaryRangesList = [
   },
 ]
 
-const locationList = [
-  {
-    locationId: '0-100',
-    label: '0-100km',
-  },
-  {
-    locationId: '100-200',
-    label: '100-200km',
-  },
-  {
-    locationId: '200-300',
-    label: '200-300km',
-  },
-  {
-    locationId: '300-400',
-    label: '300-400km',
-  },
-  {
-    locationId: '400+',
-    label: '400+km',
-  },
-]
-
 const industryList = [
   {
     industryId: 'IT',
@@ -81,6 +95,10 @@ const industryList = [
     industryId: 'NON-IT',
     label: 'NON-IT',
   },
+  {
+    industryId: 'BPO',
+    label: 'BPO',
+  }
 ]
 
 const workplaceTypeList = [
@@ -95,11 +113,7 @@ const workplaceTypeList = [
   {
     workplaceTypeId: 'HYBRID',
     label: 'Hybrid',
-  },
-  {
-    workplaceTypeId: 'ANYWHERE',
-    label: 'Anywhere',
-  },
+  }
 ]
 
 const FilterJobs = props => {
@@ -109,35 +123,42 @@ const FilterJobs = props => {
     onSelectEmploymentType,
     onChangeSalaryRange,
     onSelectIndustryType,
-    onSelectLocataionType,
     onSelectWorkPlaceType,
-    onKeyEnter,
-    onChangeInput,
-    onClickButton,
     onShowCandidateForm,
     onClickFilter,
     showCandidateForm,
-    pageType
+    pageType,
+    companyList,
+    locationList,
+    titleList,
+    onChangecompanyName,
+    onChangelocation,
+    onChangetitle
   } = props
+
+  const handleCompanyChange = (value) => {
+    if(value === null) {
+      value = {value: ''}
+    }
+    onChangecompanyName(value.value)
+  };
+
+  const handleLocationChange = (value) => {
+    if(value === null) {
+      value = {value: ''}
+    }
+    onChangelocation(value.value)
+  }
+
+  const handleTitleChange = (value) => {
+    if(value === null) {
+      value = {value: ''}
+    }
+    onChangetitle(value.value)
+  }
+
   return (
     <div className="profile-filters-container">
-      {/* <div className="search-box-mobile-con">
-        <input
-          type="search"
-          placeholder="Search"
-          className="search-box"
-          onChange={onChangeInput}
-          onKeyDown={onKeyEnter}
-        />
-        <button
-          type="button"
-          className="search-icon-con"
-          onClick={onClickButton}
-          data-testid="searchButton"
-        >
-          <BsSearch className="search-icon" />
-        </button>
-      </div> */}
       {
         pageType === 'JOBS' && (
           <>
@@ -160,6 +181,36 @@ const FilterJobs = props => {
           </>
         )
       }
+
+      <h1 className="filter-jobs-heading-search">Company</h1>
+      <Select
+          isClearable
+          onChange={handleCompanyChange}
+          options={companyList}
+          placeholder="Search Company"
+          styles={customStyles}
+          // value={postNewJob.companyName}
+      />
+
+      <h1 className="filter-jobs-heading-search">Location</h1>
+      <Select
+          isClearable
+          onChange={handleLocationChange}
+          options={locationList}
+          placeholder="Search Location"
+          styles={customStyles}
+          // value={postNewJob.companyName}
+      />
+
+      <h1 className="filter-jobs-heading-search">Job Title</h1>
+      <Select
+          isClearable
+          onChange={handleTitleChange}
+          options={titleList}
+          placeholder="Search Job Title"
+          styles={customStyles}
+          // value={postNewJob.companyName}
+      />
       
       <h1 className="filter-jobs-heading">Type of Employment</h1>
       <ul className="filter-jobs-employment-type-list">
@@ -194,7 +245,7 @@ const FilterJobs = props => {
         ))}
       </ul>
       <hr className="line" />
-      <h1 className="filter-jobs-heading">Location Range</h1>
+      {/* <h1 className="filter-jobs-heading">Location Range</h1>
       <ul className="filter-jobs-employment-type-list">
         {locationList.map(eachItem => (
           <LocationTypeList
@@ -204,7 +255,7 @@ const FilterJobs = props => {
           />
         ))}
       </ul>
-      <hr className="line" />
+      <hr className="line" /> */}
       <h1 className="filter-jobs-heading">Work Place Type</h1>
       <ul className="filter-jobs-employment-type-list">
         {workplaceTypeList.map(eachItem => (
