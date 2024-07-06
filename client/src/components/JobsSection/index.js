@@ -53,6 +53,12 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
     const [totalItems, setTotalItems] = useState(0);
     const [showFilter, setShowFilter] = useState(false)
     const [lastVisible, setLastVisible] = useState(null)
+    const [companyList, setCompanyList] = useState([]);
+    const [locationList, setLocationList] = useState([]);
+    const [titleList, setTitleList] = useState([]);
+    const [companyName, setCompanyName] = useState('');
+    const [location, setLocation] = useState('');
+    const [title, setTitle] = useState('');
 
 
   useEffect(() => {
@@ -60,9 +66,10 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
       getHirignReqCard()
     } else if(showCandidateForm === 4 || showCandidateForm === 0) {
       getJobsCard()
+      getCompanyTitleAndLocationList()
     }
     updateUrl(page, showCandidateForm);
-    }, [employmentTypeList, minimumPackageList, page, showCandidateForm])
+    }, [employmentTypeList, minimumPackageList, page, showCandidateForm, companyName, location, title])
 
   const archieveJobs = () => {
     console.log(archieve)
@@ -160,20 +167,62 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
     getJobsCard()
   }
 
+  const onChangecompanyName = companyName => {
+    const value = companyName.split('&').join('%26')
+    setCompanyName(value)
+    console.log(companyName)
+    setPage(1)
+  }
+
+  const onChangelocation = location => {
+    const value = location.split('&').join('%26')
+    setLocation(value)
+    console.log(location)
+    setPage(1)
+  }
+
+  const onChangetitle = title => {
+    const value = title.split('&').join('%26')
+    setTitle(value)
+    console.log(title)
+    setPage(1)
+  }
+
+  const getCompanyTitleAndLocationList = async () => {
+    const url = `${backendUrl}/api/public/companies-and-locations`;
+    try {
+      const response = await fetch(url);
+      if(response.ok === true) {
+        const data = await response.json();
+        let options = data.companyList.map(company => ({ value: company.company_name, label: `${company.company_name} - ${company.count} opening(s)`}))
+        setCompanyList(options);
+        options = data.locationList.map(location => ({ value: location.city, label: `${location.city} - ${location.count} opening(s)`}))
+        setLocationList(options);
+        options = data.titleList.map(title => ({ value: title.title, label: `${title.title} - ${title.count} opening(s)`}))
+        setTitleList(options);
+        console.log(data)
+      } else {
+        console.error('Failed to fetch company list');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const getJobsCard = async () => {
     setApiStatus(apiStatusConstant.inProgress)
     const role = Cookies.get('role')
     let apiUrl = ""
     if (role === 'SHM') {
-      apiUrl = `${backendUrl}/jobs/senior-hm/?page=${page}`
+      apiUrl = `${backendUrl}/jobs/senior-hm/?company=${companyName}&location=${location}&title=${title}&page=${page}`
     } else if (role === 'AC') {
-      apiUrl = `${backendUrl}/jobs/hm/?page=${page}`
+      apiUrl = `${backendUrl}/jobs/hm/?company=${companyName}&location=${location}&title=${title}&page=${page}`
     } else if (role === 'HR') {
-      apiUrl = `${backendUrl}/jobs/hr/?page=${page}`
+      apiUrl = `${backendUrl}/jobs/hr/?company=${companyName}&location=${location}&title=${title}&page=${page}`
     } else if (role === 'BDE') {
-      apiUrl = `${backendUrl}/jobs/bde/?page=${page}`
+      apiUrl = `${backendUrl}/jobs/bde/?company=${companyName}&location=${location}&title=${title}&page=${page}`
     } else {
-      apiUrl = `${backendUrl}/admin/get-jobs/all/?page=${page}`
+      apiUrl = `${backendUrl}/admin/get-jobs/all/?company=${companyName}&location=${location}&title=${title}&page=${page}`
     }
     const jwtToken = Cookies.get('jwt_token')
     const options = {
@@ -487,6 +536,12 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
               onClickFilter={onClickFilter}
               showCandidateForm={showCandidateForm}
               pageType={'JOBS'}
+              companyList={companyList}
+              locationList={locationList}
+              titleList={titleList}
+              onChangecompanyName={onChangecompanyName}
+              onChangelocation={onChangelocation}
+              onChangetitle={onChangetitle}
             />
             <button type='button' className='job-section-filter-close-button' onClick={onClickFilter}><MdKeyboardDoubleArrowLeft className='job-section-filter-close-icon' /></button>
         </div>

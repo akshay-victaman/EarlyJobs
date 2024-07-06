@@ -104,9 +104,12 @@ const updateJobAssignmentByHM = async (req, res) => {
 
 const getJobsForBDE = async (req, res) => {
     const email = req.email;
+    const company = req.query.company;
+    const location = req.query.location;
+    const title = req.query.title;
     const page = parseInt(req.query.page) || 1;
     try {
-      const jobs = await jobService.getJobsForBDE(email, page);
+      const jobs = await jobService.getJobsForBDE(email,company, location, title, page);
       res.json(jobs);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -125,9 +128,12 @@ const getAllJobsForBDE = async (req, res) => {
 
 const getSeniorHMJobs = async (req, res) => {
     const email = req.email;
+    const company = req.query.company;
+    const location = req.query.location;
+    const title = req.query.title;
     const page = parseInt(req.query.page) || 1;
     try {
-      const jobs = await jobService.getSeniorHMJobs(email, page);
+      const jobs = await jobService.getSeniorHMJobs(email,company, location, title, page);
       res.json(jobs);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -146,9 +152,12 @@ const getAllSeniorHMJobs = async (req, res) => {
 
 const getHmJobs = async (req, res) => {
     const email = req.email;
+    const company = req.query.company;
+    const location = req.query.location;
+    const title = req.query.title;
     const page = parseInt(req.query.page) || 1;
     try {
-      const jobs = await jobService.getHmJobs(email, page);
+      const jobs = await jobService.getHmJobs(email,company, location, title, page);
       res.json(jobs);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -167,9 +176,12 @@ const getAllHmJobs = async (req, res) => {
 
 const getHRJobs = async (req, res) => {
     const email = req.email;
+    const company = req.query.company;
+    const location = req.query.location;
+    const title = req.query.title;
     const page = parseInt(req.query.page) || 1;
     try {
-      const jobs = await jobService.getHRJobs(email, page);
+      const jobs = await jobService.getHRJobs(email,company, location, title, page);
       res.json(jobs);
     } catch (error) {
       res.status(500).json({ error: error.message });

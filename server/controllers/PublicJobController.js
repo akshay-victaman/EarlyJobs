@@ -1,9 +1,12 @@
 const publicJobService = require('../services/PublicJobService');
 
 const getAllJobs = async (req, res) => {
+    const company = req.query.company;
+    const location = req.query.location;
+    const title = req.query.title;
     const page = req.query.page || 1;
     try {
-        const result = await publicJobService.getAllJobs(page);
+        const result = await publicJobService.getAllJobs(company, location, title, page);
         res.json(result);
     } catch (error) {
     res.status(500).json({ error: error.message });
@@ -69,11 +72,21 @@ const deletePublicApplication = async (req, res) => {
     }
 }
 
+const getLocationTitleAndCompanyListWithJobCount = async (req, res) => {
+    try {
+        const locationList = await publicJobService.getLocationTitleAndCompanyListWithJobCount();
+        res.json(locationList);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getAllJobs,
     getJobDetails,
     addPublicApplicationForJob,
     getPublicApplications,
     getPublicApplicationsForExcel,
-    deletePublicApplication
+    deletePublicApplication,
+    getLocationTitleAndCompanyListWithJobCount
 }
