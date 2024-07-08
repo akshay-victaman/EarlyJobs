@@ -1,16 +1,69 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
-
-
+﻿<?xml version="1.0" encoding="UTF-8"?>
+		<!--	created with www.mysitemapgenerator.com	-->
+		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-  <loc>https://earlyjobs.in/</loc>
-  <lastmod>2024-05-22T13:43:26+00:00</lastmod>
+	<loc>https://earlyjobs.in/</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>0.6</priority>
 </url>
-
-
+<url>
+	<loc>https://earlyjobs.in/terms-and-conditions</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/privacy-policy</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/jobs</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/add-job-vacancies</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/apply-as-a-recruiter</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/bde-portal</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/admin</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/admin/users</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/admin/candidates</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/admin/recruiter-requests</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/admin/compliants</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://earlyjobs.in/not-found</loc>
+	<lastmod>2024-05-22T16:40:51+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
 </urlset>
