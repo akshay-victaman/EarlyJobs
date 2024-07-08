@@ -78,7 +78,7 @@ const PublicJobDetailsPage = () => {
           maxExperience: data.max_experience,
           minAge: data.min_age,
           maxAge: data.max_age,
-          keywords: data.keywords ? data.keywords.split(', ') : [],
+          keywords: data.keywords ? data.keywords.split(',') : [],
         }
         console.log(data)
         console.log(formattedData)

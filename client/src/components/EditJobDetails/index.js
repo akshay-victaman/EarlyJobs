@@ -7,6 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 import Cookies from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
 import EditorComponent from '../TextEditorQuill';
+import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants'
 
 let languageOptions = [
     { value: 'English', label: 'English' },
@@ -68,7 +69,6 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const [popupError, setPopupError] = useState('')
     const [popupLoading, setPopupLoading] = useState(false)
     const [seniorHiringManagers, setSeniorHiringManagers] = useState([])
-    const [keyword, setKeyword] = useState('');
     const [skills, setSkills] = useState('');
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -259,27 +259,6 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         setEditJob({ ...editJob, skills: editJob.skills.filter(skill => skill.id !== id)})
     }
 
-    const onChangeKeyword = (e) => {
-        setKeyword(e.target.value)
-    }
-
-    const onAddKeyword = () => {
-        if(editJob.keywords.length > 30) return
-        if(editJob.keywords.includes(keyword)) return
-        const trimmedKeyword = keyword.trim()
-        if(trimmedKeyword === '') {
-            return
-        }
-        setEditJob({ ...editJob, keywords: [...editJob.keywords, trimmedKeyword]})
-        setKeyword('')
-    }
-
-    const onRemoveKeyword = (index) => {
-        const keywords = editJob.keywords
-        keywords.splice(index, 1)
-        setEditJob({ ...editJob, keywords: keywords})
-    }
-
     const handleAddLanguage = (e) => {
         if(e.value === "") return
         const languages = editJob.language
@@ -410,7 +389,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             maxExperience: editJob.maxExperience,
             minAge: editJob.minAge,
             maxAge: editJob.maxAge,
-            keywords: editJob.keywords.join(', ')
+            keywords: editJob.keywords
         }
         console.log(newJob)
         // return
@@ -615,9 +594,11 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                     <label className='bde-form-label' htmlFor='category'>Job Category<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input emp-work-input' id='category'  onChange={handleInputChange} value={editJob.category} name='category' >
                         <option value=''>Select Category</option>
-                        <option value='IT'>IT</option>
-                        <option value='Non-IT'>Non-IT</option>
-                        <option value='BPO'>BPO</option>
+                        {
+                            categoryOptions.map((category, index) => (
+                                <option key={index} value={category}>{category}</option>
+                            ))
+                        }
                     </select>
                     {categoryError && <p className='hr-error'>*Please select category</p>}
                 </div>
@@ -625,8 +606,11 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                     <label className='bde-form-label' htmlFor='shiftTimings'>Shift Timings<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input emp-work-input' id='shiftTimings'  onChange={handleInputChange} value={editJob.shiftTimings} name='shiftTimings'>
                         <option value=''>Select Shift Timings</option>
-                        <option value='Day Shift'>Day Shift</option>
-                        <option value='Night Shift'>Night Shift</option>
+                        {
+                            shiftTypeOptions.map((shift, index) => (
+                                <option key={index} value={shift}>{shift}</option>
+                            ))
+                        }
                     </select>
                     {shiftTimingError && <p className='hr-error'>*Please select shift timings</p>}
                 </div>
@@ -738,11 +722,11 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                     <label className='bde-form-label' htmlFor='employment-type'>Employment Type<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input emp-work-input' id='employment-type'  onChange={handleInputChange} name='employmentType' value={editJob.employmentType} >
                         <option value=''>Select Employment Type</option>
-                        <option value='Full Time'>Full Time</option>
-                        <option value='Part Time'>Part Time</option>
-                        <option value='Internship'>Internship</option>
-                        <option value='Contract'>Contract</option>
-                        <option value='Freelance'>Freelance</option>
+                        {
+                            employmentTypeOptions.map((type, index) => (
+                                <option key={index} value={type}>{type}</option>
+                            ))
+                        }
                     </select>
                     {employmentError && <p className='hr-error'>*Please select employment type</p> }
                 </div>
@@ -750,9 +734,11 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                     <label className='bde-form-label' htmlFor='work-type'>Work Type<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input emp-work-input' id='work-type'  onChange={handleInputChange} value={editJob.workType} name='workType'>
                         <option value=''>Select Work Type</option>
-                        <option value='On Site'>On Site</option>
-                        <option value='Remote'>Remote</option>
-                        <option value='Hybrid'>Hybrid</option>
+                        {
+                            workTypeOptions.map((type, index) => (
+                                <option key={index} value={type.value}>{type.label}</option>
+                            ))
+                        }
                     </select>
                     {workError && <p className='hr-error'>*Please select work type</p>}
                 </div>
@@ -855,20 +841,8 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             {assignedToError && <p className='hr-error'>*Please select Senior Hiring manager</p>}
 
             <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
-            <div className='hr-input-list-con'>
-                {
-                    editJob.keywords.map((keyword, index) => (
-                        <div className='hr-input-list' key={index}>
-                            <p className='hr-input-list-item'>{keyword}</p>
-                            <button type='button' className='hr-remove-item-button' onClick={() => onRemoveKeyword(index)}><IoIosClose className='hr-close-icon' /></button>
-                        </div>
-                    ))
-                }
-            </div>
-            <div className='hr-input-con'>
-                <input type='text' placeholder="Ex: Customer Support" className='hr-input-sub' value={keyword} id='keywords' name='keywords'  onChange={onChangeKeyword} />
-                <button type='button' className='hr-form-btn-add' onClick={onAddKeyword}>+Add</button>
-            </div>
+            <textarea type='text' placeholder="Ex: Customer Support" className='hr-input-textarea' value={editJob.keywords} id='keywords' name='keywords'  onChange={handleInputChange} ></textarea>
+            <p className='hr-size'>Separate each keyword with a comma</p>
 
             <div className='hr-submit-con'>
                     <button type='button' className='hr-form-btn' onClick={() => setIsEditJob(false)}>Cancel</button>

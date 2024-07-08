@@ -24,6 +24,9 @@ const OpeningsSection = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const initialPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
+    const initialCompanyName = new URLSearchParams(window.location.search).get('company') || "";
+    const initialJobTitle = new URLSearchParams(window.location.search).get('title') || "";
+    const initialLocation = new URLSearchParams(window.location.search).get('location') || "";
 
     const [jobsList, setJobsList] = useState([])
     const [employmentTypeList, setEmploymentTypeList] = useState([])
@@ -40,16 +43,16 @@ const OpeningsSection = () => {
     const [companyList, setCompanyList] = useState([]);
     const [locationList, setLocationList] = useState([]);
     const [titleList, setTitleList] = useState([]);
-    const [companyName, setCompanyName] = useState('');
-    const [location, setLocation] = useState('');
-    const [title, setTitle] = useState('');
+    const [companyName, setCompanyName] = useState(initialCompanyName);
+    const [location, setLocation] = useState(initialLocation);
+    const [title, setTitle] = useState(initialJobTitle);
   
 
 
   useEffect(() => {
       getJobsCard()
       getCompanyTitleAndLocationList()
-      updateUrl(page);
+      updateUrl(page, companyName, location, title)
   }, [employmentTypeList, minimumPackageList, page, companyName, location, title])
 
   const onClickFilter = () => {
@@ -174,7 +177,7 @@ const OpeningsSection = () => {
 
   const getJobsCard = async () => {
     setApiStatus(apiStatusConstant.inProgress)
-    let apiUrl = `${backendUrl}/api/public/jobs?company=${companyName}&location=${location}&title=${title}&page=${page}`
+    let apiUrl = `${backendUrl}/api/public/jobs?company=${companyName}&location=${location}&title=${title}&search=${searchInput}&page=${page}`
     
     const response = await fetch(apiUrl)
     const data = await response.json()
@@ -261,10 +264,13 @@ const OpeningsSection = () => {
     return element;
   };
 
-  const updateUrl = (page) => {
+  const updateUrl = (page, companyName, location, title) => {
     const url = new URL(window.location.href);
     url.searchParams.set('page', page);
-    window.history.pushState({}, '', url);
+    url.searchParams.set('company', companyName);
+    url.searchParams.set('location', location);
+    url.searchParams.set('title', title);
+    window.history.pushState({ path: url.href }, '', url.href);
   };
 
   const renderJobsCards = () => {
@@ -401,6 +407,9 @@ const OpeningsSection = () => {
               companyList={companyList}
               locationList={locationList}
               titleList={titleList}
+              companyName={companyName}
+              location={location}
+              title={title}
               onChangecompanyName={onChangecompanyName}
               onChangelocation={onChangelocation}
               onChangetitle={onChangetitle}
@@ -414,24 +423,24 @@ const OpeningsSection = () => {
         </button>
         
         <div className="public-job-section-search-card-con">
-          {/* <div className="search-box-desk-con">
+          <div className="public-job-section-search-con">
+            <BsSearch className="public-job-section-search-icon" />
             <input
               type="search"
-              placeholder="Search"
-              className="search-box"
+              className="public-job-section-search-input"
+              placeholder="Job title, keywords, company or location"
+              value={searchInput}
               onChange={onChangeInput}
-              //   value={searchInput}
               onKeyDown={onKeyEnter}
             />
             <button
               type="button"
-              className="search-icon-con"
+              className="public-job-section-search-button"
               onClick={onClickButton}
-              data-testid="searchButton"
             >
-              <BsSearch className="search-icon" />
+              Search
             </button>
-          </div> */}
+          </div>
           {
             renderAllSections()
           }

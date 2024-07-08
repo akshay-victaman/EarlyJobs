@@ -4,9 +4,10 @@ const getAllJobs = async (req, res) => {
     const company = req.query.company;
     const location = req.query.location;
     const title = req.query.title;
+    const search = req.query.search;
     const page = req.query.page || 1;
     try {
-        const result = await publicJobService.getAllJobs(company, location, title, page);
+        const result = await publicJobService.getAllJobs(company, location, title, search, page);
         res.json(result);
     } catch (error) {
     res.status(500).json({ error: error.message });

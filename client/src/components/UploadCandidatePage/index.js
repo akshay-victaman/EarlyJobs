@@ -4,6 +4,7 @@ import { IoIosClose } from "react-icons/io";
 import Select from 'react-select';
 import {Oval} from 'react-loader-spinner'
 import { formatISO, differenceInDays, parseISO, sub, parse, format } from 'date-fns';
+import { categoryOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants'
 import './style.css'
 
 let languageOptions = [
@@ -600,9 +601,11 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
                     <label className="homepage-label" htmlFor='category'>Job Category<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input' id='category'  onChange={handleCandidateInputChange} value={candidateDetails.jobCategory} name='jobCategory' >
                         <option value=''>Select Category</option>
-                        <option value='IT'>IT</option>
-                        <option value='Non-IT'>Non-IT</option>
-                        <option value='BPO'>BPO</option>
+                        {
+                            categoryOptions.map((category, index) => (
+                                <option key={index} value={category}>{category}</option>
+                            ))
+                        }
                     </select>
                 </div>
             </div>
@@ -688,11 +691,11 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
                     <label className='homepage-label' htmlFor='employment-type'>Employment Type<span className='hr-form-span'> *</span></label>
                     <select className='homepage-input' id='employment-type'  onChange={handleCandidateInputChange} name='employmentType' value={candidateDetails.employmentType} >
                         <option value=''>Select Employment Type</option>
-                        <option value='Full Time'>Full Time</option>
-                        <option value='Part Time'>Part Time</option>
-                        <option value='Internship'>Internship</option>
-                        <option value='Contract'>Contract</option>
-                        <option value='Freelance'>Freelance</option>
+                        {
+                            employmentTypeOptions.map((type, index) => (
+                                <option key={index} value={type}>{type}</option>
+                            ))
+                        }
                     </select>
                 </div>
             </div>
@@ -709,8 +712,11 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
                         <label className='homepage-label' htmlFor='shiftTimings'>Shift Timings<span className='hr-form-span'> *</span></label>
                         <select className='homepage-input' id='shiftTimings'  onChange={handleCandidateInputChange} value={candidateDetails.shiftTimings} name='shiftTimings'>
                             <option value=''>Select Shift Timings</option>
-                            <option value='Day Shift'>Day Shift</option>
-                            <option value='Night Shift'>Night Shift</option>
+                            {
+                                shiftTypeOptions.map((shift, index) => (
+                                    <option key={index} value={shift}>{shift}</option>
+                                ))
+                            }
                         </select>
                     {/* {shiftTimingError && <p className='hr-error'>*Please select shift timings</p>} */}
                 </div>

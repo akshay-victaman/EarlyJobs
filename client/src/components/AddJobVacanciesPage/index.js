@@ -8,6 +8,7 @@ import {Oval} from 'react-loader-spinner'
 import './style.css';
 import app from '../../firebase';
 import EditorComponent from '../TextEditorQuill';
+import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants'
 
 let languageOptions = [
     { value: 'English', label: 'English' },
@@ -64,7 +65,6 @@ const customStyles = {
 const AddJobVacanciesPage = () => {
 
     const [skills, setSkills] = useState('');
-    const [keyword, setKeyword] = useState('');
     const [showJobForm, setShowJobForm] = useState(true)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -122,7 +122,7 @@ const AddJobVacanciesPage = () => {
         maxExperience: '',
         minAge: '',
         maxAge: '',
-        keywords: [],
+        keywords: '',
         companyDetails: {
             name: '',
             email: '',
@@ -164,27 +164,6 @@ const AddJobVacanciesPage = () => {
 
     const onRemoveSkills = (id) => {
         setAddJobVacancies({ ...addJobVacancies, skills: addJobVacancies.skills.filter(skill => skill.id !== id)})
-    }
-
-    const onChangeKeyword = (e) => {
-        setKeyword(e.target.value)
-    }
-
-    const onAddKeyword = () => {
-        if(addJobVacancies.keywords.length > 30) return
-        if(addJobVacancies.keywords.includes(keyword)) return
-        const trimmedKeyword = keyword.trim()
-        if(trimmedKeyword === '') {
-            return
-        }
-        setAddJobVacancies({ ...addJobVacancies, keywords: [...addJobVacancies.keywords, trimmedKeyword]})
-        setKeyword('')
-    }
-
-    const onRemoveKeyword = (index) => {
-        const keywords = addJobVacancies.keywords
-        keywords.splice(index, 1)
-        setAddJobVacancies({ ...addJobVacancies, keywords: keywords})
     }
 
     const handleAddLanguage = (e) => {
@@ -306,7 +285,7 @@ const AddJobVacanciesPage = () => {
                 maxExperience: '',
                 minAge: '',
                 maxAge: '',
-                keywords: [],
+                keywords: '',
                 companyDetails: {
                     name: '',
                     email: '',
@@ -426,11 +405,11 @@ const AddJobVacanciesPage = () => {
             maxExperience: addJobVacancies.maxExperience,
             minAge: addJobVacancies.minAge,
             maxAge: addJobVacancies.maxAge,
-            keywords: addJobVacancies.keywords.join(', ')
+            keywords: addJobVacancies.keywords
         }
 
         console.log(newJob)
-        // return
+        return
         onSubmitToFirestore(newJob)
     }
 
@@ -446,9 +425,11 @@ const AddJobVacanciesPage = () => {
                     <label className='bde-form-label' htmlFor='category'>Job Category<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input emp-work-input' id='category'  onChange={handleInputChange} value={addJobVacancies.category} name='category' >
                         <option value=''>Select Category</option>
-                        <option value='IT'>IT</option>
-                        <option value='Non-IT'>Non-IT</option>
-                        <option value='BPO'>BPO</option>
+                        {
+                            categoryOptions.map((category, index) => (
+                                <option key={index} value={category}>{category}</option>
+                            ))
+                        }
                     </select>
                     {categoryError && <p className='hr-error'>*Please select category</p>}
                 </div>
@@ -456,8 +437,11 @@ const AddJobVacanciesPage = () => {
                     <label className='bde-form-label' htmlFor='shiftTimings'>Shift Timings<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input emp-work-input' id='shiftTimings'  onChange={handleInputChange} value={addJobVacancies.shiftTimings} name='shiftTimings'>
                         <option value=''>Select Shift Timings</option>
-                        <option value='Day Shift'>Day Shift</option>
-                        <option value='Night Shift'>Night Shift</option>
+                        {
+                            shiftTypeOptions.map((shift, index) => (
+                                <option key={index} value={shift}>{shift}</option>
+                            ))
+                        }
                     </select>
                     {shiftTimingError && <p className='hr-error'>*Please select shift timings</p>}
                 </div>
@@ -569,11 +553,11 @@ const AddJobVacanciesPage = () => {
                     <label className='bde-form-label' htmlFor='employment-type'>Employment Type<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input emp-work-input' id='employment-type'  onChange={handleInputChange} name='employmentType' value={addJobVacancies.employmentType} >
                         <option value=''>Select Employment Type</option>
-                        <option value='Full Time'>Full Time</option>
-                        <option value='Part Time'>Part Time</option>
-                        <option value='Internship'>Internship</option>
-                        <option value='Contract'>Contract</option>
-                        <option value='Freelance'>Freelance</option>
+                        {
+                            employmentTypeOptions.map((type, index) => (
+                                <option key={index} value={type}>{type}</option>
+                            ))
+                        }
                     </select>
                     {employmentError && <p className='hr-error'>*Please select employment type</p> }
                 </div>
@@ -581,9 +565,11 @@ const AddJobVacanciesPage = () => {
                     <label className='bde-form-label' htmlFor='work-type'>Work Type<span className='hr-form-span'> *</span></label>
                     <select className='bde-form-input emp-work-input' id='work-type'  onChange={handleInputChange} value={addJobVacancies.workType} name='workType'>
                         <option value=''>Select Work Type</option>
-                        <option value='On Site'>On Site</option>
-                        <option value='Remote'>Remote</option>
-                        <option value='Hybrid'>Hybrid</option>
+                        {
+                            workTypeOptions.map((type, index) => (
+                                <option key={index} value={type.value}>{type.label}</option>
+                            ))
+                        }
                     </select>
                     {workError && <p className='hr-error'>*Please select work type</p>}
                 </div>
@@ -671,20 +657,8 @@ const AddJobVacanciesPage = () => {
             {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
             
             <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
-            <div className='hr-input-list-con'>
-                {
-                    addJobVacancies.keywords.map((keyword, index) => (
-                        <div className='hr-input-list' key={index}>
-                            <p className='hr-input-list-item'>{keyword}</p>
-                            <button type='button' className='hr-remove-item-button' onClick={() => onRemoveKeyword(index)}><IoIosClose className='hr-close-icon' /></button>
-                        </div>
-                    ))
-                }
-            </div>
-            <div className='hr-input-con'>
-                <input type='text' placeholder="Ex: Customer Support" className='hr-input-sub' value={keyword} id='keywords' name='keywords'  onChange={onChangeKeyword} />
-                <button type='button' className='hr-form-btn-add' onClick={onAddKeyword}>+Add</button>
-            </div>
+            <textarea type='text' placeholder="Ex: Customer Support" className='hr-input-textarea' value={addJobVacancies.keywords} id='keywords' name='keywords'  onChange={handleInputChange} ></textarea>
+            <p className='hr-size'>Separate each keyword with a comma</p>
 
             <label className='bde-form-label spoc-label'>Your Company Details<span className='hr-form-span'> *</span></label>
             <label className='bde-form-label' htmlFor='company'>Comapany Name<span className='hr-form-span'> *</span></label>
