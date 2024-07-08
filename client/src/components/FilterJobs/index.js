@@ -131,6 +131,9 @@ const FilterJobs = props => {
     companyList,
     locationList,
     titleList,
+    companyName,
+    location,
+    title,
     onChangecompanyName,
     onChangelocation,
     onChangetitle
@@ -156,6 +159,10 @@ const FilterJobs = props => {
     }
     onChangetitle(value.value)
   }
+
+  const companyObj = companyList.find(eachItem => eachItem.value === companyName)
+  const locationObj = locationList.find(eachItem => eachItem.value === location)
+  const titleObj = titleList.find(eachItem => eachItem.value === title)
 
   return (
     <div className="profile-filters-container">
@@ -189,7 +196,7 @@ const FilterJobs = props => {
           options={companyList}
           placeholder="Search Company"
           styles={customStyles}
-          // value={postNewJob.companyName}
+          value={companyObj}
       />
 
       <h1 className="filter-jobs-heading-search">Location</h1>
@@ -199,7 +206,7 @@ const FilterJobs = props => {
           options={locationList}
           placeholder="Search Location"
           styles={customStyles}
-          // value={postNewJob.companyName}
+          value={locationObj}
       />
 
       <h1 className="filter-jobs-heading-search">Job Title</h1>
@@ -209,7 +216,7 @@ const FilterJobs = props => {
           options={titleList}
           placeholder="Search Job Title"
           styles={customStyles}
-          // value={postNewJob.companyName}
+          value={titleObj}
       />
       
       <h1 className="filter-jobs-heading">Type of Employment</h1>

@@ -128,7 +128,7 @@ const RequestJobDetailsPage = () => {
             maxExperience: documents[0].maxExperience,
             minAge: documents[0].minAge,
             maxAge: documents[0].maxAge,
-            keywords: documents[0].keywords ? documents[0].keywords.split(', ') : [],
+            keywords: documents[0].keywords ? documents[0].keywords.split(',') : [],
             assignedTo: []
           }
           console.log(formattedData)
@@ -204,7 +204,7 @@ const handleRemoveHiringManager = (email) => {
         minExperience: jobDetails.minExperience,
         minAge: jobDetails.minAge,
         maxAge: jobDetails.maxAge,
-        keywords: jobDetails.keywords.join(', '),
+        keywords: jobDetails.keywords.join(','),
     }
     setError("");
     setRejectApproveStatus(true)

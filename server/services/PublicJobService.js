@@ -1,53 +1,39 @@
 const { v4: uuidv4 } = require('uuid');
 const db = require('../config/database');
 
-const getAllJobs = async (company, location, title, page) => {
+const getAllJobs = async (company, location, title, search, page) => {
     const pageSize = 20;
     const startIndex = (page - 1) * pageSize;
     const query = `
         SELECT * FROM jobs 
         where status != 'ARCHIVED'
-        ${company ? 'AND company_name = ?' : ''}
-        ${location ? 'AND city = ?' : ''}
-        ${title ? 'AND title = ?' : ''}
+        ${company && search === '' ? 'AND company_name = ?' : ''}
+        ${location && search === '' ? 'AND city = ?' : ''}
+        ${title && search === '' ? 'AND title = ?' : ''}
+        ${search ? 'AND (title LIKE ? OR company_name LIKE ? OR city LIKE ? OR keywords LIKE ?)' : ''}
         order by created_at desc Limit ? offset ?;`;
     const countQuery = `
         SELECT count(*) as count FROM jobs
         where status != 'ARCHIVED'
-        ${company ? 'AND company_name = ?' : ''}
-        ${location ? 'AND city = ?' : ''}
-        ${title ? 'AND title = ?' : ''};`;
+        ${company && search === '' ? 'AND company_name = ?' : ''}
+        ${location && search === '' ? 'AND city = ?' : ''}
+        ${title && search === '' ? 'AND title = ?' : ''}
+        ${search ? 'AND (title LIKE ? OR company_name LIKE ? OR city LIKE ? OR keywords LIKE ?)' : ''}`;
     try {
         let params = [];
-        if(company) params.push(company);
-        if(location) params.push(location);
-        if(title) params.push(title);
+        if(company && search === '') params.push(company);
+        if(location && search === '') params.push(location);
+        if(title && search === '') params.push(title);
+        const searchQuery = `%${search}%`;
+        if(search) params = [searchQuery, searchQuery, searchQuery, searchQuery];
         params.push(pageSize);
         params.push(startIndex);
-
-        // if(company && location && title) {
-        //     params = [company, location, title, pageSize, startIndex];
-        // } else if(company) {
-        //     params = [company, pageSize, startIndex];
-        // } else if(location) {
-        //     params = [location, pageSize, startIndex];
-        // } else if(title) {
-        //     params = [title, pageSize, startIndex];
-        // } else {
-        //     params = [pageSize, startIndex];
-        // }
         const result = await db.query(query, params);
         let countParams = [];
-        // if(company && location) {
-        //     countParams = [company, location];
-        // } else if(company) {
-        //     countParams = [company];
-        // } else if(location) {
-        //     countParams = [location];
-        // }
-        if(company) countParams.push(company);
-        if(location) countParams.push(location);
-        if(title) countParams.push(title);
+        if(company && search === '') countParams.push(company);
+        if(location && search === '') countParams.push(location);
+        if(title && search === '') countParams.push(title);
+        if(search) countParams = [searchQuery, searchQuery, searchQuery, searchQuery];
         const countResult = await db.query(countQuery, countParams);
         return {jobs: result[0], count: countResult[0][0].count};
     } catch (error) {

@@ -239,7 +239,30 @@
     height: 35px;
 }
 
+.hr-input-textarea {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: 100px;
+    min-height: 100px;
+    max-height: 220px;
+    border-radius: 5px;
+    border: 1px solid #EB6A4D;
+    padding-left: 12px;
+    padding-top: 12px;
+    font-size: 14px;
+    outline: none;
+    background-color: transparent;
+    margin-bottom: 16px;
+}
 
+.hr-size {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
 
  @media screen and (max-width: 768px) {
     .bde-job-form {
