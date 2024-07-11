@@ -24,6 +24,12 @@
     font-size: 50px;
     color: #bababa;
   }
+
+  .jobs-logo-img {
+    width: 73px;
+    height: 73px;
+    border-radius: 15px;
+  }
   
   .jobs-title-con {
     margin-left: 12px;
@@ -131,6 +137,13 @@
   }
   
   @media screen and (max-width: 768px) {
+
+    .jobs-logo-img {
+      width: 54px;
+      height: 54px;
+      border-radius: 10px;
+    }
+
     .jobs-logo {
       font-size: 30px;
     }

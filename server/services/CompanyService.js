@@ -64,7 +64,7 @@ const getCompanyById = async (id) => {
 
 const createCompany = async (company) => {
     try {
-        const { name, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone } = company;
+        const { name, companyLogoUrl, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone } = company;
         const companyExists = await getCompanies(name, 1);
         if (companyExists.companies.length) {
             const error = new Error('Company already exists');
@@ -73,8 +73,8 @@ const createCompany = async (company) => {
         }
 
         const id = uuidv4();
-        const query = 'INSERT INTO companies (id, name, registered_address, address, phone, email, gst_no, spoc_name, spoc_email, spoc_phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
-        const result = await db.query(query, [id, name, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone]);
+        const query = 'INSERT INTO companies (id, name, logo_url, registered_address, address, phone, email, gst_no, spoc_name, spoc_email, spoc_phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+        const result = await db.query(query, [id, name, companyLogoUrl, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone]);
         if (result[0].affectedRows) {
             return { message: 'Company created successfully', id };
         } else {
@@ -92,9 +92,9 @@ const updateCompany = async (id, company) => {
     try {
         await getCompanyById(id);
 
-        const { name, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone } = company;
-        const query = 'UPDATE companies SET name = ?, registered_address = ?, address = ?, phone = ?, email = ?, gst_no = ?, spoc_name = ?, spoc_email = ?, spoc_phone = ? WHERE id = ?;';
-        const result = await db.query(query, [name, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone, id]);
+        const { name, companyLogoUrl, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone } = company;
+        const query = 'UPDATE companies SET name = ?, logo_url = ?, registered_address = ?, address = ?, phone = ?, email = ?, gst_no = ?, spoc_name = ?, spoc_email = ?, spoc_phone = ? WHERE id = ?;';
+        const result = await db.query(query, [name, companyLogoUrl, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone, id]);
         if (result[0].affectedRows) {
             return { message: 'Company details updated successfully' };
         } else {

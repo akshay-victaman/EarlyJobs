@@ -212,6 +212,7 @@ const OpeningsSection = () => {
           skills: eachItem.skills,
           status: eachItem.status,
           createdAt: eachItem.created_at,
+          keywords: eachItem.keywords,
         }))
         console.log('updated data',updatedData)
 

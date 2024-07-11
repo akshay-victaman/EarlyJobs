@@ -2,18 +2,21 @@ import {TiLocation} from 'react-icons/ti'
 import {Link} from 'react-router-dom'
 import {BsFillBriefcaseFill} from 'react-icons/bs'
 import './style.css'
+import { FiBriefcase } from 'react-icons/fi'
 
 const PublicJobsCard = ({jobsItem}) => {
 
   const {
     id,
     compname,
+    companyLogoUrl,
     employmentType,
     location,
     city,
     role,
     category,
     workType,
+    keywords
   } = jobsItem
 
   let encodedUrl = encodeURI(`${role}_${compname}_${city}_${id}`)
@@ -21,9 +24,18 @@ const PublicJobsCard = ({jobsItem}) => {
     const newUrl = encodedUrl.replace(/\//g, '_')
     encodedUrl = newUrl
   }
+
+  const keywordsArray = keywords ? keywords.split(',').slice(0, 4) : []
+  
   return (
     <Link to={`/view-openings/${encodedUrl}`} className="link-item">
       <li className="jobs-list-item-container public-list-item-container">
+        { companyLogoUrl ?
+          <img src={companyLogoUrl} alt="company logo" className="public-jobs-logo-img" />
+          :
+          <FiBriefcase className="public-job-logo" />
+        }
+        <div>
         <div className="jobs-logo-name-con">
             <h1 className="public-job-title">{role} - {compname} - {category}</h1>
         </div>
@@ -40,6 +52,14 @@ const PublicJobsCard = ({jobsItem}) => {
             </div>
           </div>
           {/* <p className="job-salary">{minSalary} - {maxSalary} LPA</p> */}
+        </div>
+        <div className="job-details-keywords-con openings-keyword-con">
+            {
+              keywordsArray.map((eachItem, index) => (
+                <p key={index} className="job-details-keywords job-section-keywords">{eachItem}</p>
+              ))
+            }
+        </div>
         </div>
       </li>
     </Link>

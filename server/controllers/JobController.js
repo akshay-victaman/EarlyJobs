@@ -345,10 +345,11 @@ const getOfferStatusCandidatesForBDE = async (req, res) => {
     const jobId = req.query.jobId;
     const fromDate = req.query.fromDate;
     const toDate = req.query.toDate;
+    const verificationStatus = req.query.verificationStatus;
     const page = parseInt(req.query.page) || 1;
 
     try {
-      const candidates = await jobService.getOfferStatusCandidatesForBDE(email, offerStatus, search, jobId, fromDate, toDate, page);
+      const candidates = await jobService.getOfferStatusCandidatesForBDE(email, offerStatus, search, jobId, fromDate, toDate, verificationStatus, page);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -362,8 +363,9 @@ const getOfferStatusCandidatesForBDEExcel = async (req, res) => {
     const jobId = req.query.jobId;
     const fromDate = req.query.fromDate;
     const toDate = req.query.toDate;
+    const verificationStatus = req.query.verificationStatus;
     try {
-      const candidates = await jobService.getOfferStatusCandidatesForBDEExcel(email, offerStatus, search, jobId, fromDate, toDate);
+      const candidates = await jobService.getOfferStatusCandidatesForBDEExcel(email, offerStatus, search, jobId, fromDate, toDate, verificationStatus);
       res.json(candidates);
     } catch (error) {
       res.status(500).json({ error: error.message });

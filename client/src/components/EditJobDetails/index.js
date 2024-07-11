@@ -6,6 +6,7 @@ import Select from 'react-select';
 import {v4 as uuidv4} from 'uuid';
 import Cookies from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import EditorComponent from '../TextEditorQuill';
 import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants'
 
@@ -96,9 +97,11 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const [ageError, setAgeError] = useState(false)
     const [tenureError, setTenureError] = useState(false)
     const [hmLoader, setHmLoader] = useState(false)
+    const [file, setFile] = useState(null);
 
     const [companyDetails, setCompanyDetails] = useState({
         name: '',
+        companyLogoUrl: '',
         registeredAddress: '',
         address: '',
         phone: '',
@@ -112,6 +115,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const [editJob, setEditJob] = useState({
         companyName: jobDetails.compname,
         companyId: jobDetails.companyId ? jobDetails.companyId : '',
+        companyLogoUrl: jobDetails.companyLogoUrl,
         jobTitle: jobDetails.role,
         category: jobDetails.category,
         shiftTimings: jobDetails.shiftTimings,
@@ -139,14 +143,24 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         maxExperience: jobDetails.maxExperience,
         minAge: jobDetails.minAge,
         maxAge: jobDetails.maxAge,
-        keywords: jobDetails.keywords
+        keywords: jobDetails.keywords.join(',')
     })
+
+    console.log(jobDetails)
 
     useEffect(() => {
         fetchSeniorHiringManagers()
         fetchCompanies()
         fetchAssignedSeniorHiringManagers()
     }, [])
+
+    const s3Client = new S3Client({
+        region: process.env.REACT_APP_AWS_BUCKET_REGION,
+        credentials: {
+          accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.REACT_APP_AWS_SECRET_KEY_ID,
+        },
+    });
 
     const fetchCompanies = async () => {
         const options = {
@@ -163,10 +177,10 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             const data = await response.json()
             console.log(data)
             if(response.ok) {
-                const options = data.companies.map(company => ({ value: company.name, label: company.name, id: company.id}))
+                const options = data.companies.map(company => ({ value: company.name, label: company.name, id: company.id, logoUrl: company.logo_url}))
                 setCompanies(options)
                 const companyName = data.companies.filter(company => company.id === jobDetails.companyId)
-                setSelectedCompany({ value: companyName[0].name, label: companyName[0].name, id: companyName[0].id})
+                setSelectedCompany({ value: companyName[0].name, label: companyName[0].name, id: companyName[0].id, logoUrl: companyName[0].logoUrl})
             } else {
                 alert(data.error)
             }
@@ -215,14 +229,21 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                 setCompanyDetails({...companyDetails, name: newValue.value})
                 setShowCompanyPopup(true)
             } else {
-                setEditJob({...editJob, companyName: newValue.value, companyId: newValue.id})
+                setEditJob({...editJob, companyName: newValue.value, companyId: newValue.id, companyLogoUrl: newValue.logoUrl})
                 setSelectedCompany(newValue)
             }
         } else {
-            setEditJob({...editJob, companyName: '', companyId: ''})
+            setEditJob({...editJob, companyName: '', companyId: '', companyLogoUrl: ''})
             setSelectedCompany(null)
         }
     };
+
+    async function handleFileChange(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        setFile(file);
+        console.log('File selected:', file);
+    }
 
     const handleInputChange = (e) => {
         const {name, value} = e.target
@@ -360,6 +381,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         const newJob = {
             jobId: jobDetails.id,
             companyName: editJob.companyName,
+            companyLogoUrl: editJob.companyLogoUrl,
             companyId: editJob.companyId,
             title: editJob.jobTitle,
             category: editJob.category,
@@ -391,7 +413,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             maxAge: editJob.maxAge,
             keywords: editJob.keywords
         }
-        console.log(newJob)
+        console.log(editJob)
         // return
         setLoading(true)
         const options = {
@@ -421,26 +443,41 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         }
     }
 
-    const renderHiringManagerOptions = () => {
-        if(editJob.assignedTo.length > 0 && seniorHiringManagers.length > 0) {
-            console.log(seniorHiringManagers)
-            return (editJob.assignedTo.map((email, index) => {
-                const hiringManagerName = seniorHiringManagers.find(item => item.email === email)
-                console.log(email)
-                return (
-                    <div className='hr-input-list' key={index}>
-                        <p className='hr-input-list-item'>{hiringManagerName && hiringManagerName.username}</p>
-                        <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveHiringManager(email)}><IoIosClose className='hr-close-icon' /></button>
-                    </div>
-                )}
-            ))
+    const uploadImage = async () => {
+        setPopupLoading(true)
+        if(!file) return;
+        try {
+            const timestamp = Date.now();
+            const params = {
+                Bucket: process.env.REACT_APP_AWS_COMPANY_LOGO_BUCKET,
+                Key: `${file.name}-${timestamp}`,
+                Body: file,
+                ContentType: file.type,
+            };
+
+            const command = new PutObjectCommand(params);
+
+            await s3Client.send(command);
+
+            const imageUrl = `https://${process.env.REACT_APP_AWS_COMPANY_LOGO_BUCKET}.s3.${process.env.REACT_APP_AWS_BUCKET_REGION}.amazonaws.com/${params.Key}`;
+            console.log("Image uploaded to S3:", imageUrl);
+            setFile(null);
+            return imageUrl;
+        } catch (error) {
+            setPopupLoading(false)
+            console.error("Error uploading file to S3:", error);
+            toast.error('Failed to upload image');
         }
-    }
+    };
+
 
     const handleAddCompany = async () => {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
         if(companyDetails.name.trim() === '') {
             setPopupError("*Please enter company name")
+            return
+        } else if(!file) {
+            setPopupError("*Please upload company logo")
             return
         } else if(companyDetails.registeredAddress.trim() === '') {
             setPopupError("*Please enter registered address")
@@ -469,7 +506,9 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         }
         setPopupError("")
         console.log(companyDetails)
-
+        const imageUrl = await uploadImage()
+        console.log(imageUrl)
+        
         const url = process.env.REACT_APP_BACKEND_API_URL + '/api/companies'
         const options = {
             method: 'POST',
@@ -477,10 +516,9 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${Cookies.get('jwt_token')}`
             },
-            body: JSON.stringify(companyDetails)
+            body: JSON.stringify({...companyDetails, companyLogoUrl: imageUrl})
         }
         try {
-            setPopupLoading(true)
             const response = await fetch(url, options)
             const data = await response.json()
             console.log(data)
@@ -495,6 +533,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                     setShowCompanyPopup(false)
                     setCompanyDetails({
                         name: '',
+                        companyLogoUrl: '',
                         registeredAddress: '',
                         address: '',
                         phone: '',
@@ -517,6 +556,21 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         setPopupLoading(false)
     }
 
+    const renderHiringManagerOptions = () => {
+        if(editJob.assignedTo.length > 0 && seniorHiringManagers.length > 0) {
+            console.log(seniorHiringManagers)
+            return (editJob.assignedTo.map((email, index) => {
+                const hiringManagerName = seniorHiringManagers.find(item => item.email === email)
+                console.log(email)
+                return (
+                    <div className='hr-input-list' key={index}>
+                        <p className='hr-input-list-item'>{hiringManagerName && hiringManagerName.username}</p>
+                        <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveHiringManager(email)}><IoIosClose className='hr-close-icon' /></button>
+                    </div>
+                )}
+            ))
+        }
+    }
 
     const renderAddCompanyPopup = () => (
         <div className='bde-add-company-popup'>
@@ -526,6 +580,16 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
                 <h1 className='bde-add-company-popup-heading'>Add New Company</h1>
                 <label className='bde-form-label' htmlFor='name'>Company Name<span className='hr-form-span'> *</span></label>
                 <input className='bde-form-input' id='name'  onChange={handleCompanyInputChange} value={companyDetails.name} name='name' type='text' placeholder='Enter Company Name' />
+                <label className='bde-form-label' htmlFor='companyLogo'>Company Logo<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='companyLogo' type='file' accept='image/png, image/jpeg' onChange={handleFileChange} />
+                {file ?
+                    <div className='bde-form-image-con'>
+                        <img src={URL.createObjectURL(file)} alt='company-logo' className='bde-form-image' />
+                        <label className='bde-form-image-replace-btn' htmlFor='companyLogo'>Replace</label>
+                    </div>
+                    :
+                    <label className='bde-from-image-label' htmlFor='companyLogo'>Upload Company Logo</label>
+                }
                 <label className='bde-form-label' htmlFor='registeredAddress'>Registered Address<span className='hr-form-span'> *</span></label>
                 <input className='bde-form-input' id='registeredAddress'  onChange={handleCompanyInputChange} value={companyDetails.registeredAddress} name='registeredAddress' type='text' placeholder='Enter Registered Address' />
                 <label className='bde-form-label' htmlFor='address'>Address<span className='hr-form-span'> *</span></label>
@@ -841,6 +905,7 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             {assignedToError && <p className='hr-error'>*Please select Senior Hiring manager</p>}
 
             <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
+            {console.log(typeof editJob.keywords)}
             <textarea type='text' placeholder="Ex: Customer Support" className='hr-input-textarea' value={editJob.keywords} id='keywords' name='keywords'  onChange={handleInputChange} ></textarea>
             <p className='hr-size'>Separate each keyword with a comma</p>
 

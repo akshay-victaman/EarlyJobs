@@ -5,9 +5,10 @@ import { Oval, ThreeCircles } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { format, parseISO } from 'date-fns';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import ExcelDownloadButton from '../ExcelDownloadButton';
-import './style.css';
 import JobsCard from '../JobsCard';
+import './style.css';
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -30,6 +31,7 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
     const [showCompanyDetailsPopup, setShowCompanyDetailsPopup] = useState(false)
     const [companyId, setCompanyId] = useState('')
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
+    const [file, setFile] = useState(null);
 
     const id = new URLSearchParams(window.location.search).get('id');
     
@@ -44,6 +46,7 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
 
     const [companyDetails, setCompanyDetails] = useState({
         name: '',
+        companyLogoUrl: '',
         registeredAddress: '',
         address: '',
         phone: '',
@@ -64,11 +67,26 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
         }
     }, [page, id])
 
+    const s3Client = new S3Client({
+        region: process.env.REACT_APP_AWS_BUCKET_REGION,
+        credentials: {
+          accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.REACT_APP_AWS_SECRET_KEY_ID,
+        },
+    });
+
     const itemsPerPage = 10; 
 
     const handlePageChange = (page) => {
       setPage(page)
     };
+
+    async function handleFileChange(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        setFile(file);
+        console.log('File selected:', file);
+    }
 
     const handleCompanyInputChange = (e) => {
         const {name, value} = e.target
@@ -88,6 +106,7 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
             setCompanyPopupType('add')
             setCompanyDetails({
                 name: '',
+                companyLogoUrl: '',
                 registeredAddress: '',
                 address: '',
                 phone: '',
@@ -151,6 +170,7 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
                     const updatedData = data.companies.map(eachItem => ({
                         id: eachItem.id,
                         name: eachItem.name,
+                        companyLogoUrl: eachItem.logo_url,
                         registeredAddress: eachItem.registered_address,
                         address: eachItem.address,
                         phone: eachItem.phone,
@@ -303,6 +323,12 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
         if(companyDetails.name.trim() === '') {
             setPopupError("*Please enter company name")
             return false
+        } else if(!file && companyPopupType === 'add') {
+            setPopupError("*Please upload company logo")
+            return
+        } else if(companyPopupType === 'update' && !companyDetails.companyLogoUrl && !file) {
+            setPopupError("*Please upload company logo")
+            return
         } else if(companyDetails.registeredAddress.trim() === '') {
             setPopupError("*Please enter registered address")
             return false
@@ -332,11 +358,39 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
         return true
     }
 
+    const uploadImage = async () => {
+        setPopupLoading(true)
+        if(!file) return;
+        try {
+            const timestamp = Date.now();
+            const params = {
+                Bucket: process.env.REACT_APP_AWS_COMPANY_LOGO_BUCKET,
+                Key: `${file.name}-${timestamp}`,
+                Body: file,
+                ContentType: file.type,
+            };
+
+            const command = new PutObjectCommand(params);
+
+            await s3Client.send(command);
+
+            const imageUrl = `https://${process.env.REACT_APP_AWS_COMPANY_LOGO_BUCKET}.s3.${process.env.REACT_APP_AWS_BUCKET_REGION}.amazonaws.com/${params.Key}`;
+            console.log("Image uploaded to S3:", imageUrl);
+            return imageUrl;
+        } catch (error) {
+            setPopupLoading(false)
+            console.error("Error uploading file to S3:", error);
+            toast.error('Failed to upload image');
+        }
+    };
+
     const handleAddCompany = async () => {
         if(!validateCompanyDetails()) {
             return
         }
         console.log(companyDetails)
+        const imageUrl = await uploadImage()
+        console.log(imageUrl)
 
         const url = process.env.REACT_APP_BACKEND_API_URL + '/api/companies/'
         const options = {
@@ -345,7 +399,7 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${Cookies.get('jwt_token')}`
             },
-            body: JSON.stringify(companyDetails)
+            body: JSON.stringify({...companyDetails, companyLogoUrl: imageUrl})
         }
         try {
             setPopupLoading(true)
@@ -360,6 +414,7 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
                     setShowCompanyPopup(false)
                     setCompanyDetails({
                         name: '',
+                        companyLogoUrl: '',
                         registeredAddress: '',
                         address: '',
                         phone: '',
@@ -381,6 +436,7 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
             console.log(error)
         }
         setPopupLoading(false)
+        setFile(null);
     }
 
     const handleUpdateCompany = async () => {
@@ -388,6 +444,11 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
             return
         }
         console.log(companyDetails)
+        let imageUrl = null;
+        if(file) {
+            imageUrl = await uploadImage()
+        }
+        console.log(imageUrl)
 
         const url = process.env.REACT_APP_BACKEND_API_URL + '/api/companies/' + companyDetails.id 
         const options = {
@@ -396,7 +457,7 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${Cookies.get('jwt_token')}`
             },
-            body: JSON.stringify(companyDetails)
+            body: JSON.stringify(file ? {...companyDetails, companyLogoUrl: imageUrl} : companyDetails)
         }
         try {
             setPopupLoading(true)
@@ -432,17 +493,37 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
             console.log(error)
         }
         setPopupLoading(false)
+        setFile(null);
     }
 
+    let imageUrl = null
+    if(file) {
+        imageUrl = URL.createObjectURL(file)
+    } else {
+        imageUrl = companyDetails.companyLogoUrl
+    }
 
     const renderAddCompanyPopup = () => (
         <div className='bde-add-company-popup'>
             <div className='bde-add-company-popup-overlay'></div>
             <div className='bde-add-company-popup-content'>
-                <button className='bde-add-company-popup-close' disabled={popupLoading} onClick={() => setShowCompanyPopup(false)}>&times;</button>
+                <button className='bde-add-company-popup-close' disabled={popupLoading} onClick={() => {setShowCompanyPopup(false); setFile(null)}}>&times;</button>
                 <h1 className='bde-add-company-popup-heading'>{companyPopupType === 'update' ? "Update" : "Add"} Company</h1>
                 <label className='bde-form-label' htmlFor='name'>Company Name<span className='hr-form-span'> *</span></label>
                 <input className='bde-form-input' id='name'  onChange={handleCompanyInputChange} value={companyDetails.name} name='name' type='text' placeholder='Enter Company Name' />
+                <label className='bde-form-label' htmlFor='companyLogo'>Company Logo<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='companyLogo' type='file' accept='image/png, image/jpeg' onChange={handleFileChange} />
+                {file || companyPopupType === 'update' ?
+
+
+                    <div className='bde-form-image-con'>
+                        <img src={imageUrl} alt='company-logo' className='bde-form-image' />
+                        <label className='bde-form-image-replace-btn' htmlFor='companyLogo'>Replace</label>
+                    </div>
+                    
+                    :
+                    <label className='bde-from-image-label' htmlFor='companyLogo'>Upload Company Logo</label>
+                }
                 <label className='bde-form-label' htmlFor='registeredAddress'>Registered Address<span className='hr-form-span'> *</span></label>
                 <input className='bde-form-input' id='registeredAddress'  onChange={handleCompanyInputChange} value={companyDetails.registeredAddress} name='registeredAddress' type='text' placeholder='Enter Registered Address' />
                 <label className='bde-form-label' htmlFor='address'>Address<span className='hr-form-span'> *</span></label>
@@ -520,6 +601,10 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
                 <button className='bde-add-company-popup-close' onClick={() => setShowCompanyDetailsPopup(false)}>&times;</button>
                 <h1 className='bde-add-company-popup-heading'>Company Details</h1>
                 
+                <div className="candidate-details-sub-con">
+                    <img src={company.companyLogoUrl ? company.companyLogoUrl : "/company-logo-placeholder.png"} alt="company logo" className="company-logo-img" />
+                </div>
+
                 <div className="candidate-details-sub-con">
                     <p className="candidate-details-sub-heading">Company Name: </p>
                     <p className="candidate-details-sub-text">{company.name}</p>

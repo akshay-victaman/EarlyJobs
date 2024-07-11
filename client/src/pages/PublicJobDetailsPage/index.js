@@ -54,6 +54,7 @@ const PublicJobDetailsPage = () => {
           commissionFee: data.commission_fee,
           tenureInDays: data.tenure_in_days,
           compname: data.company_name,
+          companyLogoUrl: data.company_logo_url,
           minSalary: data.min_salary,
           maxSalary: data.max_salary,
           noOfOpenings: data.no_of_openings,
@@ -134,7 +135,12 @@ const PublicJobDetailsPage = () => {
         <div className="job-details-card">
           <div className="job-details-logo-title-con">
             <div className='job-details-logo-title-con-2'>
-              <FiBriefcase className="job-details-logo" />
+              {/* <FiBriefcase className="job-details-logo" /> */}
+              { companyLogoUrl ?
+                <img src={companyLogoUrl} alt="company logo" className="jobs-details-logo-img" />
+                :
+                <FiBriefcase className="job-details-logo" />
+              }
               <div className="job-details-title-rating-con">
                 <h1 className="job-details-title">{compname}</h1>
                 <h1 className="job-details-title">{role}</h1>
