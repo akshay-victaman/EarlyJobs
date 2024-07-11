@@ -14,6 +14,7 @@ const JobsCard = props => {
   const {
     id,
     compname,
+    companyLogoUrl,
     commissionType,
     commissionFee,
     minSalary,
@@ -37,7 +38,11 @@ const JobsCard = props => {
     <Link to={linkUrl} className="link-item">
       <li className="jobs-list-item-container">
         <div className="jobs-logo-name-con">
-          <FiBriefcase className="jobs-logo" />
+          { companyLogoUrl ?
+            <img src={companyLogoUrl} alt="company logo" className="jobs-logo-img" />
+            :
+            <FiBriefcase className="jobs-logo" />
+          }
           <div className="jobs-title-con">
             <h1 className="job-title">{compname}</h1>
             <h1 className="job-title">{role}</h1>

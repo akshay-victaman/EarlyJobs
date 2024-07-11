@@ -59,8 +59,6 @@ const ControlTeamPage = () => {
     }
 
     const uploadImage = async () => {
-        console.log(process.env.REACT_APP_AWS_BUCKET_NAME, process.env.REACT_APP_AWS_BUCKET_REGION)
-        console.log(process.env.REACT_APP_AWS_ACCESS_KEY_ID, process.env.REACT_APP_AWS_SECRET_KEY_ID)
         if(!file) return;
         try {
             const timestamp = Date.now();

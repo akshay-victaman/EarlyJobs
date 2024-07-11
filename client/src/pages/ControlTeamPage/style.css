@@ -273,6 +273,7 @@
     display: flex;
     color: #EB6A4D;
     padding: 10px;
+    user-select: all;
 }
 
 .team-popup-text {

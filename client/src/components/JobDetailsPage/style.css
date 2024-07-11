@@ -27,6 +27,12 @@
   height: 100%;
 }
 
+.jobs-details-logo-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 15px;
+}
+
 .job-details-posted-at {
   font-size: 12px;
   margin-top: 20px;
@@ -529,6 +535,12 @@
 }
 
 @media screen and (max-width: 768px) {
+  .jobs-details-logo-img {
+    width: 75px;
+    height: 75px;
+    border-radius: 10px;
+  }
+
   .job-details-container {
     margin-top: 10vh;
     padding: 40px 20px;

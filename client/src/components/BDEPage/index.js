@@ -7,9 +7,10 @@ import {v4 as uuidv4} from 'uuid';
 import Cookies from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
 import { toast } from 'react-toastify';
-import './style.css';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import EditorComponent from '../TextEditorQuill';
 import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants'
+import './style.css';
 
 let languageOptions = [
     { value: 'English', label: 'English' },
@@ -98,9 +99,11 @@ const BDEPage = () => {
     const [experienceError, setExperienceError] = useState(false)
     const [ageError, setAgeError] = useState(false)
     const [tenureError, setTenureError] = useState(false)
+    const [file, setFile] = useState(null);
 
     const [companyDetails, setCompanyDetails] = useState({
         name: '',
+        companyLogoUrl: '',
         registeredAddress: '',
         address: '',
         phone: '',
@@ -113,6 +116,7 @@ const BDEPage = () => {
 
     const [postNewJob, setPostNewJob] = useState({
         companyName: '',
+        companyLogoUrl: '',
         companyId: '',
         jobTitle: '',
         category: '',
@@ -149,6 +153,14 @@ const BDEPage = () => {
         fetchCompanies()
     }, [])
 
+    const s3Client = new S3Client({
+        region: process.env.REACT_APP_AWS_BUCKET_REGION,
+        credentials: {
+          accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.REACT_APP_AWS_SECRET_KEY_ID,
+        },
+    });
+
     const fetchCompanies = async () => {
         const options = {
             method: 'GET',
@@ -161,8 +173,9 @@ const BDEPage = () => {
             const backendUrl = process.env.REACT_APP_BACKEND_API_URL
             const response = await fetch(`${backendUrl}/api/companies`, options)
             const data = await response.json()
+            console.log(data)
             if(response.ok) {
-                const options = data.companies.map(company => ({ value: company.name, label: company.name, id: company.id}))
+                const options = data.companies.map(company => ({ value: company.name, label: company.name, id: company.id, logoUrl: company.logo_url}))
                 setCompanies(options)
             } else {
                 alert(data.error)
@@ -203,12 +216,19 @@ const BDEPage = () => {
                 setCompanyDetails({...companyDetails, name: newValue.value})
                 setShowCompanyPopup(true)
             } else {
-                setPostNewJob({...postNewJob, companyName: newValue.value, companyId: newValue.id})
+                setPostNewJob({...postNewJob, companyName: newValue.value, companyId: newValue.id, companyLogoUrl: newValue.logoUrl})
             }
         } else {
-            setPostNewJob({...postNewJob, companyName: '', companyId: ''})
+            setPostNewJob({...postNewJob, companyName: '', companyId: '', companyLogoUrl: ''})
         }
     };
+
+    async function handleFileChange(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        setFile(file);
+        console.log('File selected:', file);
+    }
 
     const handleInputChange = (e) => {
         const {name, value} = e.target
@@ -352,6 +372,7 @@ const BDEPage = () => {
         const email = Cookies.get('email')
         const newJob = {
             companyName: postNewJob.companyName,
+            companyLogoUrl: postNewJob.companyLogoUrl,
             companyId: postNewJob.companyId,
             title: postNewJob.jobTitle,
             category: postNewJob.category,
@@ -403,6 +424,7 @@ const BDEPage = () => {
             } else {
                 setPostNewJob({
                     companyName: '',
+                    companyLogoUrl: '',
                     companyId: '',
                     jobTitle: '',
                     category: '',
@@ -441,10 +463,40 @@ const BDEPage = () => {
         }
     }
 
+    const uploadImage = async () => {
+        setPopupLoading(true)
+        if(!file) return;
+        try {
+            const timestamp = Date.now();
+            const params = {
+                Bucket: process.env.REACT_APP_AWS_COMPANY_LOGO_BUCKET,
+                Key: `${file.name}-${timestamp}`,
+                Body: file,
+                ContentType: file.type,
+            };
+
+            const command = new PutObjectCommand(params);
+
+            await s3Client.send(command);
+
+            const imageUrl = `https://${process.env.REACT_APP_AWS_COMPANY_LOGO_BUCKET}.s3.${process.env.REACT_APP_AWS_BUCKET_REGION}.amazonaws.com/${params.Key}`;
+            console.log("Image uploaded to S3:", imageUrl);
+            setFile(null);
+            return imageUrl;
+        } catch (error) {
+            setPopupLoading(false)
+            console.error("Error uploading file to S3:", error);
+            toast.error('Failed to upload image');
+        }
+    };
+
     const handleAddCompany = async () => {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
         if(companyDetails.name.trim() === '') {
             setPopupError("*Please enter company name")
+            return
+        } else if(!file) {
+            setPopupError("*Please upload company logo")
             return
         } else if(companyDetails.registeredAddress.trim() === '') {
             setPopupError("*Please enter registered address")
@@ -473,7 +525,9 @@ const BDEPage = () => {
         }
         setPopupError("")
         console.log(companyDetails)
-
+        const imageUrl = await uploadImage()
+        console.log(imageUrl)
+        // return
         const url = process.env.REACT_APP_BACKEND_API_URL + '/api/companies'
         const options = {
             method: 'POST',
@@ -481,10 +535,9 @@ const BDEPage = () => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${Cookies.get('jwt_token')}`
             },
-            body: JSON.stringify(companyDetails)
+            body: JSON.stringify({...companyDetails, companyLogoUrl: imageUrl})
         }
         try {
-            setPopupLoading(true)
             const response = await fetch(url, options)
             const data = await response.json()
             console.log(data)
@@ -498,6 +551,7 @@ const BDEPage = () => {
                     setShowCompanyPopup(false)
                     setCompanyDetails({
                         name: '',
+                        companyLogoUrl: '',
                         registeredAddress: '',
                         address: '',
                         phone: '',
@@ -529,6 +583,16 @@ const BDEPage = () => {
                 <h1 className='bde-add-company-popup-heading'>Add New Company</h1>
                 <label className='bde-form-label' htmlFor='name'>Company Name<span className='hr-form-span'> *</span></label>
                 <input className='bde-form-input' id='name'  onChange={handleCompanyInputChange} value={companyDetails.name} name='name' type='text' placeholder='Enter Company Name' />
+                <label className='bde-form-label' htmlFor='companyLogo'>Company Logo<span className='hr-form-span'> *</span></label>
+                <input className='bde-form-input' id='companyLogo' type='file' accept='image/png, image/jpeg' onChange={handleFileChange} />
+                {file ?
+                    <div className='bde-form-image-con'>
+                        <img src={URL.createObjectURL(file)} alt='company-logo' className='bde-form-image' />
+                        <label className='bde-form-image-replace-btn' htmlFor='companyLogo'>Replace</label>
+                    </div>
+                    :
+                    <label className='bde-from-image-label' htmlFor='companyLogo'>Upload Company Logo</label>
+                }
                 <label className='bde-form-label' htmlFor='registeredAddress'>Registered Address<span className='hr-form-span'> *</span></label>
                 <input className='bde-form-input' id='registeredAddress'  onChange={handleCompanyInputChange} value={companyDetails.registeredAddress} name='registeredAddress' type='text' placeholder='Enter Registered Address' />
                 <label className='bde-form-label' htmlFor='address'>Address<span className='hr-form-span'> *</span></label>

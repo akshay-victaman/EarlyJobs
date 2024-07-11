@@ -50,6 +50,17 @@
 
 .public-list-item-container {
     margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: row!important;
+}
+
+.public-jobs-logo-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
 }
 
 .public-jobs-loc-type-con {
@@ -58,7 +69,41 @@
     width: 100%;
 }
 
+.openings-keyword-con {
+    margin-top: 2px;
+}
+
+.job-section-keywords {
+    font-size: 10px;
+}
+
+.public-job-logo {
+    font-size: 70px;
+    color: #bababa;
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+
 @media screen and (max-width: 768px) {
+    .public-list-item-container {
+        align-items: flex-start;
+        flex-direction: column!important;
+    }
+
+    .public-jobs-logo-img {
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .public-job-logo {
+        font-size: 35px;
+        color: #bababa;
+        margin-bottom: 10px;
+    }
+
     .public-jobs-loc-type-con {
         flex-direction: column;
         align-items: flex-start;

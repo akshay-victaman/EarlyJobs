@@ -117,6 +117,7 @@ const JobDetailsPage = () => {
           commissionFee: data.commission_fee,
           tenureInDays: data.tenure_in_days,
           compname: data.company_name,
+          companyLogoUrl: data.company_logo_url,
           companyId: data.company_id,
           minSalary: data.min_salary,
           maxSalary: data.max_salary,
@@ -144,7 +145,6 @@ const JobDetailsPage = () => {
           maxAge: data.max_age,
           keywords: data.keywords ? data.keywords.split(',') : []
         }
-        console.log(data)
         console.log(formattedData)
         setJobDetails(formattedData)
         setApiStatus(apiStatusConstant.success)
@@ -316,6 +316,7 @@ const JobDetailsPage = () => {
   const updateJobDetails = (updatedData) => {
     const {jobId,
             companyName,
+            companyLogoUrl,
             companyId,
             title,
             category,
@@ -342,6 +343,7 @@ const JobDetailsPage = () => {
             maxAge,
             keywords
             } = updatedData
+            console.log(typeof keywords)
     setJobDetails({
       ...jobDetails, 
         id: jobId,
@@ -351,6 +353,7 @@ const JobDetailsPage = () => {
         commissionFee: commissionFee,
         tenureInDays: tenureInDays,
         compname: companyName,
+        companyLogoUrl: companyLogoUrl,
         companyId: companyId,
         minSalary: minSalary,
         maxSalary: maxSalary,
@@ -372,7 +375,7 @@ const JobDetailsPage = () => {
         maxExperience: maxExperience,
         minAge: minAge,
         maxAge: maxAge,
-        keywords: keywords.split(',')
+        keywords: keywords ? keywords.split(',') : []
       }
     )
   }
@@ -671,7 +674,11 @@ const JobDetailsPage = () => {
         <div className="job-details-card">
           <div className="job-details-logo-title-con">
             <div className='job-details-logo-title-con-2'>
-              <FiBriefcase className="job-details-logo" />
+              { companyLogoUrl ?
+                <img src={companyLogoUrl} alt="company logo" className="jobs-details-logo-img" />
+                :
+                <FiBriefcase className="job-details-logo" />
+              }
               <div className="job-details-title-rating-con">
                 <h1 className="job-details-title">{compname}</h1>
                 <h1 className="job-details-title">{role}</h1>
@@ -734,6 +741,7 @@ const JobDetailsPage = () => {
           <p className="job-details-desc" dangerouslySetInnerHTML={{__html: jobDescription}}></p> 
           <h1 className="job-details-desc-heading">Keywords</h1>
           <div className="job-details-keywords-con">
+            {console.log(jobDetails.keywords)}
             {
               jobDetails.keywords.map((eachItem, index) => (
                 <p key={index} className="job-details-keywords">{eachItem}</p>

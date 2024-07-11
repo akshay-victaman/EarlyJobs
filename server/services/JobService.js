@@ -19,6 +19,7 @@ const assignJobToHMByBDE = async (jobId, assignedTo) => {
 const addJobDetials = async (job) => {
     const {
         companyName, 
+        companyLogoUrl,
         companyId,
         title, 
         category, 
@@ -55,6 +56,7 @@ const addJobDetials = async (job) => {
     INSERT INTO jobs (
         id, 
         company_name, 
+        company_logo_url,
         company_id,
         title, 
         category, 
@@ -85,10 +87,10 @@ const addJobDetials = async (job) => {
         min_age,
         max_age,
         keywords
-        ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        ) VALUES (?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     
     try {
-        const result = await db.query(query, [id, companyName, companyId, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge, keywords]);
+        const result = await db.query(query, [id, companyName, companyLogoUrl, companyId, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge, keywords]);
 
         if (result[0].affectedRows > 0) {
             return assignJobToHMByBDE(id, assignedTo);
@@ -115,6 +117,7 @@ const updateJobAssignmentByBde = async (jobId, assignedTo) => {
 const editJobDetials = async (job) => {
     const {
         companyName,
+        companyLogoUrl,
         companyId,
         title,
         category,
@@ -150,6 +153,7 @@ const editJobDetials = async (job) => {
     UPDATE jobs SET
         company_name = ?,
         company_id = ?,
+        company_logo_url = ?,
         title = ?,
         category = ?,
         shift_timings = ?,
@@ -180,7 +184,7 @@ const editJobDetials = async (job) => {
         keywords = ?
     WHERE id = ?`;
     try {
-        const result = await db.query(query, [companyName, companyId, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, keywords, jobId]);
+        const result = await db.query(query, [companyName, companyId, companyLogoUrl, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, keywords, jobId]);
         if (result[0].affectedRows > 0) {
             await updateJobAssignmentByBde(jobId, assignedTo);
             return {success: 'Job updated successfully'};
@@ -1156,11 +1160,14 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
     return result[0];
 }
 
-const getOfferStatusCandidatesForBDECount = async (email, offerStatus, search, jobId, fromDate, toDate) => {
+const getOfferStatusCandidatesForBDEVerificationCount = async (email, offerStatus, search, jobId, fromDate, toDate) => {
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
     const query = `
     SELECT 
-        count(*) as count
+        SUM(CASE WHEN applications.verification_status = 'Verified' THEN 1 ELSE 0 END) AS verified_count,
+        SUM(CASE WHEN applications.verification_status = 'Not Verified' THEN 1 ELSE 0 END) AS not_verified_count,
+        SUM(CASE WHEN applications.verification_status = 'Unknown' THEN 1 ELSE 0 END) AS unknown_count,
+        SUM(CASE WHEN applications.verification_status IS NULL THEN 1 ELSE 0 END) AS null_count
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
@@ -1207,13 +1214,72 @@ const getOfferStatusCandidatesForBDECount = async (email, offerStatus, search, j
             }
             result = await db.query(query, params);
         }
+        return result[0][0];
+    } catch (error) {
+        console.log(error)
+    }        
+}
+
+const getOfferStatusCandidatesForBDECount = async (email, offerStatus, search, jobId, fromDate, toDate, verificationStatus) => {
+    const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
+    const query = `
+    SELECT 
+        count(*) as count
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.offer_status = ?
+    ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
+    AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+    AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
+    ${(verificationStatus !== 'undefined' && verificationStatus !== "" && verificationStatus !== 'null') ? `AND applications.verification_status = '${verificationStatus}'` : ""}
+    ${(verificationStatus === 'null') ? `AND applications.verification_status IS NULL` : ""}
+    ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}`;
+    let hrEmails = []
+    const shmEmails = await getBdeShmEmails();
+    if(email !== 'null') {
+        
+        let hmEmails = []
+        const hmEmailsArr = await getSeniorHmHMEmails(email);
+        hmEmails = [...hmEmails, ...hmEmailsArr];
+
+        for (const hm of hmEmails) {
+            const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
+            hrEmails = [...hrEmails, ...hrEmailsArr];
+        }
+        hrEmails = [...hrEmails, ...hmEmails];
+    }
+    let params = [];
+    let result = []
+    try {
+        if (email !== 'null') {
+            const hrEmailsArr = hrEmails.map(hr => hr.email);
+            if ((jobId !== 'undefined' && jobId !== "")) {
+                params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate, jobId];
+            } else {
+                params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate];
+            }
+            result = await db.query(query, params);
+        } else {
+            if(jobId !== 'undefined' && jobId !== "") {
+                params = [offerStatus, fromDate, toDate, jobId];
+            } else {
+                params = [offerStatus, fromDate, toDate];
+            }
+            result = await db.query(query, params);
+        }
         return result[0][0].count;
     } catch (error) {
         console.log(error)
     }        
 }
 
-const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId, fromDate, toDate, page) => {
+const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId, fromDate, toDate, verificationStatus, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
@@ -1246,6 +1312,8 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
     AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
+    ${(verificationStatus !== 'undefined' && verificationStatus !== "" && verificationStatus !== 'null') ? `AND applications.verification_status = '${verificationStatus}'` : ""}
+    ${(verificationStatus === 'null') ? `AND applications.verification_status IS NULL` : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
     order by applications.${offeredOrInterviewDate} desc
     Limit ? offset ?`;
@@ -1266,6 +1334,7 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
     let params = [];
     let result = []
     let count = 0;
+    let verificationCount = {}
     try {
         if (email !== 'null') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
@@ -1275,7 +1344,9 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
                 params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, search, jobId, fromDate, toDate);
+            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, search, jobId, fromDate, toDate, verificationStatus);
+            verificationCount = await getOfferStatusCandidatesForBDEVerificationCount(email, offerStatus, search, jobId, fromDate, toDate);
+
         } else {
             if(jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, fromDate, toDate, jobId, pageSize, startIndex];
@@ -1283,15 +1354,16 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
                 params = [offerStatus, fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, search, jobId, fromDate, toDate);
+            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, search, jobId, fromDate, toDate, verificationStatus);
+            verificationCount = await getOfferStatusCandidatesForBDEVerificationCount(email, offerStatus, search, jobId, fromDate, toDate);
         }
     } catch (error) {
         console.log(error)
     }
-    return {candidates: result[0], hrEmails: shmEmails, count};
+    return {candidates: result[0], hrEmails: shmEmails, count, verificationCount};
 }
 
-const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, search, jobId, fromDate, toDate) => {
+const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, search, jobId, fromDate, toDate, verificationStatus) => {
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
     const query = `
     SELECT 
@@ -1322,6 +1394,8 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, search, j
     AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
+    ${(verificationStatus !== 'undefined' && verificationStatus !== "" && verificationStatus !== 'null') ? `AND applications.verification_status = '${verificationStatus}'` : ""}
+    ${(verificationStatus === 'null') ? `AND applications.verification_status IS NULL` : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
     order by applications.${offeredOrInterviewDate} desc`;
     let hrEmails = []

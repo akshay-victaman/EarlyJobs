@@ -17,10 +17,22 @@
     overflow-y: auto;
 }
 
+.company-logo-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+}
+
 @media screen and (max-width: 768px) {
     .company-jobs-heading {
         font-size: 20px;
         margin-bottom: 0px;
+    }
+
+    .company-logo-img {
+        width: 65px;
+        height: 65px;
+        border-radius: 10px;
     }
     
 }

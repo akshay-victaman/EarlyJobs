@@ -40,6 +40,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
     const [selectHr, setSelectHr] = useState('')
     const [loading, setLoading] = useState(false);
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
+    const [verificationStatus, setVerificationStatus] = useState('')
+    const [verificationCount, setVerificationCount] = useState({})
 
     useEffect(() => {
         if(Cookies.get('role') === 'BDE') {
@@ -48,7 +50,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
           getOfferStatusCandidates()
         }
         getAllJobsList()
-    }, [page, offerStatus, jobId, selectHr,fromDate, toDate])
+    }, [page, offerStatus, jobId, selectHr, fromDate, toDate, verificationStatus])
 
     const itemsPerPage = 10; 
 
@@ -81,6 +83,11 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
 
     const handleSelectHrChange = (event) => {
       setSelectHr(event.target.value)
+      setPage(1)
+    }
+
+    const handleVerificationStatusChange = (event) => {
+      setVerificationStatus(event.target.value)
       setPage(1)
     }
 
@@ -202,7 +209,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   jobId: eachItem.job_id,
                   hrName: eachItem.hr_name,
                   dayCount: eachItem.offered_date ? calculateDayCount(eachItem.offered_date, eachItem.tenure_in_days) : null,
-                  tenureStatus: eachItem.tenure_status
+                  tenureStatus: eachItem.tenure_status,
+                  verificationStatus: eachItem.verification_status,
                 }))
                 setCandidateList(updatedData);
                 setHrList(data.hrEmails)
@@ -253,7 +261,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
                   offeredDate: eachItem.offered_date ? formatDate(eachItem.offered_date) : null,
                   jobId: eachItem.job_id,
-                  hrName: eachItem.hr_name
+                  hrName: eachItem.hr_name,
+                  verificationStatus: eachItem.verification_status,
                 }))
                 return updatedData;
             }
@@ -272,7 +281,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
       if(selectHr !== '') {
         email = selectHr
       }
-      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&offerStatus=${offerStatus}&page=${page}`
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&offerStatus=${offerStatus}&verificationStatus=${verificationStatus}&page=${page}`
       const options = {
           method: 'GET',
           headers: {
@@ -288,7 +297,6 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
           if(data.error) {
               setApiStatus(apiStatusConstant.failure);
           } else {
-              console.log(data.candidates)
               const updatedData = data.candidates.map(eachItem => ({
                 applicationId: eachItem.application_id,
                 candidateId: eachItem.candidate_id,
@@ -309,6 +317,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
               setCandidateList(updatedData);
               setHrList(data.hrEmails)
               setTotalItems(data.count);
+              setVerificationCount(data.verificationCount)
               setApiStatus(apiStatusConstant.success);
           }
       } else {
@@ -325,7 +334,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
       if(selectHr !== '') {
         email = selectHr
       }
-      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&offerStatus=${offerStatus}`
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&offerStatus=${offerStatus}&verificationStatus=${verificationStatus}`
       const options = {
           method: 'GET',
           headers: {
@@ -527,6 +536,20 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   </select>
               </div>
               {
+                Cookies.get('role') === 'BDE' && (
+                  <div className="job-section-select-container"> 
+                    <label className="homepage-label view-candidates-label" htmlFor='handleVerificationStatusChange'>Filter By Verification Status</label>
+                    <select className="homepage-input view-candidates-select" name='handleVerificationStatusChange' id='handleVerificationStatusChange' value={verificationStatus} onChange={handleVerificationStatusChange}>
+                        <option value=''>Select Verification Status</option>
+                        <option value='Verified'>Verified</option>
+                        <option value='Not Verified'>Not Verified</option>
+                        <option value='Unknown'>Unknown</option>
+                        <option value='null'>No Action</option>
+                    </select>
+                  </div>
+                )
+              }
+              {
                 Cookies.get('role') !== 'HR' && (
                   <div className="job-section-select-container"> 
                     <label className="homepage-label view-candidates-label" htmlFor='resume'>Filter By Recruiter</label>
@@ -563,6 +586,22 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 <span className="rows-count-text">Total Results:</span>
                 <span className="rows-count-number">`{totalItems}`</span>
               </div>
+              <div className="rows-count-con">
+                <span className="rows-count-text">Verified:</span>
+                <span className="rows-count-number">`{verificationCount.verified_count}`</span>
+              </div>
+              <div className="rows-count-con">
+                <span className="rows-count-text">Not Verified:</span>
+                <span className="rows-count-number">`{verificationCount.not_verified_count}`</span>
+              </div>
+              <div className="rows-count-con">
+                <span className="rows-count-text">Unknown:</span>
+                <span className="rows-count-number">`{verificationCount.unknown_count}`</span>
+              </div>
+              <div className="rows-count-con">
+                <span className="rows-count-text">No Action:</span>
+                <span className="rows-count-number">`{verificationCount.null_count}`</span>
+              </div>
             </div>
 
 
@@ -576,7 +615,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                     <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>
                     { (showCandidateForm !== 7) && <th className="job-details-candidates-table-heading-cell">{showCandidateForm === 10 ? "Was Planned On" : `${offerStatus} Date`}</th>}
                     {showCandidateForm === 12 && <th className="job-details-candidates-table-heading-cell">Days Left / Status</th>}
-                    {((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE') && <th className="job-details-candidates-table-heading-cell">Verification Status</th>}
+                    {(showCandidateForm === 5 || showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">Verification Status</th>}
                     {(showCandidateForm === 12 || ((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE')) && <th className="job-details-candidates-table-heading-cell">Update Status</th>}
                   </tr>
                   {
@@ -607,7 +646,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                                 {eachItem.tenureStatus !== null && " / " + eachItem.tenureStatus}
                               </td>
                             }
-                            {((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE') && 
+                            {(showCandidateForm === 5 || showCandidateForm === 6)  && 
                               <td className="job-details-candidates-table-cell">
                                 {eachItem.verificationStatus !== null ? eachItem.verificationStatus : "--"}
                               </td>
