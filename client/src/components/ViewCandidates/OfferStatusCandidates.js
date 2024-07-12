@@ -215,6 +215,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 setCandidateList(updatedData);
                 setHrList(data.hrEmails)
                 setTotalItems(data.count);
+                setVerificationCount(data.verificationCount)
                 setApiStatus(apiStatusConstant.success);
             }
         } else {
@@ -536,7 +537,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   </select>
               </div>
               {
-                Cookies.get('role') === 'BDE' && (
+                (Cookies.get('role') === 'BDE' && showCandidateForm === 6) && (
                   <div className="job-section-select-container"> 
                     <label className="homepage-label view-candidates-label" htmlFor='handleVerificationStatusChange'>Filter By Verification Status</label>
                     <select className="homepage-input view-candidates-select" name='handleVerificationStatusChange' id='handleVerificationStatusChange' value={verificationStatus} onChange={handleVerificationStatusChange}>
@@ -586,22 +587,26 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 <span className="rows-count-text">Total Results:</span>
                 <span className="rows-count-number">`{totalItems}`</span>
               </div>
-              <div className="rows-count-con">
-                <span className="rows-count-text">Verified:</span>
-                <span className="rows-count-number">`{verificationCount.verified_count}`</span>
-              </div>
-              <div className="rows-count-con">
-                <span className="rows-count-text">Not Verified:</span>
-                <span className="rows-count-number">`{verificationCount.not_verified_count}`</span>
-              </div>
-              <div className="rows-count-con">
-                <span className="rows-count-text">Unknown:</span>
-                <span className="rows-count-number">`{verificationCount.unknown_count}`</span>
-              </div>
-              <div className="rows-count-con">
-                <span className="rows-count-text">No Action:</span>
-                <span className="rows-count-number">`{verificationCount.null_count}`</span>
-              </div>
+              {showCandidateForm === 6 &&
+                <>
+                  <div className="rows-count-con">
+                    <span className="rows-count-text">Verified:</span>
+                    <span className="rows-count-number">`{verificationCount.verified_count ? verificationCount.verified_count : 0}`</span>
+                  </div>
+                  <div className="rows-count-con">
+                    <span className="rows-count-text">Not Verified:</span>
+                    <span className="rows-count-number">`{verificationCount.not_verified_count ? verificationCount.not_verified_count : 0}`</span>
+                  </div>
+                  <div className="rows-count-con">
+                    <span className="rows-count-text">Unknown:</span>
+                    <span className="rows-count-number">`{verificationCount.unknown_count ? verificationCount.unknown_count : 0}`</span>
+                  </div>
+                  <div className="rows-count-con">
+                    <span className="rows-count-text">No Action:</span>
+                    <span className="rows-count-number">`{verificationCount.null_count ? verificationCount.null_count : 0}`</span>
+                  </div>
+                </>
+              }
             </div>
 
 

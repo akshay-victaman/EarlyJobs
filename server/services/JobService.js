@@ -942,6 +942,49 @@ const getCandidateDetails = async (candidateId) => {
     }
 }
 
+const getOfferStatusCandidatesVerificationCount = async (
+    email,
+    hmEmail,
+    offerStatus,
+    search,
+    fromDate,
+    toDate,
+    jobId
+  ) => {
+    const appliedBy = Array.isArray(email) ? email : [email, ...hmEmail];
+    const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
+    const query = `
+      SELECT 
+        SUM(CASE WHEN applications.verification_status = 'Verified' THEN 1 ELSE 0 END) AS verified_count,
+        SUM(CASE WHEN applications.verification_status = 'Not Verified' THEN 1 ELSE 0 END) AS not_verified_count,
+        SUM(CASE WHEN applications.verification_status = 'Unknown' THEN 1 ELSE 0 END) AS unknown_count,
+        SUM(CASE WHEN applications.verification_status IS NULL THEN 1 ELSE 0 END) AS null_count 
+      FROM candidates
+      INNER JOIN applications ON candidates.id = applications.candidate_id
+      INNER JOIN users ON users.email = applications.applied_by
+      INNER JOIN jobs ON jobs.id = applications.job_id
+      WHERE applications.offer_status = ?
+        AND applications.applied_by IN (?) 
+        AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+        AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+        ${jobId !== 'undefined' && jobId !== "" ? "AND applications.job_id = ?" : ""}
+        ${search !== 'undefined' && search !== ""
+        ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')`
+        : ""};
+    `;
+     
+      const params = [offerStatus, appliedBy, fromDate, toDate];
+      if (jobId !== 'undefined' && jobId !== "") params.push(jobId); 
+  
+    try {
+      const result = await db.query(query, params);
+      return result[0][0];
+    } catch (error) {
+      console.log(error);
+      return 0;
+    }
+};
+
 const getOfferStatusCandidatesCount = async (
     email,
     hmEmail,
@@ -1032,6 +1075,7 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
     let params = [];
     let result = []
     let count = 0;
+    let verificationCount = null;
     try {
         if (role === 'SHM') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
@@ -1046,6 +1090,9 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
             }
             result = await db.query(query, params);
             count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
+            if (offerStatus === 'Joined') {
+                verificationCount = await getOfferStatusCandidatesVerificationCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
+            }
         } else if(role === 'AC') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
@@ -1059,6 +1106,9 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
             }
             result = await db.query(query, params);
             count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
+            if (offerStatus === 'Joined') {
+                verificationCount = await getOfferStatusCandidatesVerificationCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
+            }
         } else {
             if(jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, email, fromDate, toDate, jobId, pageSize, startIndex];
@@ -1067,11 +1117,14 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
             }
             result = await db.query(query, params);
             count = await getOfferStatusCandidatesCount(email, hmEmail, offerStatus, search, fromDate, toDate, jobId);
+            if (offerStatus === 'Joined') {
+                verificationCount = await getOfferStatusCandidatesVerificationCount(email, hmEmail, offerStatus, search, fromDate, toDate, jobId);
+            }
         }
     } catch (error) {
         console.log(error)
     }
-    return {candidates: result[0], hrEmails, count};
+    return {candidates: result[0], hrEmails, count, verificationCount};
 }
 
 const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, role, search, jobId, fromDate, toDate,) => {
