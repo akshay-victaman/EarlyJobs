@@ -1,0 +1,152 @@
+.client-carousel-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    align-self: flex-end;
+}
+
+.carousel-container {
+    padding: 20px;
+    width: 100%;
+}
+
+.client-carousel-heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #EB6A4D;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.client-carousel-desc {
+    text-align: center;
+    font-size: 15px;
+    color: #929191;
+    margin-bottom: 20px;
+    font-weight: 600;
+
+}
+
+.carousel-item-padding-40-px {
+    padding: 0 20px;
+    width: 100%;
+}
+
+.logo-item {
+    width: 100%;
+    height: auto;
+}
+
+.carousal-logo {
+    width: 70px;
+    height: 70px;
+    user-select: none;
+}
+
+.review-carousel-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0px;
+    align-self: flex-end;
+}
+
+.reivew-item {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-radius: 16px;
+    border: 1px solid #EB6A4D35;
+    margin-top: 45px;
+    background: #EB6A4D10;
+    padding: 31px 28px 28px 28px;
+}
+
+.carousal-review-logo {
+    width: 100px;
+    /* height: 40px; */
+    user-select: none;
+}
+
+.carousal-review-desc {
+    font-size: 20px;
+    color: #1d2434b8;
+    font-weight: 400;
+    line-height: 24px;
+    user-select: none;
+    margin-top: 15px;
+    height: 250px;
+    overflow: hidden;
+    white-space: wrap;
+    text-overflow: ellipsis;
+}
+
+.carousal-review-profile {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-top: 30px;
+}
+
+.carousal-review-profile-image {
+    width: 64px;
+    height: 64px;
+    user-select: none;
+    border-radius: 50%;
+}
+
+.review-profile-details {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    width: 100%;
+}
+
+.review-name {
+    font-weight: 600;
+    font-size: 20px;
+    color: #1d2434;
+    line-height: 22px;
+    margin-bottom: 5px;
+    user-select: none;
+}
+
+.review-role {
+    font-weight: 400;
+    font-size: 16px;
+    color: #1d2434b8;
+    line-height: 22px;
+    user-select: none;
+}
+
+@media screen and (max-width: 768px) {
+    .client-carousel-container {
+        margin-top: 30px;
+    }
+
+    .carousal-logo {
+        width: 130px;
+        height: 70px;
+    }
+
+    .carousal-review-desc {
+        font-size: 16px;
+        line-height: 20px;
+        margin-top: 15px;
+        height: 250px;
+    }
+
+    .reivew-item {
+        padding: 20px 15px 15px 15px;
+    }
+
+    .carousal-review-profile-image {
+        width: 50px;
+        height: 50px;
+    }
+}

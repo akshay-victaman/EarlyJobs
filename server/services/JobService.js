@@ -583,6 +583,9 @@ const addCandidateDetailsForJob = async (candidate) => {
             return {error: 'Candidate addition failed'};
         }
     } else {
+        if(candidateResult[0][0].is_joined === 1) {
+            return {error: 'Candidate already joined in another company'};
+        }
         return addApplication(jobId, candidateResult[0][0].id, hrEmail, offerStatus, interviewDate);
     }
 }
@@ -667,6 +670,7 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
             candidates.phone as phone,
             offer_status,
             offered_date,
+            is_joined,
             applied_by,
             interview_date,
             company_name,
@@ -713,6 +717,7 @@ const getJobCandidatesForExcel = async (jobId, email, role, offerStatus, fromDat
         candidates.email as email,
         candidates.phone as phone,
         offer_status,
+        is_joined,
         offered_date,
         applied_by,
         interview_date,
@@ -738,11 +743,31 @@ const getJobCandidatesForExcel = async (jobId, email, role, offerStatus, fromDat
     return result[0];
 }
 
+const updateCandidateJoinedStatus = async (candidateId) => {
+    const query = 'UPDATE candidates SET is_joined = 1 WHERE id = ?';
+    try {
+        const result = await db.query(query, [candidateId]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Candidate joined status updated successfully'};
+        } else {         
+            const error = new Error('Candidate joined status updation failed');
+            error.statusCode = 500;
+            throw error;
+        }
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
 const updateCandidateOfferStatus = async (candidate) => {
     const {candidateId, jobId, email, offerStatus, offeredDate} = candidate;
     const query = 'UPDATE applications SET offer_status = ?, offered_date = ? WHERE job_id = ? AND candidate_id = ? AND applied_by = ?';
     const result = await db.query(query, [offerStatus, offeredDate, jobId, candidateId, email]);
     if (result[0].affectedRows > 0) {
+        if (offerStatus === 'Joined') {
+            await updateCandidateJoinedStatus(candidateId);
+        }
         return {success: 'Candidate offer status updated successfully'};
     } else {         
         return {error: 'Candidate offer status updation failed'};
@@ -826,6 +851,7 @@ const getInitialCandidates = async (email, offerStatus, fromDate, toDate, role, 
             candidates.email as email,
             candidates.phone as phone,
             offer_status,
+            is_joined,
             offered_date,
             applied_by,
             interview_date,
@@ -887,6 +913,7 @@ const getInitialCandidatesForExcel = async (email, offerStatus, fromDate, toDate
         candidates.email as email,
         candidates.phone as phone,
         offer_status,
+        is_joined,
         offered_date,
         applied_by,
         interview_date,
@@ -1037,6 +1064,7 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
         candidates.name as name,
         candidates.phone as phone,
         offered_date,
+        is_joined,
         applied_by,
         company_name,
         interview_date,
@@ -1138,6 +1166,7 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
         candidates.name as name,
         candidates.phone as phone,
         offered_date,
+        is_joined,
         applied_by,
         company_name,
         interview_date,
@@ -1345,6 +1374,7 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
         candidates.name as name,
         candidates.phone as phone,
         offered_date,
+        is_joined,
         applied_by,
         company_name,
         interview_date,
@@ -1427,6 +1457,7 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, search, j
         candidates.name as name,
         candidates.phone as phone,
         offered_date,
+        is_joined,
         applied_by,
         company_name,
         interview_date,
@@ -1520,6 +1551,31 @@ const updateVerificationStatus = async (candidate) => {
     }
 }
 
+const getJoinedCandidateCompanyDetails = async (candidateId) => {
+    const query = `
+    SELECT 
+        company_name,
+        location,
+        applied_by,
+        offered_date,
+        verification_status
+    FROM applications 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.candidate_id = ?
+    AND applications.offer_status = 'Joined'`;
+    try {
+        const result = await db.query(query, [candidateId]);
+        if (result[0].length > 0) {
+            return result[0][0];
+        } else {
+            return {error: 'Candidate not found'};
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     addJobDetials,
     editJobDetials,
@@ -1552,5 +1608,6 @@ module.exports = {
     getOfferStatusCandidatesForBDE,
     getOfferStatusCandidatesForBDEExcel,
     updateTenureStatus,
-    updateVerificationStatus
+    updateVerificationStatus,
+    getJoinedCandidateCompanyDetails
 }

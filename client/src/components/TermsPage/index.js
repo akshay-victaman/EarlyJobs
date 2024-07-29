@@ -4,6 +4,7 @@ const TermsPage = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
+        document.title = 'Terms & Conditions | EarlyJobs'
     }, [])
 
     return (

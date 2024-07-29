@@ -1,10 +1,34 @@
 import React, { useEffect } from 'react'
 import { FaLinkedin } from "react-icons/fa";
+import './style.css'
 
 const AboutUs = () => {
 
+    const curlturalFit = [
+        {
+            heading1: 'Deep understanding of organizational culture:',
+            para1: 'We work closely with our clients to gain a comprehensive understanding of their organizational culture. By having in-depth discussions, conducting site visits, and studying their values, mission, and work environment, we develop a clear picture of the organization’s culture.',
+            img: '/about_us_imgs/img1.png',
+            heading2: 'Cultural assessments and psychometric evaluations:',
+            para2: 'In certain cases, we may conduct cultural assessments and psychometric evaluations to gain a deeper understanding of candidates’ personality traits, work styles, and values. This information can be compared to the organization’s cultural framework to evaluate potential alignment.', 
+        },
+        {
+            img: '/about_us_imgs/img2.png',
+            heading2: 'Position profiling and alignment:',
+            para2: 'We create detailed position profiles that not only outline the required skills and qualifications but also highlight the cultural attributes that are important for success in the role. This helps us in sourcing candidates who not only possess the necessary qualifications but also align well with the organization’s cultural values.', 
+        },
+        {
+            heading1: 'Behavioral and situational interviews:',
+            para1: 'During the candidate assessment phase, we conduct behavioral and situational interviews. These interviews include questions that assess how candidates have demonstrated behaviors that align with the organization’s culture in their previous roles. By analyzing their past behavior and responses, we can gauge their potential cultural fit.',
+            img: '/about_us_imgs/img3.png',
+            heading2: 'Company immersion and site visits:',
+            para2: 'For final-stage candidates, we may organize company immersion sessions or site visits, where they have the opportunity to experience the organization’s culture firsthand. This interaction allows candidates to assess if the organization’s culture aligns with their own values and vice versa.', 
+        },
+    ]
+
     useEffect(() => {
         window.scrollTo(0, 0)
+        document.title = 'About Us | EarlyJobs'
     }, [])
 
     return (
@@ -38,6 +62,22 @@ const AboutUs = () => {
                     <h3 className='privacy-policy-subheading'>Vision</h3>
                     <ul className='privacy-policy-list'>
                         <li className='privacy-policy-item'>Our vision at EarlyJobs is to be the foremost global platform, seamlessly connecting talent with opportunities. We envision a future where recruitment is agile, remote work is prevalent, and talent development is prioritized. Through innovation and inclusivity, we aspire to redefine the dynamics of the professional world.</li>
+                    </ul>
+                </div>
+
+                <div className='about-us-curtural-fit-container'>
+                    <h1 className='about-us-curtural-fit-heading'>Cultural Fit Between Candidates and Organizations</h1>
+                    <hr className='about-us-curtural-fit-hr' />
+                    <ul className='about-us-curtural-fit-list'>
+                        {curlturalFit.map((item, index) => (
+                        <li key={index} className='about-us-curtural-fit-item'>
+                            {item.heading1 && <h3 className='about-us-curtural-fit-subheading'>{item.heading1}</h3>}
+                            {item.para1 && <p className='about-us-curtural-fit-para'>{item.para1}</p>}
+                            <img src={item.img} draggable={false} alt="Cultural Fit Between Candidates and Organizations" className='about-us-curtural-fit-img' />
+                            <h3 className='about-us-curtural-fit-subheading'>{item.heading2}</h3>
+                            <p className='about-us-curtural-fit-para'>{item.para2}</p>
+                        </li>
+                        ))}
                     </ul>
                 </div>
 

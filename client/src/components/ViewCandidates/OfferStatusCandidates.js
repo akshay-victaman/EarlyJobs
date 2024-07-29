@@ -211,6 +211,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   dayCount: eachItem.offered_date ? calculateDayCount(eachItem.offered_date, eachItem.tenure_in_days) : null,
                   tenureStatus: eachItem.tenure_status,
                   verificationStatus: eachItem.verification_status,
+                  isJoined: eachItem.is_joined
                 }))
                 setCandidateList(updatedData);
                 setHrList(data.hrEmails)
@@ -264,6 +265,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   jobId: eachItem.job_id,
                   hrName: eachItem.hr_name,
                   verificationStatus: eachItem.verification_status,
+                  isJoined: eachItem.is_joined
                 }))
                 return updatedData;
             }
@@ -314,6 +316,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 dayCount: eachItem.offered_date ? calculateDayCount(eachItem.offered_date, eachItem.tenure_in_days) : null,
                 tenureStatus: eachItem.tenure_status,
                 verificationStatus: eachItem.verification_status,
+                isJoined: eachItem.is_joined
               }))
               setCandidateList(updatedData);
               setHrList(data.hrEmails)
@@ -366,6 +369,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 jobId: eachItem.job_id,
                 hrName: eachItem.hr_name,
                 verificationStatus: eachItem.verification_status,
+                isJoined: eachItem.is_joined
               }))
               return updatedData;
           }

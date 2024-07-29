@@ -48,6 +48,12 @@ const OpeningsSection = () => {
     const [title, setTitle] = useState(initialJobTitle);
   
 
+  useEffect(() => {
+    setCompanyName(initialCompanyName)
+    setLocation(initialLocation)
+    setTitle(initialJobTitle)
+  }, [initialCompanyName, initialLocation, initialJobTitle])
+
 
   useEffect(() => {
       getJobsCard()

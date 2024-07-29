@@ -2,11 +2,13 @@ import Cookies from "js-cookie"
 import { useState } from "react"
 import { MdOutlineEditCalendar } from "react-icons/md";
 import {toast} from 'react-toastify'
+import AlreadyJoinedPopup from "./AlreadyJoinedPopup";
 
 
 const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup, candidateDetails, jobId, jobsList, candidateList, setCandidateList}) => {
     const [updateOfferStatus, setUpdateOfferStatus] = useState('');
     const [loading, setLoading] = useState(false)
+    const [showPopup, setShowPopup] = useState(false)
     const {candidateName, candidateEmail, candidatePhone, candidateId, offerStatus, appliedBy, interviewDate, companyName, area, city} = candidateDetails
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
@@ -86,7 +88,9 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
             {candidatePhone}
             </td>
             <td className="job-details-candidates-table-cell">
-            {offerStatus}
+                {candidateDetails.isJoined === 1 && candidateDetails.offerStatus !== "Joined" ? 
+                <span onClick={() => setShowPopup(true)} className="job-details-candidates-table-cell-hover">Candidate Joined in another company</span> 
+                : offerStatus}
             </td>
             {
                 Cookies.get('role') !== 'HR' &&
@@ -108,7 +112,7 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
                     {
                         !loading ? 
                         (
-                            <select className="homepage-input candidate-input-select" id='offerStatus' disabled={offerStatus === 'Joined' || offerStatus === 'Rejected'} value={updateOfferStatus} onChange={handleCandidateStatusChange}>
+                            <select className="homepage-input candidate-input-select" id='offerStatus' style={{cursor: (offerStatus === 'Joined' || offerStatus === 'Rejected' || candidateDetails.isJoined === 1) ? "not-allowed" : "pointer"}} disabled={offerStatus === 'Joined' || offerStatus === 'Rejected' || candidateDetails.isJoined === 1} value={updateOfferStatus} onChange={handleCandidateStatusChange}>
                                 <option value=''>Select Offer Status</option>
                                 <option value='Selected'>Selected</option>
                                 <option value='Attended'>Attended</option>
@@ -124,6 +128,7 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
                     }
                 </td>
             )}
+            {showPopup && <AlreadyJoinedPopup setShowPopup={setShowPopup} candidateId={candidateId} />}
         </tr>
     )
 }

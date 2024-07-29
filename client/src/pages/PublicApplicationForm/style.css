@@ -1,14 +1,14 @@
 .public-apply-job-form {
-    margin-top: calc(15vh + 55px);
-    min-height: calc(85vh - 40px);
+    margin-top: 15vh;
+    min-height: 85vh;
 }
 
 
 
 @media screen and (max-width: 768px) {
     .public-apply-job-form {
-        margin-top: calc(10vh + 30px);
-        min-height: calc(90vh - 30px);
+        margin-top: 10vh;
+        min-height: 90vh;
     }
 
     .public-apply-form {

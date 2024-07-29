@@ -2,8 +2,10 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import React, { lazy, Suspense } from "react";
 import ProtectedRoute from '../components/ProtectedRoute';
 import Loader from '../components/Loader/index.js';
+import TopExecutiveServicePage from '../pages/OurServicesPages/TopExecutiveServicePage.jsx';
+import HrExecutiveServicePage from '../pages/OurServicesPages/HrExecutiveServicePage.jsx';
 
-const HomePage = lazy(() => import("../components/HomePage"));
+// const HomePage = lazy(() => import("../components/HomePage"));
 const JobsPage = lazy(() => import("../components/JobsPage"));
 const BDEPage = lazy(() => import("../components/BDEPage"));
 const AdminPage = lazy(() => import("../components/AdminPage"));
@@ -27,13 +29,18 @@ const OpeningsPage = lazy(() => import("../pages/OpeningsPage"));
 const PublicJobDetailsPage = lazy(() => import("../pages/PublicJobDetailsPage"));
 const TeamPage = lazy(() => import("../pages/TeamPage"));
 const ControlTeamPage = lazy(() => import("../pages/ControlTeamPage"));
-
+const LoginPage = lazy(() => import("../pages/LoginPage"));
+const HomePage = lazy(() => import("../pages/HomePage"));
+const WhyEarlyjobs = lazy(() => import("../pages/WhyEarlyjobs"));
+const ITRecruitmentServicePage = lazy(() => import("../pages/OurServicesPages/ITRecruitmentServicePage.jsx"));
+const FinanceAccountingServicePage = lazy(() => import("../pages/OurServicesPages/FinanceAccountingServicePage.jsx"));
+const SalesMarketingServicePage = lazy(() => import("../pages/OurServicesPages/SalesMarketingServicePage.jsx"));
 
 
 const EachRoute = () => {
     return (
         <Switch>
-            
+
             <Route exact path="/"
                 render={() =>
                     <Suspense fallback={<Loader />}>
@@ -41,6 +48,64 @@ const EachRoute = () => {
                     </Suspense>
                 }
             />
+            
+            <Route exact path="/login"
+                render={() =>
+                    <Suspense fallback={<Loader />}>
+                        {/* <HomePage /> */}
+                        <LoginPage />
+                    </Suspense>
+                }
+            />
+
+            <Route exact path='/why-earlyjobs'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <WhyEarlyjobs />
+                    </Suspense>
+                }
+            />
+
+            <Route exact path='/it-recruitment'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <ITRecruitmentServicePage />
+                    </Suspense>
+                }
+            />
+
+            <Route exact path='/finance-and-accounting-recruitment'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <FinanceAccountingServicePage />
+                    </Suspense>
+                }
+            />
+
+            <Route exact path='/sales-marketing-services'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <SalesMarketingServicePage />
+                    </Suspense>
+                }
+            />
+
+            <Route exact path='/top-executive-recruitment-firm'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <TopExecutiveServicePage />
+                    </Suspense>
+                }
+            />
+
+            <Route exact path='/hr-executive-recruitment-services'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <HrExecutiveServicePage />
+                    </Suspense>
+                }
+            />
+
 
             <Route exact path="/privacy-policy"
                 render={() =>

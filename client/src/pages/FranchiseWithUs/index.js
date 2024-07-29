@@ -27,6 +27,7 @@ const FranchiseWithUs = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
+        document.title = 'Franchise with us | EarlyJobs'
     }, [])
 
     const handleChange = (e) => {

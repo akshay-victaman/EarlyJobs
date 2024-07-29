@@ -51,6 +51,9 @@ import './pages/PartnerWithUs/style.css'
 import './pages/PublicApplicationForm/style.css'
 import './pages/PublicJobDetailsPage/style.css'
 import './pages/TeamPage/style.css'
+import './pages/HomePage/style.css'
+import './pages/WhyEarlyjobs/style.css'
+import './pages/OurServicesPages/style.css'
 import './App.css';
 
 
@@ -70,8 +73,13 @@ const App = () => {
   return (
     <>
       <NavBar handleShowComplaintsForm={handleShowComplaintsForm} />
-      {Cookies.get('jwt_token') === undefined && <SubNavBar handleShowContactForm={handleShowContactForm} />}
+      {/* {Cookies.get('jwt_token') === undefined && <SubNavBar handleShowContactForm={handleShowContactForm} />} */}
       { showContactForm && <ContactForm handleShowContactForm={handleShowContactForm} /> }
+      { Cookies.get('jwt_token') === undefined && 
+        <button className='sticky-side-contact-button' onClick={handleShowContactForm}>
+          Contact Us
+        </button>
+      }
       { showComplaintsForm && <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} /> }
       <EachRoute />
       <Footer handleShowContactForm={handleShowContactForm} />

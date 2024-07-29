@@ -1,5 +1,5 @@
 .hiring-partner-container {
-    margin-top: calc(15vh + 40px);
+    margin-top: 15vh;
 }
 
 .stepper-container {
@@ -371,7 +371,7 @@
         padding: 10px;
     }
     .hiring-partner-container {
-        margin-top: calc(10vh + 30px);
+        margin-top: 10vh;
     }
     .hr-form-container {
         margin-top: 15px;
