@@ -15,7 +15,7 @@ function HeroSection({heroSectionData}) {
                     </li>
                 ))}
             </ul>
-            <a href="#consultation" className="service-page-hero-cta">Connect With Our Agents</a>
+            <a href="tel:918217527926" className="service-page-hero-cta">Connect With Our Agents</a>
         </div>
         <div className='service-page-hero-consultation-con'>
             <ConsultationForm />

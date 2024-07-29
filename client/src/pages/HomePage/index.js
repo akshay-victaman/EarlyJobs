@@ -63,40 +63,26 @@ const HomePage = () => {
 
     const reviewCards = [
         { 
-            name: 'John Doe', 
+            name: 'Prabeesh', 
             role: 'HR Manager',
-            companyLogo: 'https://supersourcing.com/v2/img/featured/Lumiere32.svg', 
-            profileImage: 'https://www.talentxo.com/static/images/sections/testimonails/tps/shruthi.jpeg?v0202407111215',
-            review: "We were just about to invest in a big team of engineers for our enterprise, but after some research we found out about Supersourcing and decided to try them out. We knew that the current market was not favorable for hiring so many people,  but Supersourcing's team helped us find an incredible number of talented engineers and saved us a ton of money!",
+            companyLogo: '/client_logos/cogent.png', 
+            profileImage: '/profile-image.png',
+            review: "Partnering with EarlyJobs has been exceptional. They consistently provide top-tier candidates that fit our culture and needs, making our hiring process seamless. EarlyJobs is a trusted extension of our HR team.",
         },
         { 
-            name: 'Jane Doe', 
+            name: 'Pawan', 
             role: 'HR Manager',
-            companyLogo: 'https://supersourcing.com/v2/img/featured/Lumiere32.svg', 
-            profileImage: 'https://www.talentxo.com/static/images/sections/testimonails/tps/shruthi.jpeg?v0202407111215',
-            review: 'I have been working with Hirekey Consultancy for the past 2 years and I must say that they have been a great help in finding the right talent for our company. They are very professional and have a great understanding of the market.',
+            companyLogo: '/client_logos/tp.png', 
+            profileImage: '/profile-image.png',
+            review: 'EarlyJobs transformed our recruitment process. We now have a reliable stream of qualified candidates, and our time-to-hire has drastically reduced. Their team is professional, responsive, and invested in our success.',
         },
         { 
-            name: 'John Doe', 
-            role: 'HR Manager',
-            companyLogo: 'https://supersourcing.com/v2/img/featured/Lumiere32.svg', 
-            profileImage: 'https://www.talentxo.com/static/images/sections/testimonails/tps/shruthi.jpeg?v0202407111215',
-            review: 'I have been working with Hirekey Consultancy for the past 2 years and I must say that they have been a great help in finding the right talent for our company. They are very professional and have a great understanding of the market.',
+            name: 'Nikita Kushwaha', 
+            role: 'HR Intern',
+            companyLogo: '/early-jobs-logo2.png', 
+            profileImage: '/profile-image.png',
+            review: 'Best place to gain knowledge and experience about HR recruitment with good working environment and excellent team leaders',
         },
-        { 
-            name: 'Jane Doe', 
-            role: 'HR Manager',
-            companyLogo: 'https://supersourcing.com/v2/img/featured/Lumiere32.svg', 
-            profileImage: 'https://www.talentxo.com/static/images/sections/testimonails/tps/shruthi.jpeg?v0202407111215',
-            review: 'I have been working with Hirekey Consultancy for the past 2 years and I must say that they have been a great help in finding the right talent for our company. They are very professional and have a great understanding of the market.',
-        },
-        {
-            name: 'John Doe',
-            role: 'HR Manager',
-            companyLogo: 'https://supersourcing.com/v2/img/featured/Lumiere32.svg',
-            profileImage: 'https://www.talentxo.com/static/images/sections/testimonails/tps/shruthi.jpeg?v0202407111215',
-            review: 'I have been working with Hirekey Consultancy for the past 2 years and I must say that they have been a great help in finding the right talent for our company. They are very professional and have a great understanding of the market.',
-        }
     ];
 
     const featuredServices = [
