@@ -36,5 +36,6 @@ router.get('/bde/candidate', authenticateToken, checkUserBlockStatus, jobControl
 router.get('/bde/candidates/excel', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForBDEExcel);
 router.put('/candidate/tenure-status/update', authenticateToken, checkUserBlockStatus, jobController.updateTenureStatus);
 router.put('/candidate/verification-status/update', authenticateToken, checkUserBlockStatus, jobController.updateVerificationStatus);
+router.get('/candidate/joined-company-details/:id', authenticateToken, checkUserBlockStatus, jobController.getJoinedCandidateCompanyDetails);
 
 module.exports = router;

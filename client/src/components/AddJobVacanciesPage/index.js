@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IoIosClose } from "react-icons/io";
 import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore";
 import {v4 as uuidv4} from 'uuid';
@@ -129,6 +129,11 @@ const AddJobVacanciesPage = () => {
             contactNo: ''
         },
     })
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+        document.title = 'Add Job Vacancies | EarlyJobs'
+    }, [])
 
 
     const handleInputChange = (e) => {

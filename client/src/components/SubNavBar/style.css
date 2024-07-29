@@ -1,6 +1,6 @@
 .subNavBar__container {
     position: fixed;
-    z-index: 1000;
+    z-index: 999;
     background-color: #EB6A4D;
     width: 100%;
     height: 40px;

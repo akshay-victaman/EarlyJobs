@@ -5,7 +5,6 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import {v4 as uuidv4} from 'uuid';
 import { useEffect, useState } from 'react';
 import emailjs from '@emailjs/browser';
-import NavBar from '../NavBar'
 import IdentityProofForm from './IdentityProof';
 import PersonalDetailsForm from './PersonalDetails';
 import QualificationForm from './QualificationForm';
@@ -13,7 +12,6 @@ import AboutForm from './AboutForm';
 import ReferencesForm from './ReferencesForm';
 import app from '../../firebase';
 import './style.css'
-import Footer from '../Footer';
 import Cookies from 'js-cookie';
 
 const customStyles = {
@@ -221,6 +219,11 @@ const HiringPartnerForm = () => {
             }
         }
     })
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+        document.title = 'Apply as a Recruiter Form | EarlyJobs'
+    }, [])
 
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 

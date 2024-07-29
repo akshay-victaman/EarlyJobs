@@ -32,7 +32,12 @@
 .nav-link {
     text-decoration: none;
     color: #222222;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.nav-link:hover {
+    color: #EB6A4D;
 }
 
 .signup-button {
@@ -69,6 +74,74 @@
     display: none;
 }
 
+.nav-options-con {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.nav-options {
+    width: 90%;
+    margin-right: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.active-options {
+    color: #EB6A4D;
+}
+
+.arrow-icon {
+    font-size: 20px;
+    color: #222222;
+}
+
+.active-icon {
+    color: #EB6A4D;
+}
+
+.nav-options-list {
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px #00000040;
+    z-index: 1000;
+    padding-left: 0px;
+    padding: 10px;
+    list-style-type: none;
+    width: 220px;
+}
+
+.nav-options-item {
+    margin: 15px 0px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #222222;
+    text-decoration: none;
+}
+
+.nav-options-link {
+    text-decoration: none;
+    color: #222222;
+    width: fit-content;
+    line-height: 18px;
+}
+
+.nav-options-link:hover {
+    color: #EB6A4D;
+}
+
+.nav-overlay {
+    display: none;
+}
+
+.nav-bg-overlay {
+    display: none;
+}
+
 @media screen and (max-width: 768px) {
     .navbar {
         height: 10vh;
@@ -96,26 +169,49 @@
         font-size: 25px;
         color: #272727;
     }
+
+    .nav-bg-overlay {
+        position: fixed;
+        top: 10vh;
+        left: 0;
+        height: 100vh;
+        width: 100%;
+        background-color: #00000080;
+        backdrop-filter: blur(3px);
+        z-index: 1000;
+        display: block;
+    }
     
     .nav-overlay {
         position: fixed;
         top: 10vh;
-        width: 100%;
-        background-color: #f1f1f1;
-        z-index: 1000;
-        display: flex;
+        left: -80%;
+        height: 90vh;
+        width: 80%;
+        background-color: #EB6A4D;
+        z-index: 1001;
         justify-content: center;
-        align-items: center;
         flex-direction: column;
         padding-bottom: 20px;
+        display: none;
+        transition: left 1s ease;
+    }
+
+    .show-nav {
+        display: flex;
+        left: 0px;
+        max-width: 320px;
+        transition: left 1s ease;
+        width: 80%;
     }
 
     .nav-list-mobile {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
         list-style-type: none;
         padding-left: 0px;
+        margin-left: 25px;
     }
     
     .nav-item-mobile {
@@ -123,12 +219,41 @@
         position: relative;
     }
 
+    .arrow-icon {
+        color: #ffffff;
+    }
+
+    .nav-item {
+        margin-left: 0px;
+    }
+
     .nav-link {
+        color: #ffffff;
         font-size: 14px;
+        font-weight: bold;
+    }
+    
+    .nav-link:hover {
+        color: #584f4d;
+    }
+
+    .nav-options {
+        color: white;
     }
 
     .signup-button {
         margin-top: 5px;
+        background-color: #ffffff;
+        color: #EB6A4D;    
+    }
+
+    .nav-options-con {
+        margin: 10px 0px;
+    }
+
+    .nav-options-list {
+        top: 35px;
+        width: 220px;
     }
     
 }

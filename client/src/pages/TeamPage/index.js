@@ -18,6 +18,7 @@ const TeamPage = () => {
     useEffect(() => {
         fetchMemberCards();
         window.scrollTo(0, 0)
+        document.title = 'EarlyJobs | Team'
     }, [])
 
     const fetchMemberCards = async () => {

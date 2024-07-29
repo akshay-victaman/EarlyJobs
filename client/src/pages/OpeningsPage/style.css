@@ -1,12 +1,12 @@
 .openings-page-container {
-    margin-top: calc(15vh + 40px)!important;
-    min-height: calc(85vh - 40px)!important;
+    margin-top: 15vh!important;
+    min-height: 85vh!important;
 }
 
 @media screen and (max-width: 768px) {
     .openings-page-container {
-        margin-top: calc(10vh + 30px)!important;
-        min-height: calc(90vh - 30px)!important;
+        margin-top: 10vh!important;
+        min-height: 90vh!important;
     }
     
 }

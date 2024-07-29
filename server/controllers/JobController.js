@@ -392,6 +392,16 @@ const updateVerificationStatus = async (req, res) => {
     }
 }
 
+const getJoinedCandidateCompanyDetails = async (req, res) => {
+    const candidateId = req.params.id;
+    try {
+      const joinedCompanyDetails = await jobService.getJoinedCandidateCompanyDetails(candidateId);
+      res.json(joinedCompanyDetails);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getAllJobs,
     addJobDetials,
@@ -424,5 +434,6 @@ module.exports = {
     getOfferStatusCandidatesForBDE,
     getOfferStatusCandidatesForBDEExcel,
     updateTenureStatus,
-    updateVerificationStatus
+    updateVerificationStatus,
+    getJoinedCandidateCompanyDetails
 }
