@@ -1,13 +1,13 @@
 .jobs-container {
     display: flex;
-    min-height: 85vh;
+    min-height: 87vh;
     background-color: #ffffff;
     width: 100%;
     color: white;
     padding: 20px 20px;
     padding-bottom: 0px;
     padding-top: 30px;
-    margin-top: 15vh;
+    margin-top: 13vh;
     position: relative;
   }
   

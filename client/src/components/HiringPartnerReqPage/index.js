@@ -2,10 +2,8 @@ import { query, where, collection, getFirestore, getDocs, orderBy, Timestamp } f
 import app from "../../firebase";
 import { useEffect, useState } from "react";
 import { IoSearchSharp } from 'react-icons/io5'
-import NavBar from '../NavBar'
 import './style.css'
 import { Link } from "react-router-dom";
-import Footer from "../Footer";
 
 const HiringPartnerReqPage = () => {
 

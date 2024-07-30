@@ -1,13 +1,10 @@
-
 import { useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import Cookies from "js-cookie";
 import { format, parseISO } from 'date-fns';
-import NavBar from "../NavBar"
 import { useEffect } from "react";
 import {Redirect} from 'react-router-dom';
 import CandidateItem from "../CandidateItem";
-import Footer from "../Footer";
 
 
 const CandidatesPage = () => {
@@ -101,7 +98,6 @@ const CandidatesPage = () => {
 
     return (
         <div className="homepage-container">
-            {/* <NavBar /> */}
             <div className="user-view-container">
                 <h1 className='user-heading'>Candidates View</h1>
                 <div className="user-view-search-filter-con">
@@ -115,7 +111,6 @@ const CandidatesPage = () => {
                 </div>
                 {renderCandidates()}
             </div>
-            {/* <Footer /> */}
         </div>
     )
 }
