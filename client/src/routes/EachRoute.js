@@ -5,7 +5,6 @@ import Loader from '../components/Loader/index.js';
 import TopExecutiveServicePage from '../pages/OurServicesPages/TopExecutiveServicePage.jsx';
 import HrExecutiveServicePage from '../pages/OurServicesPages/HrExecutiveServicePage.jsx';
 
-// const HomePage = lazy(() => import("../components/HomePage"));
 const JobsPage = lazy(() => import("../components/JobsPage"));
 const BDEPage = lazy(() => import("../components/BDEPage"));
 const AdminPage = lazy(() => import("../components/AdminPage"));
@@ -105,7 +104,6 @@ const EachRoute = () => {
                     </Suspense>
                 }
             />
-
 
             <Route exact path="/privacy-policy"
                 render={() =>

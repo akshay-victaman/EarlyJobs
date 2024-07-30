@@ -1,8 +1,8 @@
 .complaints-page-con {
     display: flex;
     flex-direction: column;
-    margin-top: 15vh;
-    min-height: 85vh;
+    margin-top: 13vh;
+    min-height: 87vh;
     padding: 25px 6%;
 }
 
