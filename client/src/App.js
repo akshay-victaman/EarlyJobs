@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import ContactForm from './components/ContactForm';
 import ComplaintsForm from './components/ComplaintsForm';
 import SubNavBar from './components/SubNavBar';
+import FooterScroll from './components/Footer/FooterScroll';
 import 'react-toastify/dist/ReactToastify.min.css';
 import './components/AddJobsPage/style.css'
 import './components/AddJobVacanciesPage/style.css'
@@ -83,6 +84,7 @@ const App = () => {
       { showComplaintsForm && <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} /> }
       <EachRoute />
       <Footer handleShowContactForm={handleShowContactForm} />
+      {Cookies.get('jwt_token') === undefined && <FooterScroll />}
       <ScrollUp />
       <ToastContainer autoClose={4000} />
     </>
