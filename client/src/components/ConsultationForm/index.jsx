@@ -24,13 +24,49 @@ const ConsultationForm = () => {
         setCaptchaValue(value);
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         if(captchaValue === null) {
             toast.error("Please verify the captcha")
             return
         }
         console.log(formData)
+        let emailContent = `
+            Hi Earlyjobs Team,
+            <br>
+            <br>
+            We have received a request for free consultation from <strong>${formData.name}</strong> with email id <strong>${formData.email}</strong> and contact number <strong>${formData.contact}</strong>. They are looking for <strong>${formData.lookingFor}</strong>.
+            <br>
+            <br>
+            Regards,
+            <br> 
+            earlyjobs.in team
+            <br> 
+            Victaman Enterprises
+        `
+        const encodedContent = encodeURIComponent(emailContent)
+        const queryParameters = {
+            method: 'EMS_POST_CAMPAIGN',
+            userid: '2000702445',
+            password: 'LEP9yt',
+            v: '1.1',
+            contentType: 'text/html',
+            name: 'Earlyjobs Consultation Request',
+            fromEmailId: 'no-reply@earlyjobs.in',
+            subject: `Consultation Request from ${formData.name}`,
+            recipients: `hr@earlyjobs.in,no-reply@earlyjobs.in`,
+            content: encodedContent,
+            replyToEmailID: 'no-reply@earlyjobs.in'
+        }
+        const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`
+        await fetch(url, {method: "GET", mode: "no-cors"})
+        toast.success("Your request has been submitted successfully")
+        setFormData({
+            name: "",
+            email: "",
+            contact: "",
+            lookingFor: ""
+        })
     }
 
     return (
