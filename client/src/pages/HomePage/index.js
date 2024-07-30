@@ -65,23 +65,30 @@ const HomePage = () => {
         { 
             name: 'Prabeesh', 
             role: 'HR Manager',
-            companyLogo: '/client_logos/cogent.png', 
+            companyLogo: '/testmonials_imgs/cogent.png', 
             profileImage: '/profile-image.png',
             review: "Partnering with EarlyJobs has been exceptional. They consistently provide top-tier candidates that fit our culture and needs, making our hiring process seamless. EarlyJobs is a trusted extension of our HR team.",
         },
         { 
             name: 'Pawan', 
             role: 'HR Manager',
-            companyLogo: '/client_logos/tp.png', 
+            companyLogo: '/testmonials_imgs/tp.png', 
             profileImage: '/profile-image.png',
             review: 'EarlyJobs transformed our recruitment process. We now have a reliable stream of qualified candidates, and our time-to-hire has drastically reduced. Their team is professional, responsive, and invested in our success.',
         },
         { 
             name: 'Nikita Kushwaha', 
             role: 'HR Intern',
-            companyLogo: '/early-jobs-logo2.png', 
+            companyLogo: '/testmonials_imgs/earlyjobs_logo.png', 
             profileImage: '/profile-image.png',
             review: 'Best place to gain knowledge and experience about HR recruitment with good working environment and excellent team leaders',
+        },
+        { 
+            name: 'Vaishnavi', 
+            role: 'HR Manager',
+            companyLogo: '/testmonials_imgs/altrust.png', 
+            profileImage: '/profile-image.png',
+            review: 'Working with EarlyJobs has been outstanding. They consistently deliver high-quality candidates who align perfectly with our culture and requirements, streamlining our hiring process. We consider EarlyJobs a reliable extension of our HR team.',
         },
     ];
 
