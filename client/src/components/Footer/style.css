@@ -160,6 +160,10 @@
     }
 }
 
+.footer-rights {
+    margin-top: 30px;
+}
+
 @media (min-width: 640px) {
     .footer-container {
         padding: 50px 0px 50px 0px;
@@ -206,5 +210,9 @@
 
     .footer-link {
         margin-top: 25px;
+    }
+
+    .footer-rights {
+        margin-top: 0px;
     }
 }
