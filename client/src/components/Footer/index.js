@@ -1,4 +1,4 @@
-import { FaFacebook, FaLinkedin, FaTelegram, FaAppStore, FaGooglePlay } from "react-icons/fa";
+import { FaFacebook, FaLinkedin, FaTelegram } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 import './style.css';
 import { Link } from "react-router-dom";
@@ -13,8 +13,6 @@ const Footer = ({handleShowContactForm}) => {
                     <Link to='/' className="footer-logo-link">
                         <img src="/footer-logo.png" alt="earlyjobs" className="footer-logo" />
                     </Link>
-                    {/* <p className="footer-address">© 2024 EarlyJobs | All rights reserved.</p> */}
-                    {/* <h3 className="footer-heading">OUR OFFICE</h3> */}
                     <div className="footer-sub-con">
                         <SlLocationPin className="footer-icon" />
                         <p className="footer-address">53, HustleHub, 5th Cross Rd, near Sony World Signal, 4th Block, Koramangala, Bengaluru, Karnataka 560034</p>
@@ -87,7 +85,7 @@ const Footer = ({handleShowContactForm}) => {
                     <Link to='/view-openings?page=1&location=Gurgaon' className="footer-link">Jobs in Gurgaon</Link>
                 </div>
             </div>
-            <p className="footer-address" style={{textAlign: 'center'}}>© 2024 EarlyJobs | All rights reserved.</p>
+            <p className="footer-address footer-rights" style={{textAlign: 'center'}}>© 2024 EarlyJobs | All rights reserved.</p>
         </footer>
     );
 }
