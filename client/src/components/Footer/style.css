@@ -17,7 +17,7 @@
 
 .footer-logo {
     width: 130px;
-    height: 130px;
+    height: 90px;
 }
 
 .footer-address {
@@ -75,9 +75,9 @@
 
 .footer-social-media {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
-    margin: 20px 0px;
+    margin-top: 20px;
 }
 
 .footer-social-media-link {
@@ -135,6 +135,20 @@
     padding-left: 3.25rem !important;
     padding-right: 3.25rem !important;
     color: white;
+}
+
+.footer-store-icons {
+    display: flex;
+    align-items: center;
+    margin-top: -30px;
+}
+
+.footer-store-icon {
+    font-size: 22px;
+    width: 120px;
+    cursor: pointer;
+    margin-right: 20px;
+    user-select: none;
 }
 
 @keyframes text-scroll {

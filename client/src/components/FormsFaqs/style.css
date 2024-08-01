@@ -1,0 +1,9 @@
+.forms-page-s5-con {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: #FFFFFF;
+    margin-top: 0px;
+}

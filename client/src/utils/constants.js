@@ -19,6 +19,7 @@ let workTypeOptions = [
 ]
 
 let categoryOptions = [
+    'Aviation',
     'Banking',
     'Insurance',
     'Oil And Gas',
