@@ -5,19 +5,19 @@ function FooterScroll() {
   return (
     <div className="footerscroll-con">
         <p className='footerscroll-text'>
-            Build your dream team. 
+            Hire your ideal team. 
             <span className='footerscroll-gradient'>
-                10X Faster. 
+                10X Quicker. 
             </span>
             <span className='footerscroll-line'> | </span>
-            Build your dream team. 
+            Hire your ideal team. 
             <span className='footerscroll-gradient'>
-                10X Faster. 
+                10X Quicker. 
             </span>
             <span className='footerscroll-line'> | </span>
-            Build your dream team. 
+            Hire your ideal team. 
             <span className='footerscroll-gradient'>
-                10X Faster. 
+                10X Quicker. 
             </span>
             <span className='footerscroll-line'> | </span>
         </p>
