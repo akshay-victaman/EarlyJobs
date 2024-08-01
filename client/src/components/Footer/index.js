@@ -84,7 +84,7 @@ const Footer = ({handleShowContactForm}) => {
                     <Link to='/view-openings?page=1&location=Hyderabad' className="footer-link">Jobs in Hyderabad</Link>
                     <Link to='/view-openings?page=1&location=New Delhi' className="footer-link">Jobs in New Delhi</Link>
                     <Link to='/view-openings?page=1&location=Noida' className="footer-link">Jobs in Noida</Link>
-                    <Link to='/view-openings?page=1&location=Gurugram' className="footer-link">Jobs in Gurugram</Link>
+                    <Link to='/view-openings?page=1&location=Gurgaon' className="footer-link">Jobs in Gurgaon</Link>
                 </div>
             </div>
             <p className="footer-address" style={{textAlign: 'center'}}>© 2024 EarlyJobs | All rights reserved.</p>
