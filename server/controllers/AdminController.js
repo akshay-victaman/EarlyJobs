@@ -2,18 +2,34 @@ const adminService = require('../services/AdminService');
 
 const getAllUsers = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
     const role = req.query.role;
     const isBlocked = req.query.isBlocked;
-    const users = await adminService.getAllUsers(role, isBlocked);
+    const search = req.query.search;
+    const users = await adminService.getAllUsers(role, isBlocked, search, page);
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+const changeUserRoleAssignment = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const hmShmEmail = req.body.hmShmEmail;
+    const role = req.body.role;
+    const hiringFor = req.body.hiringFor;
+    const response = await adminService.changeUserRoleAssignment(email, role, hiringFor, hmShmEmail);
+    res.json(response);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+}
+
 const getAllCandidates = async (req, res) => {
   try {
-    const candidates = await adminService.getAllCandidates();
+    const page = parseInt(req.query.page) || 1;
+    const candidates = await adminService.getAllCandidates(page);
     res.json(candidates);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -194,6 +210,7 @@ const deleteMemberCard = async (req, res) => {
 
 module.exports = {
   getAllUsers,
+  changeUserRoleAssignment,
   getAllCandidates,
   getAllJobs,
   getAllAdminJobs,

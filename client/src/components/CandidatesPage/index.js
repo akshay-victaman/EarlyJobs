@@ -4,16 +4,19 @@ import Cookies from "js-cookie";
 import { format, parseISO } from 'date-fns';
 import { useEffect } from "react";
 import {Redirect} from 'react-router-dom';
+import Pagination from 'rc-pagination';
 import CandidateItem from "../CandidateItem";
 
 
 const CandidatesPage = () => {
     const [searchInput, setSearchInput] = useState('');
     const [candidateList, setCandidateList] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
 
     useEffect(() => {
         getAllCandidates();
-    }, [])
+    }, [page])
 
     const formatDate = (date) => {
         const dbDate = parseISO(date);
@@ -23,7 +26,7 @@ const CandidatesPage = () => {
 
     const getAllCandidates = async () => {
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-        const url = `${backendUrl}/admin/get-candidates/all`;
+        const url = `${backendUrl}/admin/get-candidates/all?page=${page}`;
         const options = {
             method: 'GET',
             headers: { 
@@ -34,7 +37,7 @@ const CandidatesPage = () => {
         const response = await fetch(url, options);
         const data = await response.json();
         if(response.ok === true) {
-            const formattedData = data.map(eachItem => ({
+            const formattedData = data.candidatesList.map(eachItem => ({
                 id: eachItem.id,
                 email: eachItem.email,
                 name: eachItem.name,
@@ -42,6 +45,7 @@ const CandidatesPage = () => {
                 createdAt: formatDate(eachItem.created_at),
             }))
             setCandidateList(formattedData);
+            setTotalItems(data.count);
             console.log(formattedData)
         } else {
             alert(data.error);
@@ -51,6 +55,44 @@ const CandidatesPage = () => {
     const handleChangeSearchInput = (event) => {
         setSearchInput(event.target.value);
     }
+
+    const itemsPerPage = 10; 
+
+    const handlePageChange = (page) => {
+      setPage(page)
+    };
+  
+    const itemRender = (current, type, element) => {
+      if (type === 'page') {
+        return (
+          <button className={`pagination-button ${current === page ? "activePage" : ""}`} key={current} onClick={() => handlePageChange(current)}>
+            {current}
+          </button>
+        );
+      }
+  
+      if (type === 'prev') {
+        return (
+          <button className={`pagination-button ${page === 1 ? "endPage" : ""}`} title="Previous" key="prev" onClick={() => handlePageChange(current - 1)}>
+            {'<'}
+          </button>
+        );
+      }
+  
+      if (type === 'next') {
+        return (
+          <button className={`pagination-button ${totalItems/itemsPerPage <= page ? "endPage" : ""}`} title="Next" key="next" onClick={() => handlePageChange(current + 1)}>
+            {'>'}
+          </button>
+        );
+      }
+  
+      if (type === 'jump-prev' || type === 'jump-next') {
+        return <span className="pagination-dots" title='more'>...</span>;
+      }
+  
+      return element;
+    };
 
     const renderCandidates = () => {
         const filterCandidates = candidateList.filter(eachItem => 
@@ -110,6 +152,15 @@ const CandidatesPage = () => {
                     
                 </div>
                 {renderCandidates()}
+                <Pagination
+                    current={page}
+                    total={totalItems}
+                    pageSize={itemsPerPage}
+                    onChange={handlePageChange}
+                    className="pagination-class pagination-class-candidates"
+                    itemRender={itemRender}
+                    showSizeChanger
+                />
             </div>
         </div>
     )

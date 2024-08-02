@@ -4,16 +4,176 @@ const db = require('../config/database');
 
 const jwt = require('jsonwebtoken');
 
-const getAllUsers = async (role, isBlocked) => {
-    const query = `SELECT * FROM users where role != 'ADMIN' ${role !== 'null' ? `AND role = '${role}'` : ''} ${isBlocked !== 'null' ? `AND is_blocked = ${parseInt(isBlocked)}` : ''} order by username asc;`;
-    const result = await db.query(query);
-    return result[0];
+const getAllUsersCount = async (role, isBlocked, search) => {
+    try {
+        const query = `
+            SELECT count(*) as count FROM users
+            WHERE role != 'ADMIN'
+            ${role !== 'null' ? `AND role = '${role}'` : ''}
+            ${isBlocked !== 'null' ? `AND is_blocked = ${parseInt(isBlocked)}` : ''}
+            ${search ? `AND (username LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%')` : ''};
+        `;
+        const result = await db.query(query);
+        return result[0][0].count;
+    } catch (error) {
+        console.error('Error in getAllUsersCount:', error);
+        throw error;
+    }
 }
 
-const getAllCandidates = async () => {
-    const query = `SELECT * FROM candidates order by name asc;`;
-    const result = await db.query(query);
-    return result[0];
+const getAllUsers = async (role, isBlocked, search, page) => {
+    try {
+        const pageSize = 10;
+        const startIndex = (page - 1) * pageSize;
+        const query = `
+            SELECT * FROM users 
+            WHERE role != 'ADMIN' 
+            ${role !== 'null' ? `AND role = '${role}'` : ''} 
+            ${isBlocked !== 'null' ? `AND is_blocked = ${parseInt(isBlocked)}` : ''} 
+            ${search ? `AND (username LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%')` : ''}
+            order by created_at desc, username asc
+            Limit ? offset ?;
+            ;`;
+        const result = await db.query(query, [pageSize, startIndex]);
+        const count = await getAllUsersCount(role, isBlocked, search);
+        return {usersList: result[0], count};
+    } catch (error) {
+        console.error('Error in getAllUsers:', error);
+        throw error;
+    }
+}
+
+const changeUserRole = async (connection, email, role, hiringFor) => {
+    const query = `UPDATE users SET role = ?, hiring_for = ? WHERE email = ?`;
+    try {
+        // const result = await db.query(query, [role, hiringFor, email]);
+        const [result] = await connection.execute(query, [role, hiringFor, email]);
+        if (result.affectedRows === 0) {
+            const error = new Error('User not found.');
+            error.statusCode = 404;
+            throw error;
+        } else {
+            return true
+        }
+    } catch (error) {
+        console.error('Error in changeUserRoles:', error);
+        throw error;
+    }
+}
+
+const removeHrAssignment = async (connection, email) => {
+    try {
+        const query = `DELETE FROM hrassignedhm WHERE hr_email = ?;`
+        // await db.query(query, email);
+        await connection.execute(query, [email]);
+        return true
+    } catch (error) {
+        console.error('Error in removeHrAssignment:', error);
+        throw error;
+    }
+};
+
+const removeHMAssignment = async (connection, email) => {
+    try {
+        const query = `DELETE FROM hm_assigned_shm WHERE hm_email = ?;`
+        // await db.query(query, email);
+        await connection.execute(query, [email]);
+        return true
+    } catch (error) {
+        console.error('Error in removeHmAssignment:', error);
+        throw error;
+    }
+};
+
+const addHrAssignment = async (connection, hrEmail, hmEmail) => {
+    try {
+        const query = `INSERT INTO hrassignedhm (hr_email, hm_email) VALUES (?, ?);`
+        // const result = await db.query(query, [hrEmail, hmEmail]);
+        const [result] = await connection.execute(query, [hrEmail, hmEmail]);
+        if(result.affectedRows === 0) {
+            const error = new Error("Error adding HR assignment")
+            error.statusCode = 404;
+            return error
+        }
+        return true
+    } catch (error) {
+        console.error('Error in addHrAssignment:', error);
+        throw error;
+    }
+}
+
+const addHmAssignment = async (connection, hmEmail, shmEmail) => {
+    try {
+        const query = `INSERT INTO hm_assigned_shm (hm_email, shm_email) VALUES (?, ?);`
+        // const result = await db.query(query, [hmEmail, shmEmail]);
+        const [result] = await connection.execute(query, [hmEmail, shmEmail]);
+        if(result.affectedRows === 0) {
+            const error = new Error("Error adding HM assignment")
+            error.statusCode = 404;
+            return error
+        }
+        return true
+    } catch (error) {
+        console.error('Error in addHmAssignment:', error);
+        throw error;
+    }
+}
+
+const changeUserRoleAssignment = async (email, role, hiringFor, hmShmEmail) => {
+    const connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        const result = await changeUserRole(connection, email, role, hiringFor);
+        if (result === true) {
+            await removeHrAssignment(connection, email);
+            await removeHMAssignment(connection, email);
+            if (role === 'HR') {
+                await addHrAssignment(connection, email, hmShmEmail);
+            } else if (role === 'AC') {
+                await addHmAssignment(connection, email, hmShmEmail);
+            }
+        }
+        
+        await connection.commit();
+
+        return {message: 'User role changed.'};
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error in changeUserAssignment:', error);
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
+const getAllCandidatesCount = async () => {
+    try {
+        const query = `SELECT count(*) as count FROM candidates`;
+        const result = await db.query(query);
+        return result[0][0].count;
+    } catch (error) {
+        console.error('Error in getAllCandidatesCount:', error);
+        throw error;
+    }
+}
+
+const getAllCandidates = async (page) => {
+    try {
+        const pageSize = 10;
+        const startIndex = (page - 1) * pageSize;
+        const query = `
+            SELECT * FROM candidates 
+            order by created_at desc, name asc
+            Limit ? offset ?;
+            ;`;
+        const result = await db.query(query, [pageSize, startIndex]);
+        const count = await getAllCandidatesCount();
+        return {candidatesList: result[0], count};
+    } catch (error) {
+        console.error('Error in getAllCandidates:', error);
+        throw error;
+    }
 }
 
 const getAllJobs = async (page) => {
@@ -279,6 +439,7 @@ const deleteMemberCard = async (id) => {
 
 module.exports = {
     getAllUsers,
+    changeUserRoleAssignment,
     getAllCandidates,
     getAllJobs,
     getAllAdminJobs,

@@ -2,7 +2,7 @@ import Popup from 'reactjs-popup';
 import { FaEdit } from "react-icons/fa";
 
 
-const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPopup, renderChangePhonePopup}) => {
+const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPopup, renderChangePhonePopup, renderChangeUserRolePopup}) => {
     const {username, email, role, location, phone, hiringFor, hiringCategory, createdAt, isBlocked} = userDetails;
     return (
         <tr className="users-table-data-row">
@@ -46,6 +46,18 @@ const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPo
                     {close => (
                     <div className="modal">
                         {renderBlockUnblockPopup(close, email, isBlocked)}
+                    </div>
+                    )}
+                </Popup>
+            </td>
+            <td data-cell='block/Unblock' className="users-table-data">
+                <Popup
+                    trigger={<button className="block-user-button">Change</button>}
+                    modal
+                >
+                    {close => (
+                    <div className="modal">
+                        {renderChangeUserRolePopup(close, email)}
                     </div>
                     )}
                 </Popup>
