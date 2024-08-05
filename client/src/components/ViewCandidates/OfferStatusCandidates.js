@@ -9,6 +9,7 @@ import { MdOutlineEditCalendar } from 'react-icons/md';
 import ExcelDownloadButton from '../ExcelDownloadButton';
 import UpdateTenureStatus from './UpdateTenureStatus';
 import UpdateVerificationStatus from './UpdateVerificationStatus';
+import ApproveTenureStatus from './ApproveTenureStatus';
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -41,6 +42,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
     const [loading, setLoading] = useState(false);
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
     const [verificationStatus, setVerificationStatus] = useState('')
+    const [tenureStatus, setTenureStatus] = useState('')
+    const [approveStatus, setApproveStatus] = useState('')
     const [verificationCount, setVerificationCount] = useState({})
 
     useEffect(() => {
@@ -50,7 +53,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
           getOfferStatusCandidates()
         }
         getAllJobsList()
-    }, [page, offerStatus, jobId, selectHr, fromDate, toDate, verificationStatus])
+    }, [page, offerStatus, tenureStatus, approveStatus, jobId, selectHr, fromDate, toDate, verificationStatus])
 
     const itemsPerPage = 10; 
 
@@ -88,6 +91,16 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
 
     const handleVerificationStatusChange = (event) => {
       setVerificationStatus(event.target.value)
+      setPage(1)
+    }
+
+    const handleTenureStatusChange = (event) => {
+      setTenureStatus(event.target.value)
+      setPage(1)
+    }
+
+    const handleApproveStatusChange = (event) => {
+      setApproveStatus(event.target.value)
       setPage(1)
     }
 
@@ -178,7 +191,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
         if(selectHr !== '') {
           email = selectHr
         }
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}&page=${page}`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}&tenureStatus=${tenureStatus}&approveStatus=${approveStatus}&page=${page}`
         const options = {
             method: 'GET',
             headers: {
@@ -211,6 +224,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   dayCount: eachItem.offered_date ? calculateDayCount(eachItem.offered_date, eachItem.tenure_in_days) : null,
                   tenureStatus: eachItem.tenure_status,
                   verificationStatus: eachItem.verification_status,
+                  isTenureApproved: eachItem.is_tenure_approved,
                   isJoined: eachItem.is_joined
                 }))
                 setCandidateList(updatedData);
@@ -234,7 +248,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
         if(selectHr !== '') {
           email = selectHr
         }
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}&tenureStatus=${tenureStatus}&approveStatus=${approveStatus}`
         const options = {
             method: 'GET',
             headers: {
@@ -262,9 +276,11 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   appliedBy: eachItem.applied_by,
                   interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
                   offeredDate: eachItem.offered_date ? formatDate(eachItem.offered_date) : null,
+                  tenureStatus: eachItem.tenure_status,
                   jobId: eachItem.job_id,
                   hrName: eachItem.hr_name,
                   verificationStatus: eachItem.verification_status,
+                  isTenureApproved: eachItem.is_tenure_approved,
                   isJoined: eachItem.is_joined
                 }))
                 return updatedData;
@@ -284,7 +300,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
       if(selectHr !== '') {
         email = selectHr
       }
-      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&offerStatus=${offerStatus}&verificationStatus=${verificationStatus}&page=${page}`
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&offerStatus=${offerStatus}&tenureStatus=${tenureStatus}&approveStatus=${approveStatus}&verificationStatus=${verificationStatus}&page=${page}`
       const options = {
           method: 'GET',
           headers: {
@@ -316,6 +332,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 dayCount: eachItem.offered_date ? calculateDayCount(eachItem.offered_date, eachItem.tenure_in_days) : null,
                 tenureStatus: eachItem.tenure_status,
                 verificationStatus: eachItem.verification_status,
+                isTenureApproved: eachItem.is_tenure_approved,
                 isJoined: eachItem.is_joined
               }))
               setCandidateList(updatedData);
@@ -338,7 +355,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
       if(selectHr !== '') {
         email = selectHr
       }
-      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&offerStatus=${offerStatus}&verificationStatus=${verificationStatus}`
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/bde/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&offerStatus=${offerStatus}&verificationStatus=${verificationStatus}&tenureStatus=${tenureStatus}&approveStatus=${approveStatus}`
       const options = {
           method: 'GET',
           headers: {
@@ -369,6 +386,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 jobId: eachItem.job_id,
                 hrName: eachItem.hr_name,
                 verificationStatus: eachItem.verification_status,
+                tenureStatus: eachItem.tenure_status,
+                isTenureApproved: eachItem.is_tenure_approved,
                 isJoined: eachItem.is_joined
               }))
               return updatedData;
@@ -423,6 +442,49 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
         }
         setLoading(false);
     }
+
+    const updateTenureApprovalStatus = async (applicationId, approvalStatus) => {
+      setLoading(true);
+      const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate/tenure-approval-status/update`
+      const options = {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${Cookies.get('jwt_token')}`
+          },
+          body: JSON.stringify({
+              applicationId,
+              approvalStatus
+          })
+      }
+      try {
+      const response = await fetch(url, options)
+      const data = await response.json()
+      console.log('data', data)
+      if(response.ok === true) {
+          if(data.error) {
+              toast.error(data.error);
+          } else {
+              toast.success(data.success);
+              const updatedData = candidateList.map(eachItem => {
+                  if(eachItem.applicationId === applicationId) {
+                      return {
+                          ...eachItem,
+                          isTenureApproved: approvalStatus
+                      }
+                  }
+                  return eachItem;
+              })
+              setCandidateList(updatedData);
+          }
+      } else {
+          toast.error("Failed to update approval status");
+      }
+      } catch (error) {
+        toast.error("Failed to update approval status");
+      }
+      setLoading(false);
+  }
 
     const updateVerificationStatus = async (applicationId, verificationStatus) => {
       setLoading(true);
@@ -540,20 +602,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                       }
                   </select>
               </div>
-              {
-                (Cookies.get('role') === 'BDE' && showCandidateForm === 6) && (
-                  <div className="job-section-select-container"> 
-                    <label className="homepage-label view-candidates-label" htmlFor='handleVerificationStatusChange'>Filter By Verification Status</label>
-                    <select className="homepage-input view-candidates-select" name='handleVerificationStatusChange' id='handleVerificationStatusChange' value={verificationStatus} onChange={handleVerificationStatusChange}>
-                        <option value=''>Select Verification Status</option>
-                        <option value='Verified'>Verified</option>
-                        <option value='Not Verified'>Not Verified</option>
-                        <option value='Unknown'>Unknown</option>
-                        <option value='null'>No Action</option>
-                    </select>
-                  </div>
-                )
-              }
+              
               {
                 Cookies.get('role') !== 'HR' && (
                   <div className="job-section-select-container"> 
@@ -569,8 +618,49 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   </div>
                 )
               }
+
+              {
+                (Cookies.get('role') === 'BDE' && showCandidateForm === 6) && (
+                  <div className="job-section-select-container"> 
+                    <label className="homepage-label view-candidates-label" htmlFor='handleVerificationStatusChange'>Filter By Verification Status</label>
+                    <select className="homepage-input view-candidates-select" name='handleVerificationStatusChange' id='handleVerificationStatusChange' value={verificationStatus} onChange={handleVerificationStatusChange}>
+                        <option value=''>Select Verification Status</option>
+                        <option value='Verified'>Verified</option>
+                        <option value='Not Verified'>Not Verified</option>
+                        <option value='Unknown'>Unknown</option>
+                        <option value='null'>No Action</option>
+                    </select>
+                  </div>
+                )
+              }
+
+              {
+                ((Cookies.get('role') === 'BDE' && showCandidateForm === 6) || showCandidateForm === 12) && (
+                  <>
+                  <div className="job-section-select-container"> 
+                    <label className="homepage-label view-candidates-label" htmlFor='handleTenureStatusChange'>Filter By Tenure Status</label>
+                    <select className="homepage-input view-candidates-select" name='handleTenureStatusChange' id='handleTenureStatusChange' value={tenureStatus} onChange={handleTenureStatusChange}>
+                        <option value=''>Select Tenure Status</option>
+                        <option value='Eligible'>Eligible</option>
+                        <option value='Not Eligible'>Not Eligible</option>
+                        <option value='null'>Unknown</option>
+                    </select>
+                  </div>
+
+                  <div className="job-section-select-container"> 
+                    <label className="homepage-label view-candidates-label" htmlFor='handleApproveStatusChange'>Filter By Approve Status</label>
+                    <select className="homepage-input view-candidates-select" name='handleApproveStatusChange' id='handleApproveStatusChange' value={approveStatus} onChange={handleApproveStatusChange}>
+                        <option value=''>Select Approve Status</option>
+                        <option value='Approved'>Approved</option>
+                        <option value='Rejected'>Rejected</option>
+                        <option value='null'>Unknown</option>
+                    </select>
+                  </div>
+                  </>
+                )
+              }
               <div className="job-section-select-container"> 
-                  <label className="homepage-label view-candidates-label" htmlFor='interview-date'>Filter By {showCandidateForm === 5 ? "Selection Date" : showCandidateForm === 6 ? "Joining Date" : "Interview Date"} (From - To)</label>
+                  <label className="homepage-label view-candidates-label" htmlFor='interview-date'>Filter By {showCandidateForm === 5 ? "Selection Date" : (showCandidateForm === 6 || showCandidateForm === 12) ? "Joining Date" : "Interview Date"} (From - To)</label>
                   <div className="date-con"> 
                     <input className="homepage-input view-candidates-select interview-date-input" type='date' id='interview-date' value={fromDate} onChange={handleFromDateChange} />
                     <input className="homepage-input view-candidates-select interview-date-input" type='date' id='interview-date' value={toDate} onChange={handleToDateChange} />
@@ -623,7 +713,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
                     <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>
                     { (showCandidateForm !== 7) && <th className="job-details-candidates-table-heading-cell">{showCandidateForm === 10 ? "Was Planned On" : `${offerStatus} Date`}</th>}
-                    {showCandidateForm === 12 && <th className="job-details-candidates-table-heading-cell">Days Left / Status</th>}
+                    {(showCandidateForm === 12 || (Cookies.get('role') === "BDE" && showCandidateForm === 6)) && <th className="job-details-candidates-table-heading-cell">Tenure (Days Left / Status / Approve)</th>}
+                    {(Cookies.get('role') === "BDE" && showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">Approve Tenure Status</th>}
                     {(showCandidateForm === 5 || showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">Verification Status</th>}
                     {(showCandidateForm === 12 || ((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE')) && <th className="job-details-candidates-table-heading-cell">Update Status</th>}
                   </tr>
@@ -649,10 +740,23 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                                 }
                               </td>
                             }
-                            {showCandidateForm === 12 && 
+                            {(showCandidateForm === 12 || (Cookies.get('role') === "BDE" && showCandidateForm === 6)) &&
                               <td className="job-details-candidates-table-cell">
                                 {eachItem.dayCount > 0 ? eachItem.dayCount : "Expired"}
                                 {eachItem.tenureStatus !== null && " / " + eachItem.tenureStatus}
+                                {eachItem.isTenureApproved !== null && " / " + eachItem.isTenureApproved}
+                              </td>
+                            }
+                            {(Cookies.get('role') === "BDE" && showCandidateForm === 6) &&
+                              <td className="job-details-candidates-table-cell">
+                                {
+                                  !loading ? 
+                                    eachItem.tenureStatus === 'Eligible' ?
+                                    <ApproveTenureStatus candidate={eachItem} onUpdate={updateTenureApprovalStatus} />
+                                    : "--"
+                                  :
+                                  <p className="loading-text">Please Wait...</p>
+                                }
                               </td>
                             }
                             {(showCandidateForm === 5 || showCandidateForm === 6)  && 

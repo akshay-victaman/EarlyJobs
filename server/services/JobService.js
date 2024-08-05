@@ -973,6 +973,8 @@ const getOfferStatusCandidatesVerificationCount = async (
     email,
     hmEmail,
     offerStatus,
+    tenureStatus,
+    approveStatus,
     search,
     fromDate,
     toDate,
@@ -994,6 +996,8 @@ const getOfferStatusCandidatesVerificationCount = async (
         AND applications.applied_by IN (?) 
         AND DATE(applications.${offeredOrInterviewDate}) >= ? 
         AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+        ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
+        ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
         ${jobId !== 'undefined' && jobId !== "" ? "AND applications.job_id = ?" : ""}
         ${search !== 'undefined' && search !== ""
         ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')`
@@ -1016,6 +1020,8 @@ const getOfferStatusCandidatesCount = async (
     email,
     hmEmail,
     offerStatus,
+    tenureStatus,
+    approveStatus,
     search,
     fromDate,
     toDate,
@@ -1033,6 +1039,8 @@ const getOfferStatusCandidatesCount = async (
         AND applications.applied_by IN (?) 
         AND DATE(applications.${offeredOrInterviewDate}) >= ? 
         AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+        ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
+        ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
         ${jobId !== 'undefined' && jobId !== "" ? "AND applications.job_id = ?" : ""}
         ${search !== 'undefined' && search !== ""
         ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')`
@@ -1051,7 +1059,7 @@ const getOfferStatusCandidatesCount = async (
     }
 };
 
-const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, search, jobId, fromDate, toDate, page) => {
+const getOfferStatusCandidates = async (email, hmEmail, offerStatus, tenureStatus, approveStatus, role, search, jobId, fromDate, toDate, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
@@ -1071,6 +1079,7 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
         tenure_in_days,
         tenure_status,
         verification_status,
+        is_tenure_approved,
         city,
         area
     FROM candidates 
@@ -1084,6 +1093,8 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
     AND applications.applied_by IN (?)
     AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
+    ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
     order by applications.${offeredOrInterviewDate} desc
@@ -1117,9 +1128,9 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
                 params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
+            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, tenureStatus, approveStatus, search, fromDate, toDate, jobId);
             if (offerStatus === 'Joined') {
-                verificationCount = await getOfferStatusCandidatesVerificationCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
+                verificationCount = await getOfferStatusCandidatesVerificationCount(email, hrEmailsArr, offerStatus, tenureStatus, approveStatus, search, fromDate, toDate, jobId);
             }
         } else if(role === 'AC') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
@@ -1133,9 +1144,9 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
                 params = [offerStatus, [email, ...hrEmailsArr], fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
+            count = await getOfferStatusCandidatesCount(email, hrEmailsArr, offerStatus, tenureStatus, approveStatus, search, fromDate, toDate, jobId);
             if (offerStatus === 'Joined') {
-                verificationCount = await getOfferStatusCandidatesVerificationCount(email, hrEmailsArr, offerStatus, search, fromDate, toDate, jobId);
+                verificationCount = await getOfferStatusCandidatesVerificationCount(email, hrEmailsArr, offerStatus, tenureStatus, approveStatus, search, fromDate, toDate, jobId);
             }
         } else {
             if(jobId !== 'undefined' && jobId !== "") {
@@ -1144,9 +1155,9 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
                 params = [offerStatus, email, fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesCount(email, hmEmail, offerStatus, search, fromDate, toDate, jobId);
+            count = await getOfferStatusCandidatesCount(email, hmEmail, offerStatus, tenureStatus, approveStatus, search, fromDate, toDate, jobId);
             if (offerStatus === 'Joined') {
-                verificationCount = await getOfferStatusCandidatesVerificationCount(email, hmEmail, offerStatus, search, fromDate, toDate, jobId);
+                verificationCount = await getOfferStatusCandidatesVerificationCount(email, hmEmail, offerStatus, tenureStatus, approveStatus, search, fromDate, toDate, jobId);
             }
         }
     } catch (error) {
@@ -1155,7 +1166,7 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, role, searc
     return {candidates: result[0], hrEmails, count, verificationCount};
 }
 
-const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, role, search, jobId, fromDate, toDate,) => {
+const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, tenureStatus, approveStatus, role, search, jobId, fromDate, toDate,) => {
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
     const query = `
     SELECT 
@@ -1172,6 +1183,7 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
         interview_date,
         tenure_in_days,
         tenure_status,
+        is_tenure_approved,
         verification_status,
         city,
         area
@@ -1186,6 +1198,8 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
     AND applications.applied_by IN (?)
     AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
+    ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
     order by applications.${offeredOrInterviewDate} desc`;
@@ -1242,7 +1256,7 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, rol
     return result[0];
 }
 
-const getOfferStatusCandidatesForBDEVerificationCount = async (email, offerStatus, search, jobId, fromDate, toDate) => {
+const getOfferStatusCandidatesForBDEVerificationCount = async (email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate) => {
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
     const query = `
     SELECT 
@@ -1261,6 +1275,8 @@ const getOfferStatusCandidatesForBDEVerificationCount = async (email, offerStatu
     ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
     AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
+    ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}`;
     let hrEmails = []
@@ -1302,7 +1318,7 @@ const getOfferStatusCandidatesForBDEVerificationCount = async (email, offerStatu
     }        
 }
 
-const getOfferStatusCandidatesForBDECount = async (email, offerStatus, search, jobId, fromDate, toDate, verificationStatus) => {
+const getOfferStatusCandidatesForBDECount = async (email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate, verificationStatus) => {
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
     const query = `
     SELECT 
@@ -1318,6 +1334,8 @@ const getOfferStatusCandidatesForBDECount = async (email, offerStatus, search, j
     ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
     AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
+    ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(verificationStatus !== 'undefined' && verificationStatus !== "" && verificationStatus !== 'null') ? `AND applications.verification_status = '${verificationStatus}'` : ""}
     ${(verificationStatus === 'null') ? `AND applications.verification_status IS NULL` : ""}
@@ -1361,7 +1379,7 @@ const getOfferStatusCandidatesForBDECount = async (email, offerStatus, search, j
     }        
 }
 
-const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId, fromDate, toDate, verificationStatus, page) => {
+const getOfferStatusCandidatesForBDE = async (email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate, verificationStatus, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
@@ -1380,6 +1398,7 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
         interview_date,
         tenure_in_days,
         tenure_status,
+        is_tenure_approved,
         verification_status,
         city,
         area
@@ -1394,6 +1413,8 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
     ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
     AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
+    ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(verificationStatus !== 'undefined' && verificationStatus !== "" && verificationStatus !== 'null') ? `AND applications.verification_status = '${verificationStatus}'` : ""}
     ${(verificationStatus === 'null') ? `AND applications.verification_status IS NULL` : ""}
@@ -1427,8 +1448,8 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
                 params = [offerStatus, [...hrEmailsArr, email], fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, search, jobId, fromDate, toDate, verificationStatus);
-            verificationCount = await getOfferStatusCandidatesForBDEVerificationCount(email, offerStatus, search, jobId, fromDate, toDate);
+            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate, verificationStatus);
+            verificationCount = await getOfferStatusCandidatesForBDEVerificationCount(email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate);
 
         } else {
             if(jobId !== 'undefined' && jobId !== "") {
@@ -1437,8 +1458,8 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
                 params = [offerStatus, fromDate, toDate, pageSize, startIndex];
             }
             result = await db.query(query, params);
-            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, search, jobId, fromDate, toDate, verificationStatus);
-            verificationCount = await getOfferStatusCandidatesForBDEVerificationCount(email, offerStatus, search, jobId, fromDate, toDate);
+            count = await getOfferStatusCandidatesForBDECount(email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate, verificationStatus);
+            verificationCount = await getOfferStatusCandidatesForBDEVerificationCount(email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate);
         }
     } catch (error) {
         console.log(error)
@@ -1446,7 +1467,7 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, search, jobId,
     return {candidates: result[0], hrEmails: shmEmails, count, verificationCount};
 }
 
-const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, search, jobId, fromDate, toDate, verificationStatus) => {
+const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate, verificationStatus) => {
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
     const query = `
     SELECT 
@@ -1463,6 +1484,7 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, search, j
         interview_date,
         tenure_in_days,
         tenure_status,
+        is_tenure_approved,
         verification_status,
         city,
         area
@@ -1477,6 +1499,8 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, search, j
     ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
     AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)
+    ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
+    ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(verificationStatus !== 'undefined' && verificationStatus !== "" && verificationStatus !== 'null') ? `AND applications.verification_status = '${verificationStatus}'` : ""}
     ${(verificationStatus === 'null') ? `AND applications.verification_status IS NULL` : ""}
@@ -1527,12 +1551,28 @@ const updateTenureStatus = async (candidate) => {
     try {
         const result = await db.query(query, [tenureStatus, applicationId]);
         if (result[0].affectedRows > 0) {
-            return {success: 'Candidate tenure status updated successfully'};
+            return {success: 'Candidate tenure approval status updated successfully'};
         } else {         
-            return {error: 'Candidate tenure status updation failed'};
+            return {error: 'Candidate tenure approval status updation failed'};
         }
     } catch (error) {
         console.log(error)
+    }
+}
+
+const updateTenureApprovalStatus = async (candidate) => {
+    const {applicationId, approvalStatus} = candidate;
+    const query = 'UPDATE applications SET is_tenure_approved = ? WHERE id = ?';
+    try {
+        const result = await db.query(query, [approvalStatus, applicationId]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Candidate tenure approval status updated successfully'};
+        } else {
+            return {error: 'Candidate tenure approval status updation failed'};
+        }
+    } catch (error) {
+        console.log(error)
+        throw error;
     }
 }
 
@@ -1608,6 +1648,7 @@ module.exports = {
     getOfferStatusCandidatesForBDE,
     getOfferStatusCandidatesForBDEExcel,
     updateTenureStatus,
+    updateTenureApprovalStatus,
     updateVerificationStatus,
     getJoinedCandidateCompanyDetails
 }
