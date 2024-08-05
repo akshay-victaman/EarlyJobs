@@ -35,6 +35,7 @@ router.get('/candidates/excel', authenticateToken, checkUserBlockStatus, jobCont
 router.get('/bde/candidate', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForBDE);
 router.get('/bde/candidates/excel', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForBDEExcel);
 router.put('/candidate/tenure-status/update', authenticateToken, checkUserBlockStatus, jobController.updateTenureStatus);
+router.put('/candidate/tenure-approval-status/update', authenticateToken, checkUserBlockStatus, jobController.updateTenureApprovalStatus);
 router.put('/candidate/verification-status/update', authenticateToken, checkUserBlockStatus, jobController.updateVerificationStatus);
 router.get('/candidate/joined-company-details/:id', authenticateToken, checkUserBlockStatus, jobController.getJoinedCandidateCompanyDetails);
 
