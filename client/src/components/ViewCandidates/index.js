@@ -8,6 +8,7 @@ import { IoSearchSharp } from 'react-icons/io5';
 import UpdateCandidateStatus from "./UpdateCandidateStatus"
 import './style.css'
 import ExcelDownloadButton from "../ExcelDownloadButton";
+import { EditCandidateDetails } from "./EditCandidateDetails";
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -27,6 +28,8 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
     const [hrList, setHrList] = useState([])
     const [allJobsList, setAllJobsList] = useState([])
     const [searchInput, setSearchInput] = useState('');
+    const [showEditCandidatePopup, setShowEditCandidatePopup] = useState(false)
+    const [candidateDetails, setCandidateDetails] = useState({})
 
     const today = new Date();
     const date = today.toISOString().split('T')[0];
@@ -96,6 +99,11 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
       } else {
         getInitialCandidates(selectHr, applicationStatus, page)
       }
+    }
+
+    const onShowEditCandidatePopup = (candidate) => {
+      setShowEditCandidatePopup(true)
+      setCandidateDetails(candidate)
     }
 
     const formatDate = (date) => {
@@ -514,6 +522,14 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
                         </th>
                       )
                     }
+
+                    {
+                      Cookies.get('role') !== 'HR' && (
+                        <th className="job-details-candidates-table-heading-cell">
+                          Actions
+                        </th>
+                      )
+                    }
                     
                   </tr>
                   
@@ -521,7 +537,18 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
                     candidateList.length > 0 && candidateList.map(eachItem => {
                       const jobId1 = jobId==='' ? eachItem.jobId : jobId;
                     return(
-                        <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup} candidateDetails={eachItem}  jobId={jobId1} jobsList={allJobsList} candidateList={candidateList} setCandidateList={setCandidateList} />
+                        <UpdateCandidateStatus 
+                          key={eachItem.applicationId} 
+                          onShowCandidateDetails={onShowCandidateDetails} 
+                          onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} 
+                          onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup} 
+                          onShowEditCandidatePopup={onShowEditCandidatePopup}
+                          candidateDetails={eachItem} 
+                          jobId={jobId1} 
+                          jobsList={allJobsList} 
+                          candidateList={candidateList} 
+                          setCandidateList={setCandidateList} 
+                        />
                     )})               
                   }
                 </table>
@@ -542,6 +569,9 @@ const ViewCandidates = ({onShowCandidateDetails, onShowScheduleInterviewPopup, o
                 showSizeChanger
               />
             </div>
+            {showEditCandidatePopup &&
+              <EditCandidateDetails jobsList={allJobsList} setShowEditCandidatePopup={setShowEditCandidatePopup} candidate={candidateDetails}/>
+            }
           </div>
     )
 }

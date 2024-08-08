@@ -5,7 +5,7 @@ import {toast} from 'react-toastify'
 import AlreadyJoinedPopup from "./AlreadyJoinedPopup";
 
 
-const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup, candidateDetails, jobId, jobsList, candidateList, setCandidateList}) => {
+const UpdateCandidateStatus = ({onShowCandidateDetails, onShowEditCandidatePopup, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup, candidateDetails, jobId, jobsList, candidateList, setCandidateList}) => {
     const [updateOfferStatus, setUpdateOfferStatus] = useState('');
     const [loading, setLoading] = useState(false)
     const [showPopup, setShowPopup] = useState(false)
@@ -128,6 +128,12 @@ const UpdateCandidateStatus = ({onShowCandidateDetails, onShowScheduleInterviewP
                     }
                 </td>
             )}
+            {
+                Cookies.get('role') !== 'HR' && (
+                <td className="job-details-candidates-table-cell">
+                    <button className="job-details-candidates-table-cell-button" onClick={() => onShowEditCandidatePopup({candidateId, applicationId: candidateDetails.applicationId})}>Edit</button>
+                </td>)
+            }
             {showPopup && <AlreadyJoinedPopup setShowPopup={setShowPopup} candidateId={candidateId} />}
         </tr>
     )

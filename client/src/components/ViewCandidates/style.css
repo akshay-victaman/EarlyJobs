@@ -293,6 +293,50 @@
     width: 100%;
 }
 
+.job-details-candidates-table-cell-button {
+    border: 0px;
+    background-color: #EB6A4D;
+    color: white;
+    cursor: pointer;
+    outline: none;
+    border-radius: 6px;
+    padding: 6px 15px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.candidate-update-con {
+    width: 93%!important;
+    max-width: 800px!important;
+    min-height: 50vh;
+    max-height: 95vh;
+    overflow-y: scroll;
+}
+
+.candidate-update-form {
+    width: 100%;
+    border: none;
+    padding: 0px;
+    margin-top: 0px;
+}
+
+.hr-checkbox-con {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.offerstatus-checkbox {
+    margin-right: 5px;
+    height: 18px;
+    width: 18px;
+}
+
+.hr-checkbox-label {
+    font-size: 14px;
+    margin-left: 5px;
+}
+
 @media screen and (max-width: 768px) {
     .job-section-select-filter-container {
         justify-content: space-between;
