@@ -208,6 +208,28 @@ const addCandidateDetailsForJob = async (req, res) => {
     }
 }
 
+const getApplicationWithCandidateDetails = async (req, res) => {
+    const applicationId = req.query.applicationId;
+    const candidateId = req.query.candidateId;
+    try {
+      const application = await jobService.getApplicationWithCandidateDetails(candidateId, applicationId);
+      res.json(application);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const editCandidateDetailsForJob = async (req, res) => {
+    const candidate = req.body;
+    const applicationId = req.params.applicationId;
+    try {
+      const updatedCandidate = await jobService.editCandidateDetailsForJob(candidate, applicationId);
+      res.json(updatedCandidate);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const updateInterviewDate = async (req, res) => {
     const candidate = req.body;
     try {
@@ -446,6 +468,8 @@ module.exports = {
     getInitialCandidates,
     getInitialCandidatesForExcel,
     getCandidateDetails,
+    getApplicationWithCandidateDetails,
+    editCandidateDetailsForJob,
     updateInterviewDate,
     getOfferStatusCandidates,
     getOfferStatusCandidatesForExcel,

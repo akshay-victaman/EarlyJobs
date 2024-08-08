@@ -25,6 +25,8 @@ router.get('/hr/all', authenticateToken, checkUserBlockStatus, jobController.get
 router.post('/candidate/add', authenticateToken, checkUserBlockStatus, jobController.addCandidateDetailsForJob);
 router.get('/candidate/:jobId', authenticateToken, checkUserBlockStatus, jobController.getJobCandidates);
 router.get('/candidates/excel/:jobId', authenticateToken, checkUserBlockStatus, jobController.getJobCandidatesForExcel);
+router.get('/candidates/application', authenticateToken, checkUserBlockStatus, jobController.getApplicationWithCandidateDetails);
+router.put('/candidate/update/:applicationId', authenticateToken, checkUserBlockStatus, jobController.editCandidateDetailsForJob);
 router.put('/candidate/interview', authenticateToken, checkUserBlockStatus, jobController.updateInterviewDate);
 router.put('/candidate/status/update', authenticateToken, checkUserBlockStatus, jobController.updateCandidateOfferStatus);
 router.get('/candidate/initial/:email', authenticateToken, checkUserBlockStatus, jobController.getInitialCandidates);

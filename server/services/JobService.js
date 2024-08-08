@@ -590,6 +590,91 @@ const addCandidateDetailsForJob = async (candidate) => {
     }
 }
 
+const getApplicationWithCandidateDetails = async (candidateId, applicationId) => {
+    try {
+        const query = `
+            SELECT candidates.*, applications.*, applications.id as application_id FROM applications 
+            INNER JOIN candidates ON candidates.id = applications.candidate_id 
+            WHERE applications.candidate_id = ? AND applications.id = ?`;
+        const result = await db.query(query, [candidateId, applicationId]);
+        if (result[0].length > 0) {
+            return result[0][0];
+        } else {
+            return {error: 'Application not found'};
+        }
+    } catch (error) {
+        console.log(error)
+        return {error: error.message};
+    }
+}
+
+const updateApplication = async (applicationId, jobId, offerStatus) => {
+    const query = `UPDATE applications SET job_id = ?${offerStatus !== '' ? ', offer_status = ?' : ''} WHERE id = ?`;
+    const params = [jobId];
+    if (offerStatus !== '') {
+        params.push(offerStatus);
+    }
+    params.push(applicationId);
+    const result = await db.query(query, params);
+    if (result[0].affectedRows > 0) {
+        return {success: 'Candidate updated successfully'};
+    }
+};
+
+const editCandidateDetailsForJob = async (candidate, applicationId) => {
+    const {
+        fullName,
+        fatherName,
+        email,
+        phone,
+        dateOfBirth,
+        gender,
+        aadharNumber,
+        highestQualification,
+        currentLocation,
+        spokenLanguages,
+        experienceInYears,
+        experienceInMonths,
+        skills,
+        jobCategory,
+        offerStatus,
+        jobId,
+        shiftTimings,
+        employmentType,
+        candidateId
+    } = candidate;
+    const query = `
+        UPDATE candidates SET
+            name = ?,
+            email = ?,
+            phone = ?,
+            father_name = ?,
+            date_of_birth = ?,
+            gender = ?,
+            aadhar_number = ?,
+            highest_qualification = ?,
+            current_location = ?,
+            spoken_languages = ?,
+            experience_in_years = ?,
+            experience_in_months = ?,
+            job_category = ?,
+            skills = ?,
+            shift_timings = ?,
+            employment_type = ?
+        WHERE id = ?`;
+    try {
+        const result = await db.query(query, [fullName, email, phone, fatherName, dateOfBirth, gender, aadharNumber, highestQualification, currentLocation, spokenLanguages.join(','), experienceInYears, experienceInMonths, jobCategory, skills.join(','), shiftTimings, employmentType, candidateId]);
+        if (result[0].affectedRows > 0) {
+            return updateApplication(applicationId, jobId, offerStatus);
+        } else {
+            return {error: 'Candidate updation failed'};
+        }
+    } catch (error) {
+        console.log(error)
+        return {error: error.message};
+    }
+}
+
 const updateInterviewDate = async (candidate) => {
     const {candidateId, jobId, interviewDate, hrEmail, offerStatus} = candidate;
     const applicationQuery = 'SELECT * FROM applications WHERE job_id = ? AND candidate_id = ?';
@@ -1642,6 +1727,8 @@ module.exports = {
     getInitialCandidates,
     getInitialCandidatesForExcel,
     getCandidateDetails,
+    getApplicationWithCandidateDetails,
+    editCandidateDetailsForJob,
     updateInterviewDate,
     getOfferStatusCandidates,
     getOfferStatusCandidatesForExcel,
