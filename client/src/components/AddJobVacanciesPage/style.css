@@ -52,3 +52,64 @@
 .rupee {
     padding-left: 10px;
 }
+
+.add-job-vacancies-form-con {
+    width: 100%!important;
+    max-width: 520px;
+}
+
+.bde-sub-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding: 0px 6%;
+}
+
+.bde-form-con {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+}
+
+.bde-content-con {
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0px;
+}
+
+.bde-sub-heading {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 10px;
+    color: #EB6A4D;
+    text-align: center;
+}
+
+.bde-sub-text {
+    font-size: 14px;
+    line-height: 17px;
+    color: #000000;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+    .bde-sub-container {
+        flex-direction: column-reverse;
+        align-items: center;
+        padding: 0px 0%;
+        margin-top: 0px;
+    }
+
+    .bde-form-con {
+        width: 100%;
+    }
+
+    .bde-content-con {
+        width: 100%;
+        margin-top: 0px;
+    }
+}
