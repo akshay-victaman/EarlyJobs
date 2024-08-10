@@ -9,6 +9,7 @@ import './style.css';
 import app from '../../firebase';
 import EditorComponent from '../TextEditorQuill';
 import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants'
+import FormsFaqs from '../FormsFaqs';
 
 let languageOptions = [
     { value: 'English', label: 'English' },
@@ -61,6 +62,29 @@ const customStyles = {
         color: state.isSelected ? 'white' : 'black',
     }),
 };
+
+const servicePageAccordianData = [
+    {
+        label: 'How does EarlyJobs match candidates with job opportunities?',
+        content: 'EarlyJobs uses a combination of advanced algorithms and personalized assessments to match candidates with job opportunities that align with their skills, experience, and career goals. Our team also conducts thorough interviews to ensure a good fit.'
+    },
+    {
+        label: 'What industries does EarlyJobs specialize in?',
+        content: 'EarlyJobs specializes in a wide range of industries including technology, BPO, finance, marketing, engineering, and more. Our diverse network allows us to cater to various sectors and provide specialized recruitment services.'
+    },
+    {
+        label: 'What is the process for employers to start working with EarlyJobs?',
+        content: 'Employers can start working with EarlyJobs by contacting our team through our website or directly reaching out to our sales department. We will discuss your hiring needs, provide a customized recruitment plan, and begin sourcing and screening candidates.'
+    },
+    {
+        label: 'How does EarlyJobs ensure the quality of candidates?',
+        content: 'EarlyJobs ensures the quality of candidates through a rigorous screening process that includes background checks, skills assessments, and in-depth interviews. We also consider cultural fit to ensure candidates will thrive in their new roles.'
+    },
+    {
+        label: 'Is there a fee for candidates to use EarlyJobs services?',
+        content: 'No, EarlyJobs does not charge candidates for using our recruitment services. Our fees are covered by the employers seeking to hire through our platform, allowing us to offer our services to job seekers at no cost.'
+    },
+];
 
 const AddJobVacanciesPage = () => {
 
@@ -414,12 +438,12 @@ const AddJobVacanciesPage = () => {
         }
 
         console.log(newJob)
-        return
+        // return
         onSubmitToFirestore(newJob)
     }
 
     const renderJobForm = () => (
-        <form className='bde-job-form' onSubmit={handlePostJob}>
+        <form className='bde-job-form add-job-vacancies-form-con' onSubmit={handlePostJob}>
             <p className='hr-form-subtitle'>( <span className='hr-form-span'>*</span> ) Indicates required field</p>
             
             <label className='bde-form-label' htmlFor='title'>Job Title<span className='hr-form-span'> *</span></label>
@@ -712,7 +736,16 @@ const AddJobVacanciesPage = () => {
         <div className='bde-container'>
             <div className='bde-content'>
                 <h1 className='bde-heading'><span className='head-span'>Add Job Vacancies</span></h1>
-                { showJobForm ? renderJobForm() : renderAnotherJobButton()}
+                <div className='bde-sub-container'>
+                    <div className='bde-content-con'>
+                        <h2 className='bde-sub-heading'>Fill the form below to post job vacancies</h2>
+                        <p className='bde-sub-text'>Please fill all the required fields to post job vacancies</p>
+                        <FormsFaqs accordionData={servicePageAccordianData} />
+                    </div>
+                    <div className='bde-form-con'>
+                        {showJobForm ? renderJobForm() : renderAnotherJobButton()}
+                    </div>
+                </div>
             </div>
         </div>
         </>
