@@ -11,5 +11,7 @@ router.post('/', authenticateToken, CompanyController.createCompany);
 router.put('/:id', authenticateToken, CompanyController.updateCompany);
 router.delete('/:id', authenticateToken, CompanyController.deleteCompany);
 router.get('/:id/jobs', authenticateToken, CompanyController.getCompanyJobs);
+router.get('/:id/candidates', authenticateToken, CompanyController.getJoinedCandidatesForCompany);
+router.get('/:id/candidates/excel', authenticateToken, CompanyController.getJoinedCandidatesForCompanyForExcel);
 
 module.exports = router;

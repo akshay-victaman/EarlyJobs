@@ -129,7 +129,7 @@ const EachRoute = () => {
                 }
             />
 
-            <Route exact path="/add-job-vacancies"
+            <Route exact path="/free-job-posting"
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <AddJobVacanciesPage />

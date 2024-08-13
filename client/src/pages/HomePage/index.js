@@ -228,7 +228,7 @@ const HomePage = () => {
                         <div className="landing-page-screen-1-btn-grp">
                             <Link to="/apply-as-a-recruiter" className="landing-page-s1-link-btn">Become Freelance Recruiter</Link>
                             <Link to="/view-openings" className="landing-page-s1-link-btn-outline landing-page-s1-link-btn">Explore Jobs</Link>
-                            <Link to="add-job-vacancies" className="landing-page-s1-link-btn-outline landing-page-s1-link-btn">Free Job Posting</Link>
+                            <Link to="/free-job-posting" className="landing-page-s1-link-btn-outline landing-page-s1-link-btn">Free Job Posting</Link>
                         </div>
                     </div>
                     <div className="landing-page-screen-1-image-con">

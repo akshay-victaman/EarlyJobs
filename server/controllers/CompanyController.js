@@ -70,6 +70,29 @@ const getCompanyJobs = async (req, res) => {
     }
 }
 
+const getJoinedCandidatesForCompany = async (req, res) => {
+    try {
+        const { fromDate, toDate, jobId, search, offerStatus } = req.query;
+        const page = req.query.page || 1;
+        const companyId = req.params.id;
+        const candidates = await CompanyService.getJoinedCandidatesForCompany(companyId, fromDate, toDate, jobId, search, offerStatus, page);
+        res.status(200).json(candidates);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ error: error.message });
+    }
+}
+
+const getJoinedCandidatesForCompanyForExcel = async (req, res) => {
+    try {
+        const { fromDate, toDate, jobId, search, offerStatus } = req.query;
+        const companyId = req.params.id;
+        const candidates = await CompanyService.getJoinedCandidatesForCompanyForExcel(companyId, fromDate, toDate, jobId, search, offerStatus);
+        res.status(200).json(candidates);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ error: error.message });
+    }
+}
+
 module.exports = { 
     getCompanies, 
     getCompaniesForExcel,
@@ -77,5 +100,7 @@ module.exports = {
     createCompany, 
     updateCompany, 
     deleteCompany,
-    getCompanyJobs
+    getCompanyJobs,
+    getJoinedCandidatesForCompany,
+    getJoinedCandidatesForCompanyForExcel
 };

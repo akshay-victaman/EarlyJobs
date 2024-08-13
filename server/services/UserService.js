@@ -173,7 +173,7 @@ const getAllHMsForSHM = async (email) => {
             SELECT username, email, location, hiring_ctc, hiring_category 
             FROM users INNER JOIN hm_assigned_shm ON 
             users.email=hm_assigned_shm.hm_email
-            WHERE shm_email = ?
+            WHERE shm_email = ? AND is_blocked = 0
             ORDER BY username ASC
         `;
         const result = await db.query(query, [email]);
@@ -189,7 +189,7 @@ const getAllHRs = async (email) => {
         SELECT username, email, location, hiring_ctc, hiring_category 
         FROM users INNER JOIN hrassignedhm ON 
         users.email=hrassignedhm.hr_email 
-        WHERE hm_email = ? 
+        WHERE hm_email = ? AND is_blocked = 0
         order by username asc
     `;
     const result = await db.query(query, [email]);
