@@ -8,7 +8,7 @@ const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPo
         <tr className="users-table-data-row">
             <td data-cell='username' className="users-table-data">{username}</td>
             <td data-cell='email' className="users-table-data">{email}</td>
-            <td data-cell='hiring CTC' className="users-table-data">
+            <td data-cell='phone' className="users-table-data">
                 {phone}
                 <Popup
                     trigger={<button className="change-phone-button"><FaEdit className='change-phone-edit-icon' /></button>}
@@ -22,9 +22,9 @@ const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPo
                 </Popup>
             </td>
             <td data-cell='role' className="users-table-data">{role}</td>
-            <td data-cell='role' className="users-table-data">{hiringFor}</td>
+            <td data-cell='hiring for' className="users-table-data">{hiringFor}</td>
             <td data-cell='location' className="users-table-data">{location}</td>
-            <td data-cell='industry' className="users-table-data">{hiringCategory}</td>
+            <td data-cell='hiring category' className="users-table-data">{hiringCategory}</td>
             <td data-cell='created At' className="users-table-data">{createdAt}</td>
             <td data-cell='change password' className="users-table-data">
                 <Popup
@@ -50,7 +50,7 @@ const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPo
                     )}
                 </Popup>
             </td>
-            <td data-cell='block/Unblock' className="users-table-data">
+            <td data-cell='change role' className="users-table-data">
                 <Popup
                     trigger={<button className="block-user-button">Change</button>}
                     modal

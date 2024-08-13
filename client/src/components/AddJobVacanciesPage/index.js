@@ -156,7 +156,7 @@ const AddJobVacanciesPage = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        document.title = 'Add Job Vacancies | EarlyJobs'
+        document.title = 'Free Job Posting | EarlyJobs'
     }, [])
 
 
@@ -685,9 +685,9 @@ const AddJobVacanciesPage = () => {
             </div>
             {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
             
-            <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
+            {/* <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
             <textarea type='text' placeholder="Ex: Customer Support" className='hr-input-textarea' value={addJobVacancies.keywords} id='keywords' name='keywords'  onChange={handleInputChange} ></textarea>
-            <p className='hr-size'>Separate each keyword with a comma</p>
+            <p className='hr-size'>Separate each keyword with a comma</p> */}
 
             <label className='bde-form-label spoc-label'>Your Company Details<span className='hr-form-span'> *</span></label>
             <label className='bde-form-label' htmlFor='company'>Comapany Name<span className='hr-form-span'> *</span></label>
@@ -735,11 +735,11 @@ const AddJobVacanciesPage = () => {
         <>
         <div className='bde-container'>
             <div className='bde-content'>
-                <h1 className='bde-heading'><span className='head-span'>Add Job Vacancies</span></h1>
+                <h1 className='bde-heading'><span className='head-span'>Free Job Posting</span></h1>
                 <div className='bde-sub-container'>
                     <div className='bde-content-con'>
-                        <h2 className='bde-sub-heading'>Fill the form below to post job vacancies</h2>
-                        <p className='bde-sub-text'>Please fill all the required fields to post job vacancies</p>
+                        <h2 className='bde-sub-heading'>Fill the form below to post free job</h2>
+                        <p className='bde-sub-text'>Please fill all the required fields to post free job</p>
                         <FormsFaqs accordionData={servicePageAccordianData} />
                     </div>
                     <div className='bde-form-con'>

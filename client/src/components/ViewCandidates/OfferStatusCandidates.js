@@ -751,7 +751,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                               <td className="job-details-candidates-table-cell">
                                 {
                                   !loading ? 
-                                    eachItem.tenureStatus === 'Eligible' ?
+                                    (eachItem.tenureStatus === 'Eligible' || eachItem.tenureStatus === null) ?
                                     <ApproveTenureStatus candidate={eachItem} onUpdate={updateTenureApprovalStatus} />
                                     : "--"
                                   :

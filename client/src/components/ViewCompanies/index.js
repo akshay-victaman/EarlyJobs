@@ -9,6 +9,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import ExcelDownloadButton from '../ExcelDownloadButton';
 import JobsCard from '../JobsCard';
 import './style.css';
+import { CompanyCandidates } from './CompanyCandidates.jsx';
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -17,7 +18,7 @@ const apiStatusConstant = {
     failure: 'FAILURE',
 }
 
-const ViewCompanies = ({ setShowCandidateForm }) => {
+const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
     const [searchInput, setSearchInput] = useState('');
     const [companiesList, setCompaniesList] = useState([]);
     const [companyJobList, setCompanyJobList] = useState([]);
@@ -27,13 +28,15 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
     const [popupError, setPopupError] = useState('')
     const [popupLoading, setPopupLoading] = useState(false)
     const [companyPopupType, setCompanyPopupType] = useState('add')
-    const [showCompanyJobs, setShowCompanyJobs] = useState(false)
+    const [showCompanyJobs, setShowCompanyJobs] = useState(0)
     const [showCompanyDetailsPopup, setShowCompanyDetailsPopup] = useState(false)
     const [companyId, setCompanyId] = useState('')
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
     const [file, setFile] = useState(null);
+    const [companyName, setCompanyName] = useState('');
 
     const id = new URLSearchParams(window.location.search).get('id');
+    const candidates = new URLSearchParams(window.location.search).get('candidates');
     
 
     const updateUrl = (id) => {
@@ -60,10 +63,15 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
     useEffect(() => {
         getCompanies()
         if(id !== null) {
-            setShowCompanyJobs(true)
-            getCompanyJobs(id)
+            if (candidates) {
+                setCompanyId(id)
+                setShowCompanyJobs(2)
+            } else {
+                setShowCompanyJobs(1)
+                getCompanyJobs(id)
+            }
         } else {
-            setShowCompanyJobs(false)
+            setShowCompanyJobs(0)
         }
     }, [page, id])
 
@@ -122,20 +130,33 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
     }
 
     const handleShowCompanyJobs = (id) => {
-        setShowCompanyJobs(true)
+        setShowCompanyJobs(1)
         getCompanyJobs(id)
     }
 
     const handleHideCompanyJobs = () => {
-        setShowCompanyJobs(false)
+        setShowCompanyJobs(0)
         const url = new URL(window.location.href);
         url.searchParams.delete('id');
+        url.searchParams.delete('candidates');
         window.history.pushState({}, '', url);
     }
 
     const handleShowCompanyDetailsPopup = (id) => {
         setShowCompanyDetailsPopup(true)
         setCompanyId(id);
+    }
+
+    const handleShowCompanyCandidates = (id, name) => {
+        setCompanyId(id)
+        setCompanyName(name)
+        setShowCompanyJobs(2)
+        const url = new URL(window.location.href);
+        url.searchParams.set('view', 14);
+        url.searchParams.set('page', 1);
+        url.searchParams.set('id', id);
+        url.searchParams.set('candidates', true);
+        window.history.pushState({}, '', url);
     }
 
     const handleChangeSearchInput = (event) => {
@@ -695,6 +716,7 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
                 <th className="job-details-candidates-table-heading-cell">SPOC Email</th>
                 <th className="job-details-candidates-table-heading-cell">Created At</th>
                 <th className="job-details-candidates-table-heading-cell">Openings</th>
+                <th className="job-details-candidates-table-heading-cell">Candidates</th>
                 <th className="job-details-candidates-table-heading-cell">Actions</th>
             </tr>
             {
@@ -710,6 +732,9 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
                         <td className="job-details-candidates-table-cell">{eachItem.createdAt}</td>
                         <td className="job-details-candidates-table-cell">
                             <button className='block-user-button' onClick={() => handleShowCompanyJobs(eachItem.id)}>View</button>
+                        </td>
+                        <td className="job-details-candidates-table-cell">
+                            <button className='block-user-button' onClick={() => handleShowCompanyCandidates(eachItem.id, eachItem.name)}>View</button>
                         </td>
                         <td className="job-details-candidates-table-cell">
                             <button className='block-user-button' onClick={() => handleShowCompanyPopup(eachItem.id, 'update')}>Update</button>
@@ -820,7 +845,12 @@ const ViewCompanies = ({ setShowCandidateForm }) => {
 
     return (
         <div style={{width: "100%"}} className="job-details-candidates-container jobs-section-candidate-container">
-            {showCompanyJobs ? renderAllSections() : renderCompanies()}
+            {showCompanyJobs === 1 ? 
+                renderAllSections() : 
+                showCompanyJobs === 0 ? 
+                renderCompanies() :
+                <CompanyCandidates handleHideCompanyJobs={handleHideCompanyJobs} onShowCandidateDetails={onShowCandidateDetails} companyId={companyId} companyName={companyName} />
+            }
         </div>
     )
 }

@@ -394,6 +394,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
 
   const updateUrl = (page, view) => {
     const url = new URL(window.location.href);
+    url.search = '';
     url.searchParams.set('view', view);
     url.searchParams.set('page', page);
     window.history.pushState({}, '', url);
@@ -579,7 +580,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
             : showCandidateForm===4 ? renderAllSections()
             : showCandidateForm >= 5 && showCandidateForm <= 12 ? <OfferStatusCandidates key={showCandidateForm} showCandidateForm={showCandidateForm} onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} />
             : showCandidateForm===13 ? <Applications setShowCandidateForm={setShowCandidateForm} />
-            : showCandidateForm===14 ? <ViewCompanies setShowCandidateForm={setShowCandidateForm} />
+            : showCandidateForm===14 ? <ViewCompanies onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} />
             : renderAllSections()
           }
         </div>

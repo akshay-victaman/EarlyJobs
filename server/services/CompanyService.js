@@ -142,6 +142,144 @@ const getCompanyJobs = async (id) => {
     }
 }
 
+const getJoinedCandidatesForCompanyCount = async (companyId, fromDate, toDate, jobId, search, offerStatus) => {
+    try {
+        const query = `
+            SELECT COUNT(*) AS count
+            FROM companies 
+            INNER JOIN jobs ON companies.id = jobs.company_id
+            INNER JOIN applications ON jobs.id = applications.job_id
+            INNER JOIN candidates ON applications.candidate_id = candidates.id
+            WHERE companies.id = ? AND applications.offer_status ${offerStatus !== '' ? '= ?' : "IN ('Joined', 'Selected')"}
+            ${search === "" ?
+                `AND DATE(applications.offered_date) >= ?
+                AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
+            : ""}
+            ${(jobId !== undefined && jobId !== '') ? 'AND applications.job_id = ?' : ''}
+            ${(search !== undefined && search !== '') ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%')` : ''};
+        `;
+
+        const params = [companyId];
+        if (offerStatus !== '') {
+            params.push(offerStatus);
+        }
+        if (search === "") {
+            params.push(fromDate, toDate);
+        }
+        if (jobId !== undefined && jobId !== '') {
+            params.push(jobId);
+        }
+        const result = await db.query(query, params);
+        return result[0][0].count;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const getJoinedCandidatesForCompany = async (companyId, fromDate, toDate, jobId, search, offerStatus, page) => {
+    try {
+        const pageSize = 10;
+        const startIndex = (page - 1) * pageSize;
+
+        const query = `
+            SELECT 
+                applications.id as application_id,
+                candidates.id as candidate_id,
+                candidates.name, 
+                candidates.father_name, 
+                candidates.email, 
+                candidates.phone, 
+                candidates.current_location,
+                jobs.area as job_area, 
+                jobs.city as job_city, 
+                interview_date, 
+                offer_status, 
+                offered_date, 
+                verification_status
+            FROM companies 
+            INNER JOIN jobs ON companies.id = jobs.company_id
+            INNER JOIN applications ON jobs.id = applications.job_id
+            INNER JOIN candidates ON applications.candidate_id = candidates.id
+            WHERE companies.id = ? AND applications.offer_status ${offerStatus !== '' ? '= ?' : "IN ('Joined', 'Selected')"} 
+            ${search === "" ?
+            `AND DATE(applications.offered_date) >= ?
+            AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
+            : ""}
+            ${(jobId !== undefined && jobId !== '') ? 'AND applications.job_id = ?' : ''}
+            ${(search !== undefined && search !== '') ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%')` : ''}
+            ORDER BY applications.offered_date DESC
+            LIMIT ? OFFSET ?;
+        `;
+
+        const params = [companyId];
+        if (offerStatus !== '') {
+            params.push(offerStatus);
+        }
+        if (search === "") {
+            params.push(fromDate, toDate);
+        }
+        if (jobId !== undefined && jobId !== '') {
+            params.push(jobId);
+        }
+        params.push(pageSize, startIndex);
+        const result = await db.query(query, params);
+        const count = await getJoinedCandidatesForCompanyCount(companyId, fromDate, toDate, jobId, search, offerStatus);
+        const companyJobList = await getCompanyJobs(companyId);
+        return { candidatesList: result[0], count, companyJobList};
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const getJoinedCandidatesForCompanyForExcel = async (companyId, fromDate, toDate, jobId, search, offerStatus) => {
+    try {
+        const query = `
+            SELECT 
+                candidates.name, 
+                candidates.father_name, 
+                candidates.email, 
+                candidates.phone, 
+                candidates.current_location,
+                jobs.area as job_area, 
+                jobs.city as job_city, 
+                interview_date, 
+                offer_status, 
+                offered_date, 
+                verification_status
+            FROM companies 
+            INNER JOIN jobs ON companies.id = jobs.company_id
+            INNER JOIN applications ON jobs.id = applications.job_id
+            INNER JOIN candidates ON applications.candidate_id = candidates.id
+            WHERE companies.id = ? AND applications.offer_status ${offerStatus !== '' ? '= ?' : "IN ('Joined', 'Selected')"}
+            ${search === "" ?
+                `AND DATE(applications.offered_date) >= ?
+                AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
+            : ""}
+            ${(jobId !== undefined && jobId !== '') ? 'AND applications.job_id = ?' : ''}
+            ${(search !== undefined && search !== '') ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%')` : ''}
+            ORDER BY applications.offered_date DESC;
+        `;
+
+        const params = [companyId];
+        if (offerStatus !== '') {
+            params.push(offerStatus);
+        }
+        if (search === "") {
+            params.push(fromDate, toDate);
+        }
+        if (jobId !== undefined && jobId !== '') {
+            params.push(jobId);
+        }
+        const result = await db.query(query, params);
+        return result[0];
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 module.exports = {
     getCompanies,
     getCompaniesForExcel,
@@ -149,5 +287,7 @@ module.exports = {
     createCompany,
     updateCompany,
     deleteCompany,
-    getCompanyJobs
+    getCompanyJobs,
+    getJoinedCandidatesForCompany,
+    getJoinedCandidatesForCompanyForExcel
 };
