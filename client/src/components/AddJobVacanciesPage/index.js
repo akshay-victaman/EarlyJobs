@@ -5,6 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 import Select from 'react-select';
 import emailjs from '@emailjs/browser';
 import {Oval} from 'react-loader-spinner'
+import ReCAPTCHA from "react-google-recaptcha";
 import './style.css';
 import app from '../../firebase';
 import EditorComponent from '../TextEditorQuill';
@@ -117,6 +118,7 @@ const AddJobVacanciesPage = () => {
     const [experienceError, setExperienceError] = useState(false)
     const [ageError, setAgeError] = useState(false)
     const [tenureError, setTenureError] = useState(false)
+    const [captchaValue, setCaptchaValue] = useState(null);
 
     const [addJobVacancies, setAddJobVacancies] = useState({
         companyName: '',
@@ -159,6 +161,9 @@ const AddJobVacanciesPage = () => {
         document.title = 'Free Job Posting | EarlyJobs'
     }, [])
 
+    function onChangeCaptchaValue(value) {
+        setCaptchaValue(value);
+      }
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -340,22 +345,22 @@ const AddJobVacanciesPage = () => {
           area: addJobVacancies.area.trim().length === 0,
           city: addJobVacancies.city.trim().length === 0,
           pincode: addJobVacancies.pincode.trim().length === 0,
-          locationLink: addJobVacancies.locationLink.trim().length === 0,
-          salary: addJobVacancies.salaryMin.trim().length === 0 || addJobVacancies.salaryMax.trim().length === 0,
+          locationLink: addJobVacancies.locationLink.trim().length === 0 || (!addJobVacancies.locationLink.startsWith('http://') && !addJobVacancies.locationLink.startsWith('https://')),
+          salary: addJobVacancies.salaryMin.trim().length === 0 || addJobVacancies.salaryMax.trim().length === 0 || parseInt(addJobVacancies.salaryMin) < 0 || parseInt(addJobVacancies.salaryMax) < 0 || parseInt(addJobVacancies.salaryMin) > parseInt(addJobVacancies.salaryMax),
           skills: addJobVacancies.skills.length === 0,
           language: addJobVacancies.language.length === 0,
           employmentType: addJobVacancies.employmentType.trim().length === 0,
           workType: addJobVacancies.workType.trim().length === 0,
-          commission: addJobVacancies.commission.trim().length === 0 || addJobVacancies.commissionType.trim().length === 0,
+          commission: addJobVacancies.commission.trim().length === 0 || addJobVacancies.commissionType.trim().length === 0 || parseInt(addJobVacancies.commission) < 0 || (addJobVacancies.commissionType === 'Percentage' && parseInt(addJobVacancies.commission) > 100),
           tenureInDays: parseInt(addJobVacancies.tenureInDays) < 0 || addJobVacancies.tenureInDays.trim().length === 0,
-          noOfOpenings: addJobVacancies.noOfOpenings.trim().length === 0,
+          noOfOpenings: addJobVacancies.noOfOpenings.trim().length === 0 || parseInt(addJobVacancies.noOfOpenings) <= 0,
           hiringNeed: addJobVacancies.hiringNeed.trim().length === 0,
           name: addJobVacancies.companyDetails.name.trim().length === 0,
           email: !emailRegex.test(addJobVacancies.companyDetails.email),
           contactNo: addJobVacancies.companyDetails.contactNo.length !== 10,
           qualification: addJobVacancies.qualification.trim().length === 0,
-          minExperience: parseInt(addJobVacancies.minExperience) < 0 || addJobVacancies.minExperience.length === 0 || parseInt(addJobVacancies.minExperience) > parseInt(addJobVacancies.maxExperience),
-          maxExperience: parseInt(addJobVacancies.maxExperience) < 0 || addJobVacancies.maxExperience.length === 0 || parseInt(addJobVacancies.maxExperience) < parseInt(addJobVacancies.minExperience),
+          minExperience: parseInt(addJobVacancies.minExperience) < 0 || addJobVacancies.minExperience.length === 0 || (parseInt(addJobVacancies.minExperience) > parseInt(addJobVacancies.maxExperience)),
+          maxExperience: parseInt(addJobVacancies.maxExperience) < 0 || addJobVacancies.maxExperience.length === 0 || (parseInt(addJobVacancies.maxExperience) < parseInt(addJobVacancies.minExperience)),
           minAge: parseInt(addJobVacancies.minAge) < 18 || addJobVacancies.minAge.trim().length === 0 || parseInt(addJobVacancies.minAge) > parseInt(addJobVacancies.maxAge),
           maxAge: parseInt(addJobVacancies.maxAge) < 18 || addJobVacancies.maxAge.trim().length === 0 || parseInt(addJobVacancies.maxAge) < parseInt(addJobVacancies.minAge)
         
@@ -399,6 +404,11 @@ const AddJobVacanciesPage = () => {
 
         if (!isValid) {
             setError("*Please fill all the required fields");
+            return;
+        }
+
+        if (!captchaValue) {
+            setError("*Please verify the captcha");
             return;
         }
 
@@ -508,14 +518,14 @@ const AddJobVacanciesPage = () => {
             
             <label className='bde-form-label' htmlFor='location-link'>Location Link<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='location-link'  onChange={handleInputChange} value={addJobVacancies.locationLink} name='locationLink' type='text' placeholder='Enter Location Link' />
-            {locationLinkError && <p className='hr-error'>*Please enter location link</p>}
+            {locationLinkError && <p className='hr-error'>*Please enter location link, must starts with http:// or https://</p>}
 
             <label className='bde-form-label' htmlFor='salary'>Salary(in LPA)<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>
                 <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMin} name='salaryMin' type='number' placeholder='Minimum - INR' />
                 <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMax} name='salaryMax' type='number' placeholder='Maximum - INR' />
             </div>
-            {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary</p>}
+            {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary, min &lt;= max</p>}
 
             <div className="upload-candidate-sub-con">
                 <div className="upload-candidate-input-con salary-input">
@@ -629,17 +639,20 @@ const AddJobVacanciesPage = () => {
                     
                 </div>
             </div>
-            {commissionError && <p className='hr-error'>*Please select commission type & enter commission</p>}
+            {commissionError && <p className='hr-error'>
+                *Please select commission type & enter commission
+                {addJobVacancies.commissionType === 'Fixed' ? ' >= 0' : ' >= 0 & <= 100'}
+            </p>}
 
             <label className='bde-form-label' htmlFor='tenure'>Days Completion (Tenure)<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='tenure'  type='number' onChange={handleInputChange} value={addJobVacancies.tenureInDays} name='tenureInDays' placeholder='Enter Tenure in days' />
-            {tenureError && <p className='hr-error'>*Please enter tenure in days</p>}
+            {tenureError && <p className='hr-error'>*Please enter tenure in days &gt;= 0</p>}
 
             <div className='salary-container'>
                 <div className='emp-work-sub-con'>
                     <label className='bde-form-label' htmlFor='no-of-openings'>No of Openings<span className='hr-form-span'> *</span></label>
                     <input className='bde-form-input emp-work-input' id='no-of-openings'  type='number' onChange={handleInputChange} value={addJobVacancies.noOfOpenings} name='noOfOpenings' placeholder='Enter No of Openings' />
-                    {noOfOpeningsError && <p className='hr-error'>*Please enter no of openings</p>}
+                    {noOfOpeningsError && <p className='hr-error'>*Please enter no of openings &gt; 0</p>}
                 </div>
                 <div className='emp-work-sub-con'>
                     <label className='bde-form-label' htmlFor='hiring-need'>Hiring Need<span className='hr-form-span'> *</span></label>
@@ -674,7 +687,7 @@ const AddJobVacanciesPage = () => {
                         <input className='bde-form-input emp-work-input experience-bde-input' id='experience'  type='number' onChange={handleInputChange} value={addJobVacancies.minExperience} name='minExperience' placeholder='Min' />
                         <input className='bde-form-input emp-work-input experience-bde-input' type='number' onChange={handleInputChange} value={addJobVacancies.maxExperience} name='maxExperience' placeholder='Max' />
                     </div>
-                    {experienceError && <p className='hr-error'>*Please enter Minimum Experience</p>}
+                    {experienceError && <p className='hr-error'>*Please enter Minimum & Maximum Experience, Min &lt; Max</p>}
                 </div>
             </div>
 
@@ -683,7 +696,7 @@ const AddJobVacanciesPage = () => {
                 <input className='bde-form-input salary-input' id='age'  onChange={handleInputChange} value={addJobVacancies.minAge} name='minAge' type='number' placeholder='Minimum age' />
                 <input className='bde-form-input salary-input'  onChange={handleInputChange} value={addJobVacancies.maxAge} name='maxAge' type='number' placeholder='Maximum age' />
             </div>
-            {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
+            {ageError && <p className='hr-error'>*Please enter Age &gt;= 18, Min &lt; Max</p>}
             
             {/* <label className='bde-form-label'>Also Search For<span className='hr-form-span'> (Max 30 keywords)</span></label>
             <textarea type='text' placeholder="Ex: Customer Support" className='hr-input-textarea' value={addJobVacancies.keywords} id='keywords' name='keywords'  onChange={handleInputChange} ></textarea>
@@ -702,6 +715,35 @@ const AddJobVacanciesPage = () => {
             <label className='bde-form-label' htmlFor='phone'>HR Contact No.<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='phone' type='number'  onChange={handleCompanyDetailsChange} value={addJobVacancies.companyDetails.contactNo} name='contactNo' placeholder='Enter HR Contact No' />
             {contactNoError && <p className='hr-error'>*Please enter HR contact no</p>}
+            {/* <div className='salary-container'>
+                <div className='emp-work-sub-con'>
+                    <label className='bde-form-label' htmlFor='otp'>6 Digits OTP<span className='hr-form-span'> *</span></label>
+                    <input className='bde-form-input emp-work-input' id='otp'  onChange={handleInputChange} value={addJobVacancies.streetAddress} name='otp' type='text' placeholder='Enter 6 digits OTP' />
+                    {streetAddressError && <p className='hr-error'>*Please enter street address</p>}
+                </div>
+                <button className='otp-button' type='submit' disabled={loading} > 
+                    {loading ? 
+                        <Oval
+                            height={20}
+                            width={20}
+                            color="#ffffff"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                            visible={true}
+                            ariaLabel='oval-loading'
+                            secondaryColor="#ffffff"
+                            strokeWidth={3}
+                            strokeWidthSecondary={3}
+                        />
+                        :
+                        "Verify OTP"
+                    }
+                </button>
+            </div> */}
+            <ReCAPTCHA
+              sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+              onChange={onChangeCaptchaValue}
+            />
             <button className='bde-form-btn' type='submit' disabled={loading} > 
                 {loading ? 
                     <Oval
