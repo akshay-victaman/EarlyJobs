@@ -308,20 +308,20 @@ const BDEPage = () => {
           area: postNewJob.area.trim().length === 0,
           city: postNewJob.city.trim().length === 0,
           pincode: postNewJob.pincode.trim().length === 0,
-          locationLink: postNewJob.locationLink.trim().length === 0,
-          salary: postNewJob.salaryMin.trim().length === 0 || postNewJob.salaryMax.trim().length === 0,
+          locationLink: postNewJob.locationLink.trim().length === 0 || (!postNewJob.locationLink.startsWith('http://') && !postNewJob.locationLink.startsWith('https://')),
+          salary: postNewJob.salaryMin.trim().length === 0 || postNewJob.salaryMax.trim().length === 0 || parseInt(postNewJob.salaryMin) < 0 || parseInt(postNewJob.salaryMax) < 0 || parseInt(postNewJob.salaryMin) > parseInt(postNewJob.salaryMax),
           skills: postNewJob.skills.length === 0,
           language: postNewJob.language.length === 0,
           employmentType: postNewJob.employmentType.trim().length === 0,
           workType: postNewJob.workType.trim().length === 0,
-          commission: postNewJob.commission.trim().length === 0 || postNewJob.commissionType.trim().length === 0,
+          commission: postNewJob.commission.trim().length === 0 || postNewJob.commissionType.trim().length === 0 || parseInt(postNewJob.commission) < 0 || (postNewJob.commissionType === 'Percentage' && parseInt(postNewJob.commission) > 100),
           tenureInDays: parseInt(postNewJob.tenureInDays) < 0 || postNewJob.tenureInDays.trim().length === 0,
-          noOfOpenings: postNewJob.noOfOpenings.trim().length === 0,
+          noOfOpenings: postNewJob.noOfOpenings.trim().length === 0 || parseInt(postNewJob.noOfOpenings) <= 0,
           hiringNeed: postNewJob.hiringNeed.trim().length === 0,
           assignedTo: postNewJob.assignedTo.length === 0,
           qualification: postNewJob.qualification.trim().length === 0,
-          minExperience: parseInt(postNewJob.minExperience) < 0 || postNewJob.minExperience.length === 0 || parseInt(postNewJob.minExperience) > parseInt(postNewJob.maxExperience),
-          maxExperience: parseInt(postNewJob.maxExperience) < 0 || postNewJob.maxExperience.length === 0 || parseInt(postNewJob.maxExperience) < parseInt(postNewJob.minExperience),
+          minExperience: parseInt(postNewJob.minExperience) < 0 || postNewJob.minExperience.length === 0 || (parseInt(postNewJob.minExperience) > parseInt(postNewJob.maxExperience)),
+          maxExperience: parseInt(postNewJob.maxExperience) < 0 || postNewJob.maxExperience.length === 0 || (parseInt(postNewJob.maxExperience) < parseInt(postNewJob.minExperience)),
           minAge: parseInt(postNewJob.minAge) < 18 || postNewJob.minAge.trim().length === 0 || parseInt(postNewJob.minAge) > parseInt(postNewJob.maxAge),
           maxAge: parseInt(postNewJob.maxAge) < 18 || postNewJob.maxAge.trim().length === 0 || parseInt(postNewJob.maxAge) < parseInt(postNewJob.minAge)
         };
@@ -715,14 +715,14 @@ const BDEPage = () => {
 
             <label className='bde-form-label' htmlFor='location-link'>Location Link<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='location-link'  onChange={handleInputChange} value={postNewJob.locationLink} name='locationLink' type='text' placeholder='Enter Location Link' />
-            {locationLinkError && <p className='hr-error'>*Please enter location link</p>}
+            {locationLinkError && <p className='hr-error'>*Please enter location link, must starts with http:// or https://</p>}
 
             <label className='bde-form-label' htmlFor='salary'>Salary(in LPA)<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>
                 <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={postNewJob.salaryMin} name='salaryMin' type='number' placeholder='Minimum - INR' />
                 <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={postNewJob.salaryMax} name='salaryMax' type='number' placeholder='Maximum - INR' />
             </div>
-            {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary</p>}
+            {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary, min &lt;= max</p>}
 
             <div className="upload-candidate-sub-con">
                 <div className="upload-candidate-input-con salary-input">
@@ -836,17 +836,20 @@ const BDEPage = () => {
                     
                 </div>
             </div>
-            {commissionError && <p className='hr-error'>*Please select commission type & enter commission</p>}
+            {commissionError && <p className='hr-error'>
+                *Please select commission type & enter commission
+                {postNewJob.commissionType === 'Fixed' ? ' >= 0' : ' >= 0 & <= 100'}
+            </p>}
 
             <label className='bde-form-label' htmlFor='tenure'>Days Completion (Tenure)<span className='hr-form-span'> *</span></label>
             <input className='bde-form-input' id='tenure'  type='number' onChange={handleInputChange} value={postNewJob.tenureInDays} name='tenureInDays' placeholder='Enter Tenure in days' />
-            {tenureError && <p className='hr-error'>*Please enter tenure in days</p>}
+            {tenureError && <p className='hr-error'>*Please enter tenure in days &gt;= 0</p>}
 
             <div className='salary-container'>
                 <div className='emp-work-sub-con'>
                     <label className='bde-form-label' htmlFor='no-of-openings'>No of Openings<span className='hr-form-span'> *</span></label>
                     <input className='bde-form-input emp-work-input' id='no-of-openings'  type='number' onChange={handleInputChange} value={postNewJob.noOfOpenings} name='noOfOpenings' placeholder='Enter No of Openings' />
-                    {noOfOpeningsError && <p className='hr-error'>*Please enter no of openings</p>}
+                    {noOfOpeningsError && <p className='hr-error'>*Please enter no of openings &gt; 0</p>}
                 </div>
                 <div className='emp-work-sub-con'>
                     <label className='bde-form-label' htmlFor='hiring-need'>Hiring Need<span className='hr-form-span'> *</span></label>
@@ -881,7 +884,7 @@ const BDEPage = () => {
                         <input className='bde-form-input emp-work-input experience-bde-input' id='experience'  type='number' onChange={handleInputChange} value={postNewJob.minExperience} name='minExperience' placeholder='Min' />
                         <input className='bde-form-input emp-work-input experience-bde-input' type='number' onChange={handleInputChange} value={postNewJob.maxExperience} name='maxExperience' placeholder='Max' />
                     </div>
-                    {experienceError && <p className='hr-error'>*Please enter Minimum & Maximum Experience</p>}
+                    {experienceError && <p className='hr-error'>*Please enter Minimum & Maximum Experience, Min &lt; Max</p>}
                 </div>
             </div>
 
@@ -890,7 +893,7 @@ const BDEPage = () => {
                 <input className='bde-form-input salary-input' id='age'  onChange={handleInputChange} value={postNewJob.minAge} name='minAge' type='number' placeholder='Minimum age' />
                 <input className='bde-form-input salary-input'  onChange={handleInputChange} value={postNewJob.maxAge} name='maxAge' type='number' placeholder='Maximum age' />
             </div>
-            {ageError && <p className='hr-error'>*Please enter Age &gt;= 18</p>}
+            {ageError && <p className='hr-error'>*Please enter Age &gt;= 18, Min &lt; Max</p>}
                 
 
             <label className='bde-form-label'>Assign To Senior Hiring Manager<span className='hr-form-span'> *</span></label>

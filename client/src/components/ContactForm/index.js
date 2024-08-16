@@ -22,7 +22,32 @@ const ContactForm = ({handleShowContactForm}) => {
 
   const sendEmail = async () => {
 
-    const encodedContent = encodeURIComponent(message)
+    let emailContent = `
+        Hi Earlyjobs Team,
+        <br>
+        <br>
+        You have a new message from ${name}:
+        <br>
+        <br>
+        <strong>Subject:</strong> ${subject}
+        <br>
+        <br>
+        <strong>Message:</strong> ${message}
+        <br>
+        <br>
+        <strong>Email:</strong> ${email}
+        <br>
+        <strong>Phone:</strong> ${phone}
+        <br>
+        <br>
+        Regards,
+        <br> 
+        earlyjobs.in team
+        <br> 
+        Victaman Enterprises
+    `
+
+    const encodedContent = encodeURIComponent(emailContent);
     const queryParameters = {
         method: 'EMS_POST_CAMPAIGN',
         userid: '2000702445',
@@ -81,8 +106,6 @@ const ContactForm = ({handleShowContactForm}) => {
       setErrorMessage('Something went wrong.');
     }
   };
-
-  // comment out the return statement below
 
 
   return (
