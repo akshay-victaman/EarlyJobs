@@ -152,6 +152,12 @@
     color: #EB6A4D;
 }
 
+.users-active-col {
+    color: #EB6A4D;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 @media screen and (max-width: 768px) {
     .user-view-container {
         margin-top: 10vh;

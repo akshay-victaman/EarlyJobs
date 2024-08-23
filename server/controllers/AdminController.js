@@ -29,8 +29,30 @@ const changeUserRoleAssignment = async (req, res) => {
 const getAllCandidates = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const candidates = await adminService.getAllCandidates(page);
+    const search = req.query.search;
+    const candidates = await adminService.getAllCandidates(search, page);
     res.json(candidates);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const setCandidateisJoined = async (req, res) => {
+  try {
+    const candidateId = req.params.id;
+    const isJoined = req.body.isJoined;
+    const response = await adminService.setCandidateisJoined(isJoined, candidateId);
+    res.json(response);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+}
+
+const viewCandidateApplications = async (req, res) => {
+  try {
+    const candidateId = req.params.id;
+    const applications = await adminService.viewCandidateApplications(candidateId);
+    res.json(applications);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -212,6 +234,8 @@ module.exports = {
   getAllUsers,
   changeUserRoleAssignment,
   getAllCandidates,
+  setCandidateisJoined,
+  viewCandidateApplications,
   getAllJobs,
   getAllAdminJobs,
   archiveJob,
