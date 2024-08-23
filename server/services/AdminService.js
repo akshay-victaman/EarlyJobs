@@ -147,9 +147,12 @@ const changeUserRoleAssignment = async (email, role, hiringFor, hmShmEmail) => {
     }
 }
 
-const getAllCandidatesCount = async () => {
+const getAllCandidatesCount = async (search) => {
     try {
-        const query = `SELECT count(*) as count FROM candidates`;
+        const query = `
+            SELECT count(*) as count FROM candidates
+            ${search ? `WHERE name LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%'` : ''}
+        `;
         const result = await db.query(query);
         return result[0][0].count;
     } catch (error) {
@@ -158,20 +161,55 @@ const getAllCandidatesCount = async () => {
     }
 }
 
-const getAllCandidates = async (page) => {
+const getAllCandidates = async (search, page) => {
     try {
         const pageSize = 10;
         const startIndex = (page - 1) * pageSize;
         const query = `
             SELECT * FROM candidates 
+            ${search ? `WHERE name LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%'` : ''}
             order by created_at desc, name asc
             Limit ? offset ?;
             ;`;
         const result = await db.query(query, [pageSize, startIndex]);
-        const count = await getAllCandidatesCount();
+        const count = await getAllCandidatesCount(search);
         return {candidatesList: result[0], count};
     } catch (error) {
         console.error('Error in getAllCandidates:', error);
+        throw error;
+    }
+}
+
+const setCandidateisJoined = async (isjoined, id) => {
+    console.log(typeof isjoined, id)
+    try {
+        const query = `UPDATE candidates SET is_joined = ? WHERE id = ?;`
+        const result = await db.query(query, [isjoined, id]);
+        if(result.affectedRows === 0) {
+            const error = new Error("Error updating Is Joined")
+            error.statusCode = 404
+            return error
+        }
+        return {message: 'Candidate Is Joined updated.'};
+    } catch (error) {
+        console.error('Error in setCandidateisJoined:', error);
+        throw error;
+    }
+}
+
+const viewCandidateApplications = async (id) => {
+    try {
+        const query = `
+            SELECT 
+                applications.*, jobs.title, jobs.company_name, jobs.city, jobs.area, candidates.name
+            FROM applications 
+            INNER JOIN jobs ON applications.job_id = jobs.id
+            INNER JOIN candidates ON applications.candidate_id = candidates.id
+            WHERE candidate_id = ?;`
+        const result = await db.query(query, [id]);
+        return result[0];
+    } catch (error) {
+        console.error('Error in viewCandidateApplications:', error);
         throw error;
     }
 }
@@ -441,6 +479,8 @@ module.exports = {
     getAllUsers,
     changeUserRoleAssignment,
     getAllCandidates,
+    setCandidateisJoined,
+    viewCandidateApplications,
     getAllJobs,
     getAllAdminJobs,
     archiveJob,

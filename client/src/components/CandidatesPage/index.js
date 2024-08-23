@@ -6,6 +6,10 @@ import { useEffect } from "react";
 import {Redirect} from 'react-router-dom';
 import Pagination from 'rc-pagination';
 import CandidateItem from "../CandidateItem";
+import { Oval } from "react-loader-spinner";
+import { toast } from "react-toastify";
+import ViewCandidateDetails from "../ViewCandidates/ViewCandidateDetails";
+import { CandidateApplications } from "./CandidateApplications";
 
 
 const CandidatesPage = () => {
@@ -13,6 +17,10 @@ const CandidatesPage = () => {
     const [candidateList, setCandidateList] = useState([]);
     const [page, setPage] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [viewCandidateDetails, setViewCandidateDetails] = useState(false);
+    const [candidateId, setCandidateId] = useState('');
+    const [showApplications, setShowApplications] = useState(false);
 
     useEffect(() => {
         getAllCandidates();
@@ -26,7 +34,7 @@ const CandidatesPage = () => {
 
     const getAllCandidates = async () => {
         const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-        const url = `${backendUrl}/admin/get-candidates/all?page=${page}`;
+        const url = `${backendUrl}/admin/get-candidates/all?search=${searchInput}&page=${page}`;
         const options = {
             method: 'GET',
             headers: { 
@@ -34,15 +42,19 @@ const CandidatesPage = () => {
                 Authorization: `Bearer ${Cookies.get('jwt_token')}`
             }
         };
+        setLoading(true);
         const response = await fetch(url, options);
         const data = await response.json();
+        console.log(data.candidatesList)
         if(response.ok === true) {
             const formattedData = data.candidatesList.map(eachItem => ({
                 id: eachItem.id,
                 email: eachItem.email,
                 name: eachItem.name,
+                fatherName: eachItem.father_name,
                 phone: eachItem.phone,
                 createdAt: formatDate(eachItem.created_at),
+                isJoined: eachItem.is_joined
             }))
             setCandidateList(formattedData);
             setTotalItems(data.count);
@@ -50,10 +62,56 @@ const CandidatesPage = () => {
         } else {
             alert(data.error);
         }
+        setLoading(false);
     }
 
     const handleChangeSearchInput = (event) => {
         setSearchInput(event.target.value);
+    }
+
+    const onShowCandidateDetails = (candidateId) => {
+        setViewCandidateDetails(!viewCandidateDetails)
+        setCandidateId(candidateId)
+    }
+
+    const onShowCandidateApplications = (candidateId) => {
+        setShowApplications(!showApplications)
+        setCandidateId(candidateId)
+    }
+
+    const updateCandidateIsJoined = async (candidateId, isJoined) => {
+        try {
+            const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+            const url = `${backendUrl}/admin/candidate-is-joined/${candidateId}`;
+            const options = {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${Cookies.get('jwt_token')}`
+                },
+                body: JSON.stringify({isJoined})
+            };
+            setLoading(true);
+            const response = await fetch(url, options);
+            const data = await response.json();
+            if(response.ok === true) {
+                toast.success(data.message);
+                setCandidateList(candidateList.map(eachItem => {
+                    if(eachItem.id === candidateId) {
+                        return {
+                            ...eachItem,
+                            isJoined: isJoined
+                        }
+                    }
+                    return eachItem;
+                }))
+            } else {
+                toast.error(data.error);
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
+        setLoading(false);
     }
 
     const itemsPerPage = 10; 
@@ -61,6 +119,13 @@ const CandidatesPage = () => {
     const handlePageChange = (page) => {
       setPage(page)
     };
+
+    const onClickEnter = (event) => {
+        if(event.key === 'Enter') {
+            setPage(1);
+            getAllCandidates();
+        }
+    }
   
     const itemRender = (current, type, element) => {
       if (type === 'page') {
@@ -94,44 +159,44 @@ const CandidatesPage = () => {
       return element;
     };
 
-    const renderCandidates = () => {
-        const filterCandidates = candidateList.filter(eachItem => 
-            eachItem.name.toLowerCase().includes(searchInput.toLowerCase()) || 
-            eachItem.email.toLowerCase().includes(searchInput.toLowerCase()) ||
-            eachItem.phone.toLowerCase().includes(searchInput.toLowerCase())
-        );
-        return (
-            <div className="job-details-candidates-container">
-                {/* <h1 className="job-details-candidates-heading">Candidates</h1> */}
-                <div style={{marginTop: '10px'}} className='table-container'>
-                <table className="job-details-candidates-table" style={{width: "100%"}}>
-                    <tr className="job-details-candidates-table-heading">
-                        <th className="job-details-candidates-table-heading-cell">
-                        Name
-                        </th>
-                        <th className="job-details-candidates-table-heading-cell">
-                        Email
-                        </th>
-                        <th className="job-details-candidates-table-heading-cell">
-                        Phone
-                        </th>
-                        <th className="job-details-candidates-table-heading-cell">
-                        Created At
-                        </th>
-                    </tr>
-                    
-                    {
-                        filterCandidates.length > 0 ? filterCandidates.map(eachItem => (
-                            <CandidateItem key={eachItem.id} candidate={eachItem} />
-                        ))
-                        :
-                        <p className='' style={{textAlign: 'center'}}>no records found!</p>
-                    }
-                </table>
-                </div>
-            </div>
-        )
-    }
+    const renderCandidates = () => (
+        <div className="user-view-table">
+            <table className="users-table">
+                <tr className="users-table-heading-row">
+                    <th className="users-table-heading">Name</th>
+                    <th className="users-table-heading">Father Name</th>
+                    <th className="users-table-heading">Email</th>
+                    <th className="users-table-heading">Phone</th>
+                    <th className="users-table-heading">Created At</th>
+                    <th className="users-table-heading">Is Joined</th>
+                    <th className="users-table-heading">Applications</th>
+                    {/* <th className="users-table-heading">Actions</th> */}
+                </tr>
+                {
+                    candidateList?.map(eachItem => (
+                        <CandidateItem key={eachItem.id} candidate={eachItem} onShowCandidateApplications={onShowCandidateApplications} onShowCandidateDetails={onShowCandidateDetails} updateCandidateIsJoined={updateCandidateIsJoined} />
+                ))}
+            </table>
+            {
+                candidateList.length === 0 && 
+                <p className='user-view-table-no-data'>
+                    {loading ? 
+                    <Oval
+                    visible={true}
+                    height="20"
+                    width="20"
+                    color="#EB6A4D"
+                    strokeWidth="4"
+                    ariaLabel="oval-loading"
+                    wrapperStyle={{}}
+                    secondaryColor="#fff"
+                    wrapperClass=""
+                    /> : 
+                    'No data available'}
+                </p>
+            }
+        </div>
+    )
 
     const token = Cookies.get('role')
     if (token !== 'ADMIN') {
@@ -144,10 +209,10 @@ const CandidatesPage = () => {
                 <h1 className='user-heading'>Candidates View</h1>
                 <div className="user-view-search-filter-con">
                     <div className="user-view-search-con">
-                        <div className="user-view-search-button">
+                        <input className="user-view-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} placeholder="Search by name, email, or phone" onKeyDown={onClickEnter} />
+                        <div className="user-view-search-button" onClick={() => {setPage(1); getAllCandidates()}}>
                             <IoSearchSharp className="search-icon" />
                         </div>
-                        <input className="user-view-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} placeholder="Search by name, email, or phone" />
                     </div>
                     
                 </div>
@@ -162,6 +227,16 @@ const CandidatesPage = () => {
                     showSizeChanger
                 />
             </div>
+            {viewCandidateDetails && 
+                <div className="view-candidate-details-modal">
+                    <div className='view-candidate-details-modal-overlay' onClick={onShowCandidateDetails}></div>
+                    <ViewCandidateDetails onShowCandidateDetails={onShowCandidateDetails} candidateId={candidateId} />
+                </div>
+            }
+            {
+                showApplications && 
+                <CandidateApplications onShowCandidateApplications={onShowCandidateApplications} candidateId={candidateId} />
+            }
         </div>
     )
 }

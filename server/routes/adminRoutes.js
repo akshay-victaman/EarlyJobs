@@ -7,6 +7,8 @@ const router = express.Router();
 router.get('/get-users/all', authenticateToken, AdminController.getAllUsers);
 router.put('/user/change-role', authenticateToken, AdminController.changeUserRoleAssignment);
 router.get('/get-candidates/all', authenticateToken, AdminController.getAllCandidates);
+router.put('/candidate-is-joined/:id', authenticateToken, AdminController.setCandidateisJoined);
+router.get('/get-candidate-applications/:id', authenticateToken, AdminController.viewCandidateApplications);
 router.get('/get-jobs/all', authenticateToken, AdminController.getAllJobs);
 router.get('/get-admin-jobs/all', authenticateToken, AdminController.getAllAdminJobs);
 router.put('/archive-job/:id', authenticateToken, AdminController.archiveJob);
