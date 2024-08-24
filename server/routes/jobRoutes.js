@@ -38,6 +38,8 @@ router.get('/bde/candidate', authenticateToken, checkUserBlockStatus, jobControl
 router.get('/bde/candidates/excel', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForBDEExcel);
 router.put('/candidate/tenure-status/update', authenticateToken, checkUserBlockStatus, jobController.updateTenureStatus);
 router.put('/candidate/tenure-approval-status/update', authenticateToken, checkUserBlockStatus, jobController.updateTenureApprovalStatus);
+router.post('/candidate/employment-details', authenticateToken, checkUserBlockStatus, jobController.addEmploymentDetails);
+router.delete('/candidate/employment-details/:applicationId', authenticateToken, checkUserBlockStatus, jobController.deleteEmploymentDetails);
 router.put('/candidate/verification-status/update', authenticateToken, checkUserBlockStatus, jobController.updateVerificationStatus);
 router.get('/candidate/joined-company-details/:id', authenticateToken, checkUserBlockStatus, jobController.getJoinedCandidateCompanyDetails);
 

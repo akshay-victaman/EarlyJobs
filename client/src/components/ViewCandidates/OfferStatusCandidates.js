@@ -10,6 +10,7 @@ import ExcelDownloadButton from '../ExcelDownloadButton';
 import UpdateTenureStatus from './UpdateTenureStatus';
 import UpdateVerificationStatus from './UpdateVerificationStatus';
 import ApproveTenureStatus from './ApproveTenureStatus';
+import { TenureApprovedPopUp } from './TenureApprovedPopUp';
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -45,6 +46,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
     const [tenureStatus, setTenureStatus] = useState('')
     const [approveStatus, setApproveStatus] = useState('')
     const [verificationCount, setVerificationCount] = useState({})
+    const [showTenureApprovedPopUp, setShowTenureApprovedPopUp] = useState(false);
+    const [applicationId, setApplicationId] = useState('');
 
     useEffect(() => {
         if(Cookies.get('role') === 'BDE') {
@@ -443,7 +446,32 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
         setLoading(false);
     }
 
+    const deleteEmploymentDetails = async (applicationId) => {
+      try {
+          const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate/employment-details/${applicationId}`;
+          const options = {
+              method: "DELETE",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${Cookies.get("jwt_token")}`
+              }
+          }
+          const response = await fetch(url, options);
+          const data = await response.json();
+          console.log(data);
+      } catch (error) {
+          console.error("Error occurred while submitting employment details: ", error);
+      }
+      setLoading(false);
+    }
+
     const updateTenureApprovalStatus = async (applicationId, approvalStatus) => {
+      if (approvalStatus === 'Approved') {
+        setShowTenureApprovedPopUp(true);
+        setApplicationId(applicationId);
+      } else if (approvalStatus === 'Rejected') {
+        await deleteEmploymentDetails(applicationId);
+      }
       setLoading(true);
       const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate/tenure-approval-status/update`
       const options = {
@@ -799,6 +827,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 showSizeChanger
               />
             </div>
+            {showTenureApprovedPopUp && <TenureApprovedPopUp setShowTenureApprovedPopUp={setShowTenureApprovedPopUp} applicationId={applicationId} />}
         </div>
     )
 }

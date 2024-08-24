@@ -422,6 +422,26 @@ const updateTenureApprovalStatus = async (req, res) => {
     }
 }
 
+const addEmploymentDetails = async (req, res) => {
+    const employmentDetails = req.body;
+    try {
+      const newEmploymentDetails = await jobService.addEmploymentDetails(employmentDetails);
+      res.json(newEmploymentDetails);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const deleteEmploymentDetails = async (req, res) => {
+    const applicationId = req.params.applicationId;
+    try {
+      const newEmploymentDetails = await jobService.deleteEmploymentDetails(applicationId);
+      res.json(newEmploymentDetails);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const updateVerificationStatus = async (req, res) => {
     const candidate = req.body;
     try {
@@ -477,6 +497,8 @@ module.exports = {
     getOfferStatusCandidatesForBDEExcel,
     updateTenureStatus,
     updateTenureApprovalStatus,
+    addEmploymentDetails,
+    deleteEmploymentDetails,
     updateVerificationStatus,
     getJoinedCandidateCompanyDetails
 }

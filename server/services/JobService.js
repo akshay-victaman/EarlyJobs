@@ -513,15 +513,19 @@ const getAllHRJobs = async (email) => {
     return result[0];
 }
 
-const addApplication = async (jobId, cId, hrEmail, offerStatus, interviewDate) => {
+const addApplication = async (jobId, cId, hrEmail, offerStatus, interviewDate, joinedDate) => {
     const applicationQuery = 'SELECT * FROM applications WHERE job_id = ? AND candidate_id = ? AND applied_by = ?';
     const applicationResult = await db.query(applicationQuery, [jobId, cId, hrEmail]);
     if (applicationResult[0].length > 0) {
         return {error: 'Application already exists for this candidate'};
     }
     const id = uuidv4();
-    const query = 'INSERT INTO applications (id, job_id, candidate_id, applied_by, offer_status, interview_date) VALUES (?, ?, ?, ?, ?, ?)';
-    const result = await db.query(query, [id, jobId, cId, hrEmail, offerStatus, interviewDate]);
+    const query = `INSERT INTO applications (id, job_id, candidate_id, applied_by, offer_status, interview_date ${joinedDate !== '' ? ', offered_date' : ''}) VALUES (?, ?, ?, ?, ?, ? ${joinedDate !== '' ? ', ?' : ''})`;
+    const params = [id, jobId, cId, hrEmail, offerStatus, interviewDate];
+    if (joinedDate !== '') {
+        params.push(joinedDate);
+    }
+    const result = await db.query(query, params);
     if (result[0].affectedRows > 0) {
         return {success: 'Candidate added successfully'};
     } else {         
@@ -550,7 +554,8 @@ const addCandidateDetailsForJob = async (candidate) => {
         hrEmail,
         interviewDate,
         shiftTimings,
-        employmentType
+        employmentType,
+        joinedDate
     } = candidate;
     const candidateQuery = 'SELECT * FROM candidates WHERE email = ? OR phone = ?';
     const candidateResult = await db.query(candidateQuery, [email, phone]);
@@ -578,7 +583,7 @@ const addCandidateDetailsForJob = async (candidate) => {
             ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?)`;
         const result = await db.query(query, [cId, fullName, email, phone, fatherName, dateOfBirth, gender, aadharNumber, highestQualification, currentLocation, spokenLanguages.join(','), experienceInYears, experienceInMonths, jobCategory, skills.join(','), shiftTimings, employmentType]);
         if (result[0].affectedRows > 0) {
-            return addApplication(jobId, cId, hrEmail, offerStatus, interviewDate);
+            return addApplication(jobId, cId, hrEmail, offerStatus, interviewDate, joinedDate);
         } else {
             return {error: 'Candidate addition failed'};
         }
@@ -586,7 +591,7 @@ const addCandidateDetailsForJob = async (candidate) => {
         if(candidateResult[0][0].is_joined === 1) {
             return {error: 'Candidate already joined in another company'};
         }
-        return addApplication(jobId, candidateResult[0][0].id, hrEmail, offerStatus, interviewDate);
+        return addApplication(jobId, candidateResult[0][0].id, hrEmail, offerStatus, interviewDate, joinedDate);
     }
 }
 
@@ -1661,6 +1666,54 @@ const updateTenureApprovalStatus = async (candidate) => {
     }
 }
 
+const getEmploymentDetails = async (applicationId) => {
+    const query = 'SELECT * FROM tenure_approved WHERE application_id = ?';
+    try {
+        const result = await db.query(query, [applicationId]);
+        return result[0];
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const addEmploymentDetails = async (employmentDetails) => {
+    const { applicationId, employeeId, positionName, salary, commission } = employmentDetails
+    const query = 'INSERT INTO tenure_approved (id, application_id, employee_id, position_name, salary, commission) VALUES (?, ?, ?, ?, ?, ?)';
+    try {
+        const employmentDetails = await getEmploymentDetails(applicationId);
+        if(employmentDetails.length > 0) {
+            const error = new Error('Employment details already added for this candidate');
+            error.statusCode = 409;
+            throw error;
+        }
+        const id = uuidv4();
+        const result = await db.query(query, [id, applicationId, employeeId, positionName, salary, commission]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Candidate employment details updated successfully'};
+        } else {
+            return {error: 'Candidate employment details updation failed'};
+        }
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+const deleteEmploymentDetails = async (applicationId) => {
+    const query = 'DELETE FROM tenure_approved WHERE application_id = ?';
+    try {
+        const result = await db.query(query, [applicationId]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Candidate employment details deleted successfully'};
+        } else {
+            return {error: 'Candidate employment details deletion failed'};
+        }
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
 const updateVerificationStatus = async (candidate) => {
     const {applicationId, verificationStatus} = candidate;
     const query = 'UPDATE applications SET verification_status = ? WHERE id = ?';
@@ -1736,6 +1789,8 @@ module.exports = {
     getOfferStatusCandidatesForBDEExcel,
     updateTenureStatus,
     updateTenureApprovalStatus,
+    addEmploymentDetails,
+    deleteEmploymentDetails,
     updateVerificationStatus,
     getJoinedCandidateCompanyDetails
 }

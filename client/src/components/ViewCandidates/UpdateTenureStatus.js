@@ -5,8 +5,10 @@ const UpdateTenureStatus = ({ candidate, onUpdate }) => {
     onUpdate(candidate.applicationId, e.target.value);
   };
 
+
+
   return (
-    <select className="homepage-input candidate-input-select" onChange={handleUpdate}>
+    <select className="homepage-input candidate-input-select" disabled={candidate.dayCount >= 0} onChange={handleUpdate}>
         <option value=''>Select Tenure Status</option>
         <option value='Eligible'>Eligible</option>
         <option value='Not Eligible'>Not Eligible</option>

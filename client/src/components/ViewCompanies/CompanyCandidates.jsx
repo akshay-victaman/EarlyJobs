@@ -1,4 +1,4 @@
-import { format, parseISO } from "date-fns";
+import { differenceInDays, format, parseISO } from "date-fns";
 import Pagination from "rc-pagination";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
@@ -6,6 +6,8 @@ import Cookies from "js-cookie";
 import { IoSearchSharp } from "react-icons/io5";
 import ExcelDownloadButton from "../ExcelDownloadButton";
 import { toast } from "react-toastify";
+import ApproveTenureStatus from "../ViewCandidates/ApproveTenureStatus";
+import UpdateVerificationStatus from "../ViewCandidates/UpdateVerificationStatus";
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -27,6 +29,7 @@ export const CompanyCandidates = ({companyId, handleHideCompanyJobs, companyName
     const [searchInput, setSearchInput] = useState('');
     const [jobId, setJobId] = useState('');
     const [offerStatus, setOfferStatus] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
        getCompanyCandidates();
@@ -69,6 +72,13 @@ export const CompanyCandidates = ({companyId, handleHideCompanyJobs, companyName
         return formattedDate;
     }
 
+    const calculateDayCount = (date, tenure) => {
+      const givenDate = parseISO(date);
+      const currentDate = new Date();
+      const diffInDays = differenceInDays(givenDate, currentDate);
+      return tenure - Math.abs(diffInDays);
+  }
+
     const getCompanyCandidates = async () => {
         try {
             const backendUrl = process.env.REACT_APP_BACKEND_API_URL
@@ -86,7 +96,7 @@ export const CompanyCandidates = ({companyId, handleHideCompanyJobs, companyName
             if(response.ok === true) {
                 console.log(data)
                 const formattedData = data.candidatesList.map(eachItem => ({
-                    id: eachItem.application_id,
+                    applicationId: eachItem.application_id,
                     candidateId: eachItem.candidate_id,
                     name: eachItem.name,
                     fatherName: eachItem.father_name,
@@ -98,7 +108,10 @@ export const CompanyCandidates = ({companyId, handleHideCompanyJobs, companyName
                     interviewDate: formatDate(eachItem.interview_date),
                     offerStatus: eachItem.offer_status,
                     offered_date: formatDate(eachItem.offered_date).substring(0, 11),
+                    dayCount: eachItem.offered_date ? calculateDayCount(eachItem.offered_date, eachItem.tenure_in_days) : null,
                     verificationStatus: eachItem.verification_status,
+                    isTenureApproved: eachItem.is_tenure_approved,
+                    tenureStatus: eachItem.tenure_status,
                 }))
                 console.log(formattedData)
                 const formattedJobData = data.companyJobList.map(eachItem => ({
@@ -158,6 +171,94 @@ export const CompanyCandidates = ({companyId, handleHideCompanyJobs, companyName
           toast.error("Failed to download excel");
       }
   }
+
+  const updateTenureApprovalStatus = async (applicationId, approvalStatus) => {
+    setLoading(true);
+    console.log(applicationId, approvalStatus)
+    const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate/tenure-approval-status/update`
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${Cookies.get('jwt_token')}`
+        },
+        body: JSON.stringify({
+            applicationId,
+            approvalStatus
+        })
+    }
+    try {
+    const response = await fetch(url, options)
+    const data = await response.json()
+    console.log('data', data)
+    if(response.ok === true) {
+        if(data.error) {
+            toast.error(data.error);
+        } else {
+            toast.success(data.success);
+            const updatedData = candidatesList.map(eachItem => {
+                if(eachItem.applicationId === applicationId) {
+                    return {
+                        ...eachItem,
+                        isTenureApproved: approvalStatus
+                    }
+                }
+                return eachItem;
+            })
+            setCandidatesList(updatedData);
+        }
+    } else {
+        toast.error("Failed to update approval status");
+    }
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to update approval status");
+    }
+    setLoading(false);
+}
+
+const updateVerificationStatus = async (applicationId, verificationStatus) => {
+  setLoading(true);
+  const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate/verification-status/update`
+  const options = {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${Cookies.get('jwt_token')}`
+      },
+      body: JSON.stringify({
+          applicationId,
+          verificationStatus
+      })
+  }
+  try {
+  const response = await fetch(url, options)
+  const data = await response.json()
+  console.log('data', data)
+  if(response.ok === true) {
+      if(data.error) {
+          toast.error(data.error);
+      } else {
+          toast.success(data.success);
+          const updatedData = candidatesList.map(eachItem => {
+              if(eachItem.applicationId === applicationId) {
+                  return {
+                      ...eachItem,
+                      verificationStatus
+                  }
+              }
+              return eachItem;
+          })
+          setCandidatesList(updatedData);
+      }
+  } else {
+      toast.error("Failed to update verification status");
+  }
+  } catch (error) {
+  toast.error("Failed to update verification status");
+  }
+  setLoading(false);
+}
 
     const handlePageChange = (page) => {
       setPage(page)
@@ -269,29 +370,53 @@ export const CompanyCandidates = ({companyId, handleHideCompanyJobs, companyName
                 <th className="job-details-candidates-table-heading-cell">Father Name</th>
                 <th className="job-details-candidates-table-heading-cell">Email</th>
                 <th className="job-details-candidates-table-heading-cell">Phone</th>
-                <th className="job-details-candidates-table-heading-cell">Location</th>
                 <th className="job-details-candidates-table-heading-cell">Company Location</th>
                 <th className="job-details-candidates-table-heading-cell">Interview Date</th>
                 <th className="job-details-candidates-table-heading-cell">Offer Status</th>
                 <th className="job-details-candidates-table-heading-cell">Joined/Selected Date</th>
+                <th className="job-details-candidates-table-heading-cell">Tenure (Days Left / Status / Approve)</th>
+                <th className="job-details-candidates-table-heading-cell">Approve Tenure Status</th>
                 <th className="job-details-candidates-table-heading-cell">Verification Status</th>
+                <th className="job-details-candidates-table-heading-cell">Update Status</th>
             </tr>
             {
                 candidatesList.length > 0 && candidatesList.map(eachItem => {
                 return (
-                    <tr key={eachItem.id} className="job-details-candidates-table-row">
+                    <tr key={eachItem.applicationId} className="job-details-candidates-table-row">
                         <td className="job-details-candidates-table-cell job-details-candidates-table-cell-hover" onClick={() => onShowCandidateDetails(eachItem.candidateId)} >
                             {eachItem.name}
                         </td>
                         <td className="job-details-candidates-table-cell">{eachItem.fatherName}</td>
                         <td className="job-details-candidates-table-cell">{eachItem.email}</td>
                         <td className="job-details-candidates-table-cell">{eachItem.phone}</td>
-                        <td className="job-details-candidates-table-cell">{eachItem.candiateLocation}</td>
                         <td className="job-details-candidates-table-cell">{eachItem.jobArea}, {eachItem.jobCity}</td>
                         <td className="job-details-candidates-table-cell">{eachItem.interviewDate}</td>
                         <td className="job-details-candidates-table-cell">{eachItem.offerStatus}</td>
                         <td className="job-details-candidates-table-cell">{eachItem.offered_date}</td>
+                        <td className="job-details-candidates-table-cell">
+                          {eachItem.dayCount > 0 ? eachItem.dayCount : "Expired"}
+                          {eachItem.tenureStatus !== null && " / " + eachItem.tenureStatus}
+                          {eachItem.isTenureApproved !== null && " / " + eachItem.isTenureApproved}
+                        </td>
+                        <td className="job-details-candidates-table-cell">
+                          {
+                            !loading ? 
+                              (eachItem.tenureStatus === 'Eligible' || eachItem.tenureStatus === null) ?
+                              <ApproveTenureStatus candidate={eachItem} onUpdate={updateTenureApprovalStatus} />
+                              : "--"
+                            :
+                            <p className="loading-text">Please Wait...</p>
+                          }
+                        </td>
                         <td className="job-details-candidates-table-cell">{eachItem.verificationStatus ? eachItem.verificationStatus : '--'}</td>
+                        <td className="job-details-candidates-table-cell">
+                            {
+                                !loading ? 
+                                    <UpdateVerificationStatus candidate={eachItem} onUpdate={updateVerificationStatus} />
+                                :
+                                <p className="loading-text">Please Wait...</p>
+                            }
+                        </td>
                     </tr>
                 )})
             }
