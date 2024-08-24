@@ -84,11 +84,12 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
         experienceInMonths: '',
         skills: [],
         jobCategory: '',
-        offerStatus: 'Ongoing',
+        offerStatus: Cookies.get('role') === 'BDE' ? 'Joined' : 'Ongoing',
         interviewDate: '',
         interviewTime: '',
         shiftTimings: '',
-        employmentType: ''
+        employmentType: '',
+        joinedDate: '',
       })
 
     useEffect(() => {
@@ -452,7 +453,10 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
         } else if(candidateDetails.jobId === '') {
             setError("Please select a job")
             return
-        } 
+        } else if (Cookies.get('role') === 'BDE' && candidateDetails.joinedDate === '') {
+            setError("Please select joined date")
+            return
+        }
 
 
         setError("")
@@ -500,13 +504,16 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
                     experienceInMonths: '',
                     skills: [],
                     jobCategory: '',
-                    offerStatus: 'Ongoing',
+                    offerStatus: Cookies.get('role') === 'BDE' ? 'Joined' : 'Ongoing',
                     interviewDate: '',
                     interviewTime: '',
                     shiftTimings: '',
-                    employmentType: ''
+                    employmentType: '',
+                    joinedDate: '',
                 })
-                sendInterviewEmails()
+                if (Cookies.get('role') !== 'BDE') {
+                    sendInterviewEmails()
+                }
                 setShowForm(false)
             }
         } else {
@@ -704,7 +711,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
                 <div className="upload-candidate-input-con">
                     <label className="homepage-label" htmlFor='interviewDate'>Schedule Interveiw Date time<span className='hr-form-span'> *</span></label>
                     <div className="interview-input-con homepage-input">
-                        <input type="date" name='interviewDate' className="homepage-input interview-input" id='interviewDate' min={dateString} value={candidateDetails.interviewDate} onChange={handleCandidateInputChange} />
+                        <input type="date" name='interviewDate' className="homepage-input interview-input" id='interviewDate' min={Cookies.get('role') !== 'BDE' ? dateString : ''} value={candidateDetails.interviewDate} onChange={handleCandidateInputChange} />
                         <input type="time" name='interviewTime' className="homepage-input interview-input" id='interviewDate' value={candidateDetails.interviewTime} onChange={handleCandidateInputChange} />
                     </div>
                 </div>
@@ -722,17 +729,26 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
                 </div>
             </div>
 
-            
-            <div className="upload-candidate-input-con">
-                <label className="homepage-label" htmlFor='resume'>Select Job<span className='hr-form-span'> *</span></label>
-                <select className="homepage-input" name='jobId' id='jobId' value={candidateDetails.jobId} onChange={handleCandidateInputChange}>
-                    <option value=''>Select Job</option>
-                    {
-                        jobsList.map(job => (
-                            <option key={job.id} value={job.id}>{job.role} - {job.compname} - {job.city} - {job.area}</option>
-                        ))
-                    }
-                </select>
+            <div className="upload-candidate-sub-con">
+                <div className="upload-candidate-input-con">
+                    <label className="homepage-label" htmlFor='resume'>Select Job<span className='hr-form-span'> *</span></label>
+                    <select className="homepage-input" name='jobId' id='jobId' value={candidateDetails.jobId} onChange={handleCandidateInputChange}>
+                        <option value=''>Select Job</option>
+                        {
+                            jobsList.map(job => (
+                                <option key={job.id} value={job.id}>{job.role} - {job.compname} - {job.city} - {job.area}</option>
+                            ))
+                        }
+                    </select>
+                </div>
+                {Cookies.get('role') === 'BDE' &&
+                    <div className="upload-candidate-input-con">
+                        <label className="homepage-label" htmlFor='joinedDate'>Joined Date<span className='hr-form-span'> *</span></label>
+                        <div className="interview-input-con homepage-input">
+                            <input type="date" name='joinedDate' className="homepage-input interview-input" id='joinedDate' value={candidateDetails.joinedDate} onChange={handleCandidateInputChange} />
+                        </div>
+                    </div>
+                }
             </div>
 
             <div className="upload-candidate-sub-con">
@@ -760,11 +776,6 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
             {error!=="" && <p className="hr-main-error">*{error}</p>}
         </form>
     )
-
-    // const role = Cookies.get('role')
-    // if(role !== 'HR') {
-    //   return <Redirect to='/' />
-    // }
 
     return (
         <div className="upload-candidate-container">

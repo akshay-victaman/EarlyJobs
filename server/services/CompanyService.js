@@ -196,7 +196,9 @@ const getJoinedCandidatesForCompany = async (companyId, fromDate, toDate, jobId,
                 interview_date, 
                 offer_status, 
                 offered_date, 
-                verification_status
+                verification_status,
+                tenure_status,
+                is_tenure_approved
             FROM companies 
             INNER JOIN jobs ON companies.id = jobs.company_id
             INNER JOIN applications ON jobs.id = applications.job_id
