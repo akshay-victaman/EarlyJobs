@@ -154,7 +154,7 @@ export const CompanyCandidates = ({companyId, handleHideCompanyJobs, companyName
                   fatherName: eachItem.father_name,
                   email: eachItem.email,
                   phone: eachItem.phone,
-                  candiateLocation: eachItem.current_location,
+                  dateOfBirth: formatDate(eachItem.date_of_birth),
                   jobLocation: eachItem.job_area + ', ' + eachItem.job_city,
                   interviewDate: formatDate(eachItem.interview_date),
                   offerStatus: eachItem.offer_status,
