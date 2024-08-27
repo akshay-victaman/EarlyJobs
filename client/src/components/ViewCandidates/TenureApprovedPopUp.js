@@ -11,7 +11,8 @@ export const TenureApprovedPopUp = ({applicationId, setShowTenureApprovedPopUp})
         employeeId: "",
         positionName: "",
         salary: "",
-        commission: ""
+        commissionReceived: "",
+        commissionPaid: ""
     });
 
     const handleInputChange = (e) => {
@@ -22,11 +23,11 @@ export const TenureApprovedPopUp = ({applicationId, setShowTenureApprovedPopUp})
     }
 
     const submitEmploymentDetails = async () => {
-        if(employmentDetails.employeeId==="" || employmentDetails.positionName==="" || employmentDetails.salary==="" || employmentDetails.commission==="") {
+        if(employmentDetails.employeeId==="" || employmentDetails.positionName==="" || employmentDetails.salary==="" || employmentDetails.commissionReceived==="" || employmentDetails.commissionPaid==="") {
             setError("Please fill all the fields");
             return;
         }
-        if (employmentDetails.salary < 0 || employmentDetails.commission < 0) {
+        if (employmentDetails.salary < 0 || employmentDetails.commissionReceived < 0 || employmentDetails.commissionPaid < 0) {
             setError("Salary and Commission cannot be negative");
             return;
         }
@@ -54,7 +55,8 @@ export const TenureApprovedPopUp = ({applicationId, setShowTenureApprovedPopUp})
                     employeeId: "",
                     positionName: "",
                     salary: "",
-                    commission: ""
+                    commissionReceived: "",
+                    commissionPaid: ""
                 });
                 setShowTenureApprovedPopUp(false);
             } else {
@@ -80,8 +82,10 @@ export const TenureApprovedPopUp = ({applicationId, setShowTenureApprovedPopUp})
                 <input type="text" id="positionName" name="positionName" className="homepage-input" placeholder="Enter Position Name" required value={employmentDetails.positionName} onChange={handleInputChange} />
                 <label htmlFor="salary" className="homepage-label">Salary<span className='hr-form-span'> *</span></label>
                 <input type="number" id="salary" name="salary" className="homepage-input" placeholder="Enter Salary" required value={employmentDetails.salary} onChange={handleInputChange} />
-                <label htmlFor="commission" className="homepage-label">Commission<span className='hr-form-span'> *</span></label>
-                <input type="number" id="commission" name="commission" className="homepage-input" placeholder="Enter Commission" required value={employmentDetails.commission} onChange={handleInputChange} />
+                <label htmlFor="commissionReceived" className="homepage-label">Commission<span className='hr-form-span'> *</span></label>
+                <input type="number" id="commissionReceived" name="commissionReceived" className="homepage-input" placeholder="Enter Commission" required value={employmentDetails.commissionReceived} onChange={handleInputChange} />
+                <label htmlFor="commissionPaid" className="homepage-label">Commission Paid<span className='hr-form-span'> *</span></label>
+                <input type="number" id="commissionPaid" name="commissionPaid" className="homepage-input" placeholder="Enter Commission Paid" required value={employmentDetails.commissionPaid} onChange={handleInputChange} />
                 <div className='achieve-button-con' style={{marginTop: '0px'}}>
                     <button className='job-details-upload-candidate-button' onClick={submitEmploymentDetails}>Submit</button>
                     <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={() => setShowTenureApprovedPopUp(false)} disabled={loading}>Cancel</button>

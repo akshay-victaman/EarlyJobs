@@ -198,7 +198,8 @@ const getJoinedCandidatesForCompany = async (companyId, fromDate, toDate, jobId,
                 offered_date, 
                 verification_status,
                 tenure_status,
-                is_tenure_approved
+                is_tenure_approved,
+                tenure_in_days
             FROM companies 
             INNER JOIN jobs ON companies.id = jobs.company_id
             INNER JOIN applications ON jobs.id = applications.job_id
@@ -244,6 +245,7 @@ const getJoinedCandidatesForCompanyForExcel = async (companyId, fromDate, toDate
                 candidates.email, 
                 candidates.phone, 
                 candidates.current_location,
+                candidates.date_of_birth,
                 jobs.area as job_area, 
                 jobs.city as job_city, 
                 interview_date, 

@@ -1677,8 +1677,8 @@ const getEmploymentDetails = async (applicationId) => {
 }
 
 const addEmploymentDetails = async (employmentDetails) => {
-    const { applicationId, employeeId, positionName, salary, commission } = employmentDetails
-    const query = 'INSERT INTO tenure_approved (id, application_id, employee_id, position_name, salary, commission) VALUES (?, ?, ?, ?, ?, ?)';
+    const { applicationId, employeeId, positionName, salary, commissionReceived, commissionPaid } = employmentDetails
+    const query = 'INSERT INTO tenure_approved (id, application_id, employee_id, position_name, salary, commission_received, commission_paid) VALUES (?, ?, ?, ?, ?, ?, ?)';
     try {
         const employmentDetails = await getEmploymentDetails(applicationId);
         if(employmentDetails.length > 0) {
@@ -1687,7 +1687,7 @@ const addEmploymentDetails = async (employmentDetails) => {
             throw error;
         }
         const id = uuidv4();
-        const result = await db.query(query, [id, applicationId, employeeId, positionName, salary, commission]);
+        const result = await db.query(query, [id, applicationId, employeeId, positionName, salary, commissionReceived, commissionPaid]);
         if (result[0].affectedRows > 0) {
             return {success: 'Candidate employment details updated successfully'};
         } else {
