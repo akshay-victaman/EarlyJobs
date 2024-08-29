@@ -162,22 +162,31 @@ const getPublicApplications = async (jobId, email, search, createdTo, createdFro
     const startIndex = (page - 1) * pageSize;
     const query = `
         SELECT public_applications.*, company_name, title FROM public_applications INNER JOIN jobs ON public_applications.job_id = jobs.id
-        WHERE DATE(public_applications.created_at) >= ? 
-        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)
+        WHERE 
+        ${search === "" ?
+        `DATE(public_applications.created_at) >= ? 
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
         AND hm_emails LIKE ?
         ${jobId ? 'AND job_id = ?' : ''}
         ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
         order by created_at desc Limit ? offset ?;`;
     const countQuery = `
         SELECT count(*) as count FROM public_applications INNER JOIN jobs ON public_applications.job_id = jobs.id
-        WHERE DATE(public_applications.created_at) >= ?
-        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)
+        WHERE 
+        ${search === "" ?
+        `DATE(public_applications.created_at) >= ?
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
         AND hm_emails LIKE ?
         ${jobId ? 'AND job_id = ?' : ''}
         ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ""}
         `;
     try {
-        let params = [createdFrom, createdTo, `%${email}%`];
+        let params = [`%${email}%`];
+        if (search === "") {
+            params.splice(0, 0, createdFrom, createdTo);
+        }
         if(jobId) {
             params.push(jobId);
         }
@@ -189,7 +198,10 @@ const getPublicApplications = async (jobId, email, search, createdTo, createdFro
         params.push(pageSize);
         params.push(startIndex);
         const result = await db.query(query, params);
-        let countParams = [createdFrom, createdTo, `%${email}%`];
+        let countParams = [`%${email}%`];
+        if (search === "") {
+            countParams.splice(0, 0, createdFrom, createdTo);
+        }
         if(jobId) {
             countParams.push(jobId);
         }
@@ -209,14 +221,20 @@ const getPublicApplications = async (jobId, email, search, createdTo, createdFro
 const getPublicApplicationsForExcel = async (jobId, email, search, createdTo, createdFrom) => {
     const query = `
         SELECT public_applications.*, company_name, title FROM public_applications INNER JOIN jobs ON public_applications.job_id = jobs.id
-        WHERE DATE(public_applications.created_at) >= ? 
-        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)
+        WHERE 
+        ${search === "" ?
+        `DATE(public_applications.created_at) >= ? 
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
         AND hm_emails LIKE ?
         ${jobId ? 'AND job_id = ?' : ''}
         ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
         order by created_at desc;`;
     try {
-        let params = [createdFrom, createdTo, `%${email}%`];
+        let params = [`%${email}%`];
+        if (search === "") {
+            params.splice(0, 0, createdFrom, createdTo);
+        }
         if(jobId) {
             params.push(jobId);
         }
