@@ -201,7 +201,7 @@ const viewCandidateApplications = async (id) => {
     try {
         const query = `
             SELECT 
-                applications.*, jobs.title, jobs.company_name, jobs.city, jobs.area, candidates.name
+                applications.*, jobs.title, jobs.company_name, jobs.city, jobs.area, candidates.name, jobs.tenure_in_days
             FROM applications 
             INNER JOIN jobs ON applications.job_id = jobs.id
             INNER JOIN candidates ON applications.candidate_id = candidates.id
