@@ -5,6 +5,7 @@ import { Oval, ThreeCircles } from 'react-loader-spinner';
 import Cookies from 'js-cookie'
 import { format } from 'date-fns';
 import { categoryOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants';
+import { toast } from 'react-toastify';
 
 let languageOptions = [
     { value: 'English', label: 'English' },
@@ -267,15 +268,19 @@ export const EditCandidateDetails = ({setShowEditCandidatePopup, candidate, jobs
             if(response.ok === true) {
                 if(data.error) {
                     setError(data.error)
+                    toast.error(data.error)
                 } else {
+                    toast.success('Candidate details updated successfully')
                     setShowEditCandidatePopup(false)
                 }
             } else {
                 setError(data.error)
+                toast.error(data.error)
             }
         } catch (error) {
             console.log(error)
             setError(error.message)
+            toast.error(error.message)
         }
         setLoading(false)
     }

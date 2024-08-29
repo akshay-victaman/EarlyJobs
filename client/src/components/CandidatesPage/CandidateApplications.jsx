@@ -118,7 +118,7 @@ export const CandidateApplications = ({onShowCandidateApplications, candidateId}
                                 {eachItem.offeredDate ? eachItem.offeredDate : "--"}
                                 </td>
                                 <td data-cell='Tenure(Days Left/Status/Approve)' className="users-table-data">
-                                {eachItem.dayCount > 0 ? eachItem.dayCount : "Expired"}
+                                {eachItem.dayCount === null ? "--" : eachItem.dayCount > 0 ? eachItem.dayCount : "Expired"}
                                 {eachItem.tenureStatus !== null && " / " + eachItem.tenureStatus}
                                 {eachItem.isTenureApproved !== null && " / " + eachItem.isTenureApproved}
                                 </td>
