@@ -2,16 +2,16 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
-export const TenureApprovedPopUp = ({applicationId, setShowTenureApprovedPopUp}) => {
+export const EditTenureApprovedPopUp = ({candidateItem, setShowEditTenureApprovedPopUp, candidateList, setCandidateList}) => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [employmentDetails, setEmploymentDetails] = useState({
-        employeeId: "",
-        positionName: "",
-        salary: "",
-        commissionReceived: "",
-        commissionPaid: ""
+        employeeId: candidateItem.employeeId,
+        positionName: candidateItem.positionName,
+        salary: candidateItem.salary,
+        commissionReceived: candidateItem.commissionReceived,
+        commissionPaid: candidateItem.commissionPaid
     });
 
     const handleInputChange = (e) => {
@@ -22,7 +22,7 @@ export const TenureApprovedPopUp = ({applicationId, setShowTenureApprovedPopUp})
     }
 
     const submitEmploymentDetails = async () => {
-        if(employmentDetails.employeeId==="" || employmentDetails.positionName==="" || employmentDetails.salary==="" || employmentDetails.commissionReceived==="" || employmentDetails.commissionPaid==="") {
+        if(employmentDetails.employeeId==="" || employmentDetails.positionName==="" || employmentDetails.salary==="" || employmentDetails.commissionReceived==="" || employmentDetails.commissionPaid==="" || employmentDetails.commissionPaid===null) {
             setError("Please fill all the fields");
             return;
         }
@@ -35,29 +35,36 @@ export const TenureApprovedPopUp = ({applicationId, setShowTenureApprovedPopUp})
         try {
             const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate/employment-details`;
             const options = {
-                method: "POST",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${Cookies.get("jwt_token")}`
                 },
                 body: JSON.stringify({
                     ...employmentDetails,
-                    applicationId
+                    tenureId: candidateItem.tenureId
                 })
             }
             const response = await fetch(url, options);
             const data = await response.json();
             console.log(data);
             if(response.ok === true) {
-                toast.success("Employment details submitted successfully");
-                setEmploymentDetails({
-                    employeeId: "",
-                    positionName: "",
-                    salary: "",
-                    commissionReceived: "",
-                    commissionPaid: ""
+                const updatedCandidateList = candidateList.map((candidate) => {
+                    if(candidate.tenureId === candidateItem.tenureId) {
+                        return {
+                            ...candidate,
+                            employeeId: employmentDetails.employeeId,
+                            positionName: employmentDetails.positionName,
+                            salary: employmentDetails.salary,
+                            commissionReceived: employmentDetails.commissionReceived,
+                            commissionPaid: employmentDetails.commissionPaid
+                        }
+                    }
+                    return candidate;
                 });
-                setShowTenureApprovedPopUp(false);
+                setCandidateList(updatedCandidateList);
+                toast.success(data.success);
+                setShowEditTenureApprovedPopUp(false);
             } else {
                 setError(data.error);
                 toast.error(data.error);
@@ -72,7 +79,7 @@ export const TenureApprovedPopUp = ({applicationId, setShowTenureApprovedPopUp})
 
     return (
         <div className="view-candidate-details-modal">
-            <div className='view-candidate-details-modal-overlay' onClick={() => setShowTenureApprovedPopUp(false)}></div>
+            <div className='view-candidate-details-modal-overlay' onClick={() => setShowEditTenureApprovedPopUp(false)}></div>
             <div className="candidate-details-modal-con">
                 <h1 className="candidate-details-heading">Employment Details</h1>
                 <label htmlFor="employeeId" className="homepage-label">Employee Id<span className='hr-form-span'> *</span></label>
@@ -87,10 +94,10 @@ export const TenureApprovedPopUp = ({applicationId, setShowTenureApprovedPopUp})
                 <input type="number" id="commissionPaid" name="commissionPaid" className="homepage-input" placeholder="Enter Commission Paid" required value={employmentDetails.commissionPaid} onChange={handleInputChange} />
                 <div className='achieve-button-con' style={{marginTop: '0px'}}>
                     <button className='job-details-upload-candidate-button' onClick={submitEmploymentDetails}>Submit</button>
-                    <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={() => setShowTenureApprovedPopUp(false)} disabled={loading}>Cancel</button>
+                    <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={() => setShowEditTenureApprovedPopUp(false)} disabled={loading}>Cancel</button>
                 </div>
                 {error!=="" && <p className="hr-main-error">*{error}</p>}
-                <button className="candidate-details-close-btn" onClick={() => setShowTenureApprovedPopUp(false)} disabled={loading}>
+                <button className="candidate-details-close-btn" onClick={() => setShowEditTenureApprovedPopUp(false)} disabled={loading}>
                     &times;
                 </button>
             </div>
