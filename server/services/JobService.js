@@ -1782,6 +1782,164 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureSta
     }
 }
 
+const getTenureApprovedCandidatesCount = async (claimStatus, search, fromDate, toDate) => {
+    const query = `
+    SELECT COUNT(*) as count
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN tenure_approved ON
+    tenure_approved.application_id = applications.id
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.is_tenure_approved = 'Approved'
+    ${ search === "" ?
+    `AND DATE(applications.offered_date) >= ? 
+    AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
+    : ""}
+    ${search !== 'undefined' && search !== ""
+    ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
+    : ""}
+    ${claimStatus !== -1 ? `AND tenure_approved.is_claimed = '${claimStatus}' ` : ""}
+    `;
+    const params = [];
+    if (search === "") {
+        params.push(fromDate, toDate);
+    }
+    try {
+        const result = await db.query(query, params);
+        return result[0][0].count;
+    } catch (error) {
+        console.log(error);
+        return 0;
+    }
+}
+
+const getTenureApprovedCandidates = async (claimStatus, search, fromDate, toDate, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const query = `
+    SELECT 
+        applications.id as application_id,
+        applications.job_id as job_id,
+        candidates.id as candidate_id,
+        users.username as hr_name,
+        candidates.name as name,
+        offered_date,
+        applied_by,
+        company_name,
+        city,
+        area,
+        tenure_approved.id as tenure_id,
+        tenure_approved.employee_id,
+        tenure_approved.position_name,
+        tenure_approved.salary,
+        tenure_approved.commission_received,
+        tenure_approved.commission_paid,
+        tenure_approved.is_claimed
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN tenure_approved ON
+    tenure_approved.application_id = applications.id
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.is_tenure_approved = 'Approved'
+    ${ search === "" ?
+    `AND DATE(applications.offered_date) >= ? 
+    AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
+    : ""}
+    ${search !== 'undefined' && search !== ""
+    ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
+    : ""}
+    ${claimStatus !== -1 ? `AND tenure_approved.is_claimed = '${claimStatus}' ` : ""}
+    order by applications.offered_date desc
+    Limit ? offset ?`;
+    const params = [pageSize, startIndex];
+    if (search === "") {
+        params.splice(0, 0, fromDate, toDate);
+    }
+    try {
+        const result = await db.query(query, params);
+        const count = await getTenureApprovedCandidatesCount(claimStatus, search, fromDate, toDate);
+        return {candidates: result[0], count};
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+const getTenureApprovedCandidatesForExcel = async (claimStatus, search, fromDate, toDate) => {
+    const query = `
+    SELECT 
+        applications.id as application_id,
+        applications.job_id as job_id,
+        candidates.id as candidate_id,
+        users.username as hr_name,
+        candidates.name as name,
+        offered_date,
+        applied_by,
+        company_name,
+        city,
+        area,
+        tenure_approved.id as tenure_id,
+        tenure_approved.employee_id,
+        tenure_approved.position_name,
+        tenure_approved.salary,
+        tenure_approved.commission_received,
+        tenure_approved.commission_paid,
+        tenure_approved.is_claimed
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN tenure_approved ON
+    tenure_approved.application_id = applications.id
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.is_tenure_approved = 'Approved'
+    ${ search === "" ?
+    `AND DATE(applications.offered_date) >= ? 
+    AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
+    : ""}
+    ${search !== 'undefined' && search !== ""
+    ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
+    : ""}
+    ${claimStatus !== -1 ? `AND tenure_approved.is_claimed = '${claimStatus}' ` : ""}
+    order by applications.offered_date desc`;
+    const params = [];
+    if (search === "") {
+        params.push(fromDate, toDate);
+    }
+    try {
+        const result = await db.query(query, params);
+        return result[0];
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+const updateClaimStatus = async (tenureId, claimStatus) => {
+    const query = 'UPDATE tenure_approved SET is_claimed = ? WHERE id = ?';
+    try {
+        const result = await db.query(query, [claimStatus, tenureId]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Claim status updated successfully'};
+        } else {
+            return {error: 'Claim status updation failed'};
+        }
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
 const updateTenureStatus = async (candidate) => {
     const {applicationId, tenureStatus} = candidate;
     const query = 'UPDATE applications SET tenure_status = ? WHERE id = ?';
@@ -1835,6 +1993,22 @@ const addEmploymentDetails = async (employmentDetails) => {
         }
         const id = uuidv4();
         const result = await db.query(query, [id, applicationId, employeeId, positionName, salary, commissionReceived, commissionPaid]);
+        if (result[0].affectedRows > 0) {
+            return {success: 'Candidate employment details updated successfully'};
+        } else {
+            return {error: 'Candidate employment details updation failed'};
+        }
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+}
+
+const editEmploymentDetails = async (employmentDetails) => {
+    const { tenureId, employeeId, positionName, salary, commissionReceived, commissionPaid } = employmentDetails
+    const query = 'UPDATE tenure_approved SET employee_id = ?, position_name = ?, salary = ?, commission_received = ?, commission_paid = ? WHERE id = ?';
+    try {
+        const result = await db.query(query, [employeeId, positionName, salary, commissionReceived, commissionPaid, tenureId]);
         if (result[0].affectedRows > 0) {
             return {success: 'Candidate employment details updated successfully'};
         } else {
@@ -1934,9 +2108,13 @@ module.exports = {
     getOfferStatusCandidatesForExcel,
     getOfferStatusCandidatesForBDE,
     getOfferStatusCandidatesForBDEExcel,
+    getTenureApprovedCandidates,
+    getTenureApprovedCandidatesForExcel,
+    updateClaimStatus,
     updateTenureStatus,
     updateTenureApprovalStatus,
     addEmploymentDetails,
+    editEmploymentDetails,
     deleteEmploymentDetails,
     updateVerificationStatus,
     getJoinedCandidateCompanyDetails

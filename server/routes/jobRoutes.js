@@ -36,9 +36,13 @@ router.get('/candidate', authenticateToken, checkUserBlockStatus, jobController.
 router.get('/candidates/excel', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForExcel);
 router.get('/bde/candidate', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForBDE);
 router.get('/bde/candidates/excel', authenticateToken, checkUserBlockStatus, jobController.getOfferStatusCandidatesForBDEExcel);
+router.get('/candidates/tenure-approved', authenticateToken, checkUserBlockStatus, jobController.getTenureApprovedCandidates);
+router.get('/candidates/tenure-approved/excel', authenticateToken, checkUserBlockStatus, jobController.getTenureApprovedCandidatesForExcel);
+router.put('/candidate/claim-status/update', authenticateToken, checkUserBlockStatus, jobController.updateClaimStatus);
 router.put('/candidate/tenure-status/update', authenticateToken, checkUserBlockStatus, jobController.updateTenureStatus);
 router.put('/candidate/tenure-approval-status/update', authenticateToken, checkUserBlockStatus, jobController.updateTenureApprovalStatus);
 router.post('/candidate/employment-details', authenticateToken, checkUserBlockStatus, jobController.addEmploymentDetails);
+router.put('/candidate/employment-details', authenticateToken, checkUserBlockStatus, jobController.editEmploymentDetails);
 router.delete('/candidate/employment-details/:applicationId', authenticateToken, checkUserBlockStatus, jobController.deleteEmploymentDetails);
 router.put('/candidate/verification-status/update', authenticateToken, checkUserBlockStatus, jobController.updateVerificationStatus);
 router.get('/candidate/joined-company-details/:id', authenticateToken, checkUserBlockStatus, jobController.getJoinedCandidateCompanyDetails);

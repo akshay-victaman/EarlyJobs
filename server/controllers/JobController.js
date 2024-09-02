@@ -402,6 +402,47 @@ const getOfferStatusCandidatesForBDEExcel = async (req, res) => {
     }
 }
 
+const getTenureApprovedCandidates = async (req, res) => {
+    const claimStatus = req.query.claimStatus;
+    const parsedClaimStatus = claimStatus === '0' ? 0 : claimStatus === '1' ? 1 : -1;
+    const search = req.query.search;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
+    const page = parseInt(req.query.page) || 1;
+
+    try {
+      const candidates = await jobService.getTenureApprovedCandidates(parsedClaimStatus, search, fromDate, toDate, page);
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getTenureApprovedCandidatesForExcel = async (req, res) => {
+    const claimStatus = parseInt(req.query.claimStatus) || -1;
+    const search = req.query.search;
+    const fromDate = req.query.fromDate;
+    const toDate = req.query.toDate;
+
+    try {
+      const candidates = await jobService.getTenureApprovedCandidatesForExcel(claimStatus, search, fromDate, toDate);
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const updateClaimStatus = async (req, res) => {
+    const tenureId = req.body.tenureId;
+    const claimStatus = parseInt(req.body.claimStatus);
+    try {
+      const updatedCandidate = await jobService.updateClaimStatus(tenureId, claimStatus);
+      res.json(updatedCandidate);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const updateTenureStatus = async (req, res) => {
     const candidate = req.body;
     try {
@@ -427,6 +468,16 @@ const addEmploymentDetails = async (req, res) => {
     try {
       const newEmploymentDetails = await jobService.addEmploymentDetails(employmentDetails);
       res.json(newEmploymentDetails);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const editEmploymentDetails = async (req, res) => {
+    const employmentDetails = req.body;
+    try {
+      const updatedEmploymentDetails = await jobService.editEmploymentDetails(employmentDetails);
+      res.json(updatedEmploymentDetails);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -495,9 +546,13 @@ module.exports = {
     getOfferStatusCandidatesForExcel,
     getOfferStatusCandidatesForBDE,
     getOfferStatusCandidatesForBDEExcel,
+    getTenureApprovedCandidates,
+    getTenureApprovedCandidatesForExcel,
+    updateClaimStatus,
     updateTenureStatus,
     updateTenureApprovalStatus,
     addEmploymentDetails,
+    editEmploymentDetails,
     deleteEmploymentDetails,
     updateVerificationStatus,
     getJoinedCandidateCompanyDetails

@@ -206,6 +206,7 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
                     <button type="button" className={`profile-button ${showCandidateForm === 5 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(5)}>Selected Candidates</button>
                     <button type="button" className={`profile-button ${showCandidateForm === 6 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(6)}>Joined Candidates</button>
                     <button type="button" className={`profile-button ${showCandidateForm === 11 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(11)}>Rejected Candidates</button>
+                    <button type="button" className={`profile-button ${showCandidateForm === 15 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(15)}>Payout</button>
                 </div>
             }
         </div>
