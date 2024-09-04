@@ -8,7 +8,7 @@ import Cookies from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import EditorComponent from '../TextEditorQuill';
-import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants'
+import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions, currencyOptions } from '../../utils/constants'
 
 let languageOptions = [
     { value: 'English', label: 'English' },
@@ -125,6 +125,8 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         city: jobDetails.city,
         pincode: jobDetails.pincode,
         locationLink: jobDetails.locationLink,
+        salaryMode: jobDetails.salaryMode,
+        currency: jobDetails.currency,
         salaryMin: jobDetails.minSalary,
         salaryMax: jobDetails.maxSalary,
         skills: jobDetails.skills.split(',').map(skill => ({id: uuidv4(), value: skill})),
@@ -253,6 +255,11 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
     const handleCompanyInputChange = (e) => {
         const {name, value} = e.target
         setCompanyDetails({...companyDetails, [name]: value})
+    }
+
+    const handleCurrencyChange = (e) => {
+        const {value} = e
+        setEditJob({...editJob, currency: value})
     }
 
     const handleEditorChange = (content) => {
@@ -393,6 +400,8 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             pincode: editJob.pincode,
             location: `${editJob.streetAddress}, ${editJob.area}, ${editJob.city}, ${editJob.pincode}`,
             locationLink: editJob.locationLink,
+            currency: editJob.currency,
+            salaryMode: editJob.salaryMode,
             minSalary: editJob.salaryMin,
             maxSalary: editJob.salaryMax,
             skills: editJob.skills.map(skill => skill.value).join(', '),
@@ -430,15 +439,15 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
         const data = await response.json()
         if(response.ok === true) {
             if(data.error) {
-                alert(data.error)
+                toast.error(data.error)
             } else {
-                alert(data.success)
+                toast.success(data.success)
                 setIsEditJob(false)
                 updateJobDetails(newJob)
             }
             setLoading(false)
         } else {
-            alert(data.error)
+            toast.error(data.error)
             setLoading(false)
         }
     }
@@ -714,10 +723,31 @@ const EditJobDetails = ({jobDetails, setIsEditJob, updateJobDetails}) => {
             <input className='bde-form-input' id='location-link'  onChange={handleInputChange} value={editJob.locationLink} name='locationLink' type='text' placeholder='Enter Location Link' />
             {locationLinkError && <p className='hr-error'>*Please enter location link</p>}
 
-            <label className='bde-form-label' htmlFor='salary'>Salary(in LPA)<span className='hr-form-span'> *</span></label>
+            <label className='bde-form-label' htmlFor='salary'>Salary<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>
-                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={editJob.salaryMin} name='salaryMin' type='number' placeholder='Minimum - INR' />
-                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={editJob.salaryMax} name='salaryMax' type='number' placeholder='Maximum - INR' />
+                <div className='emp-work-sub-con' style={{marginTop: '5px'}}>
+                    <Select
+                        options={currencyOptions}
+                        defaultValue={{ value: editJob.currency, label: currencyOptions.find(option => option.value === editJob.currency)?.label }}
+                        isSearchable={true}
+                        onChange={handleCurrencyChange}
+                        styles={customStyles}
+                        name='currency'
+                    />
+                </div>
+                <div className='emp-work-sub-con'>
+                    <select className='bde-form-input emp-work-input' id='salaryMode'  onChange={handleInputChange} value={editJob.salaryMode} name='salaryMode'>
+                        <option value='Monthly'>Monthly</option>
+                        <option value='Yearly'>Yearly</option>
+                        <option value='Hourly'>Hourly</option>
+                        <option value='Daily'>Daily</option>
+                        <option value='Weekly'>Weekly</option>
+                    </select>
+                </div>
+            </div>
+            <div className='salary-container'>
+                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={editJob.salaryMin} name='salaryMin' type='number' placeholder={`Minimum - ${editJob.currency?.split(',')[1]}`} />
+                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={editJob.salaryMax} name='salaryMax' type='number' placeholder={`Maximum - ${editJob.currency?.split(',')[1]}`} />
             </div>
             {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary</p>}
 

@@ -9,7 +9,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import './style.css';
 import app from '../../firebase';
 import EditorComponent from '../TextEditorQuill';
-import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants'
+import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions, currencyOptions } from '../../utils/constants'
 import FormsFaqs from '../FormsFaqs';
 
 let languageOptions = [
@@ -131,6 +131,8 @@ const AddJobVacanciesPage = () => {
         city: '',
         pincode: '',
         locationLink: '',
+        salaryMode: 'Monthly',
+        currency: '₹,INR',
         salaryMin: '',
         salaryMax: '',
         skills: [],
@@ -168,6 +170,11 @@ const AddJobVacanciesPage = () => {
     const handleInputChange = (e) => {
         const {name, value} = e.target;
         setAddJobVacancies({ ...addJobVacancies, [name]: value})
+    }
+
+    const handleCurrencyChange = (e) => {
+        const {value} = e
+        setAddJobVacancies({...addJobVacancies, currency: value})
     }
 
     const handleEditorChange = (content) => {
@@ -302,6 +309,8 @@ const AddJobVacanciesPage = () => {
                 city: '',
                 pincode: '',
                 locationLink: '',
+                currency: '₹,INR',
+                salaryMode: 'Monthly',
                 salaryMin: '',
                 salaryMax: '',
                 skills: [],
@@ -426,6 +435,8 @@ const AddJobVacanciesPage = () => {
             pincode: addJobVacancies.pincode,
             location: `${addJobVacancies.streetAddress}, ${addJobVacancies.area}, ${addJobVacancies.city}, ${addJobVacancies.pincode}`,
             locationLink: addJobVacancies.locationLink,
+            currency: addJobVacancies.currency,
+            salaryMode: addJobVacancies.salaryMode,
             salaryMin: addJobVacancies.salaryMin,
             salaryMax: addJobVacancies.salaryMax,
             skills: addJobVacancies.skills,
@@ -451,6 +462,8 @@ const AddJobVacanciesPage = () => {
         // return
         onSubmitToFirestore(newJob)
     }
+
+    const defaultSelectedValue = currencyOptions[0].value;
 
     const renderJobForm = () => (
         <form className='bde-job-form add-job-vacancies-form-con' onSubmit={handlePostJob}>
@@ -520,10 +533,31 @@ const AddJobVacanciesPage = () => {
             <input className='bde-form-input' id='location-link'  onChange={handleInputChange} value={addJobVacancies.locationLink} name='locationLink' type='text' placeholder='Enter Location Link' />
             {locationLinkError && <p className='hr-error'>*Please enter location link, must starts with http:// or https://</p>}
 
-            <label className='bde-form-label' htmlFor='salary'>Salary(in LPA)<span className='hr-form-span'> *</span></label>
+            <label className='bde-form-label' htmlFor='salary'>Salary<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>
-                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMin} name='salaryMin' type='number' placeholder='Minimum - INR' />
-                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMax} name='salaryMax' type='number' placeholder='Maximum - INR' />
+                <div className='emp-work-sub-con' style={{marginTop: '5px'}}>
+                    <Select
+                        options={currencyOptions}
+                        defaultValue={{ value: defaultSelectedValue, label: currencyOptions[0].label }}
+                        isSearchable={true}
+                        onChange={handleCurrencyChange}
+                        styles={customStyles}
+                        name='currency'
+                    />
+                </div>
+                <div className='emp-work-sub-con'>
+                    <select className='bde-form-input emp-work-input' id='salaryMode'  onChange={handleInputChange} value={addJobVacancies.salaryMode} name='salaryMode'>
+                        <option value='Monthly'>Monthly</option>
+                        <option value='Yearly'>Yearly</option>
+                        <option value='Hourly'>Hourly</option>
+                        <option value='Daily'>Daily</option>
+                        <option value='Weekly'>Weekly</option>
+                    </select>
+                </div>
+            </div>
+            <div className='salary-container'>
+                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMin} name='salaryMin' type='number' placeholder={`Minimum - ${addJobVacancies.currency.split(',')[1]}`} />
+                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={addJobVacancies.salaryMax} name='salaryMax' type='number' placeholder={`Maximum - ${addJobVacancies.currency.split(',')[1]}`} />
             </div>
             {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary, min &lt;= max</p>}
 
