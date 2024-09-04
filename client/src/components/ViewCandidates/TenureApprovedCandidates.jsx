@@ -13,6 +13,10 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
 
     const [candidateList, setCandidateList] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
+    const [totalReceived, setTotalReceived] = useState(0);
+    const [totalPaid, setTotalPaid] = useState(0);
+    const [claimedCount, setClaimedCount] = useState(0);
+    const [notClaimedCount, setNotClaimedCount] = useState(0);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [searchInput, setSearchInput] = useState('');
@@ -70,6 +74,10 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
                 }));
                 setCandidateList(formattedData);
                 setTotalItems(data.count);
+                setTotalReceived(data.total_received);
+                setTotalPaid(data.total_paid);
+                setClaimedCount(data.claimed_count);
+                setNotClaimedCount(data.not_claimed_count);
             }
         } catch (error) {
             console.log(error);
@@ -312,6 +320,22 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
                     <span className="rows-count-text">Total Results:</span>
                     <span className="rows-count-number">`{totalItems}`</span>
                 </div>
+                <div className="rows-count-con">
+                    <span className="rows-count-text">Claimed:</span>
+                    <span className="rows-count-number">`{claimedCount}`</span>
+                </div>
+                <div className="rows-count-con">
+                    <span className="rows-count-text">Not Claimed:</span>
+                    <span className="rows-count-number">`{notClaimedCount}`</span>
+                </div>
+                <div className="rows-count-con">
+                    <span className="rows-count-text">Total Received:</span>
+                    <span className="rows-count-number">`{totalReceived}`</span>
+                </div>
+                <div className="rows-count-con">
+                    <span className="rows-count-text">Total Paid:</span>
+                    <span className="rows-count-number">`{totalPaid}`</span>
+                </div>
             </div>
 
 
@@ -324,7 +348,8 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
                         <th className="job-details-candidates-table-heading-cell">Company Location</th>
                         <th className="job-details-candidates-table-heading-cell">Position</th>
                         <th className="job-details-candidates-table-heading-cell">Salary</th>
-                        <th className="job-details-candidates-table-heading-cell">Commission (Received / Paid)</th>
+                        <th className="job-details-candidates-table-heading-cell">Commission Received</th>
+                        <th className="job-details-candidates-table-heading-cell">Commission Paid</th>
                         <th className="job-details-candidates-table-heading-cell">Joining Date</th>
                         <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>
                         <th className="job-details-candidates-table-heading-cell">Is Claimed</th>
@@ -343,7 +368,8 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
                                 <td className="job-details-candidates-table-cell">{eachItem.area}, {eachItem.city}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.positionName}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.salary}</td>
-                                <td className="job-details-candidates-table-cell">{eachItem.commissionReceived} / {eachItem.commissionPaid}</td>
+                                <td className="job-details-candidates-table-cell">{eachItem.commissionReceived}</td>
+                                <td className="job-details-candidates-table-cell">{eachItem.commissionPaid}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.joiningDate}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.appliedBy}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.isClaimed === 1 ? "Claimed" : "Not Claimed"}</td>
