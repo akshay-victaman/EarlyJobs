@@ -1792,6 +1792,43 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureSta
     }
 }
 
+const getTenureApprovedCandidatesTotalReceivedPaidClaimedNotClaimedCount = async (search, fromDate, toDate) => {
+    const query = `
+    SELECT 
+        SUM(commission_received) AS total_received,
+        SUM(commission_paid) AS total_paid,
+        SUM(CASE WHEN is_claimed = 1 THEN 1 ELSE 0 END) AS claimed_count,
+        SUM(CASE WHEN is_claimed = 0 THEN 1 ELSE 0 END) AS not_claimed_count
+    FROM candidates 
+    INNER JOIN applications ON 
+    candidates.id = applications.candidate_id 
+    INNER JOIN tenure_approved ON
+    tenure_approved.application_id = applications.id
+    INNER JOIN users ON 
+    users.email = applications.applied_by 
+    INNER JOIN jobs ON 
+    jobs.id = applications.job_id 
+    WHERE applications.is_tenure_approved = 'Approved'
+    ${ search === "" ?
+    `AND DATE(applications.offered_date) >= ? 
+    AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
+    : ""}
+    ${search !== 'undefined' && search !== ""
+    ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
+    : ""}`;
+    const params = [];
+    if (search === "") {
+        params.push(fromDate, toDate);
+    }
+    try {
+        const result = await db.query(query, params);
+        return result[0][0];
+    } catch (error) {
+        console.log(error);
+        return {};
+    }
+}
+
 const getTenureApprovedCandidatesCount = async (claimStatus, search, fromDate, toDate) => {
     const query = `
     SELECT COUNT(*) as count
@@ -1876,7 +1913,8 @@ const getTenureApprovedCandidates = async (claimStatus, search, fromDate, toDate
     try {
         const result = await db.query(query, params);
         const count = await getTenureApprovedCandidatesCount(claimStatus, search, fromDate, toDate);
-        return {candidates: result[0], count};
+        const {total_received, total_paid, claimed_count, not_claimed_count} = await getTenureApprovedCandidatesTotalReceivedPaidClaimedNotClaimedCount(search, fromDate, toDate);
+        return {candidates: result[0], count, total_received, total_paid, claimed_count, not_claimed_count};
     } catch (error) {
         console.log(error)
         throw error;
