@@ -119,6 +119,8 @@ const JobDetailsPage = () => {
           compname: data.company_name,
           companyLogoUrl: data.company_logo_url,
           companyId: data.company_id,
+          currency: data.currency,
+          salaryMode: data.salary_mode,
           minSalary: data.min_salary,
           maxSalary: data.max_salary,
           noOfOpenings: data.no_of_openings,
@@ -324,6 +326,8 @@ const JobDetailsPage = () => {
             description,
             location,
             locationLink,
+            currency,
+            salaryMode,
             minSalary,
             maxSalary,
             skills,
@@ -355,6 +359,8 @@ const JobDetailsPage = () => {
         compname: companyName,
         companyLogoUrl: companyLogoUrl,
         companyId: companyId,
+        currency: currency,
+        salaryMode: salaryMode,
         minSalary: minSalary,
         maxSalary: maxSalary,
         noOfOpenings: noOfOpenings,
@@ -642,6 +648,8 @@ const JobDetailsPage = () => {
       commissionType,
       commissionFee,
       tenureInDays,
+      currency,
+      salaryMode,
       minSalary,
       maxSalary,
       noOfOpenings,
@@ -706,7 +714,7 @@ const JobDetailsPage = () => {
                 <p className="job-details-location">{employmentType}</p>
               </div>
             </div>
-            <p className="job-details-salary">{minSalary} - {maxSalary} LPA</p>
+            <p className="job-details-location" style={{fontWeight: 'bold'}}>{currency?.split(',')[0]}{minSalary} - {currency?.split(',')[0]}{maxSalary} {salaryMode}</p>
           </div>
           <hr className="line" />
           <p className="job-detials-misc"><span className='misc-head'>Status:</span> {status}</p>
@@ -721,6 +729,7 @@ const JobDetailsPage = () => {
           <p className="job-detials-misc"><span className='misc-head'>Shift Timings:</span> {shiftTimings}</p>
           <p className="job-detials-misc"><span className='misc-head'>Work Type:</span> {workType}</p>
           <p className="job-detials-misc"><span className='misc-head'>No of Openings:</span> {noOfOpenings}</p>
+          <p className='job-detials-misc'><span className='misc-head'>Salary:</span> {currency?.split(',')[0]}{minSalary} - {currency?.split(',')[0]}{maxSalary} {currency?.split(',')[1]} {salaryMode}</p>
           <p className="job-detials-misc"><span className='misc-head'>Language:</span> {jobDetails.language}</p>
           <p className="job-detials-misc"><span className='misc-head'>Skills:</span> {skills}</p>
           <p className="job-detials-misc"><span className='misc-head'>Experience:</span> {minExperience} - {maxExperience} years</p>

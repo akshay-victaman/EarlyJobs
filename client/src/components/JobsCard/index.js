@@ -17,6 +17,8 @@ const JobsCard = props => {
     companyLogoUrl,
     commissionType,
     commissionFee,
+    currency,
+    salaryMode,
     minSalary,
     maxSalary,
     employmentType,
@@ -60,7 +62,7 @@ const JobsCard = props => {
               <p className="job-location">{employmentType}</p>
             </div>
           </div>
-          <p className="job-salary">{minSalary} - {maxSalary} LPA</p>
+          <p className="job-location" style={{fontWeight: 'bold'}}>{currency?.split(',')[0]}{minSalary} - {currency?.split(',')[0]}{maxSalary} {salaryMode}</p>
         </div>
         <hr className="jobs-line" />
         { 

@@ -9,7 +9,7 @@ import { IoIosClose } from "react-icons/io";
 import { toast } from 'react-toastify';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import EditorComponent from '../TextEditorQuill';
-import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions } from '../../utils/constants'
+import { categoryOptions, workTypeOptions, shiftTypeOptions, employmentTypeOptions, currencyOptions } from '../../utils/constants'
 import './style.css';
 
 let languageOptions = [
@@ -127,6 +127,8 @@ const BDEPage = () => {
         city: '',
         pincode: '',
         locationLink: '',
+        salaryMode: 'Monthly',
+        currency: '₹,INR',
         salaryMin: '',
         salaryMax: '',
         skills: [],
@@ -238,6 +240,11 @@ const BDEPage = () => {
     const handleCompanyInputChange = (e) => {
         const {name, value} = e.target
         setCompanyDetails({...companyDetails, [name]: value})
+    }
+
+    const handleCurrencyChange = (e) => {
+        const {value} = e
+        setPostNewJob({...postNewJob, currency: value})
     }
 
     const handleEditorChange = (content) => {
@@ -383,6 +390,8 @@ const BDEPage = () => {
             city: postNewJob.city,
             pincode: postNewJob.pincode,
             locationLink: postNewJob.locationLink,
+            currency: postNewJob.currency,
+            salaryMode: postNewJob.salaryMode,
             minSalary: postNewJob.salaryMin,
             maxSalary: postNewJob.salaryMax,
             skills: postNewJob.skills.map(skill => skill.value).join(', '),
@@ -435,6 +444,8 @@ const BDEPage = () => {
                     city: '',
                     pincode: '',
                     locationLink: '',
+                    currency: '₹,INR',
+                    salaryMode: 'Monthly',
                     salaryMin: '',
                     salaryMax: '',
                     skills: [],
@@ -635,6 +646,8 @@ const BDEPage = () => {
         </div>
     )
 
+    const defaultSelectedValue = currencyOptions[0].value;
+
     const renderJobForm = () => (
         <form className='bde-job-form' onSubmit={handlePostJob}>
             <h1 className='bde-form-heading'>Post New Job</h1>
@@ -717,10 +730,31 @@ const BDEPage = () => {
             <input className='bde-form-input' id='location-link'  onChange={handleInputChange} value={postNewJob.locationLink} name='locationLink' type='text' placeholder='Enter Location Link' />
             {locationLinkError && <p className='hr-error'>*Please enter location link, must starts with http:// or https://</p>}
 
-            <label className='bde-form-label' htmlFor='salary'>Salary(in LPA)<span className='hr-form-span'> *</span></label>
+            <label className='bde-form-label' htmlFor='salary'>Salary<span className='hr-form-span'> *</span></label>
             <div className='salary-container'>
-                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={postNewJob.salaryMin} name='salaryMin' type='number' placeholder='Minimum - INR' />
-                <input className='bde-form-input salary-input' id='salary'  onChange={handleInputChange} value={postNewJob.salaryMax} name='salaryMax' type='number' placeholder='Maximum - INR' />
+                <div className='emp-work-sub-con' style={{marginTop: '5px'}}>
+                    <Select
+                        options={currencyOptions}
+                        defaultValue={{ value: defaultSelectedValue, label: currencyOptions[0].label }}
+                        isSearchable={true}
+                        onChange={handleCurrencyChange}
+                        styles={customStyles}
+                        name='currency'
+                    />
+                </div>
+                <div className='emp-work-sub-con'>
+                    <select className='bde-form-input emp-work-input' id='salaryMode'  onChange={handleInputChange} value={postNewJob.salaryMode} name='salaryMode'>
+                        <option value='Monthly'>Monthly</option>
+                        <option value='Yearly'>Yearly</option>
+                        <option value='Hourly'>Hourly</option>
+                        <option value='Daily'>Daily</option>
+                        <option value='Weekly'>Weekly</option>
+                    </select>
+                </div>
+            </div>
+            <div className='salary-container'>
+                <input className='bde-form-input salary-input' id='salary' style={{width: "10%"}} onChange={handleInputChange} value={postNewJob.salaryMin} name='salaryMin' type='number' placeholder={`Minimum - ${postNewJob.currency.split(',')[1]}`} />
+                <input className='bde-form-input salary-input' id='salary' style={{width: "40%"}} onChange={handleInputChange} value={postNewJob.salaryMax} name='salaryMax' type='number' placeholder={`Maximum - ${postNewJob.currency.split(',')[1]}`} />
             </div>
             {salaryError && <p className='hr-error'>*Please enter minimum & maximum salary, min &lt;= max</p>}
 
