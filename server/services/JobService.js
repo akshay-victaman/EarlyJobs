@@ -1797,6 +1797,7 @@ const getTenureApprovedCandidatesTotalReceivedPaidClaimedNotClaimedCount = async
     SELECT 
         SUM(commission_received) AS total_received,
         SUM(commission_paid) AS total_paid,
+        SUM(CASE WHEN is_claimed = 1 THEN commission_paid ELSE 0 END) AS total_claimed,
         SUM(CASE WHEN is_claimed = 1 THEN 1 ELSE 0 END) AS claimed_count,
         SUM(CASE WHEN is_claimed = 0 THEN 1 ELSE 0 END) AS not_claimed_count
     FROM candidates 
@@ -1913,8 +1914,8 @@ const getTenureApprovedCandidates = async (claimStatus, search, fromDate, toDate
     try {
         const result = await db.query(query, params);
         const count = await getTenureApprovedCandidatesCount(claimStatus, search, fromDate, toDate);
-        const {total_received, total_paid, claimed_count, not_claimed_count} = await getTenureApprovedCandidatesTotalReceivedPaidClaimedNotClaimedCount(search, fromDate, toDate);
-        return {candidates: result[0], count, total_received, total_paid, claimed_count, not_claimed_count};
+        const {total_received, total_paid, total_claimed, claimed_count, not_claimed_count} = await getTenureApprovedCandidatesTotalReceivedPaidClaimedNotClaimedCount(search, fromDate, toDate);
+        return {candidates: result[0], count, total_received, total_paid, total_claimed, claimed_count, not_claimed_count};
     } catch (error) {
         console.log(error)
         throw error;
