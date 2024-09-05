@@ -15,6 +15,7 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
     const [totalItems, setTotalItems] = useState(0);
     const [totalReceived, setTotalReceived] = useState(0);
     const [totalPaid, setTotalPaid] = useState(0);
+    const [totalClaimed, setTotalClaimed] = useState(0);
     const [claimedCount, setClaimedCount] = useState(0);
     const [notClaimedCount, setNotClaimedCount] = useState(0);
     const [page, setPage] = useState(1);
@@ -74,10 +75,11 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
                 }));
                 setCandidateList(formattedData);
                 setTotalItems(data.count);
-                setTotalReceived(data.total_received);
-                setTotalPaid(data.total_paid);
-                setClaimedCount(data.claimed_count);
-                setNotClaimedCount(data.not_claimed_count);
+                setTotalReceived(data.total_received || 0);
+                setTotalPaid(data.total_paid || 0);
+                setTotalClaimed(data.total_claimed || 0);
+                setClaimedCount(data.claimed_count || 0);
+                setNotClaimedCount(data.not_claimed_count || 0);
             }
         } catch (error) {
             console.log(error);
@@ -333,8 +335,12 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
                     <span className="rows-count-number">`{totalReceived}`</span>
                 </div>
                 <div className="rows-count-con">
-                    <span className="rows-count-text">Total Paid:</span>
+                    <span className="rows-count-text">Total Payable:</span>
                     <span className="rows-count-number">`{totalPaid}`</span>
+                </div>
+                <div className="rows-count-con">
+                    <span className="rows-count-text">Total Claimed:</span>
+                    <span className="rows-count-number">`{totalClaimed}`</span>
                 </div>
             </div>
 
@@ -348,8 +354,9 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
                         <th className="job-details-candidates-table-heading-cell">Company Location</th>
                         <th className="job-details-candidates-table-heading-cell">Position</th>
                         <th className="job-details-candidates-table-heading-cell">Salary</th>
-                        <th className="job-details-candidates-table-heading-cell">Commission Received</th>
-                        <th className="job-details-candidates-table-heading-cell">Commission Paid</th>
+                        <th className="job-details-candidates-table-heading-cell">commn. Received</th>
+                        <th className="job-details-candidates-table-heading-cell">commn. Payable</th>
+                        <th className="job-details-candidates-table-heading-cell">commn. Claimed</th>
                         <th className="job-details-candidates-table-heading-cell">Joining Date</th>
                         <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>
                         <th className="job-details-candidates-table-heading-cell">Is Claimed</th>
@@ -370,6 +377,7 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
                                 <td className="job-details-candidates-table-cell">{eachItem.salary}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.commissionReceived}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.commissionPaid}</td>
+                                <td className="job-details-candidates-table-cell">{eachItem.isClaimed === 1 ? eachItem.commissionPaid : 0}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.joiningDate}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.appliedBy}</td>
                                 <td className="job-details-candidates-table-cell">{eachItem.isClaimed === 1 ? "Claimed" : "Not Claimed"}</td>
