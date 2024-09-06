@@ -43,6 +43,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
     const [loading, setLoading] = useState(false);
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
     const [verificationStatus, setVerificationStatus] = useState('')
+    const [clamiedStatus, setClamiedStatus] = useState('')
     const [tenureStatus, setTenureStatus] = useState('')
     const [approveStatus, setApproveStatus] = useState('')
     const [verificationCount, setVerificationCount] = useState({})
@@ -56,7 +57,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
           getOfferStatusCandidates()
         }
         getAllJobsList()
-    }, [page, offerStatus, tenureStatus, approveStatus, jobId, selectHr, fromDate, toDate, verificationStatus])
+    }, [page, offerStatus, tenureStatus, approveStatus, jobId, selectHr, fromDate, toDate, verificationStatus, clamiedStatus])
 
     const itemsPerPage = 10; 
 
@@ -94,6 +95,11 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
 
     const handleVerificationStatusChange = (event) => {
       setVerificationStatus(event.target.value)
+      setPage(1)
+    }
+
+    const handleClamiedStatusChange = (event) => {
+      setClamiedStatus(event.target.value)
       setPage(1)
     }
 
@@ -194,7 +200,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
         if(selectHr !== '') {
           email = selectHr
         }
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}&tenureStatus=${tenureStatus}&approveStatus=${approveStatus}&page=${page}`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate?email=${email}&search=${searchInput}&fromDate=${fromDate}&toDate=${toDate}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}&tenureStatus=${tenureStatus}&approveStatus=${approveStatus}&claimStatus=${clamiedStatus}&page=${page}`
         const options = {
             method: 'GET',
             headers: {
@@ -228,7 +234,9 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   tenureStatus: eachItem.tenure_status,
                   verificationStatus: eachItem.verification_status,
                   isTenureApproved: eachItem.is_tenure_approved,
-                  isJoined: eachItem.is_joined
+                  isJoined: eachItem.is_joined,
+                  commission_paid: eachItem.commission_paid,
+                  isClaimed: eachItem.is_claimed
                 }))
                 setCandidateList(updatedData);
                 setHrList(data.hrEmails)
@@ -251,7 +259,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
         if(selectHr !== '') {
           email = selectHr
         }
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}&tenureStatus=${tenureStatus}&approveStatus=${approveStatus}`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidates/excel?email=${email}&fromDate=${fromDate}&toDate=${toDate}&search=${searchInput}&jobId=${jobId}&role=${role}&offerStatus=${offerStatus}&tenureStatus=${tenureStatus}&claimStatus=${clamiedStatus}&approveStatus=${approveStatus}`
         const options = {
             method: 'GET',
             headers: {
@@ -284,7 +292,9 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   hrName: eachItem.hr_name,
                   verificationStatus: eachItem.verification_status,
                   isTenureApproved: eachItem.is_tenure_approved,
-                  isJoined: eachItem.is_joined
+                  isJoined: eachItem.is_joined,
+                  commissionPayable: (showCandidateForm === 12 && Cookies.get('role') === "SHM") ? eachItem.commission_paid : null,
+                  commissionClaimed: (showCandidateForm === 12 && (Cookies.get('role') === "AC" || Cookies.get('role') === "SHM")) ? eachItem.is_claimed === 1 ? eachItem.commission_paid : 0 : null
                 }))
                 return updatedData;
             }
@@ -663,6 +673,19 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
               }
 
               {
+                ((Cookies.get('role') === 'AC' || Cookies.get('role') === 'SHM') && showCandidateForm === 12) && (
+                  <div className="job-section-select-container"> 
+                    <label className="homepage-label view-candidates-label" htmlFor='handleClamiedStatusChange'>Filter By Claimed Status</label>
+                    <select className="homepage-input view-candidates-select" name='handleClamiedStatusChange' id='handleClamiedStatusChange' value={clamiedStatus} onChange={handleClamiedStatusChange}>
+                        <option value=''>Select Claim Status</option>
+                        <option value={1}>Claimed</option>
+                        <option value={0}>Not Claimed</option>
+                    </select>
+                  </div>
+                )
+              }
+
+              {
                 ((Cookies.get('role') === 'BDE' && showCandidateForm === 6) || showCandidateForm === 12) && (
                   <>
                   <div className="job-section-select-container"> 
@@ -729,6 +752,23 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   </div>
                 </>
               }
+              {
+                (showCandidateForm === 12 && (Cookies.get('role') === "AC" || Cookies.get('role') === "SHM")) &&
+                <>
+                  <div className="rows-count-con">
+                    <span className="rows-count-text">Claimed:</span>
+                    <span className="rows-count-number">`{verificationCount.claimed_count ? verificationCount.claimed_count : 0}`</span>
+                  </div>
+                  <div className="rows-count-con">
+                    <span className="rows-count-text">Not Claimed:</span>
+                    <span className="rows-count-number">`{verificationCount.not_claimed_count ? verificationCount.not_claimed_count : 0}`</span>
+                  </div>
+                  <div className="rows-count-con">
+                    <span className="rows-count-text">Total Claimed:</span>
+                    <span className="rows-count-number">`{verificationCount.total_claimed_amount ? verificationCount.total_claimed_amount : 0}`</span>
+                  </div>
+                </>
+              }
             </div>
 
 
@@ -745,6 +785,8 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                     {(Cookies.get('role') === "BDE" && showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">Approve Tenure Status</th>}
                     {(showCandidateForm === 5 || showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">Verification Status</th>}
                     {(showCandidateForm === 12 || ((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE')) && <th className="job-details-candidates-table-heading-cell">Update Status</th>}
+                    {(showCandidateForm === 12 && Cookies.get('role') === 'SHM') && <th className="job-details-candidates-table-heading-cell">Commn. Payable</th>}
+                    {(showCandidateForm === 12 && (Cookies.get('role') === 'AC' || Cookies.get('role') === 'SHM')) && <th className="job-details-candidates-table-heading-cell">Commn. Claimed</th>}
                   </tr>
                   {
                     candidateList.length > 0 && candidateList.map(eachItem => {
@@ -804,6 +846,16 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                                       :
                                       <p className="loading-text">Please Wait...</p>
                                   }
+                              </td>
+                            }
+                            {(showCandidateForm === 12 && Cookies.get('role') === 'SHM') && 
+                              <td className="job-details-candidates-table-cell">
+                                {eachItem.commission_paid ? eachItem.commission_paid : "--"}
+                              </td>
+                            }
+                            {(showCandidateForm === 12 && (Cookies.get('role') === 'AC' || Cookies.get('role') === 'SHM')) && 
+                              <td className="job-details-candidates-table-cell">
+                                {eachItem.commission_paid === null ? "--" : eachItem.isClaimed === 1 ? eachItem.commission_paid : 0}
                               </td>
                             }
                         </tr>
