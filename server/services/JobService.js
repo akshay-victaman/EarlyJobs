@@ -1171,6 +1171,7 @@ const getOfferStatusCandidatesVerificationCount = async (
         SUM(CASE WHEN tenure_approved.is_claimed = 1 THEN 1 ELSE 0 END) AS claimed_count,
         SUM(CASE WHEN tenure_approved.is_claimed = 0 THEN 1 ELSE 0 END) AS not_claimed_count,
         SUM(CASE WHEN tenure_approved.is_claimed = 1 THEN commission_paid ELSE 0 END) AS total_claimed_amount,
+        SUM(CASE WHEN tenure_approved.is_claimed = 0 THEN commission_paid ELSE 0 END) AS total_unclaimed_amount,
         SUM(CASE WHEN applications.verification_status = 'Verified' THEN 1 ELSE 0 END) AS verified_count,
         SUM(CASE WHEN applications.verification_status = 'Not Verified' THEN 1 ELSE 0 END) AS not_verified_count,
         SUM(CASE WHEN applications.verification_status = 'Unknown' THEN 1 ELSE 0 END) AS unknown_count,

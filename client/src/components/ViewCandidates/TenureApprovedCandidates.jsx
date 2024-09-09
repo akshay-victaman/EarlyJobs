@@ -308,7 +308,7 @@ export const TenureApprovedCandidates = ({onShowCandidateDetails, setShowCandida
                     </div>
                 </div>
                 <div className="user-view-search-con my-hr-recruiters-search-con view-candidates-search-input-con">
-                    <input className="user-view-search-input my-hr-recruiter-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} onKeyDown={onClickEnter} placeholder="Search by name, email, phone or company" />
+                    <input className="user-view-search-input my-hr-recruiter-search-input" type="search" value={searchInput} onChange={handleChangeSearchInput} onKeyDown={onClickEnter} placeholder="Search by name, email, phone, company or employee id" />
                     <div className="user-view-search-button my-hr-recruiters-search-btn" onClick={getTenureApprovedCandidates} >
                         <IoSearchSharp className="search-icon my-hr-recruiter-search-icon" />
                     </div>
