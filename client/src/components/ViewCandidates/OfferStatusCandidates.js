@@ -764,6 +764,10 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                     <span className="rows-count-number">`{verificationCount.not_claimed_count ? verificationCount.not_claimed_count : 0}`</span>
                   </div>
                   <div className="rows-count-con">
+                    <span className="rows-count-text">Total {Cookies.get('role') === "AC" ? "Receivable" : "Payable"}:</span>
+                    <span className="rows-count-number">`{verificationCount.total_claimed_amount ? verificationCount.total_unclaimed_amount : 0}`</span>
+                  </div>
+                  <div className="rows-count-con">
                     <span className="rows-count-text">Total Claimed:</span>
                     <span className="rows-count-number">`{verificationCount.total_claimed_amount ? verificationCount.total_claimed_amount : 0}`</span>
                   </div>
@@ -785,8 +789,12 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                     {(Cookies.get('role') === "BDE" && showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">Approve Tenure Status</th>}
                     {(showCandidateForm === 5 || showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">Verification Status</th>}
                     {(showCandidateForm === 12 || ((showCandidateForm === 5 || showCandidateForm === 6) && Cookies.get('role') === 'BDE')) && <th className="job-details-candidates-table-heading-cell">Update Status</th>}
-                    {(showCandidateForm === 12 && Cookies.get('role') === 'SHM') && <th className="job-details-candidates-table-heading-cell">Commn. Payable</th>}
-                    {(showCandidateForm === 12 && (Cookies.get('role') === 'AC' || Cookies.get('role') === 'SHM')) && <th className="job-details-candidates-table-heading-cell">Commn. Claimed</th>}
+                    {(showCandidateForm === 12 && (Cookies.get('role') === 'AC' || Cookies.get('role') === 'SHM')) && 
+                      <>
+                        <th className="job-details-candidates-table-heading-cell">Commn. {Cookies.get('role') === 'AC' ? "Receivable" : "Payable"}</th>
+                        <th className="job-details-candidates-table-heading-cell">Commn. Claimed</th>
+                      </>
+                    }
                   </tr>
                   {
                     candidateList.length > 0 && candidateList.map(eachItem => {
@@ -848,15 +856,20 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                                   }
                               </td>
                             }
-                            {(showCandidateForm === 12 && Cookies.get('role') === 'SHM') && 
+                            {/* {(showCandidateForm === 12 && Cookies.get('role') === 'SHM') && 
                               <td className="job-details-candidates-table-cell">
                                 {eachItem.commission_paid ? eachItem.commission_paid : "--"}
                               </td>
-                            }
+                            } */}
                             {(showCandidateForm === 12 && (Cookies.get('role') === 'AC' || Cookies.get('role') === 'SHM')) && 
-                              <td className="job-details-candidates-table-cell">
-                                {eachItem.commission_paid === null ? "--" : eachItem.isClaimed === 1 ? eachItem.commission_paid : 0}
-                              </td>
+                              <>
+                                <td className="job-details-candidates-table-cell">
+                                  {eachItem.commission_paid ? eachItem.commission_paid : "--"}
+                                </td>
+                                <td className="job-details-candidates-table-cell">
+                                  {eachItem.commission_paid === null ? "--" : eachItem.isClaimed === 1 ? eachItem.commission_paid : 0}
+                                </td>
+                              </>
                             }
                         </tr>
                     )})
