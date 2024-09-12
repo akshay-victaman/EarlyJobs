@@ -22,6 +22,7 @@ import OfferStatusCandidates from '../ViewCandidates/OfferStatusCandidates';
 import Applications from '../ViewCandidates/Applications';
 import ViewCompanies from '../ViewCompanies';
 import { TenureApprovedCandidates } from '../ViewCandidates/TenureApprovedCandidates';
+import { RecommendedCandidates } from '../RecommendedCandidates';
 
 
 const apiStatusConstant = {
@@ -587,6 +588,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
             : showCandidateForm===13 ? <Applications setShowCandidateForm={setShowCandidateForm} />
             : showCandidateForm===14 ? <ViewCompanies onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} />
             : showCandidateForm===15 ? <TenureApprovedCandidates onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm}/>
+            : showCandidateForm===16 ? <RecommendedCandidates onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} />
             : renderAllSections()
           }
         </div>

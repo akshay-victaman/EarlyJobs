@@ -124,7 +124,7 @@ const ComplaintsForm = ({handleShowComplaintsForm}) => {
     <div className='contact-popup-overlay' onClick={handleShowComplaintsForm}></div>
     <section className='contact-popup'>
         <button className='close-contact-popup' disabled={loading} onClick={handleShowComplaintsForm}>&times;</button>
-        <h1 className='contact-heading'>Complaints</h1>
+        <h1 className='contact-heading'>Complaint</h1>
         <form id="contact-form" onSubmit={handleFormSubmit}>
             <label htmlFor="subject" className='contact-label'>Subject:</label>
             <input type="text" id='subject' name="subject" value={subject} onChange={handleChange} className='contact-input' placeholder='Subject' />

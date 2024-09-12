@@ -13,6 +13,7 @@ import ReferencesForm from './ReferencesForm';
 import app from '../../firebase';
 import './style.css'
 import Cookies from 'js-cookie';
+import FormsFaqs from '../FormsFaqs';
 
 const customStyles = {
     control: (provided, state) => ({
@@ -63,6 +64,29 @@ let languageOptions = [
     { value: 'Odia', label: 'Odia' }
 ];
 
+const servicePageAccordianData = [
+    {
+        label: 'How does EarlyJobs match candidates with job opportunities?',
+        content: 'EarlyJobs uses a combination of advanced algorithms and personalized assessments to match candidates with job opportunities that align with their skills, experience, and career goals. Our team also conducts thorough interviews to ensure a good fit.'
+    },
+    {
+        label: 'What industries does EarlyJobs specialize in?',
+        content: 'EarlyJobs specializes in a wide range of industries including technology, BPO, finance, marketing, engineering, and more. Our diverse network allows us to cater to various sectors and provide specialized recruitment services.'
+    },
+    {
+        label: 'What is the process for employers to start working with EarlyJobs?',
+        content: 'Employers can start working with EarlyJobs by contacting our team through our website or directly reaching out to our sales department. We will discuss your hiring needs, provide a customized recruitment plan, and begin sourcing and screening candidates.'
+    },
+    {
+        label: 'How does EarlyJobs ensure the quality of candidates?',
+        content: 'EarlyJobs ensures the quality of candidates through a rigorous screening process that includes background checks, skills assessments, and in-depth interviews. We also consider cultural fit to ensure candidates will thrive in their new roles.'
+    },
+    {
+        label: 'Is there a fee for candidates to use EarlyJobs services?',
+        content: 'No, EarlyJobs does not charge candidates for using our recruitment services. Our fees are covered by the employers seeking to hire through our platform, allowing us to offer our services to job seekers at no cost.'
+    },
+];
+
 
 const HiringPartnerForm = () => {
     const steps = [
@@ -93,7 +117,7 @@ const HiringPartnerForm = () => {
         },
         {
             id: 2,
-            value: 'IT'
+            value: 'Information Technology'
         },
         {
             id: 3,
@@ -105,20 +129,86 @@ const HiringPartnerForm = () => {
         },
         {
             id: 5,
-            value: 'Industry'
+            value: 'Aviation'
         },
         {
             id: 6,
+            value: 'Oil And Gas'
+        },
+        {
+            id: 7,
+            value: 'Retail'
+        },
+        {
+            id: 8,
+            value: 'Education'
+        },
+        {
+            id: 9,
+            value: 'Manufacturing'
+        },
+        {
+            id: 10,
+            value: 'Consumer Goods'
+        },
+        {
+            id: 11,
+            value: 'Health Care'
+        },
+        {
+            id: 12,
+            value: 'ITES'
+        },
+        {
+            id: 13,
+            value: 'Entertainment'
+        },
+        {
+            id: 14,
+            value: 'Finance'
+        },
+        {
+            id: 15,
+            value: 'Textile'
+        },
+        {
+            id: 16,
+            value: 'Media and news'
+        },
+        {
+            id: 17,
+            value: 'Food processing'
+        },
+        {
+            id: 18,
+            value: 'Hospitality'
+        },
+        {
+            id: 19,
+            value: 'Construction'
+        },
+        {
+            id: 20,
+            value: 'Law'
+        },
+        {
+            id: 21,
+            value: 'Advertising'
+        },
+        {
+            id: 22,
+            value: 'E-commerce'
+        },
+        {
+            id: 23,
             value: 'Other'
         }
     ]
 
     const [currentStep, setCurrentStep] = useState(0)
-    const [isVisible, setIsVisible] = useState(false);
     const [loading, setLoading] = useState(false)
     const [certification, setCertification] = useState("")
     const [workExperience, setWorkExperience] = useState("")
-    const [languages, setLanguages] = useState("")
     const [error, setError] = useState("")
     const [selectedOption, setSelectedOption] = useState("+91");
     const [personalDetails, setPersonalDetails ] = useState({
@@ -926,7 +1016,16 @@ const HiringPartnerForm = () => {
                         activeStep={ currentStep } 
                     />
                 </div>
-                {renderAllSections()}               
+                <div className='bde-sub-container'>
+                    <div className='bde-content-con'>
+                        <h2 className='bde-sub-heading'>Fill the form to Apply as a Recruiter</h2>
+                        <p className='bde-sub-text'>Please fill all the required fields</p>
+                        <FormsFaqs accordionData={servicePageAccordianData} />
+                    </div>
+                    <div className='bde-form-con'>
+                        {renderAllSections()}
+                    </div>
+                </div>
             </div>
         </div>
     )

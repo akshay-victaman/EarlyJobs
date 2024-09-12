@@ -36,10 +36,10 @@ const AboutForm = (props) => {
                     userDetailsId === undefined ? 
                     <>
                         <label htmlFor='hire' className='hr-label'>Which category you are interested to hire<span className='hr-form-span'> *</span></label>
-                        <div className='hr-input-checkbox-con'>
+                        <div className='hr-input-checkbox-con' style={{width: '100%', display: 'flex', flexWrap: 'wrap'}}>
                             {
                                 hiringDept.map((dept) => (
-                                    <div className='hr-checkbox-con'>
+                                    <div className='hr-checkbox-con' style={{width: '50%'}}>
                                         <input 
                                             type='checkbox' 
                                             className='hr-checkbox' 

@@ -194,6 +194,9 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
                         userRole !== 'ADMIN' && <a href={manualURL} target='_blank' style={{textDecoration: 'none', display: 'inline-flex'}} className="profile-button" >Download Manuals</a>
                     }
                     <button type="button" className={`profile-button ${showCandidateForm === 0 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(0)}>Assigned Job Openings</button>
+                    {
+                        (userRole === 'HR' && profileData.hiringFor === 'Intern HR Recruiter') && <button type="button" className={`profile-button ${showCandidateForm === 16 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(16)}>Candidates of the Day</button>
+                    }
                 </div>
                 : 
                 <div className='profile-button-con'>

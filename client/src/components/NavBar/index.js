@@ -130,7 +130,7 @@ const NavBar = ({handleShowComplaintsForm}) => {
                     {
                         (jwtToken !== undefined && role !== 'ADMIN') &&
                         <li className='nav-item'>
-                            <button type='button' className='signup-button' onClick={handleShowComplaintsForm}>Complaints</button>
+                            <button type='button' className='signup-button' onClick={handleShowComplaintsForm}>Complaint</button>
                         </li>
                     }
 
@@ -248,7 +248,7 @@ const NavBar = ({handleShowComplaintsForm}) => {
                         {
                             jwtToken !== undefined &&
                             <li className='nav-item-mobile' onClick={handleMenuClick}>
-                                <button type='button' className='signup-button' onClick={handleShowComplaintsForm}>Complaints</button>
+                                <button type='button' className='signup-button' onClick={handleShowComplaintsForm}>Complaint</button>
                             </li>
                         }
 
