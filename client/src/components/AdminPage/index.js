@@ -14,11 +14,28 @@ import { useEffect, useState } from "react";
 
 let hiringCategoryOptions = [
     { value: 'BPO', label: 'BPO' },
-    { value: 'IT', label: 'IT' },
+    { value: 'Information Technology', label: 'Information Technology' },
     { value: 'Banking', label: 'Banking' },
     { value: 'Insurance', label: 'Insurance' },
-    { value: 'Industry', label: 'Industry' },
-    { value: 'Others', label: 'Others' }
+    { value: 'Aviation', label: 'Aviation' },
+    { value: 'Oil And Gas', label: 'Oil And Gas' },
+    { value: 'Retail', label: 'Retail' },
+    { value: 'Education', label: 'Education' },
+    { value: 'Manufacturing', label: 'Manufacturing' },
+    { value: 'Consumer Goods', label: 'Consumer Goods' },
+    { value: 'Health Care', label: 'Health Care' },
+    { value: 'ITES', label: 'ITES' },
+    { value: 'Entertainment', label: 'Entertainment' },
+    { value: 'Finance', label: 'Finance' },
+    { value: 'Textile', label: 'Textile' },
+    { value: 'Media and news', label: 'Media and news' },
+    { value: 'Food processing', label: 'Food processing' },
+    { value: 'Hospitality', label: 'Hospitality' },
+    { value: 'Construction', label: 'Construction' },
+    { value: 'Law', label: 'Law' },
+    { value: 'Advertising', label: 'Advertising' },
+    { value: 'E-commerce', label: 'E-commerce' },
+    { value: 'Other', label: 'Other' },
 ];
 
 const AdminPage = () => {

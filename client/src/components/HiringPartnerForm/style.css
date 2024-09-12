@@ -17,13 +17,13 @@
 }
 
 .hr-form {
-    width: 90%;
+    width: 100%;
+    max-width: 550px;
     display: flex;
     padding: 20px 15px;
     flex-direction: column;
     border-radius: 10px;
     border: 1px solid #EB6A4D;
-    width: 50%;
     margin-top: 25px;
     margin-bottom: 10vh;
 }
@@ -363,6 +363,7 @@
 @media screen and (max-width: 768px) {
     .hr-form {
         width: 90%;
+        max-width: 550px;
     }
     .form-title {
         font-size: 22px;
@@ -380,6 +381,7 @@
 
 @media screen and (min-width: 1024px) {
     .hr-form {
-        width: 40%;
+        width: 100%;
+        max-width: 550px;
     }
 }
