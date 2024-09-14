@@ -10,6 +10,7 @@ import ExcelDownloadButton from '../ExcelDownloadButton';
 import JobsCard from '../JobsCard';
 import './style.css';
 import { CompanyCandidates } from './CompanyCandidates.jsx';
+import { TenureApprovedCompanyCandidates } from './TenureApprovedCompanyCandidates.jsx';
 
 const apiStatusConstant = {
     initial: 'INITIAL',
@@ -37,6 +38,7 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
 
     const id = new URLSearchParams(window.location.search).get('id');
     const candidates = new URLSearchParams(window.location.search).get('candidates');
+    const tenure = new URLSearchParams(window.location.search).get('tenure');
     
 
     const updateUrl = (id) => {
@@ -63,7 +65,10 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
     useEffect(() => {
         getCompanies()
         if(id !== null) {
-            if (candidates) {
+            if(candidates && tenure) {
+                setShowCompanyJobs(3)
+                setCompanyId(id)
+            } else if (candidates) {
                 setCompanyId(id)
                 setShowCompanyJobs(2)
             } else {
@@ -139,6 +144,7 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
         const url = new URL(window.location.href);
         url.searchParams.delete('id');
         url.searchParams.delete('candidates');
+        url.searchParams.delete('tenure');
         window.history.pushState({}, '', url);
     }
 
@@ -156,6 +162,19 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
         url.searchParams.set('page', 1);
         url.searchParams.set('id', id);
         url.searchParams.set('candidates', true);
+        window.history.pushState({}, '', url);
+    }
+
+    const handleShowTenureApprovedCandidates = (id, name) => {
+        setCompanyId(id)
+        setCompanyName(name)
+        setShowCompanyJobs(3)
+        const url = new URL(window.location.href);
+        url.searchParams.set('view', 14);
+        url.searchParams.set('page', 1);
+        url.searchParams.set('id', id);
+        url.searchParams.set('candidates', true);
+        url.searchParams.set('tenure', true);
         window.history.pushState({}, '', url);
     }
 
@@ -717,6 +736,7 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
                 <th className="job-details-candidates-table-heading-cell">Created At</th>
                 <th className="job-details-candidates-table-heading-cell">Openings</th>
                 <th className="job-details-candidates-table-heading-cell">Candidates</th>
+                <th className="job-details-candidates-table-heading-cell">Earnings</th>
                 <th className="job-details-candidates-table-heading-cell">Actions</th>
             </tr>
             {
@@ -735,6 +755,9 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
                         </td>
                         <td className="job-details-candidates-table-cell">
                             <button className='block-user-button' onClick={() => handleShowCompanyCandidates(eachItem.id, eachItem.name)}>View</button>
+                        </td>
+                        <td className="job-details-candidates-table-cell">
+                            <button className='block-user-button' onClick={() => handleShowTenureApprovedCandidates(eachItem.id, eachItem.name)}>View</button>
                         </td>
                         <td className="job-details-candidates-table-cell">
                             <button className='block-user-button' onClick={() => handleShowCompanyPopup(eachItem.id, 'update')}>Update</button>
@@ -849,7 +872,9 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
                 renderAllSections() : 
                 showCompanyJobs === 0 ? 
                 renderCompanies() :
+                showCompanyJobs === 2 ?
                 <CompanyCandidates handleHideCompanyJobs={handleHideCompanyJobs} onShowCandidateDetails={onShowCandidateDetails} companyId={companyId} companyName={companyName} />
+                : <TenureApprovedCompanyCandidates handleHideCompanyJobs={handleHideCompanyJobs} onShowCandidateDetails={onShowCandidateDetails} companyId={companyId} companyName={companyName} />
             }
         </div>
     )
