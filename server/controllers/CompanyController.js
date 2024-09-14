@@ -93,6 +93,29 @@ const getJoinedCandidatesForCompanyForExcel = async (req, res) => {
     }
 }
 
+const getTenureApprovedCandidatesForCompany = async (req, res) => {
+    try {
+        const { fromDate, toDate, jobId, search } = req.query;
+        const page = req.query.page || 1;
+        const companyId = req.params.id;
+        const candidates = await CompanyService.getTenureApprovedCandidatesForCompany(companyId, fromDate, toDate, jobId, search, page);
+        res.status(200).json(candidates);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ error: error.message });
+    }
+}
+
+const getTenureApprovedCandidatesForCompanyForExcel = async (req, res) => {
+    try {
+        const { fromDate, toDate, jobId, search } = req.query;
+        const companyId = req.params.id;
+        const candidates = await CompanyService.getTenureApprovedCandidatesForCompanyForExcel(companyId, fromDate, toDate, jobId, search);
+        res.status(200).json(candidates);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ error: error.message });
+    }
+}
+
 module.exports = { 
     getCompanies, 
     getCompaniesForExcel,
@@ -102,5 +125,7 @@ module.exports = {
     deleteCompany,
     getCompanyJobs,
     getJoinedCandidatesForCompany,
-    getJoinedCandidatesForCompanyForExcel
+    getJoinedCandidatesForCompanyForExcel,
+    getTenureApprovedCandidatesForCompany,
+    getTenureApprovedCandidatesForCompanyForExcel
 };
