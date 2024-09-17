@@ -11,7 +11,7 @@ const db = mysql.createPool({
   password: dbPassword,
   database: 'earlyjobs',
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 100,
   queueLimit: 0,
 });
 

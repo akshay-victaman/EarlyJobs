@@ -765,7 +765,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                   </div>
                   <div className="rows-count-con">
                     <span className="rows-count-text">Total {Cookies.get('role') === "AC" ? "Receivable" : "Payable"}:</span>
-                    <span className="rows-count-number">`{verificationCount.total_claimed_amount ? verificationCount.total_unclaimed_amount : 0}`</span>
+                    <span className="rows-count-number">`{verificationCount.total_unclaimed_amount ? verificationCount.total_unclaimed_amount : 0}`</span>
                   </div>
                   <div className="rows-count-con">
                     <span className="rows-count-text">Total Claimed:</span>
