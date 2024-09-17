@@ -27,8 +27,8 @@ app.use('/api/public', publicJobRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
-module.exports.server = sls(app)
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+// module.exports.server = sls(app)
