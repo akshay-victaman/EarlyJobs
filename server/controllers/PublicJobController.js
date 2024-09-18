@@ -63,10 +63,36 @@ const getPublicApplicationsForExcel = async (req, res) => {
     }
 }
 
+const rejectPublicApplication = async (req, res) => {
+    try {
+        const applicationId = req.params.applicationId;
+        const email = req.email;
+        const result = await publicJobService.rejectPublicApplication(applicationId, email);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 const deletePublicApplication = async (req, res) => {
     try {
         const applicationId = req.params.applicationId;
         const result = await publicJobService.deletePublicApplication(applicationId);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const getRejectedApplications = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const email = req.email;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const page = req.query.page || 1;
+        const result = await publicJobService.getRejectedApplications(jobId, email, search, createdTo, createdFrom, page);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -88,6 +114,8 @@ module.exports = {
     addPublicApplicationForJob,
     getPublicApplications,
     getPublicApplicationsForExcel,
+    rejectPublicApplication,
     deletePublicApplication,
+    getRejectedApplications,
     getLocationTitleAndCompanyListWithJobCount
 }
