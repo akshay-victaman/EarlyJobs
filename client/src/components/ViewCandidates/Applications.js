@@ -7,6 +7,9 @@ import { differenceInDays, format, formatISO, parse, parseISO, sub } from 'date-
 import ExcelDownloadButton from '../ExcelDownloadButton';
 import Popup from 'reactjs-popup';
 import {toast} from 'react-toastify'
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import './style.css'
 
 const apiStatusConstant = {
@@ -399,6 +402,36 @@ const Applications = ({ setShowCandidateForm }) => {
       try {
         const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/public/applications/${id}`
         const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${Cookies.get('jwt_token')}`
+            }
+          }
+          setLoading(true)
+          const response = await fetch(url, options)
+          const data = await response.json()
+          if(response.ok === true) {
+            if(data.error) {
+              toast.error(data.error)
+            } else {
+              close()
+              getApplications()
+              toast.success('Candidate rejected successfully')
+            }
+          } else {
+            toast.error(data.error)
+          }
+      } catch (error) {
+        toast.error(error.message)
+      }
+      setLoading(false)
+    }
+
+    const deleteCandidate = async (close, id) => {
+      try {
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/public/applications/${id}`
+        const options = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -414,7 +447,6 @@ const Applications = ({ setShowCandidateForm }) => {
             } else {
               close()
               getApplications()
-              // toast.success('Candidate rejected successfully')
             }
           } else {
             toast.error(data.error)
@@ -446,7 +478,7 @@ const Applications = ({ setShowCandidateForm }) => {
         spokenLanguages: candidateDetails.spokenLanguages.split(','),
         skills: candidateDetails.skills.split(','),
         dateOfBirth: format(parseISO(candidateDetails.dateOfBirth), 'yyyy-MM-dd'),
-        isPortalApplication: 1
+        isPublicApplication: 1
       }
       try {
         const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate/add`
@@ -473,7 +505,7 @@ const Applications = ({ setShowCandidateForm }) => {
                 sendInterviewEmails(candidateData)
                 close()
                 toast.success('Candidate shortlisted successfully')
-                rejectCandidate(close, id)
+                deleteCandidate(close, id)
             }
         } else {
             setError(data.error)
@@ -697,6 +729,11 @@ const Applications = ({ setShowCandidateForm }) => {
             <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>Applications</span></h1>
 
             <div className="job-section-select-filter-container">
+              <div className="job-section-select-container">
+              <FormGroup>
+                <FormControlLabel control={<Switch color="warning" />} labelPlacement="start" label="Label" />
+              </FormGroup>
+              </div>
               <div className="job-section-select-container"> 
                   <label className="homepage-label view-candidates-label" htmlFor='resume'>Select Job</label>
                   <select className="homepage-input view-candidates-select" name='jobId' id='jobId' value={jobId} onChange={handleJobIdChange}>

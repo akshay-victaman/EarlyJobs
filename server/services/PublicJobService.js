@@ -167,6 +167,7 @@ const getPublicApplications = async (jobId, email, search, createdTo, createdFro
         `DATE(public_applications.created_at) >= ? 
         AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
         : ""}
+        AND is_rejected = 0
         AND hm_emails LIKE ?
         ${jobId ? 'AND job_id = ?' : ''}
         ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
@@ -178,6 +179,7 @@ const getPublicApplications = async (jobId, email, search, createdTo, createdFro
         `DATE(public_applications.created_at) >= ?
         AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
         : ""}
+        AND is_rejected = 0
         AND hm_emails LIKE ?
         ${jobId ? 'AND job_id = ?' : ''}
         ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ""}
@@ -226,6 +228,7 @@ const getPublicApplicationsForExcel = async (jobId, email, search, createdTo, cr
         `DATE(public_applications.created_at) >= ? 
         AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
         : ""}
+        AND is_rejected = 0
         AND hm_emails LIKE ?
         ${jobId ? 'AND job_id = ?' : ''}
         ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
@@ -250,6 +253,22 @@ const getPublicApplicationsForExcel = async (jobId, email, search, createdTo, cr
     }
 }
 
+const rejectPublicApplication = async (applicationId, hrEmail) => {
+    const query = 'UPDATE public_applications SET is_rejected = 1, rejected_by = ? WHERE id = ?';
+    try {
+        const result = await db.query(query, [hrEmail, applicationId]);
+        console.log(result);
+        if(result[0].affectedRows > 0) {
+            return {success: "Application deleted successfully"};
+        }
+        else {
+            return {error: "Application deletion failed"};
+        }
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
 const deletePublicApplication = async (applicationId) => {
     const query = 'DELETE FROM public_applications WHERE id = ?';
     try {
@@ -265,6 +284,125 @@ const deletePublicApplication = async (applicationId) => {
     }
 }
 
+const getRejectedApplicationsCount = async (jobId, email, search, createdTo, createdFrom) => {
+    const query = `
+        SELECT count(*) as count
+        FROM public_applications 
+        INNER JOIN jobs ON public_applications.job_id = jobs.id
+        WHERE
+        is_rejected = 1
+        AND rejected_by = ?
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        ${search === "" ?
+        `AND DATE(public_applications.created_at) >= ?
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
+        `;
+    try {
+        let params = [email];
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        if (search === "") {
+            params.splice(0, 0, createdFrom, createdTo);
+        }
+        const result = await db.query(query, params);
+        return result[0][0].count;
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const getRejectedApplications = async (jobId, email, search, createdTo, createdFrom, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const query = `
+        SELECT public_applications.*, company_name, title 
+        FROM public_applications 
+        INNER JOIN jobs ON public_applications.job_id = jobs.id
+        WHERE
+        is_rejected = 1
+        AND rejected_by = ?
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        ${search === "" ?
+        `AND DATE(public_applications.created_at) >= ?
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
+        order by created_at desc
+        Limit ? offset ?;`;
+    try {
+        let params = [email];
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        if (search === "") {
+            params.push(createdFrom);
+            params.push(createdTo);
+        }
+        params.push(pageSize);
+        params.push(startIndex);
+        const result = await db.query(query, params);
+        const count = await getRejectedApplicationsCount(jobId, email, search, createdTo, createdFrom);
+        return {applications: result[0], count: count};
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const getApprovedApplications = async (jobId, email, search, createdTo, createdFrom, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const query = `
+        SELECT public_applications.*, company_name, title 
+        FROM public_applications 
+        INNER JOIN jobs ON public_applications.job_id = jobs.id
+        WHERE
+        is_approved = 1
+        AND approved_by = ?
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        ${search === "" ?
+        `AND DATE(public_applications.created_at) >= ?
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
+        order by created_at desc
+        Limit ? offset ?;`;
+    try {
+        let params = [email];
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        if (search === "") {
+            params.push(createdFrom);
+            params.push(createdTo);
+        }
+        params.push(pageSize);
+        params.push(startIndex);
+        const result = await db.query(query, params);
+        const count = await getApprovedApplicationsCount(jobId, email, search, createdTo, createdFrom);
+        return {applications: result[0], count: count};
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+    
 const getCompanyListWithJobCount = async () => {
     const query = `
         SELECT company_name, count(*) as count FROM jobs
@@ -320,6 +458,8 @@ module.exports = {
     addPublicApplicationForJob,
     getPublicApplications,
     getPublicApplicationsForExcel,
+    rejectPublicApplication,
     deletePublicApplication,
+    getRejectedApplications,
     getLocationTitleAndCompanyListWithJobCount
 }
