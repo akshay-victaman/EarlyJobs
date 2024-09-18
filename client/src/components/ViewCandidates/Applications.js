@@ -446,6 +446,7 @@ const Applications = ({ setShowCandidateForm }) => {
         spokenLanguages: candidateDetails.spokenLanguages.split(','),
         skills: candidateDetails.skills.split(','),
         dateOfBirth: format(parseISO(candidateDetails.dateOfBirth), 'yyyy-MM-dd'),
+        isPortalApplication: 1
       }
       try {
         const url = `${process.env.REACT_APP_BACKEND_API_URL}/jobs/candidate/add`

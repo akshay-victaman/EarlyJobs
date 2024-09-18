@@ -523,15 +523,18 @@ const getAllHRJobs = async (email) => {
     return result[0];
 }
 
-const addApplication = async (jobId, cId, hrEmail, offerStatus, interviewDate, joinedDate) => {
+const addApplication = async (jobId, cId, hrEmail, offerStatus, interviewDate, joinedDate, isPortalApplication) => {
     const applicationQuery = 'SELECT * FROM applications WHERE job_id = ? AND candidate_id = ? AND applied_by = ?';
     const applicationResult = await db.query(applicationQuery, [jobId, cId, hrEmail]);
     if (applicationResult[0].length > 0) {
         return {error: 'Application already exists for this candidate'};
     }
     const id = uuidv4();
-    const query = `INSERT INTO applications (id, job_id, candidate_id, applied_by, offer_status, interview_date ${joinedDate !== '' ? ', offered_date' : ''}) VALUES (?, ?, ?, ?, ?, ? ${joinedDate !== '' ? ', ?' : ''})`;
-    const params = [id, jobId, cId, hrEmail, offerStatus, interviewDate];
+    const query = `
+        INSERT INTO applications 
+            (id, job_id, candidate_id, applied_by, offer_status, interview_date, is_portal_application ${joinedDate !== '' ? ', offered_date' : ''}) 
+        VALUES (?, ?, ?, ?, ?, ?, ? ${joinedDate !== '' ? ', ?' : ''})`;
+    const params = [id, jobId, cId, hrEmail, offerStatus, interviewDate, isPortalApplication];
     if (joinedDate !== '') {
         params.push(joinedDate);
     }
@@ -565,7 +568,8 @@ const addCandidateDetailsForJob = async (candidate) => {
         interviewDate,
         shiftTimings,
         employmentType,
-        joinedDate
+        joinedDate,
+        isPortalApplication
     } = candidate;
     const candidateQuery = 'SELECT * FROM candidates WHERE email = ? OR phone = ?';
     const candidateResult = await db.query(candidateQuery, [email, phone]);
@@ -593,7 +597,7 @@ const addCandidateDetailsForJob = async (candidate) => {
             ) VALUES (?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?)`;
         const result = await db.query(query, [cId, fullName, email, phone, fatherName, dateOfBirth, gender, aadharNumber, highestQualification, currentLocation, spokenLanguages.join(','), experienceInYears, experienceInMonths, jobCategory, skills.join(','), shiftTimings, employmentType]);
         if (result[0].affectedRows > 0) {
-            return addApplication(jobId, cId, hrEmail, offerStatus, interviewDate, joinedDate);
+            return addApplication(jobId, cId, hrEmail, offerStatus, interviewDate, joinedDate, isPortalApplication);
         } else {
             return {error: 'Candidate addition failed'};
         }
@@ -601,7 +605,7 @@ const addCandidateDetailsForJob = async (candidate) => {
         if(candidateResult[0][0].is_joined === 1) {
             return {error: 'Candidate already joined in another company'};
         }
-        return addApplication(jobId, candidateResult[0][0].id, hrEmail, offerStatus, interviewDate, joinedDate);
+        return addApplication(jobId, candidateResult[0][0].id, hrEmail, offerStatus, interviewDate, joinedDate, isPortalApplication);
     }
 }
 

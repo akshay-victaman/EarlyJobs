@@ -471,7 +471,8 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
         const candidateData = {
           ...candidateDetails,
           hrEmail,
-          interviewDate: formattedDateTime
+          interviewDate: formattedDateTime,
+          isPortalApplication: 0
         }
         const url = `${backendUrl}/jobs/candidate/add`
         const options = {
