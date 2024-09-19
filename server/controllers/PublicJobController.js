@@ -99,6 +99,49 @@ const getRejectedApplications = async (req, res) => {
     }
 }
 
+const getRejectedApplicationsExcel = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const email = req.email;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const result = await publicJobService.getRejectedApplicationsExcel(jobId, email, search, createdTo, createdFrom);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const getApprovedApplications = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const email = req.email;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const page = req.query.page || 1;
+        const result = await publicJobService.getApprovedApplications(jobId, email, search, createdTo, createdFrom, page);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const getApprovedApplicationsExcel = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const email = req.email;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const result = await publicJobService.getApprovedApplicationsExcel(jobId, email, search, createdTo, createdFrom);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 const getLocationTitleAndCompanyListWithJobCount = async (req, res) => {
     try {
         const locationList = await publicJobService.getLocationTitleAndCompanyListWithJobCount();
@@ -117,5 +160,8 @@ module.exports = {
     rejectPublicApplication,
     deletePublicApplication,
     getRejectedApplications,
+    getRejectedApplicationsExcel,
+    getApprovedApplications,
+    getApprovedApplicationsExcel,
     getLocationTitleAndCompanyListWithJobCount
 }

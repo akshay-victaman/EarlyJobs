@@ -24,7 +24,8 @@ const Applications = ({ setShowCandidateForm }) => {
     const [candidateList, setCandidateList] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
     const [page, setPage] = useState(1);
-    const [jobId, setJobId] = useState('')
+    const [jobId, setJobId] = useState('');
+    const [applicationStatus, setApplicationStatus] = useState(0);
     const [allJobsList, setAllJobsList] = useState([])
     const today = new Date();
     const date = today.toISOString().split('T')[0];
@@ -39,9 +40,12 @@ const Applications = ({ setShowCandidateForm }) => {
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
 
     useEffect(() => {
+      getAllJobsList()
+    }, []);
+
+    useEffect(() => {
         getApplications()
-        getAllJobsList()
-    }, [page, jobId, fromDate, toDate])
+    }, [page, applicationStatus, jobId, fromDate, toDate])
 
     const itemsPerPage = 10; 
 
@@ -55,6 +59,11 @@ const Applications = ({ setShowCandidateForm }) => {
 
     const handleJobIdChange = (event) => {
       setJobId(event.target.value)
+      setPage(1)
+    }
+
+    const handleApplicationStatusChange = (event) => {
+      setApplicationStatus(parseInt(event.target.value))
       setPage(1)
     }
 
@@ -126,7 +135,15 @@ const Applications = ({ setShowCandidateForm }) => {
 
     const getApplications = async () => {
         setApiStatus(apiStatusConstant.inProgress);
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/public/applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+        let url = process.env.REACT_APP_BACKEND_API_URL
+        console.log(applicationStatus, typeof applicationStatus)
+        if (applicationStatus === 0) {
+          url = `${url}/api/public/applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+        } else if (applicationStatus === 1) {
+          url = `${url}/api/public//approved-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+        } else {
+          url = `${url}/api/public//rejected-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+        }
         const options = {
             method: 'GET',
             headers: {
@@ -181,7 +198,14 @@ const Applications = ({ setShowCandidateForm }) => {
     }
 
     const getApplicationsForExcel = async () => {
-      const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/public/applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+      let url = process.env.REACT_APP_BACKEND_API_URL
+      if (applicationStatus === 0) {
+        url = `${url}/api/public/applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+      } else if (applicationStatus === 1) {
+        url = `${url}/api/public/approved-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+      } else {
+        url = `${url}/api/public/rejected-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+      }
       const options = {
           method: 'GET',
           headers: {
@@ -730,12 +754,15 @@ const Applications = ({ setShowCandidateForm }) => {
 
             <div className="job-section-select-filter-container">
               <div className="job-section-select-container">
-              <FormGroup>
-                <FormControlLabel control={<Switch color="warning" />} labelPlacement="start" label="Label" />
-              </FormGroup>
+                  <label className="homepage-label view-candidates-label" htmlFor='applicationStatus'>Application Status</label>
+                  <select className="homepage-input view-candidates-select" name='applicationStatus' id='applicationStatus' value={applicationStatus} onChange={handleApplicationStatusChange}>
+                      <option value={0}>Pending</option>
+                      <option value={1}>Shortlisted</option>
+                      <option value={2}>Rejected</option>
+                  </select>
               </div>
               <div className="job-section-select-container"> 
-                  <label className="homepage-label view-candidates-label" htmlFor='resume'>Select Job</label>
+                  <label className="homepage-label view-candidates-label" htmlFor='jobId'>Select Job</label>
                   <select className="homepage-input view-candidates-select" name='jobId' id='jobId' value={jobId} onChange={handleJobIdChange}>
                       <option value=''>All Jobs</option>
                       {
@@ -779,7 +806,7 @@ const Applications = ({ setShowCandidateForm }) => {
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
                     <th className="job-details-candidates-table-heading-cell">Email</th>
                     <th className="job-details-candidates-table-heading-cell">Applied At</th>
-                    <th className="job-details-candidates-table-heading-cell">Action</th>
+                    {applicationStatus !== 1 && <th className="job-details-candidates-table-heading-cell">Action</th>}
                   </tr>
                   {
                     candidateList.length > 0 && candidateList.map((eachItem, index) => {
@@ -802,30 +829,34 @@ const Applications = ({ setShowCandidateForm }) => {
                             <td className="job-details-candidates-table-cell">{eachItem.phone}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.email}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.createdAt}</td>
-                            <td className="job-details-candidates-table-cell">
-                              <div className='action-dropdown'>
-                                    <Popup
-                                        trigger={<button className="application-action-button-2" type="button">Shortlist</button>}
-                                        modal
-                                    >
-                                        {close => (
-                                        <div className="modal">
-                                            {renderShortlistPopup(close, eachItem.applicationId)}
-                                        </div>
-                                        )}
-                                    </Popup>
-                                    <Popup
-                                        trigger={<button className="application-action-button-2" type="button">Reject</button>}
-                                        modal
-                                    >
-                                        {close => (
-                                        <div className="modal">
-                                            {renderRejectPopup(close, eachItem.fullName, eachItem.applicationId)}
-                                        </div>
-                                        )}
-                                    </Popup>
-                                  </div>
-                            </td>
+                            {applicationStatus !== 1 && 
+                              <td className="job-details-candidates-table-cell">
+                                <div className='action-dropdown'>
+                                      <Popup
+                                          trigger={<button className="application-action-button-2" type="button">Shortlist</button>}
+                                          modal
+                                      >
+                                          {close => (
+                                          <div className="modal">
+                                              {renderShortlistPopup(close, eachItem.applicationId)}
+                                          </div>
+                                          )}
+                                      </Popup>
+                                      {applicationStatus === 0 &&
+                                        <Popup
+                                            trigger={<button className="application-action-button-2" type="button">Reject</button>}
+                                            modal
+                                        >
+                                            {close => (
+                                            <div className="modal">
+                                                {renderRejectPopup(close, eachItem.fullName, eachItem.applicationId)}
+                                            </div>
+                                            )}
+                                        </Popup>
+                                      }
+                                    </div>
+                              </td>
+                            }
                         </tr>
                     )})
                   }
