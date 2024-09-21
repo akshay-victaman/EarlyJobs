@@ -63,6 +63,33 @@ const getPublicApplicationsForExcel = async (req, res) => {
     }
 }
 
+const getPublicApplicationsForBDE = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const page = req.query.page || 1;
+        const result = await publicJobService.getPublicApplicationsForBDE(jobId, search, createdTo, createdFrom, page);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const getPublicApplicationsForBDEExcel = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const result = await publicJobService.getPublicApplicationsForBDEExcel(jobId, search, createdTo, createdFrom);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 const rejectPublicApplication = async (req, res) => {
     try {
         const applicationId = req.params.applicationId;
@@ -157,6 +184,8 @@ module.exports = {
     addPublicApplicationForJob,
     getPublicApplications,
     getPublicApplicationsForExcel,
+    getPublicApplicationsForBDE,
+    getPublicApplicationsForBDEExcel,
     rejectPublicApplication,
     deletePublicApplication,
     getRejectedApplications,

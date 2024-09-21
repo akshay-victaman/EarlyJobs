@@ -272,7 +272,7 @@ export const TenureApprovedCompanyCandidates = ({companyId, handleHideCompanyJob
                 <th className="job-details-candidates-table-heading-cell">Phone</th>
                 <th className="job-details-candidates-table-heading-cell">Company Location</th>
                 <th className="job-details-candidates-table-heading-cell">Interview Date</th>
-                <th className="job-details-candidates-table-heading-cell">Joined/Selected Date</th>
+                <th className="job-details-candidates-table-heading-cell">Joined Date</th>
             </tr>
             {
                 candidatesList.length > 0 && candidatesList.map(eachItem => {

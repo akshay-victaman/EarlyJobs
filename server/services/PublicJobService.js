@@ -256,6 +256,120 @@ const getPublicApplicationsForExcel = async (jobId, email, search, createdTo, cr
     }
 }
 
+const getPublicApplicationsForBDECount = async (jobId, search, createdTo, createdFrom) => {
+    const query = `
+        SELECT count(*) as count 
+        FROM applications 
+        INNER JOIN candidates ON applications.candidate_id = candidates.id
+        INNER JOIN jobs ON applications.job_id = jobs.id
+        WHERE
+        is_public_application = 1
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        ${search === "" ?
+        `AND DATE(applications.created_at) >= ?
+        AND DATE(applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}`;
+    try {
+        let params = [];
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        if (search === "") {
+            params.push(createdFrom);
+            params.push(createdTo);
+        }
+        const result = await db.query(query, params);
+        return result[0][0].count;
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const getPublicApplicationsForBDE = async (jobId, search, createdTo, createdFrom, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const query = `
+        SELECT candidates.*, company_name, title, applications.applied_by 
+        FROM applications 
+        INNER JOIN candidates ON applications.candidate_id = candidates.id
+        INNER JOIN jobs ON applications.job_id = jobs.id
+        WHERE
+        is_public_application = 1
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        ${search === "" ?
+        `AND DATE(applications.created_at) >= ?
+        AND DATE(applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
+        order by created_at desc
+        Limit ? offset ?;`;
+    try {
+        let params = [];
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        if (search === "") {
+            params.push(createdFrom);
+            params.push(createdTo);
+        }
+        params.push(pageSize);
+        params.push(startIndex);
+        const result = await db.query(query, params);
+        const count = await getPublicApplicationsForBDECount(jobId, search, createdTo, createdFrom);
+        return {applications: result[0], count: count};
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const getPublicApplicationsForBDEExcel = async (jobId, search, createdTo, createdFrom) => {
+    const query = `
+        SELECT candidates.*, company_name, title, applications.applied_by 
+        FROM applications 
+        INNER JOIN candidates ON applications.candidate_id = candidates.id
+        INNER JOIN jobs ON applications.job_id = jobs.id
+        WHERE
+        is_public_application = 1
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        ${search === "" ?
+        `AND DATE(applications.created_at) >= ?
+        AND DATE(applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
+        order by created_at desc;
+        `;
+    try {
+        let params = [];
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        if (search === "") {
+            params.push(createdFrom);
+            params.push(createdTo);
+        }
+        const result = await db.query(query, params);
+        return result[0];
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
 const rejectPublicApplication = async (applicationId, hrEmail) => {
     const query = 'UPDATE public_applications SET is_rejected = 1, rejected_by = ? WHERE id = ?';
     try {
@@ -573,6 +687,8 @@ module.exports = {
     addPublicApplicationForJob,
     getPublicApplications,
     getPublicApplicationsForExcel,
+    getPublicApplicationsForBDE,
+    getPublicApplicationsForBDEExcel,
     rejectPublicApplication,
     deletePublicApplication,
     getRejectedApplications,

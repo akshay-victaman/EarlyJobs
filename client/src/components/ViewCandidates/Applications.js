@@ -7,9 +7,6 @@ import { differenceInDays, format, formatISO, parse, parseISO, sub } from 'date-
 import ExcelDownloadButton from '../ExcelDownloadButton';
 import Popup from 'reactjs-popup';
 import {toast} from 'react-toastify'
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import './style.css'
 
 const apiStatusConstant = {
@@ -96,7 +93,9 @@ const Applications = ({ setShowCandidateForm }) => {
       const backendUrl = process.env.REACT_APP_BACKEND_API_URL
       const role = Cookies.get('role');
       let apiUrl = ''
-      if (role === 'SHM') {
+      if (role === 'BDE') {
+        apiUrl = `${backendUrl}/jobs/bde/all`
+      } else if (role === 'SHM') {
         apiUrl = `${backendUrl}/jobs/senior-hm/all`
       } else {
         apiUrl = `${backendUrl}/jobs/hm/all`
@@ -136,13 +135,16 @@ const Applications = ({ setShowCandidateForm }) => {
     const getApplications = async () => {
         setApiStatus(apiStatusConstant.inProgress);
         let url = process.env.REACT_APP_BACKEND_API_URL
-        console.log(applicationStatus, typeof applicationStatus)
-        if (applicationStatus === 0) {
-          url = `${url}/api/public/applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
-        } else if (applicationStatus === 1) {
-          url = `${url}/api/public//approved-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+        if (Cookies.get('role') === 'BDE') {
+          url = `${url}/api/public/applications/bde?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
         } else {
-          url = `${url}/api/public//rejected-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+          if (applicationStatus === 0) {
+            url = `${url}/api/public/applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+          } else if (applicationStatus === 1) {
+            url = `${url}/api/public//approved-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+          } else {
+            url = `${url}/api/public//rejected-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+          }
         }
         const options = {
             method: 'GET',
@@ -162,6 +164,7 @@ const Applications = ({ setShowCandidateForm }) => {
                 console.log(data.applications)
 
                 const updatedData = data.applications.map(eachItem => ({
+                  appliedBy: eachItem.applied_by,
                   applicationId: eachItem.id,
                   jobId: eachItem.job_id,
                   fullName: eachItem.name,
@@ -199,12 +202,16 @@ const Applications = ({ setShowCandidateForm }) => {
 
     const getApplicationsForExcel = async () => {
       let url = process.env.REACT_APP_BACKEND_API_URL
-      if (applicationStatus === 0) {
-        url = `${url}/api/public/applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
-      } else if (applicationStatus === 1) {
-        url = `${url}/api/public/approved-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+      if (Cookies.get('role') === 'BDE') {
+        url = `${url}/api/public/applications/bde/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
       } else {
-        url = `${url}/api/public/rejected-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+        if (applicationStatus === 0) {
+          url = `${url}/api/public/applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+        } else if (applicationStatus === 1) {
+          url = `${url}/api/public/approved-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+        } else {
+          url = `${url}/api/public/rejected-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+        }
       }
       const options = {
           method: 'GET',
@@ -224,6 +231,7 @@ const Applications = ({ setShowCandidateForm }) => {
               console.log(data)
 
               const updatedData = data.map(eachItem => ({
+                appliedBy: eachItem.applied_by,
                 applicationId: eachItem.id,
                 jobId: eachItem.job_id,
                 fullName: eachItem.name,
@@ -753,14 +761,16 @@ const Applications = ({ setShowCandidateForm }) => {
             <h1 className='bde-heading' style={{textAlign: "center"}}><span className='head-span'>Applications</span></h1>
 
             <div className="job-section-select-filter-container">
-              <div className="job-section-select-container">
-                  <label className="homepage-label view-candidates-label" htmlFor='applicationStatus'>Application Status</label>
-                  <select className="homepage-input view-candidates-select" name='applicationStatus' id='applicationStatus' value={applicationStatus} onChange={handleApplicationStatusChange}>
-                      <option value={0}>Pending</option>
-                      <option value={1}>Shortlisted</option>
-                      <option value={2}>Rejected</option>
-                  </select>
-              </div>
+              { Cookies.get('role') !== 'BDE' &&
+                <div className="job-section-select-container">
+                    <label className="homepage-label view-candidates-label" htmlFor='applicationStatus'>Application Status</label>
+                    <select className="homepage-input view-candidates-select" name='applicationStatus' id='applicationStatus' value={applicationStatus} onChange={handleApplicationStatusChange}>
+                        <option value={0}>Pending</option>
+                        <option value={1}>Shortlisted</option>
+                        <option value={2}>Rejected</option>
+                    </select>
+                </div>
+              }
               <div className="job-section-select-container"> 
                   <label className="homepage-label view-candidates-label" htmlFor='jobId'>Select Job</label>
                   <select className="homepage-input view-candidates-select" name='jobId' id='jobId' value={jobId} onChange={handleJobIdChange}>
@@ -806,7 +816,8 @@ const Applications = ({ setShowCandidateForm }) => {
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
                     <th className="job-details-candidates-table-heading-cell">Email</th>
                     <th className="job-details-candidates-table-heading-cell">Applied At</th>
-                    {applicationStatus !== 1 && <th className="job-details-candidates-table-heading-cell">Action</th>}
+                    {Cookies.get('role') === 'BDE' && <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>}
+                    {(applicationStatus !== 1 && Cookies.get('role') !== 'BDE') && <th className="job-details-candidates-table-heading-cell">Action</th>}
                   </tr>
                   {
                     candidateList.length > 0 && candidateList.map((eachItem, index) => {
@@ -829,7 +840,8 @@ const Applications = ({ setShowCandidateForm }) => {
                             <td className="job-details-candidates-table-cell">{eachItem.phone}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.email}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.createdAt}</td>
-                            {applicationStatus !== 1 && 
+                            {Cookies.get('role') === 'BDE' && <td className="job-details-candidates-table-cell">{eachItem.appliedBy}</td>}
+                            {(applicationStatus !== 1 && Cookies.get('role') !== 'BDE') &&
                               <td className="job-details-candidates-table-cell">
                                 <div className='action-dropdown'>
                                       <Popup
