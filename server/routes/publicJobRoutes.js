@@ -10,6 +10,8 @@ router.get('/jobs/:jobId', publiceJobController.getJobDetails);
 router.post('/jobs', publiceJobController.addPublicApplicationForJob);
 router.get('/applications', authenticateToken, checkUserBlockStatus, publiceJobController.getPublicApplications);
 router.get('/applications/excel', authenticateToken, checkUserBlockStatus, publiceJobController.getPublicApplicationsForExcel);
+router.get('/applications/bde', authenticateToken, checkUserBlockStatus, publiceJobController.getPublicApplicationsForBDE);
+router.get('/applications/bde/excel', authenticateToken, checkUserBlockStatus, publiceJobController.getPublicApplicationsForBDEExcel);
 router.put('/applications/:applicationId', authenticateToken, checkUserBlockStatus, publiceJobController.rejectPublicApplication);
 router.delete('/applications/:applicationId', authenticateToken, checkUserBlockStatus, publiceJobController.deletePublicApplication);
 router.get('/rejected-applications', authenticateToken, checkUserBlockStatus, publiceJobController.getRejectedApplications);
