@@ -3,6 +3,31 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import { Oval } from 'react-loader-spinner';
 import app from '../../firebase'
 import './style.css'
+import FormsFaqs from '../../components/FormsFaqs';
+
+
+const servicePageAccordianData = [
+    {
+        label: 'How does EarlyJobs match candidates with job opportunities?',
+        content: 'EarlyJobs uses a combination of advanced algorithms and personalized assessments to match candidates with job opportunities that align with their skills, experience, and career goals. Our team also conducts thorough interviews to ensure a good fit.'
+    },
+    {
+        label: 'What industries does EarlyJobs specialize in?',
+        content: 'EarlyJobs specializes in a wide range of industries including technology, BPO, finance, marketing, engineering, and more. Our diverse network allows us to cater to various sectors and provide specialized recruitment services.'
+    },
+    {
+        label: 'What is the process for employers to start working with EarlyJobs?',
+        content: 'Employers can start working with EarlyJobs by contacting our team through our website or directly reaching out to our sales department. We will discuss your hiring needs, provide a customized recruitment plan, and begin sourcing and screening candidates.'
+    },
+    {
+        label: 'How does EarlyJobs ensure the quality of candidates?',
+        content: 'EarlyJobs ensures the quality of candidates through a rigorous screening process that includes background checks, skills assessments, and in-depth interviews. We also consider cultural fit to ensure candidates will thrive in their new roles.'
+    },
+    {
+        label: 'Is there a fee for candidates to use EarlyJobs services?',
+        content: 'No, EarlyJobs does not charge candidates for using our recruitment services. Our fees are covered by the employers seeking to hire through our platform, allowing us to offer our services to job seekers at no cost.'
+    },
+];
 
 const PartnerWithUs = () => {
     const [error, setError] = useState('')
@@ -261,7 +286,16 @@ const PartnerWithUs = () => {
     return (
         <div className="partner-with-us-con">
             <h1 className='partner-heading'>Partner with us</h1>
-            {success ? renderSuccess() : renderForm()}
+            <div className='bde-sub-container'>
+                <div className='bde-content-con'>
+                    <h2 className='bde-sub-heading'>Fill the form below to become a partner</h2>
+                    <p className='bde-sub-text'>Please fill all the required fields to become a partner</p>
+                    <FormsFaqs accordionData={servicePageAccordianData} />
+                </div>
+                <div className='bde-form-con'>
+                    {success ? renderSuccess() : renderForm()}
+                </div>
+            </div>
         </div>
     )
 }
