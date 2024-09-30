@@ -34,8 +34,9 @@ const WhyEarlyjobs = lazy(() => import("../pages/WhyEarlyjobs"));
 const ITRecruitmentServicePage = lazy(() => import("../pages/OurServicesPages/ITRecruitmentServicePage.jsx"));
 const FinanceAccountingServicePage = lazy(() => import("../pages/OurServicesPages/FinanceAccountingServicePage.jsx"));
 const SalesMarketingServicePage = lazy(() => import("../pages/OurServicesPages/SalesMarketingServicePage.jsx"));
-
-
+const RecruitmentProcessOutsourcingPage = lazy(() => import("../pages/OurServicesPages/RecruitmentProcessOutsourcingPage.jsx"));
+const ValueStaffingServicesPage = lazy(() => import("../pages/OurServicesPages/ValueStaffingServicesPage.jsx")); 
+const ITStaffingServicesPage = lazy(() => import("../pages/OurServicesPages/ITStaffingServicesPage.jsx"));
 const EachRoute = () => {
     return (
         <Switch>
@@ -63,7 +64,31 @@ const EachRoute = () => {
                         <WhyEarlyjobs />
                     </Suspense>
                 }
-            />
+            /> 
+
+            <Route exact path='/recruitment-process-outsourcing'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <RecruitmentProcessOutsourcingPage />
+                    </Suspense>
+                }
+            /> 
+
+            <Route exact path='/value-staffing-service'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <ValueStaffingServicesPage />
+                    </Suspense>
+                }
+            />  
+
+            <Route exact path='/it-staffing-services'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <ITStaffingServicesPage />
+                    </Suspense>
+                }
+            />  
 
             <Route exact path='/it-recruitment'
                 render={() => 

@@ -38,7 +38,7 @@ const HomePage = () => {
     const recruitmentCards = [
         { 
             title: 'Dream Companies', 
-            desc: 'Choose from 100+ Companies, Unicorn startups, Top Product Companies and more…', 
+            desc: 'Choose from 30+ Companies, Unicorn startups, Top Product Companies and more…', 
             imageUrl: '/future_recruitment_imgs/dream-companies.png' 
         },
         { 
