@@ -152,7 +152,7 @@ const LoginPage = () => {
                         <p className='error-message'>{error}</p>
                     </form>
                     <h1 className='homepage-quote'>
-                        <span className='quote-span'>8000+</span> Openings | <span className='quote-span'>50+</span> Locations
+                        <span className='quote-span'>3000+</span> Openings | <span className='quote-span'>50+</span> Locations
                         <br />
                          <span className='quote-span'>30+</span> Companies
                         <br />

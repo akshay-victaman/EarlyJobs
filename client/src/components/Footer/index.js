@@ -47,19 +47,21 @@ const Footer = ({handleShowContactForm}) => {
                     <div className="footer-sub-con">
                         <a href="https://play.google.com/store/apps/details?id=com.victaman.earlyjobs" rel="noreferrer" target="_blank" className="footer-store-icons">
                             <img src="/google-play-badge-logo.svg" draggable={false} alt="google-play" className="footer-store-icon" />
+                        </a> 
+                        <a href="https://apps.apple.com/in/app/earlyjobs/id6590626019" rel="noreferrer" target="_blank" className="footer-store-icons">
                             <img src="/app-store-logo.svg" draggable={false} alt="app-store" className="footer-store-icon" />
                         </a>
                     </div>
                 </div>
                 <div className="footer-links-container">
                     <h3 className="footer-heading">COMPANY</h3>
-                    <Link to='/view-openings' className="footer-link">View Openings</Link>
                     <Link to='/about' className="footer-link">About Us</Link>
                     <Link to='/team' className="footer-link">Our Team</Link>
                     <Link to='/franchise-with-us' className="footer-link">Franchise With Us</Link>
                     <Link to='/partner-with-us' className="footer-link">Partner With Us</Link>
                     <Link to='/terms-and-conditions' className="footer-link">Terms & Conditions</Link>
-                    <Link to='/privacy-policy' className="footer-link">Privacy Policy</Link>
+                    <Link to='/privacy-policy' className="footer-link">Privacy Policy</Link> 
+                    <Link to='/view-openings' className="footer-link">Blog</Link>
                     <p className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact Us</p>
                 </div>
                 <div className="footer-links-container">
@@ -69,9 +71,9 @@ const Footer = ({handleShowContactForm}) => {
                     <Link to='/sales-marketing-services' className="footer-link">Sales & Marketing Recruitment</Link>
                     <Link to='/top-executive-recruitment-firm' className="footer-link">Top Executive Recruitment</Link>
                     <Link to='/hr-executive-recruitment-services' className="footer-link">HR & Executive Recruitment</Link>
-                    <Link to='/view-openings' className="footer-link">Recruitment Process Outsourcing</Link>
-                    <Link to='/view-openings' className="footer-link">Value Staffing Services</Link>
-                    <Link to='/view-openings' className="footer-link">IT Staffing Services</Link>
+                    <Link to='/recruitment-process-outsourcing' className="footer-link">Recruitment Process Outsourcing</Link>
+                    <Link to='/value-staffing-service' className="footer-link">Value Staffing Services</Link>
+                    <Link to='/it-staffing-services' className="footer-link">IT Staffing Services</Link>
                 </div>
                 <div className="footer-links-container">
                     <h3 className="footer-heading">LOCATIONS</h3>

@@ -29,7 +29,7 @@ async function getNewCandidatesForRecruiter(recruiter) {
             FROM candidates c 
             LEFT JOIN recruiter_recommendations r ON c.id = r.candidate_id
             WHERE c.is_joined = 0
-            AND (r.recommended_at IS NULL OR r.recommended_at < DATE_SUB(CURRENT_DATE, INTERVAL 4 DAY))
+            AND (r.recommended_at IS NULL OR r.recommended_at < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY))
             AND c.job_category IN (${db.escape(recruiter.hiring_category.split(', '))})
             GROUP BY c.id
             HAVING COUNT(r.candidate_id) = 0
