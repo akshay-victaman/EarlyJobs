@@ -61,7 +61,7 @@ const Footer = ({handleShowContactForm}) => {
                     <Link to='/partner-with-us' className="footer-link">Partner With Us</Link>
                     <Link to='/terms-and-conditions' className="footer-link">Terms & Conditions</Link>
                     <Link to='/privacy-policy' className="footer-link">Privacy Policy</Link> 
-                    <Link to='/view-openings' className="footer-link">Blog</Link>
+                    <Link to='/blogs' className="footer-link">Blogs</Link>
                     <p className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact Us</p>
                 </div>
                 <div className="footer-links-container">
