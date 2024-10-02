@@ -36,7 +36,9 @@ const FinanceAccountingServicePage = lazy(() => import("../pages/OurServicesPage
 const SalesMarketingServicePage = lazy(() => import("../pages/OurServicesPages/SalesMarketingServicePage.jsx"));
 const RecruitmentProcessOutsourcingPage = lazy(() => import("../pages/OurServicesPages/RecruitmentProcessOutsourcingPage.jsx"));
 const ValueStaffingServicesPage = lazy(() => import("../pages/OurServicesPages/ValueStaffingServicesPage.jsx")); 
-const ITStaffingServicesPage = lazy(() => import("../pages/OurServicesPages/ITStaffingServicesPage.jsx"));
+const ITStaffingServicesPage = lazy(() => import("../pages/OurServicesPages/ITStaffingServicesPage.jsx")); 
+const BlogPage = lazy(() => import("../components/BlogPage")); 
+const BlogDetails = lazy(() => import("../components/BlogDetails"));
 const EachRoute = () => {
     return (
         <Switch>
@@ -98,6 +100,22 @@ const EachRoute = () => {
                 }
             />
 
+            <Route exact path='/blogs'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <BlogPage />
+                    </Suspense>
+                }
+            /> 
+
+            <Route exact path="/blog/:id"
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <BlogDetails />
+                    </Suspense>
+                }
+            />
+           
             <Route exact path='/finance-and-accounting-recruitment'
                 render={() => 
                     <Suspense fallback={<Loader />}>

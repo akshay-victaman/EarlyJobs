@@ -1,7 +1,6 @@
 const cors = require('cors');
 const sls = require('serverless-http');
 const app = require('./config/express'); 
-const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const jobRoutes = require('./routes/jobRoutes');
 const adminRoutes = require('./routes/adminRoutes');
