@@ -4,7 +4,6 @@ import ClientCarousel from "../../components/ClientCarousal";
 import HeroSection from "../../components/Services/HeroSection";
 import RecruitingProcess from "../../components/Services/RecruitingProcess";
 import HowWeHelpSection from "../../components/Services/HowWeHelpSection";
-import Highlights from "../../components/Services/Highlights";
 import Faqs from "../../components/Services/Faqs";
 import './style.css';
 import { useEffect } from "react";

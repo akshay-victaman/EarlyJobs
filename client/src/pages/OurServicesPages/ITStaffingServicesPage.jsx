@@ -4,7 +4,6 @@ import ClientCarousel from "../../components/ClientCarousal";
 import HeroSection from "../../components/Services/HeroSection";
 import RecruitingProcess from "../../components/Services/RecruitingProcess";
 import HowWeHelpSection from "../../components/Services/HowWeHelpSection";
-import Highlights from "../../components/Services/Highlights";
 import Faqs from "../../components/Services/Faqs";
 import './style.css';
 import { useEffect } from "react";
@@ -64,26 +63,6 @@ const section3Data = [
     },
 ]
 
-
-
-const section4HighlightData = [
-    {
-        heading: 'E2E',
-        text: 'EarlyJobs manages the entire recruitment process end-to-end, becoming your dedicated recruiting team for long-term hiring solutions.'
-    },
-    {
-        heading: 'Focused RPO',
-        text: 'With EarlyJobs, client satisfaction is key. We measure success by placements and the positive impact on your finance functions. We are dedicated to exceptional service, seamless recruitment, and meeting your specific needs.'
-    },
-    {
-        heading: 'Limited RPO',
-        text: 'EarlyJobs manages the entire recruitment process, focusing on short-term hiring goals while ensuring that your team is equipped with the right talent to drive success.'
-    },
-    {
-        heading: 'Components',
-        text: 'EarlyJobs offers dedicated recruiters and scalable resources, manages process and compliance, provides strategic reporting and analysis, and utilizes an Applicant Tracking System.'
-    },
-]
 
 const servicePageAccordianData = [
     {
@@ -165,7 +144,7 @@ const ITStaffingServicesPage = () => {
                         <br />
                         Addressing Skill Gaps: The tech industry is constantly evolving, leading to skill gaps in various areas. IT staffing companies play a vital role in identifying these gaps and connecting businesses with professionals who possess the latest skills and knowledge.
                     </p>
-                    <h1 className="service-page-s4-subheading">Why Outsource Recruitment Service From EarlyJobs ?</h1>
+                    <h1 className="service-page-s4-subheading">Why IT Staffing Services From EarlyJobs ?</h1>
                     <p className="service-page-s4-text">
                     In the ever-evolving world of IT, having the right talent can make or break an organization’s success. India’s IT staffing companies offer a gateway to a world of possibilities, with access to diverse talent,cost-effective solutions, and a laser focus on core competencies. By outsourcing IT staffing to the experts in India, businesses can future-proof their #152c5bworkforce and stay ahead of the tech curve.
                     <br/> 
