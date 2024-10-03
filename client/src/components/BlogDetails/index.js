@@ -10,8 +10,8 @@ const BlogDetails = () => {
 
     useEffect(() => { 
         window.scrollTo(0, 0);
-        document.title = 'Blog Page | EarlyJobs'; 
-        
+        document.title = 'Blogs Page | EarlyJobs'; 
+
         const fetchBlog = async () => {
             try {
                 // Since the blogTitle is already encoded in the URL, don't encode it again.
