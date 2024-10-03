@@ -1,0 +1,118 @@
+.blog-form-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px; 
+    gap: 20px;
+    flex-wrap: wrap; /* Allows wrapping for smaller screens */
+    transition: all 0.3s ease-in-out;
+  }
+
+  .blog{
+    padding-top: 40px;
+    margin-top: 50px;
+  }
+  
+  .bde-content-con {
+    width: 48%;
+    border: 1px solid #ccc;
+    padding: 15px; /* Reduced padding */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .add-job-vacancies-form-con {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Reduced gap between form fields */
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px; /* Standardized spacing between form groups */
+  }
+  
+  .salary-container {
+    width: 100%;
+  }
+  
+  .salary-input {
+    width: 100%;
+    padding: 8px; /* Reduced padding inside input fields */
+  }
+  
+  .bde-form-btn {
+    padding: 8px 15px; /* Reduced padding for the submit button */
+    background-color: #EB6A4D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+  }
+  
+  .bde-form-btn:hover {
+    background-color: #d95f43;
+    transform: translateY(-2px);
+  }
+  
+  .blog-list-section {
+    width: 46%;
+    border: 1px solid #ccc;
+    padding: 15px; /* Reduced padding for consistency */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+  
+  .blog-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0; /* Removed extra padding and margin */
+  }
+  
+  .blog-item {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .blog-item h3 {
+    margin: 0;
+  }
+  
+  .blog-item button {
+    padding: 5px 10px;
+    background-color: #EB6A4D;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .blog-item button:hover {
+    background-color: #d95f43;
+  }
+  
+  /* Media queries for responsiveness */
+  @media screen and (max-width: 768px) {
+    .blog-form-container {
+      flex-direction: column;
+      gap: 20px; /* Reduced gap on smaller screens */
+    }
+  
+    .bde-content-con, 
+    .blog-list-section {
+      width: 100%;
+    }
+  
+    .bde-content-con {
+      margin-bottom: 20px;
+    }
+  }
+  

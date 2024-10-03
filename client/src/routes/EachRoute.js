@@ -38,7 +38,8 @@ const RecruitmentProcessOutsourcingPage = lazy(() => import("../pages/OurService
 const ValueStaffingServicesPage = lazy(() => import("../pages/OurServicesPages/ValueStaffingServicesPage.jsx")); 
 const ITStaffingServicesPage = lazy(() => import("../pages/OurServicesPages/ITStaffingServicesPage.jsx")); 
 const BlogPage = lazy(() => import("../components/BlogPage")); 
-const BlogDetails = lazy(() => import("../components/BlogDetails"));
+const BlogDetails = lazy(() => import("../components/BlogDetails")); 
+const AddBlogPage = lazy(() => import("../components/AddBlogPage")); 
 const EachRoute = () => {
     return (
         <Switch>
@@ -100,7 +101,7 @@ const EachRoute = () => {
                 }
             />
 
-            <Route exact path='/blogs'
+            {/* <Route exact path='/blogs'
                 render={() => 
                     <Suspense fallback={<Loader />}>
                         <BlogPage />
@@ -112,6 +113,14 @@ const EachRoute = () => {
                 render={() => 
                     <Suspense fallback={<Loader />}>
                         <BlogDetails />
+                    </Suspense>
+                }
+            /> */} 
+
+        <Route exact path='/add-blog'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <AddBlogPage />
                     </Suspense>
                 }
             />
