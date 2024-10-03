@@ -10,7 +10,7 @@ const BlogDetails = () => {
 
     useEffect(() => { 
         window.scrollTo(0, 0);
-        document.title = 'Blogs Page | EarlyJobs'; 
+        document.title = 'Blogs Pages | EarlyJobs'; 
 
         const fetchBlog = async () => {
             try {
