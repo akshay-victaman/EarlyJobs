@@ -108,7 +108,7 @@ const EachRoute = () => {
                 }
             /> 
 
-            <Route exact path="/blog/:id"
+            <Route exact  path="/blogs/:blogTitle"
                 render={() => 
                     <Suspense fallback={<Loader />}>
                         <BlogDetails />

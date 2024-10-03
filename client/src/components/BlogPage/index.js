@@ -14,7 +14,7 @@ const BlogPage = () => {
         const fetchBlogs = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/get-blogs`);
-                setBlogs(response.data.blogs); // Assuming response contains 'blogs' array
+                setBlogs(response.data.blogs);
             } catch (err) {
                 setError('Failed to fetch blogs');
                 console.error('Error fetching blogs:', err);
@@ -40,11 +40,11 @@ const BlogPage = () => {
 
             <div className="blog-grid">
                 {blogs.map((blog) => (
-                    <div className="blog-card" key={blog.id}>
-                        <Link to={`/blog/${blog.id}`}>
+                    <div className="blog-card" key={blog.id || blog._id}> {/* Ensure unique key */}
+                        <Link to={`/blogs/${encodeURIComponent(blog.title)}`}> {/* Encode title for the URL */}
                             <img src={blog.image} alt={blog.title} className="blog-image" />
                             <div className="blog-content">
-                                <h2>{blog.title}</h2>
+                                <h2 id='blog-sub-title'>{blog.title}</h2>
                                 <p className="blog-meta">
                                     {formatDate(blog.publishedDate)} | {blog.readtime}
                                 </p>
