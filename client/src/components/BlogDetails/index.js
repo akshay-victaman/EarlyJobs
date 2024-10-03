@@ -1,74 +1,53 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom'; // Import useParams to get the title from the URL
 import axios from 'axios';
 import './style.css';
 
 const BlogDetails = () => {
-    const { id } = useParams(); // Get the blog ID from URL params
-    const [blog, setBlog] = useState(null); // Blog details state
-    const [recommendedBlogs, setRecommendedBlogs] = useState([]); // Recommended blogs state
-    const [error, setError] = useState(null); // Error state
+    const { blogTitle } = useParams(); // Get the blog title from the URL
+    const [blog, setBlog] = useState(null);
+    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        window.scrollTo(0, 0); // Scroll to the top on load
-        document.title = 'Blog Page | EarlyJobs'; // Set the document title
-
-        const fetchBlogDetails = async () => {
+    useEffect(() => { 
+        window.scrollTo(0, 0);
+        document.title = 'Blog Page | EarlyJobs'; 
+        
+        const fetchBlog = async () => {
             try {
-                console.log(`Fetching blog details for ID: ${id}`); // Debugging log
-                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/get-blog/${id}`);
-                console.log('Blog details fetched:', response.data); // Debugging log
-                setBlog(response.data.blog); // Assuming the blog object is in `response.data.blog`
+                // Since the blogTitle is already encoded in the URL, don't encode it again.
+                console.log("Fetching blog with title: ", blogTitle);
+                
+                // Fetch blog details without re-encoding the title
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/blogs/${blogTitle}`);
+                
+                setBlog(response.data);
             } catch (err) {
                 setError('Failed to fetch blog details');
-                console.error('Error fetching blog details:', err); // Debugging log
+                console.error('Error fetching blog:', err);
             }
         };
 
-        const fetchRecommendedBlogs = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/get-blogs`);
-                setRecommendedBlogs(response.data.blogs); // Assuming the recommended blogs are in `response.data.blogs`
-            } catch (err) {
-                console.error('Error fetching recommended blogs:', err); // Debugging log
-            }
-        };
-
-        fetchBlogDetails();
-        fetchRecommendedBlogs();
-    }, [id]);
+        if (blogTitle) {
+            fetchBlog();
+        }
+    }, [blogTitle]); // Re-fetch blog if blogTitle changes
 
     if (error) {
-        return <p className="error-message">{error}</p>; // Display error message if API call fails
+        return <p className="error-message">{error}</p>;
     }
 
     if (!blog) {
-        return <p>Loading blog details...</p>; // Display loading state if blog data is not yet available
+        return <p>Loading...</p>; // Show a loading message while the blog details are being fetched
     }
 
     return (
-        <div className="privacy-policy-page">
-            <div className="privacy-policy-page__background">
-                <h1 className='privacy-policy-heading'> Blogs</h1> 
-            </div> 
-            <div className="blog-detail-page">
-                <div className="blog-detail-content">
-                    <h1>{blog.title}</h1> {/* Render the blog title */}
-                    <img src={blog.image} alt={blog.title} className="blog-detail-image" /> {/* Render the blog image */}
-                    <p>{blog.description}</p> {/* Render the blog description */}
-                </div>
-                <div className="blog-sidebar">
-                    <img src="/path/to/constant-image.jpg" alt="Constant" className="constant-image" />
-                    <div className="recommended-blogs">
-                        <h3>Recommended Blogs</h3>
-                        {recommendedBlogs.map((recommendedBlog) => (
-                            <div key={recommendedBlog.id} className="recommended-blog">
-                                <h4>{recommendedBlog.title}</h4>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+        <div className="blog-details">
+            <h1>{blog.title}</h1>
+            <img src={blog.image} alt={blog.title} className="blog-image" />
+            <div className="blog-meta">
+                <p>Published on {new Date(blog.publishedDate).toLocaleDateString()} | {blog.readtime}</p>
             </div>
+            <div dangerouslySetInnerHTML={{ __html: blog.content }} /> {/* Render blog content */}
         </div>
     );
 };

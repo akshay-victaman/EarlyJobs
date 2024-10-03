@@ -17,6 +17,11 @@
     margin-bottom: 10px;
 }
 
+#blog-sub-title{
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 10px;
+}
 .blog-header p {
     font-size: 1.2rem;
     color: #555;
@@ -44,6 +49,23 @@
 
 .blog-card:hover {
     transform: translateY(-5px);
+}
+
+/* Styles for blog card links */
+.blog-card a {
+    text-decoration: none; /* Remove the underline from links */
+    color: inherit; /* Inherit text color from parent element */
+    transition: color 0.3s ease; /* Smooth color transition on hover */
+    display: block; /* Ensure the link takes up the entire card area */
+    height: 100%; /* Make the link fill the card vertically */
+}
+
+/* Highlight effect for the link on hover */
+
+
+/* Optional: Additional style for visited links */
+.blog-card a:visited {
+    color: #6c757d; /* Change color for visited links */
 }
 
 .blog-image {
