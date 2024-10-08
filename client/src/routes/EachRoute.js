@@ -101,7 +101,7 @@ const EachRoute = () => {
                 }
             />
 
-            {/* <Route exact path='/blogs'
+            <Route exact path='/blogs'
                 render={() => 
                     <Suspense fallback={<Loader />}>
                         <BlogPage />
@@ -115,7 +115,7 @@ const EachRoute = () => {
                         <BlogDetails />
                     </Suspense>
                 }
-            /> */} 
+            /> 
 
         <Route exact path='/add-blog'
                 render={() => 

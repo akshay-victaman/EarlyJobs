@@ -154,5 +154,35 @@ const EditBlogbyId = async (req, res) => {
   }
 }
 
+const deleteBlogById = async (req, res) => {
+  const { blogId } = req.params;
 
-module.exports = { CreateBlog ,getBlogs,getBlogbyTittle,EditBlogbyId,getAllBlogs,getBlogById};
+  try {
+    const blog = await BlogModel.findOne({ id: blogId });
+
+    if (!blog) {
+      return res.status(404).json({ message: 'Blog not found' });
+    }
+    await BlogModel.deleteOne({ id: blogId });
+
+    const blogsCollection = await BlogsCollectionModel.findOne({ blogs: blog._id });
+
+    if (blogsCollection) {
+      blogsCollection.blogs = blogsCollection.blogs.filter((blogId) => !blogId.equals(blog._id));
+
+      if (blogsCollection.blogs.length === 0) {
+        await BlogsCollectionModel.deleteOne({ blog_id: blogId });
+      } else {
+        await blogsCollection.save();
+      }
+    }
+
+    res.status(200).json({ message: 'Blog deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting blog:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+module.exports = { CreateBlog ,getBlogs,getBlogbyTittle,EditBlogbyId,getAllBlogs,getBlogById,deleteBlogById};

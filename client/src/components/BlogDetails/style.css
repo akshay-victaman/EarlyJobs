@@ -1,59 +1,189 @@
-
-.blog-details {
-    max-width: 800px; 
-    margin: 20px auto; 
-    padding: 20px; 
-    background-color: #f9f9f9; 
-    border-radius: 8px; 
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
-    font-family: 'Arial', sans-serif; 
-    padding-top: 50px;
-    margin-top: 40px;
+/* General container */
+.blog-details-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 120px 20px 0;
+    gap: 30px;
+    
 }
 
-.blog-details h1 {
-    font-size: 2.5rem; 
-    margin-bottom: 20px; 
-    color: #333; 
-}
-.blog-image {
-    width: 100%; 
-    height: auto; 
-    border-radius: 8px; 
-    margin-bottom: 20px; 
+.blog-details-cont {
+    width: 75%; /* Primary content width */
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-
-.blog-details p {
-    font-size: 1.1rem; 
-    line-height: 1.6; 
-    margin-bottom: 15px; 
-    color: #555; 
+/* Styling for the related blogs section */
+.related-blogs {
+    width: 35%;
+    
+    border-radius: 8px;
+   
 }
 
+.related-blog-card {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.related-blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.related-blog-card-content {
+    padding: 15px;
+}
+
+.related-blog-logo {
+    width: 100%;
+    height: 150px; /* Reduced height */
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.related-blog h4 {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.related-blog p {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* Blog top info (Admin, date, read time) */
+.blog-top-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.blog-top-info p {
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+/* Blog image styling */
+.blog-image-cont {
+    width: 80%;
+    height: 270px; /* Reduced height for main blog image */
+    margin-bottom: 20px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Blog meta section */
 .blog-meta {
-    font-size: 0.9rem; 
-    color: #888; 
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
+    color: #555;
+    font-size: 0.9rem;
 }
 
-.blog-details div {
-    font-weight: bold; 
-    color: #007BFF; 
+/* Blog keywords styling */
+.blog-keywords {
     margin-top: 20px;
 }
 
+.blog-keywords h3 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.blog-keywords p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .blog-details-container {
+        flex-direction: column;
+        padding-top: 50px;
+    }
+
+    .blog-details-cont {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .related-blogs {
+        width: 100%;
+    }
+}
 
 @media (max-width: 768px) {
-    .blog-details {
-        padding: 15px; 
+    .blog-details-container {
+        padding: 20px 10px;
     }
 
-    .blog-details h1 {
-        font-size: 2rem; 
+    .blog-details-cont,
+    .related-blogs {
+        padding: 15px;
     }
 
-    .blog-details p {
-        font-size: 1rem; 
+    .related-blog-logo {
+        height: 120px; /* Adjusted height for smaller screens */
     }
+
+    .blog-image-cont {
+        height: 200px; /* Adjusted height for smaller screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .related-blog-logo {
+        height: 100px; /* Further reduced height for very small screens */
+    }
+
+    .blog-top-info p {
+        font-size: 0.8rem;
+    }
+
+    .related-blog h4 {
+        font-size: 1rem;
+    }
+    .blog-details-container{
+        margin-top: 20px;
+    }
+}
+
+/* Styles for the keyword section */
+.blog-keywords {
+    margin-top: 20px;
+}
+
+.keyword-container {
+    display: flex;
+    flex-wrap: wrap; /* Ensure keywords wrap to next line if necessary */
+}
+
+.keyword {
+    background-color: #EB6A4D; /* Set background to orange */
+    color: white; /* Set text color to white for contrast */
+    padding: 5px 10px; 
+    margin: 5px; 
+    border-radius: 4px; 
+    font-weight: bold;
+    font-size: 14px; /* Adjust font size */
+}
+
+.keyword::after {
+    content: ''; /* Ensure commas are not styled */
 }
