@@ -38,24 +38,24 @@ const BlogPage = () => {
         <div className="blog-page">
             <div className="blog-header">
                 <h1>Discover New Perspectives on <br /> Professional Growth and Efficiency</h1>
-                <p>Uncover valuable strategies to maximize your professional journey, <br/> optimize time, and unlock opportunities for knowledge monetization.</p>
+                <p>Uncover valuable strategies to maximize your professional journey, optimize time, and unlock <br/> opportunities for knowledge monetization.</p>
             </div>
 
             {error && <p className="error-message">{error}</p>}
 
-            {loading ? ( // Show loader while loading
+            {loading ? ( 
                 <div className="loading-container">
-                    <Oval
-                                visible={true}
-                                height="20"
-                                width="20"
-                                color="#ffffff"
-                                strokeWidth="4"
-                                ariaLabel="oval-loading"
-                                wrapperStyle={{}}
-                                secondaryColor="#ffffff"
-                                wrapperClass=""
-                            />
+                     <Oval
+                         visible={true}
+                         height="20"
+                         width="20"
+                         color="#ffffff"
+                         strokeWidth="4"
+                         ariaLabel="oval-loading"
+                         wrapperStyle={{}}
+                         secondaryColor="#ffffff"
+                         wrapperClass=""
+                     />
                 </div>
             ) : (
                 <div className="blog-grid">

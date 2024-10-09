@@ -6,7 +6,7 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './style.css';
-import EditorComponent from '../TextEditorQuill'; // Importing the editor component
+import EditorComponent from '../TextEditorQuill'; 
 
 const BlogForm = () => {
   const { blogId } = useParams();
@@ -48,7 +48,7 @@ const BlogForm = () => {
       const blog = response.data;
       setTitle(blog.title);
       setContent(blog.content);
-      setImage(blog.image); // Image URL from the server for editing
+      setImage(blog.image); 
       setKeywords(blog.keywords.join(', '));
       setEditMode(true);
     } catch (error) {
@@ -66,7 +66,7 @@ const BlogForm = () => {
   };
 
   const handleEditClick = (id) => {
-    history.push(`/edit-blog/${id}`); // Redirect to blog edit page with blogId
+    history.push(`/edit-blog/${id}`); 
   };
 
   const handleDeleteClick = async (id) => {
@@ -75,7 +75,7 @@ const BlogForm = () => {
       if (response.status === 200) {
         setMessage('Blog deleted successfully');
         toast.success('Blog deleted successfully!');
-        fetchAllBlogs(); // Refresh blog list after deletion
+        fetchAllBlogs();
       }
     } catch (error) {
       console.error('Error deleting blog:', error);

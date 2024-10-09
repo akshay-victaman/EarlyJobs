@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { ThreeCircles } from 'react-loader-spinner'; // Import the loader spinner
+import { ThreeCircles } from 'react-loader-spinner'; 
 import './style.css';
 
 const BlogDetails = () => {
@@ -10,8 +10,7 @@ const BlogDetails = () => {
     const [relatedBlogs, setRelatedBlogs] = useState([]);
     const [isLoadingRelatedBlogs, setIsLoadingRelatedBlogs] = useState(true);
     const [error, setError] = useState(null);
-
-    // Loader component
+    
     const renderLoader = () => (
         <div data-testid="loader" className="loader-container">
             <ThreeCircles color="#EB6A4D" height={50} width={50} />
@@ -39,16 +38,12 @@ const BlogDetails = () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/get-blogs`);
                 console.log("Fetched related blogs:", response.data);
-
-                // Access the blogs array from the response object
                 const allBlogs = response.data.blogs;
-
-                // Filter out the current blog and handle case-insensitivity
                 setRelatedBlogs(allBlogs.filter(relatedBlog => relatedBlog.title.toLowerCase() !== blogTitle.toLowerCase()));
             } catch (err) {
                 console.error('Error fetching related blogs:', err);
             } finally {
-                setIsLoadingRelatedBlogs(false); // Stop loading after fetching
+                setIsLoadingRelatedBlogs(false); 
             }
         };
 
@@ -65,25 +60,30 @@ const BlogDetails = () => {
     }
 
     if (!blog) {
-        return renderLoader(); // Show loader while fetching blog details
+        return renderLoader(); 
     }
 
     return (
         <div className="blog-details-container">
-            {/* Blog content */}
             <div className="blog-details-cont">
-                <div className="blog-top-info">
-                    <p>Admin</p>
-                    <p>{new Date(blog.publishedDate).toLocaleDateString()} • {blog.readtime} Read</p>
+                <div className="blog-top-info">  
+                    <img src="/early-jobs-logo2.png" alt="website logo" className='blog-logo'/>
+                    <div className="blog-content">
+                        <p className='admin-title'>Admin</p>
+                        <p>
+                            {new Date(blog.publishedDate).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: '2-digit'
+                            }).replace(',', '-')} • {blog.readtime} Read
+                        </p>
+
+                    </div>
                 </div>
 
-                <h1>{blog.title}</h1>
+
+                <h1 className='blog-details-title'>{blog.title}</h1>
                 <img src={blog.image} alt={blog.title} className="blog-image-cont" />
-
-                <div className="blog-meta">
-                    <p>Published on {new Date(blog.publishedDate).toLocaleDateString()} | {blog.readtime} Read</p>
-                </div>
-
                 <div dangerouslySetInnerHTML={{ __html: blog.content }} />
 
                 {blog.keywords && blog.keywords.length > 0 && (
@@ -102,7 +102,7 @@ const BlogDetails = () => {
             </div>
 
             <div className="related-blogs">
-                <h3>Related Blogs</h3>
+                <h3 className='related-blogs-heading'>Related Blogs</h3>
                 {isLoadingRelatedBlogs ? (
                     renderLoader() // Show loader while fetching related blogs
                 ) : relatedBlogs.length > 0 ? (
@@ -110,8 +110,20 @@ const BlogDetails = () => {
                         {relatedBlogs.map((relatedBlog) => (
                             <Link to={`/blogs/${relatedBlog.title}`} key={relatedBlog.id} className="related-blog-card">
                                 <div className="related-blog-card-content">
-                                    <h4>{relatedBlog.title}</h4>
-                                    <p>{new Date(relatedBlog.publishedDate).toLocaleDateString()} • {relatedBlog.readtime} Mins Read</p>
+                                    <h4 className='realted-content-title'> {relatedBlog.title}</h4> 
+                                    <div className='related-cont'>
+                                    <img src="/early-jobs-logo2.png" alt="website logo" className='blog-logo'/>
+                                    <div className='realted-content-logo-cont'>
+                                    <p className='admin-title'>Admin</p>
+                                    <p>
+                                        {new Date(blog.publishedDate).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: '2-digit'
+                                        }).replace(',', '-')} • {blog.readtime} Read
+                                    </p>
+                                    </div>
+                                    </div>
                                 </div>
                             </Link>
                         ))}

@@ -1,15 +1,20 @@
-/* BlogPage specific styling */
+
 .blog-page {
     padding: 30px;
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
+    min-height: 87vh;
+    margin-top: 13vh;
+    padding: 25px 6%;
+    padding-top :50px;
 }
 
 .blog-header {
     text-align: left;
     margin-bottom: 40px;
-    margin-top: 50px; 
-    padding-top: 50px;
+    margin-top: 40px;
+    padding-bottom: 20px;
+  
 }
 
 .blog-header h1 {
