@@ -355,3 +355,57 @@
 .msg{
   color: white;
 }
+.blog-card-snippet {
+  font-size: 1em;
+  color: #555;
+}
+
+.blog-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.blog-actions button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.blog-actions button:hover {
+  background-color: #0056b3;
+}
+
+
+.add-blog-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.add-blog-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.add-blog-card:hover {
+  transform: scale(1.05);
+}
+
+.add-blog-card h3 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.add-blog-card-content {
+  display: flex;
+  flex-direction: column;
+}
+

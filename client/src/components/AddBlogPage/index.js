@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './style.css';
 import EditorComponent from '../TextEditorQuill'; // Importing the editor component
 
@@ -73,11 +74,13 @@ const BlogForm = () => {
       const response = await axios.delete(`${backendUrl}/delete-blog/${id}`);
       if (response.status === 200) {
         setMessage('Blog deleted successfully');
+        toast.success('Blog deleted successfully!');
         fetchAllBlogs(); // Refresh blog list after deletion
       }
     } catch (error) {
       console.error('Error deleting blog:', error);
       setMessage('Error occurred while deleting the blog.');
+      toast.error('Error occurred while deleting the blog.');
     }
   };
 
@@ -95,6 +98,7 @@ const BlogForm = () => {
         });
         if (response.status === 200) {
           setMessage('Blog updated successfully!');
+          toast.success('Blog updated successfully!');
           history.push('/blogs');
         }
       } else {
@@ -106,6 +110,7 @@ const BlogForm = () => {
         });
         if (response.status === 201) {
           setMessage('Blog created successfully!');
+          toast.success('Blog created successfully!');
           setTitle('');
           setContent('');
           setImage('');
@@ -114,6 +119,7 @@ const BlogForm = () => {
       }
     } catch (error) {
       setMessage('Error occurred. Please try again.');
+      toast.error('Error occurred. Please try again.');
       console.error(error);
     }
   };
@@ -130,7 +136,7 @@ const BlogForm = () => {
     try {
       const timestamp = Date.now();
       const params = {
-        Bucket: process.env.REACT_APP_AWS_BLOGS_IMAGE_BUCKET, // Updated to use correct environment variable
+        Bucket: process.env.REACT_APP_AWS_BUCKET_NAME, 
         Key: `${file.name}-${timestamp}`,
         Body: file,
         ContentType: file.type,
@@ -139,7 +145,7 @@ const BlogForm = () => {
       const command = new PutObjectCommand(params);
       await s3Client.send(command);
   
-      const uploadedImageUrl = `https://${process.env.REACT_APP_AWS_BLOGS_IMAGE_BUCKET}.s3.${process.env.REACT_APP_AWS_BUCKET_REGION}.amazonaws.com/${params.Key}`;
+      const uploadedImageUrl = `https://${process.env.REACT_APP_AWS_BUCKET_NAME}.s3.${process.env.REACT_APP_AWS_BUCKET_REGION}.amazonaws.com/${params.Key}`;
       setImageUrl(uploadedImageUrl);
       setSuccessUpload(true);
       setFile(null);
@@ -151,15 +157,12 @@ const BlogForm = () => {
     }
   };
   
-
-  
-
   return (
     <div className='blog'>
+      <ToastContainer />
       <div className="blog-form-container">
         <div className="bde-content-con">
           <h1>{editMode ? 'Edit Blog' : 'Create a New Blog'}</h1>
-          {message && <p>{message}</p>}
           <form onSubmit={handleSubmit} className="add-job-vacancies-form-con">
             <div className="form-group salary-container">
               <div className="emp-work-input">
@@ -207,7 +210,7 @@ const BlogForm = () => {
                 <Popup open={open} onClose={() => setOpen(false)} modal>
                   <div className="faculty-popup-form">
                     <button className="close-button" onClick={() => setOpen(false)}>
-                      &times; {/* This represents a typical "X" close button */}
+                      &times;
                     </button> 
                     <h2>Upload Image</h2>
                     <label className="faculty-image-label" htmlFor="file">
@@ -252,21 +255,24 @@ const BlogForm = () => {
           </form>
         </div>
 
+        {/* Blog List Display as Cards */}
         <div className="blog-list-section">
           <h2>Blog List</h2>
-          <ul className="blog-list">
+          <div className="add-blog-cards-container">
             {blogs.map((blog) => (
-              <li key={blog.id} className="blog-item">
+              <div key={blog.id} className="add-blog-card">
                 <h3>{blog.title}</h3>
                 <p>{blog.readtime} | {blog.publishedDate.substring(0, 10)}</p>
+    
                 <div className="blog-actions">
                   <button onClick={() => handleEditClick(blog.id)}>Edit</button>
                   <button onClick={() => handleDeleteClick(blog.id)}>Delete</button>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
+
       </div>
     </div>
   );
