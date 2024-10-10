@@ -150,6 +150,9 @@
 }
 
 @media (max-width: 576px) {
+    .blog-top-info{
+        padding-top: 40px;
+    }
     .related-blog-logo {
         height: 100px; 
     }

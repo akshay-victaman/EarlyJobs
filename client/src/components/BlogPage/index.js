@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Oval } from 'react-loader-spinner'; // Import the loader component
+import { Oval } from 'react-loader-spinner'; 
 import './BlogPage.css';
 
 const BlogPage = () => {
     const [blogs, setBlogs] = useState([]);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false); // State to track loading
+    const [loading, setLoading] = useState(false); 
 
     useEffect(() => {
         window.scrollTo(0, 0);
         document.title = 'Blog Page | EarlyJobs';
 
         const fetchBlogs = async () => {
-            setLoading(true); // Set loading to true when fetching starts
+            setLoading(true); 
             try {
                 const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/get-blogs`);
                 setBlogs(response.data.blogs);
@@ -37,8 +37,8 @@ const BlogPage = () => {
     return (
         <div className="blog-page">
             <div className="blog-header">
-                <h1>Discover New Perspectives on <br /> Professional Growth and Efficiency</h1>
-                <p>Uncover valuable strategies to maximize your professional journey, optimize time, and unlock <br/> opportunities for knowledge monetization.</p>
+                <h1>Unlocking Career Opportunities: Insights from EarlyJobs</h1>
+                <p>Expert Tips and Success Stories to Help You Navigate the Job Market.</p>
             </div>
 
             {error && <p className="error-message">{error}</p>}

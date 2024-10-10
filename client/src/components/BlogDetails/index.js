@@ -21,7 +21,6 @@ const BlogDetails = () => {
         window.scrollTo(0, 0);
         document.title = 'Blog Page | EarlyJobs';
 
-        // Fetch blog details by blog title
         const fetchBlog = async () => {
             try {
                 console.log("Fetching blog with title: ", blogTitle);

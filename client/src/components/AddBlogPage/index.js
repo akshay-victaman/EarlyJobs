@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useParams, useHistory } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { toast, ToastContainer } from 'react-toastify';
@@ -9,19 +8,11 @@ import './style.css';
 import EditorComponent from '../TextEditorQuill'; 
 
 const BlogForm = () => {
-  const { blogId } = useParams();
-  const history = useHistory(); 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [image, setImage] = useState('');
   const [keywords, setKeywords] = useState('');
-  const [message, setMessage] = useState('');
-  const [editMode, setEditMode] = useState(false);
-  const [blogs, setBlogs] = useState([]);
-
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
-  const [successUpload, setSuccessUpload] = useState(false);
   const [open, setOpen] = useState(false); // For popup
 
   const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
@@ -34,91 +25,25 @@ const BlogForm = () => {
     },
   });
 
-  useEffect(() => {
-    if (blogId) {
-      fetchBlogDetails(blogId);
-      setEditMode(true);
-    }
-    fetchAllBlogs();
-  }, [blogId]);
-
-  const fetchBlogDetails = async (id) => {
-    try {
-      const response = await axios.get(`${backendUrl}/get-blogbyid/${id}`);
-      const blog = response.data;
-      setTitle(blog.title);
-      setContent(blog.content);
-      setImage(blog.image); 
-      setKeywords(blog.keywords.join(', '));
-      setEditMode(true);
-    } catch (error) {
-      console.error('Error fetching blog details:', error);
-    }
-  };
-
-  const fetchAllBlogs = async () => {
-    try {
-      const response = await axios.get(`${backendUrl}/get-allblogs`);
-      setBlogs(response.data.blogs);
-    } catch (error) {
-      console.error('Error fetching all blogs:', error);
-    }
-  };
-
-  const handleEditClick = (id) => {
-    history.push(`/edit-blog/${id}`); 
-  };
-
-  const handleDeleteClick = async (id) => {
-    try {
-      const response = await axios.delete(`${backendUrl}/delete-blog/${id}`);
-      if (response.status === 200) {
-        setMessage('Blog deleted successfully');
-        toast.success('Blog deleted successfully!');
-        fetchAllBlogs();
-      }
-    } catch (error) {
-      console.error('Error deleting blog:', error);
-      setMessage('Error occurred while deleting the blog.');
-      toast.error('Error occurred while deleting the blog.');
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const keywordArray = keywords.split(',').map((keyword) => keyword.trim());
 
     try {
-      if (editMode) {
-        const response = await axios.put(`${backendUrl}/edit-blog/${blogId}`, {
-          title,
-          content,
-          image: imageUrl || image, // Use uploaded image URL or existing one
-          keywords: keywordArray,
-        });
-        if (response.status === 200) {
-          setMessage('Blog updated successfully!');
-          toast.success('Blog updated successfully!');
-          history.push('/blogs');
-        }
-      } else {
-        const response = await axios.post(`${backendUrl}/create-blog`, {
-          title,
-          content,
-          image: imageUrl, // Use uploaded image URL
-          keywords: keywordArray,
-        });
-        if (response.status === 201) {
-          setMessage('Blog created successfully!');
-          toast.success('Blog created successfully!');
-          setTitle('');
-          setContent('');
-          setImage('');
-          setKeywords('');
-        }
+      const response = await axios.post(`${backendUrl}/create-blog`, {
+        title,
+        content,
+        image: imageUrl, // Use uploaded image URL
+        keywords: keywordArray,
+      });
+      if (response.status === 201) {
+        toast.success('Blog created successfully!');
+        setTitle('');
+        setContent('');
+        setImageUrl('');
+        setKeywords('');
       }
     } catch (error) {
-      setMessage('Error occurred. Please try again.');
       toast.error('Error occurred. Please try again.');
       console.error(error);
     }
@@ -147,10 +72,9 @@ const BlogForm = () => {
   
       const uploadedImageUrl = `https://${process.env.REACT_APP_AWS_BUCKET_NAME}.s3.${process.env.REACT_APP_AWS_BUCKET_REGION}.amazonaws.com/${params.Key}`;
       setImageUrl(uploadedImageUrl);
-      setSuccessUpload(true);
-      setFile(null);
       toast.success('Image uploaded successfully!');
-      setOpen(false); // Close popup on successful upload
+      setOpen(false); 
+      setFile(null);
     } catch (error) {
       console.error('Error uploading file to S3:', error);
       toast.error('Failed to upload image');
@@ -162,15 +86,16 @@ const BlogForm = () => {
       <ToastContainer />
       <div className="blog-form-container">
         <div className="bde-content-con">
-          <h1>{editMode ? 'Edit Blog' : 'Create a New Blog'}</h1>
+          <h1>Create a New Blog</h1>
           <form onSubmit={handleSubmit} className="add-job-vacancies-form-con">
             <div className="form-group salary-container">
               <div className="emp-work-input">
-                <label htmlFor="title" className="spoc-label">Title</label>
+                <label htmlFor="title" className="title-label">Title</label>
                 <input
                   type="text"
                   id="title"
-                  className="commission-input-con salary-input"
+                  className="title-input" 
+                  placeholder='Enter blog title'
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
@@ -180,8 +105,8 @@ const BlogForm = () => {
 
             <div className="form-group salary-container">
               <div className="emp-work-input">
-                <label htmlFor="content" className="spoc-label">Content</label>
-                <EditorComponent content={content} handleEditorChange={setContent} />
+                <label htmlFor="content" className="content-label">Content</label>
+                <EditorComponent  content={content} handleEditorChange={setContent} />
               </div>
             </div>
 
@@ -198,21 +123,21 @@ const BlogForm = () => {
                 </button>
 
                 {/* Display uploaded image if available */}
-                {imageUrl || image ? (
+                {imageUrl ? (
                   <div>
-                    <img src={imageUrl || image} alt="Uploaded" width="200" />
+                    <img src={imageUrl} alt="Uploaded" width="200" />
                   </div>
                 ) : (
-                  <p>No image uploaded</p>
+                  <p className='no-img-cont'>No image uploaded</p>
                 )}
 
                 {/* Popup for file upload */}
                 <Popup open={open} onClose={() => setOpen(false)} modal>
                   <div className="faculty-popup-form">
-                    <button className="close-button" onClick={() => setOpen(false)}>
+                    <button className="faculty-popup-close" onClick={() => setOpen(false)}>
                       &times;
                     </button> 
-                    <h2>Upload Image</h2>
+                    <h2 className='upload-heading'>Upload Image</h2>
                     <label className="faculty-image-label" htmlFor="file">
                       {file ? file.name : 'Choose File'}
                     </label> 
@@ -240,8 +165,9 @@ const BlogForm = () => {
                 <label htmlFor="keywords" className="spoc-label">Keywords (comma separated)</label>
                 <input
                   type="text"
-                  id="keywords"
-                  className="commission-input-con salary-input"
+                  id="keywords" 
+                  placeholder='Enter keywords'
+                  className="keywords-input"
                   value={keywords}
                   onChange={(e) => setKeywords(e.target.value)}
                   required
@@ -250,29 +176,10 @@ const BlogForm = () => {
             </div>
             
             <button type="submit" className="bde-form-btn">
-              {editMode ? 'Update Blog' : 'Submit'}
+              Submit
             </button>
           </form>
         </div>
-
-        {/* Blog List Display as Cards */}
-        <div className="blog-list-section">
-          <h2>Blog List</h2>
-          <div className="add-blog-cards-container">
-            {blogs.map((blog) => (
-              <div key={blog.id} className="add-blog-card">
-                <h3>{blog.title}</h3>
-                <p>{blog.readtime} | {blog.publishedDate.substring(0, 10)}</p>
-    
-                <div className="blog-actions">
-                  <button onClick={() => handleEditClick(blog.id)}>Edit</button>
-                  <button onClick={() => handleDeleteClick(blog.id)}>Delete</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
       </div>
     </div>
   );
