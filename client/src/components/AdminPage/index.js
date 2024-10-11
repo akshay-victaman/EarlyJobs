@@ -420,7 +420,7 @@ const AdminPage = () => {
                                 <RiArticleFill className='admin-icon' />
                                 <p className="button-text">Add Blog</p>
                             </Link>
-                        </button>
+                        </button> 
 
                         <Popup
                             trigger={

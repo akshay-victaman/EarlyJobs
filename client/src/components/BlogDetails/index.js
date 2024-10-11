@@ -92,7 +92,7 @@ const BlogDetails = () => {
                             {blog.keywords.map((keyword, index) => (
                                 <span key={index} className="keyword">
                                     {keyword}
-                                    {index < blog.keywords.length - 1 && ','} {/* Add comma between keywords */}
+                                    {index < blog.keywords.length - 1 && ''} {/* Add comma between keywords */}
                                 </span>
                             ))}
                         </div>
@@ -103,7 +103,7 @@ const BlogDetails = () => {
             <div className="related-blogs">
                 <h3 className='related-blogs-heading'>Related Blogs</h3>
                 {isLoadingRelatedBlogs ? (
-                    renderLoader() // Show loader while fetching related blogs
+                    renderLoader() 
                 ) : relatedBlogs.length > 0 ? (
                     <div className="related-blogs-cards">
                         {relatedBlogs.map((relatedBlog) => (

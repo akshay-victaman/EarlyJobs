@@ -22,7 +22,7 @@ const BlogPage = () => {
                 setError('Failed to fetch blogs');
                 console.error('Error fetching blogs:', err);
             } finally {
-                setLoading(false); // Set loading to false when fetching is done
+                setLoading(false); 
             }
         };
 
@@ -60,8 +60,8 @@ const BlogPage = () => {
             ) : (
                 <div className="blog-grid">
                     {blogs.map((blog) => (
-                        <div className="blog-card" key={blog.id || blog._id}> {/* Ensure unique key */}
-                            <Link to={`/blogs/${encodeURIComponent(blog.title)}`}> {/* Encode title for the URL */}
+                        <div className="blog-card" key={blog.id || blog._id}> 
+                            <Link to={`/blogs/${encodeURIComponent(blog.title)}`}> 
                                 <img src={blog.image} alt={blog.title} className="blog-image" />
                                 <div className="blog-content">
                                     <h2 id='blog-sub-title'>{blog.title}</h2>
