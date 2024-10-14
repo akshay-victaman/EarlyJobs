@@ -72,7 +72,6 @@ const BlogForm = () => {
     setOpen(false);
   };
 
-  // Handle file change for image upload
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
@@ -80,7 +79,6 @@ const BlogForm = () => {
     }
   };
 
-  // Upload image to S3
   const uploadImage = async () => {
     if (!file) return;
     try {
@@ -106,7 +104,11 @@ const BlogForm = () => {
     }
   };
 
-  // Fetch all blogs from the backend
+  const handleDeleteImage = () => {
+    setImageUrl('');  
+    setFile(null);  
+  };
+
   const fetchAllBlogs = async () => {
     try {
       const response = await axios.get(`${backendUrl}/get-allblogs`);
@@ -116,13 +118,10 @@ const BlogForm = () => {
     }
   };
 
-  // Show Blog List and fetch blogs
-  const handleShowBlogList = async () => {
-    await fetchAllBlogs(); // Fetch blogs before showing the list
-    setShowBlogList(true);
+  const handleToggleBlogList = () => {
+    setShowBlogList(!showBlogList);  
   };
 
-  // Handle editing a blog
   const handleEditClick = (id) => {
     const blogToEdit = blogs.find(blog => blog.id === id);
     if (blogToEdit) {
@@ -131,17 +130,16 @@ const BlogForm = () => {
       setImageUrl(blogToEdit.image);
       setKeywords(blogToEdit.keywords.join(', '));
       setBlogId(id);
-      setShowBlogList(false); // Hide blog list to show form
+      setShowBlogList(false); 
     }
   };
 
-  // Handle deleting a blog
   const handleDeleteClick = async (id) => {
     try {
       const response = await axios.delete(`${backendUrl}/delete-blog/${id}`);
       if (response.status === 200) {
         toast.success('Blog deleted successfully!');
-        fetchAllBlogs(); // Refresh the blog list after deletion
+        fetchAllBlogs(); 
       }
     } catch (error) {
       console.error('Error deleting blog:', error);
@@ -155,7 +153,9 @@ const BlogForm = () => {
       <div className="blog-form-container">
         <div className="bde-content-con">
           <div className="blog-list-button">
-            <button className="bde-form-btn" onClick={handleShowBlogList}>BlogList</button>
+            <button className="bde-form-btn" onClick={handleToggleBlogList}>
+              {showBlogList ? 'Add Blog' : 'Blog List'}
+            </button>
           </div>
 
           {!showBlogList && (
@@ -183,24 +183,27 @@ const BlogForm = () => {
                     <EditorComponent content={content} handleEditorChange={setContent} />
                   </div>
                 </div>
-
-                {/* Image Upload Section */}
                 <div className="form-group salary-container">
                   <div className="emp-work-input">
                     <label className="spoc-label">Upload Image</label>
                     <button
                       type="button"
                       className="bde-form-btn"
-                      onClick={() => setOpen(true)} // Open popup for image upload
+                      onClick={() => setOpen(true)} 
                     >
                       Upload Image
                     </button>
-
-                    {/* Display uploaded image if available */}
                     {imageUrl ? (
-                      <div>
-                        <img src={imageUrl} alt="Uploaded" width="200" />
-                      </div>
+                  <div className="uploaded-image-container">
+                    <button
+                      className="delete-image-button"
+                      type="button"
+                      onClick={handleDeleteImage}
+                    >
+                       &times;
+                    </button>
+                    <img src={imageUrl} alt="Uploaded" width="200" />
+                  </div>
                     ) : (
                       <p className='no-img-cont'>No image uploaded</p>
                     )}
