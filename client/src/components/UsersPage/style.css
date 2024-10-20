@@ -152,6 +152,19 @@
     color: #EB6A4D;
 }
 
+.role-button {
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    color: #EB6A4D;
+    font-weight: 600;
+    width: fit-content;
+    text-decoration: underline;
+}
+
 .users-active-col {
     color: #EB6A4D;
     font-weight: 600;
