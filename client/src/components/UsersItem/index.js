@@ -2,8 +2,8 @@ import Popup from 'reactjs-popup';
 import { FaEdit } from "react-icons/fa";
 
 
-const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPopup, renderChangePhonePopup, renderChangeUserRolePopup}) => {
-    const {username, email, role, location, phone, hiringFor, hiringCategory, createdAt, isBlocked} = userDetails;
+const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPopup, renderChangePhonePopup, renderRoleHistoryPopup, renderChangeUserRolePopup}) => {
+    const {username, email, role, location, phone, hiringFor, hiringCategory, shmEmail, hmEmail, createdAt, isBlocked} = userDetails;
     return (
         <tr className="users-table-data-row">
             <td data-cell='username' className="users-table-data">{username}</td>
@@ -21,10 +21,23 @@ const UsersItem = ({userDetails, renderBlockUnblockPopup, renderChangePasswordPo
                     )}
                 </Popup>
             </td>
-            <td data-cell='role' className="users-table-data">{role}</td>
+            <td data-cell='role' className="users-table-data">
+                <Popup
+                    trigger={<button className="role-button">{role}</button>}
+                    modal
+                >
+                    {close => (
+                    <div className="modal">
+                        {renderRoleHistoryPopup(close, email)}
+                    </div>
+                    )}
+                </Popup>
+            </td>
             <td data-cell='hiring for' className="users-table-data">{hiringFor}</td>
             <td data-cell='location' className="users-table-data">{location}</td>
             <td data-cell='hiring category' className="users-table-data">{hiringCategory}</td>
+            <td data-cell='Led by (SHM)' className="users-table-data">{shmEmail ? shmEmail : 'N/A'}</td>
+            <td data-cell='Led by (HM)' className="users-table-data">{hmEmail ? hmEmail : 'N/A'}</td>
             <td data-cell='created At' className="users-table-data">{createdAt}</td>
             <td data-cell='change password' className="users-table-data">
                 <Popup

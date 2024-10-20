@@ -786,7 +786,7 @@ const JobDetailsPage = () => {
                 {
                   Cookies.get('role') !== 'HR' &&
                   <th className="job-details-candidates-table-heading-cell">
-                    Shortlisted By
+                    Led By
                   </th>
                 }
 
