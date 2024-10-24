@@ -40,6 +40,7 @@ const ITStaffingServicesPage = lazy(() => import("../pages/OurServicesPages/ITSt
 const BlogPage = lazy(() => import("../components/BlogPage")); 
 const BlogDetails = lazy(() => import("../components/BlogDetails")); 
 const AddBlogPage = lazy(() => import("../components/AddBlogPage")); 
+const ViewForms = lazy(() => import("../components/ViewForms")); 
 const EachRoute = () => {
     return (
         <Switch>
@@ -121,6 +122,14 @@ const EachRoute = () => {
                 render={() => 
                     <Suspense fallback={<Loader />}>
                         <AddBlogPage />
+                    </Suspense>
+                }
+            /> 
+
+            <Route exact path='/view-forms'
+                render={() => 
+                    <Suspense fallback={<Loader />}>
+                        <ViewForms />
                     </Suspense>
                 }
             />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; 
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { Oval } from 'react-loader-spinner';
 import app from '../../firebase'
 import './style.css'
@@ -125,7 +126,27 @@ const PartnerWithUs = () => {
         const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`
     
         await fetch(url, {method: "GET", mode: "no-cors"})
-    }
+    } 
+
+     const saveToFirestore = async (resumeUrl) => {
+        const db = getFirestore(app);
+        try {
+            await addDoc(collection(db, 'PartnerWithUs'), {
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                currentlyWorking: formData.currentlyWorking,
+                orgName: formData.orgName,
+                linkedIn: formData.linkedIn,
+                resumeUrl: resumeUrl,
+                createdAt: new Date()
+            });
+            console.log('Data saved to Firestore successfully!');
+        } catch (error) {
+            console.error('Error saving data to Firestore: ', error);
+            setError('Failed to save your details. Please try again.');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -156,6 +177,7 @@ const PartnerWithUs = () => {
             ...formData, resume: resumeUrl
         })
         await sendEmail(resumeUrl)
+        await saveToFirestore(resumeUrl); // Save data to Firestore
 
         setFormData({
             currentlyWorking: 'yes',
