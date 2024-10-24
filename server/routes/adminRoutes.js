@@ -5,6 +5,7 @@ const authenticateToken = require('../middleware/authenticationMiddleware');
 const router = express.Router();
 
 router.get('/get-users/all', authenticateToken, AdminController.getAllUsers);
+router.get('/role-history/:email', authenticateToken, AdminController.getRoleHistory);
 router.put('/user/change-role', authenticateToken, AdminController.changeUserRoleAssignment);
 router.get('/get-candidates/all', authenticateToken, AdminController.getAllCandidates);
 router.put('/candidate-is-joined/:id', authenticateToken, AdminController.setCandidateisJoined);

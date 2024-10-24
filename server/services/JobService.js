@@ -1734,15 +1734,15 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureSta
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
     const query = `
     SELECT 
-        applications.id as application_id,
-        applications.job_id as job_id,
-        candidates.id as candidate_id,
         users.username as hr_name,
         candidates.name as name,
+        candidates.father_name as father_name,
+        candidates.email as email,
         candidates.phone as phone,
+        candidates.date_of_birth as date_of_birth,
         offered_date,
         is_joined,
-        applied_by,
+        applied_by as scheduled_by,
         company_name,
         interview_date,
         tenure_in_days,
@@ -1750,7 +1750,9 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureSta
         is_tenure_approved,
         verification_status,
         city,
-        area
+        area,
+        hrassignedhm.hm_email as hm_email,
+        hm_assigned_shm.shm_email as shm_email
     FROM candidates 
     INNER JOIN applications ON 
     candidates.id = applications.candidate_id 
@@ -1758,6 +1760,8 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureSta
     users.email = applications.applied_by 
     INNER JOIN jobs ON 
     jobs.id = applications.job_id 
+    LEFT JOIN hrassignedhm ON users.email = hrassignedhm.hr_email
+    LEFT JOIN hm_assigned_shm ON (hrassignedhm.hm_email = hm_assigned_shm.hm_email OR users.email = hm_assigned_shm.hm_email)
     WHERE applications.offer_status = ?
     ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
     ${search === "" ?
