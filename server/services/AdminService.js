@@ -26,7 +26,9 @@ const getAllUsers = async (role, isBlocked, search, page) => {
         const pageSize = 10;
         const startIndex = (page - 1) * pageSize;
         const query = `
-            SELECT * FROM users 
+            SELECT users.*, hrassignedhm.hm_email as hm_email, hm_assigned_shm.shm_email as shm_email FROM users 
+            LEFT JOIN hrassignedhm ON users.email = hrassignedhm.hr_email
+            LEFT JOIN hm_assigned_shm ON (hrassignedhm.hm_email = hm_assigned_shm.hm_email OR users.email = hm_assigned_shm.hm_email)
             WHERE role != 'ADMIN' 
             ${role !== 'null' ? `AND role = '${role}'` : ''} 
             ${isBlocked !== 'null' ? `AND is_blocked = ${parseInt(isBlocked)}` : ''} 
@@ -43,6 +45,55 @@ const getAllUsers = async (role, isBlocked, search, page) => {
     }
 }
 
+const addRoleHistory = async (connection, email, role, startDate) => {
+    const id = uuidv4();
+    const query = `INSERT INTO user_roles_history (id, user_email, role, start_date) VALUES (?, ?, ?, ?);`;
+    try {
+        const [result] = await connection.execute(query, [id, email, role, startDate]);
+        // const [result] = await db.query(query, [id, email, role]);
+        if (result.affectedRows === 0) {
+            const error = new Error('User not found.');
+            error.statusCode = 404;
+            throw error;
+        } else {
+            return true
+        }
+    } catch (error) {
+        console.error('Error in changeUserRoles:', error);
+        throw error;
+    }
+}
+
+const getRoleHistory = async (email) => {
+    console.log(email)
+    const query = `SELECT * FROM user_roles_history WHERE user_email = ? ORDER BY start_date DESC;`;
+    try {
+        const result = await db.query(query, [email]);
+        return result[0];
+    } catch (error) {
+        console.error('Error in getRoleHistory:', error);
+        throw error;
+    }
+}
+
+const updateRoleHistory = async (connection, email, role, startDate) => {
+    const query = `UPDATE user_roles_history SET end_date = ? WHERE user_email = ? AND end_date IS NULL;`;
+    try {
+        const [result] = await connection.execute(query, [startDate, email]);
+        if (result.affectedRows === 0) {
+            const error = new Error('User not found.');
+            error.statusCode = 404;
+            throw error;
+        } else {
+            await addRoleHistory(connection, email, role, startDate);
+            return true
+        }
+    } catch (error) {
+        console.error('Error in changeUserRoles:', error);
+        throw error;
+    }
+}
+
 const changeUserRole = async (connection, email, role, hiringFor) => {
     const query = `UPDATE users SET role = ?, hiring_for = ? WHERE email = ?`;
     try {
@@ -53,7 +104,7 @@ const changeUserRole = async (connection, email, role, hiringFor) => {
             error.statusCode = 404;
             throw error;
         } else {
-            return true
+            return  true
         }
     } catch (error) {
         console.error('Error in changeUserRoles:', error);
@@ -119,7 +170,7 @@ const addHmAssignment = async (connection, hmEmail, shmEmail) => {
     }
 }
 
-const changeUserRoleAssignment = async (email, role, hiringFor, hmShmEmail) => {
+const changeUserRoleAssignment = async (email, role, hiringFor, hmShmEmail, startDate) => {
     const connection = await db.getConnection();
     try {
         await connection.beginTransaction();
@@ -133,6 +184,7 @@ const changeUserRoleAssignment = async (email, role, hiringFor, hmShmEmail) => {
             } else if (role === 'AC') {
                 await addHmAssignment(connection, email, hmShmEmail);
             }
+            await updateRoleHistory(connection, email, role, startDate);
         }
         
         await connection.commit();
@@ -477,6 +529,8 @@ const deleteMemberCard = async (id) => {
 
 module.exports = {
     getAllUsers,
+    addRoleHistory,
+    getRoleHistory,
     changeUserRoleAssignment,
     getAllCandidates,
     setCandidateisJoined,

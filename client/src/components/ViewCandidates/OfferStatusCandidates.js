@@ -362,6 +362,16 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
       }
     }
 
+    const getLedBy = (hmEmail, shmEmail, scheduledBy) => {
+      if (hmEmail) {
+        return hmEmail
+      } else if (shmEmail) {
+        return shmEmail
+      } else {
+        return null
+      }
+    }
+
     const getOfferStatusCandidatesForBDEExcel = async () => {
       if(!dateValidation(fromDate, toDate)) return;
       let email = null;
@@ -386,23 +396,25 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
           } else {
               console.log(data)
               const updatedData = data.map(eachItem => ({
-                applicationId: eachItem.application_id,
-                candidateId: eachItem.candidate_id,
                 name: eachItem.name,
-                companyName: eachItem.company_name,
-                area: eachItem.area,
-                city: eachItem.city,
+                fatherName: eachItem.father_name,
+                email: eachItem.email,
                 phone: eachItem.phone,
-                appliedBy: eachItem.applied_by,
+                dateOfBirth: eachItem.date_of_birth ? formatDate(eachItem.date_of_birth) : null,
+                companyName: eachItem.company_name,
+                location: `${eachItem.area} ${eachItem.city}`,
                 interviewDate: eachItem.interview_date ? formatDate(eachItem.interview_date) : null,
                 offeredDate: eachItem.offered_date ? formatDate(eachItem.offered_date) : null,
-                jobId: eachItem.job_id,
+                scheduledBy: eachItem.scheduled_by,
+                // ledBy: eachItem.hm_email ? eachItem.hm_email : eachItem.shm_email ? eachItem.shm_email : null,
+                ledBy: getLedBy(eachItem.hm_email, eachItem.shm_email, eachItem.scheduled_by),
                 hrName: eachItem.hr_name,
                 verificationStatus: eachItem.verification_status,
                 tenureStatus: eachItem.tenure_status,
                 isTenureApproved: eachItem.is_tenure_approved,
                 isJoined: eachItem.is_joined
               }))
+
               return updatedData;
           }
       } else {
@@ -783,7 +795,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                     <th className="job-details-candidates-table-heading-cell">Company Name</th>
                     <th className="job-details-candidates-table-heading-cell">Location</th>
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
-                    <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>
+                    <th className="job-details-candidates-table-heading-cell">Led By</th>
                     { (showCandidateForm !== 7) && <th className="job-details-candidates-table-heading-cell">{showCandidateForm === 10 ? "Was Planned On" : `${offerStatus} Date`}</th>}
                     {(showCandidateForm === 12 || (Cookies.get('role') === "BDE" && showCandidateForm === 6)) && <th className="job-details-candidates-table-heading-cell">Tenure (Days Left / Status / Approve)</th>}
                     {(Cookies.get('role') === "BDE" && showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">Approve Tenure Status</th>}

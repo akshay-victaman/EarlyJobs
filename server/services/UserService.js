@@ -51,6 +51,25 @@ const hrResumes = async (hrEmail, resumeUrl) => {
     // return result[0].affectedRows > 0;
 }
 
+const addRoleHistory = async (email, role) => {
+    const id = uuidv4();
+    const query = `INSERT INTO user_roles_history (id, user_email, role, start_date) VALUES (?, ?, ?, NOW());`;
+    try {
+        // const [result] = await connection.execute(query, [id, email, role]);
+        const [result] = await db.query(query, [id, email, role]);
+        if (result.affectedRows === 0) {
+            const error = new Error('User not found.');
+            error.statusCode = 404;
+            throw error;
+        } else {
+            return true
+        }
+    } catch (error) {
+        console.error('Error in changeUserRoles:', error);
+        throw error;
+    }
+}
+
 const createUser = async (user) => {
     const {docId, username, gender, email, phone, password, role, hiringFor, assignHM, location, hiringCategory, hmType} = user;
     const hiringCategory1 = hiringCategory.join(', ');
@@ -68,6 +87,7 @@ const createUser = async (user) => {
             } else if(role === 'HR') {
                 hrAssignedHm(email, assignHM);
             }
+            await addRoleHistory(email, role);
             return {success: 'User created successfully'};
         } else {
             return {error: 'User creation failed'};

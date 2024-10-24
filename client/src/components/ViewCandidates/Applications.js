@@ -816,7 +816,7 @@ const Applications = ({ setShowCandidateForm }) => {
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
                     <th className="job-details-candidates-table-heading-cell">Email</th>
                     <th className="job-details-candidates-table-heading-cell">Applied At</th>
-                    {Cookies.get('role') === 'BDE' && <th className="job-details-candidates-table-heading-cell">Shortlisted By</th>}
+                    {Cookies.get('role') === 'BDE' && <th className="job-details-candidates-table-heading-cell">Led By</th>}
                     {(applicationStatus !== 1 && Cookies.get('role') !== 'BDE') && <th className="job-details-candidates-table-heading-cell">Action</th>}
                   </tr>
                   {

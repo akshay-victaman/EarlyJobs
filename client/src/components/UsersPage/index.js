@@ -10,6 +10,7 @@ import UsersItem from '../UsersItem';
 import {toast} from 'react-toastify';
 import Pagination from 'rc-pagination';
 import './style.css'
+import RoleHistory from './RoleHistory';
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
@@ -23,11 +24,14 @@ const UsersPage = () => {
     const [phone, setPhone] = useState('');
     const [page, setPage] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
+    const today = new Date();
+    const date = today.toISOString().split('T')[0];
     const [userRole, setUserRole] = useState({
         role: '',
         hiringFor: '',
         email: '',
-        hmShmEmail: ''
+        hmShmEmail: '',
+        startDate: date,
     });
     const [passwordDetails, setPasswordDetails] = useState({
         password: '',
@@ -104,7 +108,9 @@ const UsersPage = () => {
                 location: eachItem.location,
                 role: eachItem.role,
                 updatedAt: formatDate(eachItem.updated_at),
-                username: eachItem.username
+                username: eachItem.username,
+                hmEmail: eachItem.hm_email,
+                shmEmail: eachItem.shm_email
             }))
             setUsers(formattedData);
             setTotalItems(data.count);
@@ -325,6 +331,10 @@ const UsersPage = () => {
             toast.warn('Select a Hiring Manager');
             return;
         }
+        if (userRole.startDate === '') {
+            toast.warn('Select a start/end date');
+            return;
+        }
         const newUserRole = {
             ...userRole,
             email
@@ -459,6 +469,16 @@ const UsersPage = () => {
         </div>
     )
 
+    const renderRoleHistoryPopup = (close, email) => (
+        <div className="modal-form" style={{minHeight: '20vh', maxHeight: '60vh', overflowY: 'auto'}}>
+            <label className="homepage-label" style={{marginBottom: '15px'}}>Role History for {email}</label>
+            <RoleHistory email={email} />
+            <div className='achieve-button-con' style={{marginTop: '0px'}}>
+                <button className='job-details-upload-candidate-button' onClick={close}>Close</button>
+            </div>
+        </div>
+    )
+
     const renderChangeUserRolePopup = (close, email) => (
         <div className="modal-form">
             <button className="modal-close-button" onClick={close}>&times;</button>
@@ -506,6 +526,8 @@ const UsersPage = () => {
                     </select>
                 </>
             }
+            <label className="homepage-label" htmlFor='hmShmEmail'>Current Role End Date / New Role Start Date</label>
+            <input className="homepage-input" type="date" id='startDate' name='startDate' value={userRole.startDate} onChange={handleChangeUserRole} />
             <div className='achieve-button-con' style={{marginTop: '0px'}}>
                 <button className='job-details-upload-candidate-button' onClick={() => changeUserRole(close, email)}>Change</button>
                 <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>Cancel</button>
@@ -524,6 +546,8 @@ const UsersPage = () => {
                         <th className="users-table-heading">Hiring For</th>
                         <th className="users-table-heading">Location</th>
                         <th className="users-table-heading">Hiring Category</th>
+                        <th className="users-table-heading">Led By (Senior HM)</th>
+                        <th className="users-table-heading">Led By (HM)</th>
                         <th className="users-table-heading">Created At</th>
                         <th className="users-table-heading">Change Password</th>
                         <th className="users-table-heading">Block/Unblock User</th>
@@ -531,7 +555,7 @@ const UsersPage = () => {
                     </tr>
                     {
                         users.map(eachItem => (
-                            <UsersItem key={eachItem.id} userDetails={eachItem} renderBlockUnblockPopup={renderBlockUnblockPopup} renderChangePasswordPopup={renderChangePasswordPopup} renderChangePhonePopup={renderChangePhonePopup} renderChangeUserRolePopup={renderChangeUserRolePopup} />
+                            <UsersItem key={eachItem.id} userDetails={eachItem} renderBlockUnblockPopup={renderBlockUnblockPopup} renderChangePasswordPopup={renderChangePasswordPopup} renderRoleHistoryPopup={renderRoleHistoryPopup} renderChangePhonePopup={renderChangePhonePopup} renderChangeUserRolePopup={renderChangeUserRolePopup} />
                     ))}
             </table>
             {

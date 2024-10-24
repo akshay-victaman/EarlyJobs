@@ -13,13 +13,24 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getRoleHistory = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const roleHistory = await adminService.getRoleHistory(email);
+    res.json(roleHistory);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message });
+  }
+}
+
 const changeUserRoleAssignment = async (req, res) => {
   try {
     const email = req.body.email;
     const hmShmEmail = req.body.hmShmEmail;
     const role = req.body.role;
     const hiringFor = req.body.hiringFor;
-    const response = await adminService.changeUserRoleAssignment(email, role, hiringFor, hmShmEmail);
+    const startDate = req.body.startDate;
+    const response = await adminService.changeUserRoleAssignment(email, role, hiringFor, hmShmEmail, startDate);
     res.json(response);
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
@@ -232,6 +243,7 @@ const deleteMemberCard = async (req, res) => {
 
 module.exports = {
   getAllUsers,
+  getRoleHistory,
   changeUserRoleAssignment,
   getAllCandidates,
   setCandidateisJoined,
