@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Oval } from 'react-loader-spinner';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; 
+import { getFirestore, collection, addDoc } from "firebase/firestore"; // Import Firestore functions
 import app from '../../firebase'
 import FormsFaqs from '../../components/FormsFaqs';
 
@@ -47,7 +48,10 @@ const FranchiseWithUs = () => {
         phone: '',
         resume: '',
         linkedIn: ''
-    })
+    }) 
+
+    const firestore = getFirestore(app); // Initialize Firestore
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -140,7 +144,34 @@ const FranchiseWithUs = () => {
         const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`
     
         await fetch(url, {method: "GET", mode: "no-cors"})
-    }
+    }  
+
+    const saveToFirestore = async (resumeUrl) => {
+        try {
+            await addDoc(collection(firestore, 'FranchiseRequests'), {
+                franchiseLocation: formData.franchiseLocation,
+                expectation: formData.expectation,
+                previousBusiness: formData.previousBusiness,
+                plRole: formData.plRole,
+                fullTime: formData.fullTime,
+                b2bExp: formData.b2bExp,
+                HrExp: formData.HrExp,
+                teamExp: formData.teamExp,
+                officeSetup: formData.officeSetup,
+                finance: formData.finance,
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                resume: resumeUrl,
+                linkedIn: formData.linkedIn,
+                createdAt: new Date() // Optional: Add timestamp
+            });
+            console.log('Document written successfully');
+        } catch (e) {
+            console.error('Error adding document: ', e);
+            setError('There was an error saving your information. Please try again later.');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -197,7 +228,8 @@ const FranchiseWithUs = () => {
         setFormData({
             ...formData, resume: resumeUrl
         })
-        await sendEmail(resumeUrl)
+        await sendEmail(resumeUrl) 
+        await saveToFirestore(resumeUrl); // Save form data to Firestore
 
         setFormData({
             franchiseLocation: '',

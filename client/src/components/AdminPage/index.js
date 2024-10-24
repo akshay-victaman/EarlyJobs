@@ -6,7 +6,7 @@ import Popup from 'reactjs-popup';
 import Cookie from 'js-cookie';
 import { IoIosClose } from "react-icons/io";
 import { RiTeamFill } from "react-icons/ri";
-import { RiArticleFill } from "react-icons/ri";
+import { RiArticleFill,RiCheckboxCircleFill } from "react-icons/ri";
 import {v4 as uuid} from 'uuid'
 import Cookies from "js-cookie";
 import './style.css'
@@ -419,6 +419,13 @@ const AdminPage = () => {
                             <Link to='/add-blog' className="admin-link">
                                 <RiArticleFill className='admin-icon' />
                                 <p className="button-text">Add Blog</p>
+                            </Link>
+                        </button>  
+
+                        <button className='admin-btn'>
+                            <Link to='/view-forms' className="admin-link">
+                                <RiCheckboxCircleFill className='admin-icon' />
+                                <p className="button-text">View Forms</p>
                             </Link>
                         </button> 
 
