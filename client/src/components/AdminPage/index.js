@@ -425,7 +425,7 @@ const AdminPage = () => {
                         <button className='admin-btn'>
                             <Link to='/view-forms' className="admin-link">
                                 <RiCheckboxCircleFill className='admin-icon' />
-                                <p className="button-text">View Forms</p>
+                                <p className="button-text">View Form</p>
                             </Link>
                         </button> 
 
