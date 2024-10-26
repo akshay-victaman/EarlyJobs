@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaLinkedin } from "react-icons/fa";
 import './style.css'
 import { MutatingDots } from 'react-loader-spinner';
+import { metaConstants } from '../../utils/metaConstants';
 
 const apiStatusConstants = {
     initial: 'INITIAL',
@@ -18,7 +19,26 @@ const TeamPage = () => {
     useEffect(() => {
         fetchMemberCards();
         window.scrollTo(0, 0)
-        document.title = 'EarlyJobs | Team'
+        document.title = metaConstants.team.title
+
+        const metaDescription = document.querySelector('meta[name="description"]');
+        const metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (metaDescription) {
+            metaDescription.setAttribute('content', metaConstants.team.description);
+        }
+        if (metaKeywords) {
+            metaKeywords.setAttribute('content', metaConstants.team.keywords);
+        }
+
+        return () => {
+            document.title = metaConstants.title
+            if (metaDescription) {
+                metaDescription.setAttribute('content', metaConstants.description); // Replace with the original content if needed
+            }
+            if (metaKeywords) {
+                metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+        };
     }, [])
 
     const fetchMemberCards = async () => {

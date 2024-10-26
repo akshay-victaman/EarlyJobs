@@ -12,6 +12,7 @@ import ClientCarousel from "../../components/ClientCarousal"
 import ClientReviewCarousel from "../../components/ClientCarousal/ClientReviewCarousal";
 import ConsultationForm from "../../components/ConsultationForm";
 import './style.css'
+import { metaConstants } from "../../utils/metaConstants";
 
 
 const HomePage = () => {
@@ -201,7 +202,26 @@ const HomePage = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        document.title = "Earlyjobs-India's No.1 Portal for remote HR recruiters | Victaman Enterprises"
+        document.title = metaConstants.title
+
+        const metaDescription = document.querySelector('meta[name="description"]');
+        const metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (metaDescription) {
+            metaDescription.setAttribute('content', metaConstants.description);
+        }
+        if (metaKeywords) {
+            metaKeywords.setAttribute('content', metaConstants.keywords);
+        }
+
+        return () => {
+            document.title = metaConstants.title
+            if (metaDescription) {
+                metaDescription.setAttribute('content', metaConstants.description); // Replace with the original content if needed
+            }
+            if (metaKeywords) {
+                metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+        };
     }, [])
 
     if(Cookies.get('jwt_token') !== undefined) {
@@ -227,7 +247,7 @@ const HomePage = () => {
                         </div>
                         <div className="landing-page-screen-1-btn-grp">
                             <Link to="/apply-as-a-recruiter" className="landing-page-s1-link-btn">Become Freelance Recruiter</Link>
-                            <Link to="/view-openings" className="landing-page-s1-link-btn-outline landing-page-s1-link-btn">Explore Jobs</Link>
+                            <Link to="/job-openings" className="landing-page-s1-link-btn-outline landing-page-s1-link-btn">Explore Jobs</Link>
                             <Link to="/free-job-posting" className="landing-page-s1-link-btn-outline landing-page-s1-link-btn">Free Job Posting</Link>
                         </div>
                     </div>

@@ -4,6 +4,7 @@ import ClientCarousel from "../../components/ClientCarousal";
 import ConsultationForm from "../../components/ConsultationForm";
 import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useState } from "react";
+import { metaConstants } from "../../utils/metaConstants";
 
 const WhyEarlyjobs = () => {
 
@@ -107,9 +108,28 @@ const WhyEarlyjobs = () => {
   const [internHrActiveAccordion, setInternHrActiveAccordion] = useState(0);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    document.title = "Why Earlyjobs | EarlyJobs";
-  }, []);
+    window.scrollTo(0, 0)
+    document.title = metaConstants.whyEarlyjobs.title
+
+    const metaDescription = document.querySelector('meta[name="description"]');
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaDescription) {
+        metaDescription.setAttribute('content', metaConstants.whyEarlyjobs.description);
+    }
+    if (metaKeywords) {
+        metaKeywords.setAttribute('content', metaConstants.whyEarlyjobs.keywords);
+    }
+
+    return () => {
+        document.title = metaConstants.title
+        if (metaDescription) {
+            metaDescription.setAttribute('content', metaConstants.description); // Replace with the original content if needed
+        }
+        if (metaKeywords) {
+            metaKeywords.setAttribute('content', metaConstants.keywords);
+        }
+    };
+}, [])
 
   return (
     <div className='whyearlyjobs-container'>

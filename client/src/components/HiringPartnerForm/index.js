@@ -14,6 +14,7 @@ import app from '../../firebase';
 import './style.css'
 import Cookies from 'js-cookie';
 import FormsFaqs from '../FormsFaqs';
+import { metaConstants } from '../../utils/metaConstants';
 
 const customStyles = {
     control: (provided, state) => ({
@@ -312,7 +313,26 @@ const HiringPartnerForm = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        document.title = 'Apply as a Recruiter Form | EarlyJobs'
+        document.title = metaConstants.applyAsARecruiter.title
+
+        const metaDescription = document.querySelector('meta[name="description"]');
+        const metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (metaDescription) {
+            metaDescription.setAttribute('content', metaConstants.applyAsARecruiter.description);
+        }
+        if (metaKeywords) {
+            metaKeywords.setAttribute('content', metaConstants.applyAsARecruiter.keywords);
+        }
+
+        return () => {
+            document.title = metaConstants.title
+            if (metaDescription) {
+                metaDescription.setAttribute('content', metaConstants.description); // Replace with the original content if needed
+            }
+            if (metaKeywords) {
+                metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+        };
     }, [])
 
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);

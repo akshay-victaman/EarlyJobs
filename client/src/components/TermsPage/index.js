@@ -1,10 +1,30 @@
 import React, { useEffect } from 'react';
+import { metaConstants } from '../../utils/metaConstants';
 
 const TermsPage = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        document.title = 'Terms & Conditions | EarlyJobs'
+        document.title = metaConstants.termsAndConditions.title
+
+        const metaDescription = document.querySelector('meta[name="description"]');
+        const metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (metaDescription) {
+            metaDescription.setAttribute('content', metaConstants.termsAndConditions.description);
+        }
+        if (metaKeywords) {
+            metaKeywords.setAttribute('content', metaConstants.termsAndConditions.keywords);
+        }
+
+        return () => {
+            document.title = metaConstants.title
+            if (metaDescription) {
+                metaDescription.setAttribute('content', metaConstants.description); // Replace with the original content if needed
+            }
+            if (metaKeywords) {
+                metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+        };
     }, [])
 
     return (

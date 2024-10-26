@@ -28,7 +28,7 @@ const PublicJobsCard = ({jobsItem}) => {
   const keywordsArray = keywords ? keywords.split(',').slice(0, 4) : []
   
   return (
-    <Link to={`/view-openings/${encodedUrl}`} className="link-item">
+    <Link to={`/job-openings/${encodedUrl}`} className="link-item">
       <li className="jobs-list-item-container public-list-item-container">
         { companyLogoUrl ?
           <img src={companyLogoUrl} alt="company logo" className="public-jobs-logo-img" />
