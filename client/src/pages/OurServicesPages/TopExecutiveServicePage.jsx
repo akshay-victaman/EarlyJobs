@@ -149,12 +149,17 @@ const TopExecutiveServicePage = () => {
 
         const metaDescription = document.querySelector('meta[name="description"]');
         const metaKeywords = document.querySelector('meta[name="keywords"]');
+        const metaSubject = document.querySelector('meta[name="subject"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', metaConstants.topExecutiveRecruitment.description);
         }
         if (metaKeywords) {
             metaKeywords.setAttribute('content', metaConstants.topExecutiveRecruitment.keywords);
         }
+        if (metaSubject) {
+            metaSubject.setAttribute('content', metaConstants.topExecutiveRecruitment.description);
+        }
+
 
         return () => {
             document.title = metaConstants.title
@@ -164,6 +169,10 @@ const TopExecutiveServicePage = () => {
             if (metaKeywords) {
                 metaKeywords.setAttribute('content', metaConstants.keywords);
             }
+            if (metaSubject) {
+                metaSubject.setAttribute('content', metaConstants.description);
+            }
+
         };
     }, [])
 

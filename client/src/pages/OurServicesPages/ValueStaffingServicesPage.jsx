@@ -95,11 +95,15 @@ const ValueStaffingServicesPage = () => {
 
         const metaDescription = document.querySelector('meta[name="description"]');
         const metaKeywords = document.querySelector('meta[name="keywords"]');
+        const metaSubject = document.querySelector('meta[name="subject"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', metaConstants.valueStaffingService.description);
         }
         if (metaKeywords) {
             metaKeywords.setAttribute('content', metaConstants.valueStaffingService.keywords);
+        }
+        if (metaSubject) {
+            metaSubject.setAttribute('content', metaConstants.valueStaffingService.description);
         }
 
         return () => {
@@ -109,6 +113,9 @@ const ValueStaffingServicesPage = () => {
             }
             if (metaKeywords) {
                 metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+            if (metaSubject) {
+                metaSubject.setAttribute('content', metaConstants.description);
             }
         };
     }, [])

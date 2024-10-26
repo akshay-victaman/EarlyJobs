@@ -115,11 +115,15 @@ const FinanceAccountingServicePage = () => {
 
         const metaDescription = document.querySelector('meta[name="description"]');
         const metaKeywords = document.querySelector('meta[name="keywords"]');
+        const metaSubject = document.querySelector('meta[name="subject"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', metaConstants.financeRecruitment.description);
         }
         if (metaKeywords) {
             metaKeywords.setAttribute('content', metaConstants.financeRecruitment.keywords);
+        }
+        if (metaSubject) {
+            metaSubject.setAttribute('content', metaConstants.financeRecruitment.description);
         }
 
         return () => {
@@ -129,6 +133,9 @@ const FinanceAccountingServicePage = () => {
             }
             if (metaKeywords) {
                 metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+            if (metaSubject) {
+                metaSubject.setAttribute('content', metaConstants.description);
             }
         };
     }, [])

@@ -23,11 +23,15 @@ const TeamPage = () => {
 
         const metaDescription = document.querySelector('meta[name="description"]');
         const metaKeywords = document.querySelector('meta[name="keywords"]');
+        const metaSubject = document.querySelector('meta[name="subject"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', metaConstants.team.description);
         }
         if (metaKeywords) {
             metaKeywords.setAttribute('content', metaConstants.team.keywords);
+        }
+        if (metaSubject) {
+            metaSubject.setAttribute('content', metaConstants.team.description);
         }
 
         return () => {
@@ -37,6 +41,9 @@ const TeamPage = () => {
             }
             if (metaKeywords) {
                 metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+            if (metaSubject) {
+                metaSubject.setAttribute('content', metaConstants.description);
             }
         };
     }, [])

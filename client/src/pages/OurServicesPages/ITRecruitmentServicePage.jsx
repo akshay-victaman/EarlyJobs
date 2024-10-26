@@ -121,11 +121,15 @@ const ITRecruitmentServicePage = () => {
 
         const metaDescription = document.querySelector('meta[name="description"]');
         const metaKeywords = document.querySelector('meta[name="keywords"]');
+        const metaSubject = document.querySelector('meta[name="subject"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', metaConstants.itRecruitment.description);
         }
         if (metaKeywords) {
             metaKeywords.setAttribute('content', metaConstants.itRecruitment.keywords);
+        }
+        if (metaSubject) {
+            metaSubject.setAttribute('content', metaConstants.itRecruitment.description);
         }
 
         return () => {
@@ -135,6 +139,9 @@ const ITRecruitmentServicePage = () => {
             }
             if (metaKeywords) {
                 metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+            if (metaSubject) {
+                metaSubject.setAttribute('content', metaConstants.description);
             }
         };
     }, [])
