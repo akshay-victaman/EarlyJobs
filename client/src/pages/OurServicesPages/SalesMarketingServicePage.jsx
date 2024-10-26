@@ -129,11 +129,15 @@ const SalesMarketingServicePage = () => {
 
         const metaDescription = document.querySelector('meta[name="description"]');
         const metaKeywords = document.querySelector('meta[name="keywords"]');
+        const metaSubject = document.querySelector('meta[name="subject"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', metaConstants.salesRecruitment.description);
         }
         if (metaKeywords) {
             metaKeywords.setAttribute('content', metaConstants.salesRecruitment.keywords);
+        }
+        if (metaSubject) {
+            metaSubject.setAttribute('content', metaConstants.salesRecruitment.description);
         }
 
         return () => {
@@ -143,6 +147,9 @@ const SalesMarketingServicePage = () => {
             }
             if (metaKeywords) {
                 metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+            if (metaSubject) {
+                metaSubject.setAttribute('content', metaConstants.description);
             }
         };
     }, [])

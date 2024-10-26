@@ -27,11 +27,15 @@ const LoginPage = () => {
 
         const metaDescription = document.querySelector('meta[name="description"]');
         const metaKeywords = document.querySelector('meta[name="keywords"]');
+        const metaSubject = document.querySelector('meta[name="subject"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', metaConstants.login.description);
         }
         if (metaKeywords) {
             metaKeywords.setAttribute('content', metaConstants.login.keywords);
+        }
+        if (metaSubject) {
+            metaSubject.setAttribute('content', metaConstants.login.description);
         }
 
         return () => {
@@ -41,6 +45,9 @@ const LoginPage = () => {
             }
             if (metaKeywords) {
                 metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+            if (metaSubject) {
+                metaSubject.setAttribute('content', metaConstants.description);
             }
         };
     }, [])

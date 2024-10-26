@@ -116,11 +116,15 @@ const RecruitmentProcessOutsourcingPage = () => {
 
         const metaDescription = document.querySelector('meta[name="description"]');
         const metaKeywords = document.querySelector('meta[name="keywords"]');
+        const metaSubject = document.querySelector('meta[name="subject"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', metaConstants.recruitmentOutsourcing.description);
         }
         if (metaKeywords) {
             metaKeywords.setAttribute('content', metaConstants.recruitmentOutsourcing.keywords);
+        }
+        if (metaSubject) {
+            metaSubject.setAttribute('content', metaConstants.recruitmentOutsourcing.description);
         }
 
         return () => {
@@ -130,6 +134,9 @@ const RecruitmentProcessOutsourcingPage = () => {
             }
             if (metaKeywords) {
                 metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+            if (metaSubject) {
+                metaSubject.setAttribute('content', metaConstants.description);
             }
         };
     }, [])

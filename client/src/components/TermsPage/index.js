@@ -9,11 +9,15 @@ const TermsPage = () => {
 
         const metaDescription = document.querySelector('meta[name="description"]');
         const metaKeywords = document.querySelector('meta[name="keywords"]');
+        const metaSubject = document.querySelector('meta[name="subject"]');
         if (metaDescription) {
             metaDescription.setAttribute('content', metaConstants.termsAndConditions.description);
         }
         if (metaKeywords) {
             metaKeywords.setAttribute('content', metaConstants.termsAndConditions.keywords);
+        }
+        if (metaSubject) {
+            metaSubject.setAttribute('content', metaConstants.termsAndConditions.description);
         }
 
         return () => {
@@ -23,6 +27,9 @@ const TermsPage = () => {
             }
             if (metaKeywords) {
                 metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+            if (metaSubject) {
+                metaSubject.setAttribute('content', metaConstants.description);
             }
         };
     }, [])
