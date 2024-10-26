@@ -156,7 +156,7 @@ const PublicJobDetailsPage = () => {
                 <ShareButton 
                   title={role} 
                   text={role} 
-                  url={`https://earlyjobs.in/view-openings/${role}_${compname}_${city}_${id}`} 
+                  url={`https://earlyjobs.in/job-openings/${role}_${compname}_${city}_${id}`} 
                 />
               </div>
               <button className='public-job-apply-btn mobile-apply-btn-top' onClick={() => setApply(true)}>

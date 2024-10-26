@@ -110,7 +110,7 @@ const NavBar = ({handleShowComplaintsForm}) => {
                         !jwtToken && 
                         <>
                             <li className='nav-item'>
-                                <Link to='/view-openings' className='nav-link' style={{fontWeight: 'bold'}}>View Openings</Link>
+                                <Link to='/job-openings' className='nav-link' style={{fontWeight: 'bold'}}>Job Openings</Link>
                             </li>
                             <li className='nav-item'>
                                 <Link to='/login' className='nav-link' style={{fontWeight: 'bold'}}>Login</Link>
@@ -231,7 +231,7 @@ const NavBar = ({handleShowComplaintsForm}) => {
                             !jwtToken &&
                             <>
                                 <li className='nav-item-mobile' onClick={handleMenuClick}>
-                                    <Link to='/view-openings' className='nav-link' style={{fontWeight: 'bold'}}>View Openings</Link>
+                                    <Link to='/job-openings' className='nav-link' style={{fontWeight: 'bold'}}>Job Openings</Link>
                                 </li>
                                 <li className='nav-item-mobile' onClick={handleMenuClick}>
                                     <Link to='/login' className='nav-link' style={{fontWeight: 'bold'}}>Login</Link>

@@ -8,6 +8,7 @@ import Highlights from "../../components/Services/Highlights";
 import Faqs from "../../components/Services/Faqs";
 import './style.css';
 import { useEffect } from "react";
+import { metaConstants } from "../../utils/metaConstants";
 
 const heroSectionData = {
     subheading: 'POWER UP YOUR BUSINESS WITH OUR HIRING CONSULTING SERVICES',
@@ -112,9 +113,28 @@ const servicePageAccordianData = [
 const HrExecutiveServicePage = () => {
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-        document.title = "HR & Executive Recruitment Services | EarlyJobs";
-    }, []);
+        window.scrollTo(0, 0)
+        document.title = metaConstants.hrExecutiveRecruitment.title
+
+        const metaDescription = document.querySelector('meta[name="description"]');
+        const metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (metaDescription) {
+            metaDescription.setAttribute('content', metaConstants.hrExecutiveRecruitment.description);
+        }
+        if (metaKeywords) {
+            metaKeywords.setAttribute('content', metaConstants.hrExecutiveRecruitment.keywords);
+        }
+
+        return () => {
+            document.title = metaConstants.title
+            if (metaDescription) {
+                metaDescription.setAttribute('content', metaConstants.description); // Replace with the original content if needed
+            }
+            if (metaKeywords) {
+                metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+        };
+    }, [])
 
     return (
         <div className="service-page-container">

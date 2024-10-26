@@ -7,6 +7,7 @@ import HowWeHelpSection from "../../components/Services/HowWeHelpSection";
 import Faqs from "../../components/Services/Faqs";
 import './style.css';
 import { useEffect } from "react";
+import { metaConstants } from "../../utils/metaConstants";
 
 const heroSectionData = { 
     subheading: 'ENGAGE WITH THE BEST IT STAFFING FIRM',
@@ -90,9 +91,28 @@ const servicePageAccordianData = [
 const ITStaffingServicesPage = () => {
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-        document.title = "Recruitment Process Outsourcing | EarlyJobs";
-    }, []);
+        window.scrollTo(0, 0)
+        document.title = metaConstants.itStaffingService.title
+
+        const metaDescription = document.querySelector('meta[name="description"]');
+        const metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (metaDescription) {
+            metaDescription.setAttribute('content', metaConstants.itStaffingService.description);
+        }
+        if (metaKeywords) {
+            metaKeywords.setAttribute('content', metaConstants.itStaffingService.keywords);
+        }
+
+        return () => {
+            document.title = metaConstants.title
+            if (metaDescription) {
+                metaDescription.setAttribute('content', metaConstants.description); // Replace with the original content if needed
+            }
+            if (metaKeywords) {
+                metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+        };
+    }, [])
 
     return (
         <div className="service-page-container">

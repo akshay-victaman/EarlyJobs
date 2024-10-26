@@ -3,6 +3,7 @@ import { useHistory, Redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Oval } from 'react-loader-spinner';
 import './style.css'
+import { metaConstants } from '../../utils/metaConstants';
 
 const loginTypes = {
     user: 'Recruiter',
@@ -22,7 +23,26 @@ const LoginPage = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        document.title = 'Login | EarlyJobs'
+        document.title = metaConstants.login.title
+
+        const metaDescription = document.querySelector('meta[name="description"]');
+        const metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (metaDescription) {
+            metaDescription.setAttribute('content', metaConstants.login.description);
+        }
+        if (metaKeywords) {
+            metaKeywords.setAttribute('content', metaConstants.login.keywords);
+        }
+
+        return () => {
+            document.title = metaConstants.title
+            if (metaDescription) {
+                metaDescription.setAttribute('content', metaConstants.description); // Replace with the original content if needed
+            }
+            if (metaKeywords) {
+                metaKeywords.setAttribute('content', metaConstants.keywords);
+            }
+        };
     }, [])
 
     const history = useHistory();

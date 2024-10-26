@@ -77,14 +77,14 @@ const Footer = ({handleShowContactForm}) => {
                 </div>
                 <div className="footer-links-container">
                     <h3 className="footer-heading">LOCATIONS</h3>
-                    <Link to='/view-openings?page=1&location=Bengaluru' className="footer-link">Jobs in Bengaluru</Link>
-                    <Link to='/view-openings?page=1&location=Chennai' className="footer-link">Jobs in Chennai</Link>
-                    <Link to='/view-openings?page=1&location=Pune' className="footer-link">Jobs in Pune</Link>
-                    <Link to='/view-openings?page=1&location=Mumbai' className="footer-link">Jobs in Mumbai</Link>
-                    <Link to='/view-openings?page=1&location=Hyderabad' className="footer-link">Jobs in Hyderabad</Link>
-                    <Link to='/view-openings?page=1&location=New Delhi' className="footer-link">Jobs in New Delhi</Link>
-                    <Link to='/view-openings?page=1&location=Noida' className="footer-link">Jobs in Noida</Link>
-                    <Link to='/view-openings?page=1&location=Gurgaon' className="footer-link">Jobs in Gurgaon</Link>
+                    <Link to='/job-openings?page=1&location=Bengaluru' className="footer-link">Jobs in Bengaluru</Link>
+                    <Link to='/job-openings?page=1&location=Chennai' className="footer-link">Jobs in Chennai</Link>
+                    <Link to='/job-openings?page=1&location=Pune' className="footer-link">Jobs in Pune</Link>
+                    <Link to='/job-openings?page=1&location=Mumbai' className="footer-link">Jobs in Mumbai</Link>
+                    <Link to='/job-openings?page=1&location=Hyderabad' className="footer-link">Jobs in Hyderabad</Link>
+                    <Link to='/job-openings?page=1&location=New Delhi' className="footer-link">Jobs in New Delhi</Link>
+                    <Link to='/job-openings?page=1&location=Noida' className="footer-link">Jobs in Noida</Link>
+                    <Link to='/job-openings?page=1&location=Gurgaon' className="footer-link">Jobs in Gurgaon</Link>
                 </div>
             </div>
             <p className="footer-address footer-rights" style={{textAlign: 'center'}}>© 2024 EarlyJobs | All rights reserved.</p>

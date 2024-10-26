@@ -221,7 +221,7 @@ const EachRoute = () => {
                 }
             />
 
-            <Route exact path="/view-openings"
+            <Route exact path="/job-openings"
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <OpeningsPage />
@@ -229,7 +229,7 @@ const EachRoute = () => {
                 }
             />
 
-            <Route exact path="/view-openings/:id"
+            <Route exact path="/job-openings/:id"
                 render={() =>
                     <Suspense fallback={<Loader />}>
                         <PublicJobDetailsPage />
