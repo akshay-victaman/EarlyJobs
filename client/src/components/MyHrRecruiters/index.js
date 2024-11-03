@@ -27,6 +27,9 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
     const [hiringFor, setHiringFor] = useState('Intern HR Recruiter');
     const [shmOrHmEmails, setShmOrHmEmails] = useState([]);
     const [newHmEmail, setNewHmEmail] = useState('');
+    const today = new Date();
+    const date = today.toISOString().split('T')[0];
+    const [assignedDate, setAssignedDate] = useState(date);
     const [passwordDetails, setPasswordDetails] = useState({
       password: '',
       confirmPassword: ''
@@ -430,6 +433,10 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
         toast.error('Please select a hiring manager');
         return;
       }
+      if(assignedDate === '') {
+        toast.error('Please select a date');
+        return;
+      }
 
       const url = `${backendUrl}/api/users/migrate-hr-assigned-hm`;
       const options = {
@@ -438,7 +445,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${Cookies.get('jwt_token')}`
           },
-          body: JSON.stringify({hrEmail, newHmEmail})
+          body: JSON.stringify({hrEmail, newHmEmail, assignedDate})
       };
 
       console.log(hrEmail, newHmEmail)
@@ -469,6 +476,10 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
           toast.error('Please select a senior hiring manager');
           return;
         }
+        if(assignedDate === '') {
+          toast.error('Please select a date');
+          return;
+        }
   
         const url = `${backendUrl}/api/users/migrate-hm-assigned-shm`;
         const options = {
@@ -477,7 +488,7 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${Cookies.get('jwt_token')}`
             },
-            body: JSON.stringify({hrEmail, newHmEmail})
+            body: JSON.stringify({hrEmail, newHmEmail, assignedDate})
         };
   
         console.log(hrEmail, newHmEmail)
@@ -620,6 +631,8 @@ const MyHrRecruiters = ({setShowCandidateForm}) => {
                 ))
               }
           </select>
+          <label className="homepage-label">Migration Date</label>
+          <input className="homepage-input" type="date" name='migrationDate' value={assignedDate} onChange={(e) => setAssignedDate(e.target.value)} />
           <div className='achieve-button-con' style={{marginTop: '0px'}}>
               <button className='job-details-upload-candidate-button' onClick={() => role === "AC" ? handleMigrateHr(close, email) : handleMigrateHm(close, email)}>Change</button>
               <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>Cancel</button>

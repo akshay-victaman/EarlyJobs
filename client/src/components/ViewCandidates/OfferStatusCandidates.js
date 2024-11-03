@@ -220,6 +220,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 const updatedData = data.candidates.map(eachItem => ({
                   applicationId: eachItem.application_id,
                   candidateId: eachItem.candidate_id,
+                  employeeId: eachItem.employee_id,
                   name: eachItem.name,
                   companyName: eachItem.company_name,
                   area: eachItem.area,
@@ -279,6 +280,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                 const updatedData = data.map(eachItem => ({
                   applicationId: eachItem.application_id,
                   candidateId: eachItem.candidate_id,
+                  employeeId: eachItem.employee_id,
                   name: eachItem.name,
                   companyName: eachItem.company_name,
                   area: eachItem.area,
@@ -796,6 +798,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                     <th className="job-details-candidates-table-heading-cell">Location</th>
                     <th className="job-details-candidates-table-heading-cell">Phone</th>
                     <th className="job-details-candidates-table-heading-cell">Led By</th>
+                    <th className="job-details-candidates-table-heading-cell">Employee Id</th>
                     { (showCandidateForm !== 7) && <th className="job-details-candidates-table-heading-cell">{showCandidateForm === 10 ? "Was Planned On" : `${offerStatus} Date`}</th>}
                     {(showCandidateForm === 12 || (Cookies.get('role') === "BDE" && showCandidateForm === 6)) && <th className="job-details-candidates-table-heading-cell">Tenure (Days Left / Status / Approve)</th>}
                     {(Cookies.get('role') === "BDE" && showCandidateForm === 6) && <th className="job-details-candidates-table-heading-cell">Approve Tenure Status</th>}
@@ -820,6 +823,7 @@ const OfferStatusCandidates = ({ showCandidateForm, setShowCandidateForm, onShow
                             <td className="job-details-candidates-table-cell">{eachItem.area}, {eachItem.city}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.phone}</td>
                             <td className="job-details-candidates-table-cell">{eachItem.appliedBy}</td>
+                            <td className="job-details-candidates-table-cell">{eachItem.employeeId ? eachItem.employeeId : "--"}</td>
                             {(showCandidateForm !== 7) && 
                               <td className="job-details-candidates-table-cell">
                                 {(showCandidateForm === 8 || showCandidateForm === 9 || showCandidateForm === 10 || showCandidateForm === 11) ? eachItem.interviewDate : eachItem.offeredDate !== null ? eachItem.offeredDate.slice(0, -8) : "Null"}
