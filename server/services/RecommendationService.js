@@ -22,6 +22,28 @@ async function getTodaysCandidatesForRecruiter(recruiter_id) {
 }
 
 // Function to get 30 new candidates for a recruiter (if no candidates assigned today)
+// async function getNewCandidatesForRecruiter(recruiter) {
+//     try {
+//         const query = `
+//             SELECT c.id, c.name, c.email, c.phone, c.date_of_birth
+//             FROM candidates c 
+//             LEFT JOIN recruiter_recommendations r ON c.id = r.candidate_id
+//             WHERE c.is_joined = 0
+//             AND (r.recommended_at IS NULL OR r.recommended_at < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY))
+//             AND c.job_category IN (${db.escape(recruiter.hiring_category.split(', '))})
+//             GROUP BY c.id
+//             HAVING COUNT(r.candidate_id) = 0
+//             ORDER BY c.created_at ASC
+//             LIMIT 25;
+//         `
+//         const [candidates] = await db.query(query);
+//         return candidates;
+//     } catch (error) {
+//         console.error('Error in getNewCandidatesForRecruiter:', error);
+//         throw error;
+//     }
+// }
+
 async function getNewCandidatesForRecruiter(recruiter) {
     try {
         const query = `
@@ -29,13 +51,16 @@ async function getNewCandidatesForRecruiter(recruiter) {
             FROM candidates c 
             LEFT JOIN recruiter_recommendations r ON c.id = r.candidate_id
             WHERE c.is_joined = 0
-            AND (r.recommended_at IS NULL OR r.recommended_at < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY))
             AND c.job_category IN (${db.escape(recruiter.hiring_category.split(', '))})
-            GROUP BY c.id
-            HAVING COUNT(r.candidate_id) = 0
+            AND (r.recommended_at IS NULL OR r.recommended_at < DATE_SUB(CURRENT_DATE, INTERVAL 3 DAY))
+            AND NOT EXISTS (
+                SELECT 1 FROM recruiter_recommendations rr
+                WHERE rr.candidate_id = c.id
+                AND rr.recommended_at >= DATE_SUB(CURRENT_DATE, INTERVAL 3 DAY)
+            )
             ORDER BY c.created_at ASC
-            LIMIT 30
-        `
+            LIMIT 25;
+        `;
         const [candidates] = await db.query(query);
         return candidates;
     } catch (error) {
