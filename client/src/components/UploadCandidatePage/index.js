@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import React from 'react';
 import Cookies from "js-cookie"
 import { IoIosClose } from "react-icons/io";
 import Select from 'react-select';

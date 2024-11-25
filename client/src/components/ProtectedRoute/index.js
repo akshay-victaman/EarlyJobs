@@ -1,4 +1,5 @@
 import { Route, Redirect } from 'react-router-dom';
+import React from 'react';
 import Cookies from 'js-cookie';
 
 const ProtectedRoute = (props) => {

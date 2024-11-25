@@ -1,3 +1,4 @@
+import React from 'react';
 
 const UpdateTenureStatus = ({ candidate, onUpdate }) => {
 

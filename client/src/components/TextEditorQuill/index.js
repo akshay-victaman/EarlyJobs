@@ -1,4 +1,5 @@
 import ReactQuill from 'react-quill';
+import React from 'react';
 import 'react-quill/dist/quill.snow.css';
 
 const EditorComponent = ({handleEditorChange, content}) => {

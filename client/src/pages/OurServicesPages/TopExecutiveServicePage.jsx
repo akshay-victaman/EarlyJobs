@@ -8,6 +8,7 @@ import Highlights from "../../components/Services/Highlights";
 import Faqs from "../../components/Services/Faqs";
 import './style.css';
 import { useEffect } from "react";
+import React from 'react';
 import { metaConstants } from "../../utils/metaConstants";
 
 const heroSectionData = {

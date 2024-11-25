@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { IoIosClose } from "react-icons/io";
 import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore";

@@ -1,4 +1,4 @@
-
+import React from 'react';
 const ApproveTenureStatus = ({ candidate, onUpdate }) => {
 
     const handleUpdate = (e) => {

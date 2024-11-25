@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import React from 'react';
 import {ThreeCircles} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
