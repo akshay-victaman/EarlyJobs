@@ -4,6 +4,7 @@ import {BsFillBriefcaseFill} from 'react-icons/bs'
 import { FiBriefcase } from "react-icons/fi";
 import './style.css'
 import Cookies from 'js-cookie';
+import React from 'react';
 
 const JobsCard = props => {
   const {jobsItem, showCandidateForm} = props

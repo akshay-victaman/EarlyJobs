@@ -1,5 +1,5 @@
 import './style.css'
-
+import React from 'react';
 const EmploymentTypeList = ({employmentTypeItem, onSelectEmploymentType}) => {
   const {employmentTypeId, label} = employmentTypeItem
   return (

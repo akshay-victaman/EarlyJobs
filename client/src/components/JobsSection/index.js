@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
+import React from 'react';
 import {ThreeCircles} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';
 import { query, limit, collection, getFirestore, getDocs, orderBy, Timestamp, startAfter } from "firebase/firestore";

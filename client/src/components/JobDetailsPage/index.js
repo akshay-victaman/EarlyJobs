@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
+import React from 'react';
 import { formatDistanceToNow, parseISO, format } from 'date-fns';
 import {Oval} from 'react-loader-spinner'
 import Pagination from 'rc-pagination';

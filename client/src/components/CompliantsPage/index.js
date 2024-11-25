@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { ThreeCircles } from 'react-loader-spinner';
 import CompliantItem from "./CompliantItem";

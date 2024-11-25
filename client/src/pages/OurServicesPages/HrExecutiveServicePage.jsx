@@ -1,4 +1,5 @@
 import { FaRocket, FaUserClock, FaGripLinesVertical, FaPaintBrush, FaStar } from "react-icons/fa";
+import React from 'react';
 import ConsultationForm from '../../components/ConsultationForm';
 import ClientCarousel from "../../components/ClientCarousal";
 import HeroSection from "../../components/Services/HeroSection";

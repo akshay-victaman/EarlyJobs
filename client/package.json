@@ -1,9 +1,10 @@
 {
-  "name": "jobby-app",
+  "name": "ssr-react",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.598.0",
+    "@babel/runtime": "^7.26.0",
     "@emailjs/browser": "^3.12.1",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -15,7 +16,9 @@
     "axios": "^1.7.7",
     "date-fns": "^3.0.0",
     "exceljs": "^4.4.0",
+    "express": "^4.21.1",
     "firebase": "^10.7.2",
+    "html-webpack-plugin": "^5.6.3",
     "js-cookie": "^3.0.5",
     "pdf-lib": "^1.17.1",
     "rc-pagination": "^4.0.4",
@@ -34,17 +37,17 @@
     "react-toastify": "^10.0.5",
     "reactjs-popup": "^2.0.6",
     "uuid": "^9.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "sync": "aws s3 sync build/ s3://earlyjob.in/",
-    "syncw": "aws s3 sync build/ s3://www.earlyjobs.in/",
-    "invalidate": "aws cloudfront --region ap-south-1 create-invalidation --distribution-id E32IIMP3A02W5M --paths /*",
-    "invalidatew": "aws cloudfront --region ap-south-1 create-invalidation --distribution-id E1EDJJVYWIRJGA --paths /*",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "ssr": "npm run build && node server/index.js"
   },
   "eslintConfig": {
     "extends": [
@@ -63,5 +66,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-transform-runtime": "^7.25.9",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9",
+    "@babel/register": "^7.25.9",
+    "babel-loader": "^9.2.1",
+    "ignore-styles": "^5.0.1"
   }
 }
