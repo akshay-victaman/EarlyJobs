@@ -2,9 +2,9 @@ import Cookies from 'js-cookie'
 import { useState, useEffect } from 'react'
 import { formatDistanceToNow, parseISO, format } from 'date-fns';
 import {Oval} from 'react-loader-spinner'
-import Pagination from 'rc-pagination';
+// import Pagination from 'rc-pagination';
 import { FaCircleCheck } from "react-icons/fa6";
-import { FiBriefcase, FiEdit } from "react-icons/fi";
+import { FiBriefcase, FiEdit, FiLink } from "react-icons/fi";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useParams } from 'react-router-dom'
 import {IoIosClose} from 'react-icons/io'
@@ -14,10 +14,12 @@ import {BsFillBriefcaseFill} from 'react-icons/bs'
 import {HiOutlineExternalLink} from 'react-icons/hi'
 import {ThreeCircles} from 'react-loader-spinner'
 import './style.css'
-import UpdateCandidateStatus from '../ViewCandidates/UpdateCandidateStatus';
-import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails';
+// import UpdateCandidateStatus from '../ViewCandidates/UpdateCandidateStatus';
+// import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails';
 import EditJobDetails from '../EditJobDetails';
-import ScheduleInterview from '../ViewCandidates/ScheduleInterview';
+import { toast } from 'react-toastify';
+import EditSubJobDetails from '../EditJobDetails/EditSubJobDetails';
+// import ScheduleInterview from '../ViewCandidates/ScheduleInterview';
 
 const apiStatusConstant = {
   initial: 'INITIAL',
@@ -33,54 +35,64 @@ const JobDetailsPage = () => {
   const [selectedHR, setSelectedHR] = useState([])
   const [loading, setLoading] = useState(false)
   const [hrOrHmAssigned, setHrOrHmAssigned] = useState(0)
-  const [candidateList, setCandidateList] = useState([])
-  const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
-  const [viewScheduleInterviewPopup, setViewScheduleInterviewPopup] = useState(false)
-  const [interviewDetails, setInterviewDetails] = useState({})
-  const [candidateId, setCandidateId] = useState('')
+  // const [candidateList, setCandidateList] = useState([])
+  // const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
+  // const [viewScheduleInterviewPopup, setViewScheduleInterviewPopup] = useState(false)
+  // const [interviewDetails, setInterviewDetails] = useState({})
+  // const [candidateId, setCandidateId] = useState('')
   const [isEditJob, setIsEditJob] = useState(false)
-  const [page, setPage] = useState(1)
-  const [totalItems, setTotalItems] = useState(0);
+  // const [page, setPage] = useState(1)
+  // const [totalItems, setTotalItems] = useState(0);
   const [hrLoader, setHrLoader] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [isSubEditJob, setIsSubEditJob] = useState(false)
 
 
-  const onShowCandidateDetails = (candidateId) => {
-    setViewCandidateDetails(!viewCandidateDetails)
-    setCandidateId(candidateId)
-  }
+  // const onShowCandidateDetails = (candidateId) => {
+  //   setViewCandidateDetails(!viewCandidateDetails)
+  //   setCandidateId(candidateId)
+  // }
 
-  const onShowScheduleInterviewPopup = (jobId, candidateDetails, jobDetails, setCandidateList, candidateList) => {
-    setViewScheduleInterviewPopup(!viewScheduleInterviewPopup)
-    setInterviewDetails({
-      jobId,
-      candidateDetails,
-      setCandidateList,
-      candidateList,
-      jobsList: jobDetails
-    })
-  }
+  // const onShowScheduleInterviewPopup = (jobId, candidateDetails, jobDetails, setCandidateList, candidateList) => {
+  //   setViewScheduleInterviewPopup(!viewScheduleInterviewPopup)
+  //   setInterviewDetails({
+  //     jobId,
+  //     candidateDetails,
+  //     setCandidateList,
+  //     candidateList,
+  //     jobsList: jobDetails
+  //   })
+  // }
 
   const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+  const params = useParams()
+  const {id} = params
 
   useEffect(() => {
-    getJobDetails()
+    const {id} = params
+    if(id.length === 20) {
+      getSubJobDetails()
+    } else {
+      getJobDetails()
+    }
     window.scrollTo(0, 0)
     const role = Cookies.get('role')
-    if(role === 'AC') {
+   
+    if(role === 'AC' && id.length !== 20) {
       fetchHumanResources()
       getHRsForJob()
     }
-    if(role === 'SHM') {
+    if(role === 'SHM' && id.length !== 20) {
       fetchHiringManagers()
       getHMsForJob()
     }
   }, [])
 
-  useEffect(() => {
-    if(Cookies.get('role') !== 'BDE') {
-      getCandidates(page)
-    }
-  }, [page])
+  // useEffect(() => {
+  //   if(Cookies.get('role') !== 'BDE' && Cookies.get('role') !== 'FBDE') {
+  //     getCandidates(page)
+  //   }
+  // }, [page])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -89,8 +101,85 @@ const JobDetailsPage = () => {
     return () => clearTimeout(timer)
   }, [hrOrHmAssigned])
 
-  const params = useParams()
-  const {id} = params
+  const copyLink = async () => {
+    try {
+      const {role, compname, city} = jobDetails
+      let encodedUrl = encodeURI(`${role}_${compname}_${city}_${id}`)
+      if(encodedUrl.includes('/')) {
+        const newUrl = encodedUrl.replace(/\//g, '_')
+        encodedUrl = newUrl
+      }
+        const text = 'https://earlyjobs.in/job-openings/' + encodedUrl;
+        await navigator.clipboard.writeText(text);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
+    } catch (err) {
+        console.error('Failed to copy text to clipboard:', err);
+        toast.error('Failed to copy text to clipboard')
+    }
+  };  
+
+  const getSubJobDetails = async () => {
+    setApiStatus(apiStatusConstant.inProgress)
+    const {id} = params
+    const jwtToken = Cookies.get('jwt_token')
+    const apiUrl = `${backendUrl}/api/public/sub-jobs-details/${id}`
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+    const response = await fetch(apiUrl, options)
+    const data = await response.json()
+    console.log(data)
+    if (response.ok === true) {
+      if(data.error) {
+        setApiStatus(apiStatusConstant.failure)
+      } else {
+        const formattedData = {
+          id: data.id,
+          jobId: data.job_id,
+          category: data.category,
+          shiftTimings: data.shift_timings,
+          compname: data.company_name,
+          companyLogoUrl: data.company_logo_url,
+          currency: data.currency,
+          salaryMode: data.salary_mode,
+          minSalary: data.min_salary,
+          maxSalary: data.max_salary,
+          noOfOpenings: data.no_of_openings,
+          employmentType: data.employment_type,
+          jobDescription: data.description,
+          area: data.area,
+          streetAddress: data.street,
+          city: data.city,
+          pincode: data.pincode,
+          location: data.location,
+          locationLink: data.location_link,
+          role: data.title,
+          workType: data.work_type,
+          hiringNeed: data.hiring_need,
+          postedBy: data.posted_by,
+          skills: data.skills,
+          language: data.language,
+          status: data.status,
+          createdAt: data.created_at,
+          qualification: data.qualification,
+          minExperience: data.min_experience,
+          maxExperience: data.max_experience,
+          minAge: data.min_age,
+          maxAge: data.max_age,
+          keywords: data.keywords ? data.keywords.split(',') : []
+        }
+        console.log(formattedData)
+        setJobDetails(formattedData)
+        setApiStatus(apiStatusConstant.success)
+      }
+    } else {
+      setApiStatus(apiStatusConstant.failure)
+    }
+  }
 
   const getJobDetails = async () => {
     setApiStatus(apiStatusConstant.inProgress)
@@ -156,56 +245,56 @@ const JobDetailsPage = () => {
     }
   }
 
-  const formatDate = (date) => {
-    const dbDate = parseISO(date);
-    const formattedDate = format(dbDate, 'dd-MMM-yyyy hh:mm a');
-    return formattedDate;
-  }
+  // const formatDate = (date) => {
+  //   const dbDate = parseISO(date);
+  //   const formattedDate = format(dbDate, 'dd-MMM-yyyy hh:mm a');
+  //   return formattedDate;
+  // }
 
-  const getCandidates = async (page) => {
-    // setApiStatus(apiStatusConstant.inProgress)
-    const {id} = params
-    const jwtToken = Cookies.get('jwt_token')
-    let email = ""
-    const role = Cookies.get('role')
-    if(role === 'HR') email = Cookies.get('email')
-    const apiUrl = `${backendUrl}/jobs/candidate/${id}?email=${email}&offerStatus=&page=${page}`
-    const options = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-    }
-    const response = await fetch(apiUrl, options)
-    const data = await response.json()
-    if (response.ok === true) {
-      if(data.error) {
-        // setApiStatus(apiStatusConstant.failure)
-      } else {
-        console.log("get candidates raw api data", data)
-        const formattedData = data.candidates.map(eachItem => ({
-          applicationId: eachItem.application_id,
-          candidateId: eachItem.candidate_id,
-          candidateName: eachItem.name,
-          candidateEmail: eachItem.email,
-          candidatePhone: eachItem.phone,
-          hrName: eachItem.hr_name,
-          offerStatus: eachItem.offer_status,
-          offeredDate: eachItem.offered_date,
-          appliedBy: eachItem.applied_by,
-          interviewDate: formatDate(eachItem.interview_date),
-          companyName: eachItem.company_name
-        }))
-        console.log(formattedData)
-        // setHrList(data.hrList)
-        setTotalItems(data.count)
-        setCandidateList(formattedData)
-        // setApiStatus(apiStatusConstant.success)
-      }
-    } else {
-      // setApiStatus(apiStatusConstant.failure)
-    }
-  }
+  // const getCandidates = async (page) => {
+  //   // setApiStatus(apiStatusConstant.inProgress)
+  //   const {id} = params
+  //   const jwtToken = Cookies.get('jwt_token')
+  //   let email = ""
+  //   const role = Cookies.get('role')
+  //   if(role === 'HR') email = Cookies.get('email')
+  //   const apiUrl = `${backendUrl}/jobs/candidate/${id}?email=${email}&offerStatus=&page=${page}`
+  //   const options = {
+  //     method: 'GET',
+  //     headers: {
+  //       Authorization: `Bearer ${jwtToken}`,
+  //     },
+  //   }
+  //   const response = await fetch(apiUrl, options)
+  //   const data = await response.json()
+  //   if (response.ok === true) {
+  //     if(data.error) {
+  //       // setApiStatus(apiStatusConstant.failure)
+  //     } else {
+  //       console.log("get candidates raw api data", data)
+  //       const formattedData = data.candidates.map(eachItem => ({
+  //         applicationId: eachItem.application_id,
+  //         candidateId: eachItem.candidate_id,
+  //         candidateName: eachItem.name,
+  //         candidateEmail: eachItem.email,
+  //         candidatePhone: eachItem.phone,
+  //         hrName: eachItem.hr_name,
+  //         offerStatus: eachItem.offer_status,
+  //         offeredDate: eachItem.offered_date,
+  //         appliedBy: eachItem.applied_by,
+  //         interviewDate: formatDate(eachItem.interview_date),
+  //         companyName: eachItem.company_name
+  //       }))
+  //       console.log(formattedData)
+  //       // setHrList(data.hrList)
+  //       setTotalItems(data.count)
+  //       setCandidateList(formattedData)
+  //       // setApiStatus(apiStatusConstant.success)
+  //     }
+  //   } else {
+  //     // setApiStatus(apiStatusConstant.failure)
+  //   }
+  // }
 
   const fetchHiringManagers = async () => {
     const options = {
@@ -492,43 +581,43 @@ const JobDetailsPage = () => {
     }
   }
 
-  const itemsPerPage = 10; 
+  // const itemsPerPage = 10; 
 
-  const handlePageChange = (page) => {
-    setPage(page)
-  };
+  // const handlePageChange = (page) => {
+  //   setPage(page)
+  // };
 
-  const itemRender = (current, type, element) => {
-    if (type === 'page') {
-      return (
-        <button className={`pagination-button ${current === page ? "activePage" : ""}`} key={current} onClick={() => handlePageChange(current)}>
-          {current}
-        </button>
-      );
-    }
+  // const itemRender = (current, type, element) => {
+  //   if (type === 'page') {
+  //     return (
+  //       <button className={`pagination-button ${current === page ? "activePage" : ""}`} key={current} onClick={() => handlePageChange(current)}>
+  //         {current}
+  //       </button>
+  //     );
+  //   }
 
-    if (type === 'prev') {
-      return (
-        <button className={`pagination-button ${page === 1 ? "endPage" : ""}`} title="Previous" key="prev" onClick={() => handlePageChange(current - 1)}>
-          {'< Prev'}
-        </button>
-      );
-    }
+  //   if (type === 'prev') {
+  //     return (
+  //       <button className={`pagination-button ${page === 1 ? "endPage" : ""}`} title="Previous" key="prev" onClick={() => handlePageChange(current - 1)}>
+  //         {'< Prev'}
+  //       </button>
+  //     );
+  //   }
 
-    if (type === 'next') {
-      return (
-        <button className={`pagination-button ${totalItems/itemsPerPage <= page ? "endPage" : ""}`} title="Next" key="next" onClick={() => handlePageChange(current + 1)}>
-          {'Next >'}
-        </button>
-      );
-    }
+  //   if (type === 'next') {
+  //     return (
+  //       <button className={`pagination-button ${totalItems/itemsPerPage <= page ? "endPage" : ""}`} title="Next" key="next" onClick={() => handlePageChange(current + 1)}>
+  //         {'Next >'}
+  //       </button>
+  //     );
+  //   }
 
-    if (type === 'jump-prev' || type === 'jump-next') {
-      return <span className="pagination-dots" title='more'>...</span>;
-    }
+  //   if (type === 'jump-prev' || type === 'jump-next') {
+  //     return <span className="pagination-dots" title='more'>...</span>;
+  //   }
 
-    return element;
-  };
+  //   return element;
+  // };
 
   const renderLoader = () => (
     <div data-testid="loader" className="loader-container-job-details">
@@ -694,14 +783,29 @@ const JobDetailsPage = () => {
               </div>
             </div>
             {
-              (userType === 'ADMIN' || userType === 'BDE') && 
+              (userType === 'ADMIN' || userType === 'BDE' || userType === 'FBDE') && 
             
-              <button className='edit-job-button' onClick={() => setIsEditJob(true)}>
-                <FiEdit className='edit-icon' /> Edit
-              </button>
+                <button className='edit-job-button' onClick={() => setIsEditJob(true)}>
+                  <FiEdit className='edit-icon' /> Edit
+                </button>
             }
+
+            {
+              (id.length === 20) && 
+              <div className='edit-job-button-con'>
+                <button className='edit-job-button' onClick={() => setIsSubEditJob(true)}>
+                  <FiEdit className='edit-icon' /> Edit
+                </button>
+                {copied ? <p className='copied-text'>Copied!</p> :
+                  <button className='edit-job-button' onClick={copyLink}>
+                    <FiLink className='edit-icon' />Link
+                  </button>
+                }
+              </div>
+            }
+
           </div>
-          {(userType === 'AC' || userType === 'SHM') && renderAssignToHmOrHr()}
+          {((userType === 'AC' || userType === 'SHM') && id.length !== 20) && renderAssignToHmOrHr()}
           <div className="job-details-location-type-salary-con">
             <div className="job-details-location-type-con">
               <div className="job-details-location-type">
@@ -718,12 +822,14 @@ const JobDetailsPage = () => {
           </div>
           <hr className="line" />
           <p className="job-detials-misc"><span className='misc-head'>Status:</span> {status}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Assigned By:</span> {postedBy}</p>
-          {
-            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${((commissionFee/100)*70).toFixed(2)} Per Joining` : `${((commissionFee/100)*50).toFixed(2)}% of Annual CTC` }</p>
+          {id.length !== 20 &&
+            <p className="job-detials-misc"><span className='misc-head'>Assigned By:</span> {postedBy}</p>
           }
           {
-            (hiringFor === "Freelance HR Recruiter" || userType !== "HR") && <p className="job-detials-misc"><span className='misc-head'>Tenure:</span> {tenureInDays} days</p>
+            ((hiringFor === "Freelance HR Recruiter" || userType !== "HR") && id.length !== 20) && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${((commissionFee/100)*70).toFixed(2)} Per Joining` : `${((commissionFee/100)*50).toFixed(2)}% of Annual CTC` }</p>
+          }
+          {
+            ((hiringFor === "Freelance HR Recruiter" || userType !== "HR") && id.length !== 20) && <p className="job-detials-misc"><span className='misc-head'>Tenure:</span> {tenureInDays} days</p>
           }
           <p className="job-detials-misc"><span className='misc-head'>Notice Period:</span> {hiringNeed}</p>
           <p className="job-detials-misc"><span className='misc-head'>Shift Timings:</span> {shiftTimings}</p>
@@ -764,85 +870,85 @@ const JobDetailsPage = () => {
     )
   }
 
-  const renderCandidates = () => (
-    // offeredDate: eachItem.offered_date
-      <div className="job-details-candidates-container">
-        <h1 className="job-details-candidates-heading">Candidates</h1>
-        <div className='table-container'>
-          <table className={`job-details-candidates-table candidate-table-job-section ${candidateList.length === 0 && "empty-candidates"}`}>
-              <tr className="job-details-candidates-table-heading">
-                <th className="job-details-candidates-table-heading-cell">
-                  Name
-                </th>
-                <th className="job-details-candidates-table-heading-cell">
-                  Company Name
-                </th>
-                <th className="job-details-candidates-table-heading-cell">
-                  Phone
-                </th>
-                <th className="job-details-candidates-table-heading-cell">
-                  Offer Status
-                </th>
-                {
-                  Cookies.get('role') !== 'HR' &&
-                  <th className="job-details-candidates-table-heading-cell">
-                    Led By
-                  </th>
-                }
+  // const renderCandidates = () => (
+  //   // offeredDate: eachItem.offered_date
+  //     <div className="job-details-candidates-container">
+  //       <h1 className="job-details-candidates-heading">Candidates</h1>
+  //       <div className='table-container'>
+  //         <table className={`job-details-candidates-table candidate-table-job-section ${candidateList.length === 0 && "empty-candidates"}`}>
+  //             <tr className="job-details-candidates-table-heading">
+  //               <th className="job-details-candidates-table-heading-cell">
+  //                 Name
+  //               </th>
+  //               <th className="job-details-candidates-table-heading-cell">
+  //                 Company Name
+  //               </th>
+  //               <th className="job-details-candidates-table-heading-cell">
+  //                 Phone
+  //               </th>
+  //               <th className="job-details-candidates-table-heading-cell">
+  //                 Offer Status
+  //               </th>
+  //               {
+  //                 Cookies.get('role') !== 'HR' &&
+  //                 <th className="job-details-candidates-table-heading-cell">
+  //                   Led By
+  //                 </th>
+  //               }
 
-                  <th className="job-details-candidates-table-heading-cell">
-                    Interveiw Date
-                  </th>
+  //                 <th className="job-details-candidates-table-heading-cell">
+  //                   Interveiw Date
+  //                 </th>
                 
-                {
-                  Cookies.get('role') !== 'ADMIN' && (
-                    <th className="job-details-candidates-table-heading-cell">
-                      Update Status
-                    </th>
-                  )
-                }
+  //               {
+  //                 Cookies.get('role') !== 'ADMIN' && (
+  //                   <th className="job-details-candidates-table-heading-cell">
+  //                     Update Status
+  //                   </th>
+  //                 )
+  //               }
                 
-              </tr>
+  //             </tr>
 
-              {
-                  candidateList.length > 0 && candidateList.map(eachItem => (
+  //             {
+  //                 candidateList.length > 0 && candidateList.map(eachItem => (
                   
-                  <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem} jobId={id} jobsList={[jobDetails]} candidateList={candidateList} setCandidateList={setCandidateList} />
-                  ))                    
-              }
-          </table>
-          {candidateList.length === 0 && 
-            <p className='no-candidates-error '>
-                {
-                    apiStatus === apiStatusConstant.inProgress ?
-                    <Oval
-                        visible={true}
-                        height="20"
-                        width="20"
-                        color="#EB6A4D"
-                        strokeWidth="4"
-                        ariaLabel="oval-loading"
-                        wrapperStyle={{}}
-                        secondaryColor="#EB6A4D"
-                        wrapperClass=""
-                    />
-                    :
-                    "no records found!"
-                }
-            </p>}
-        </div>
-        <Pagination
-          current={page}
-          total={totalItems}
-          pageSize={itemsPerPage}
-          onChange={handlePageChange}
-          className="pagination-class pagination-class-candidates"
-          style={{marginTop: '20px'}}
-          itemRender={itemRender}
-          showSizeChanger
-        />
-      </div>
-    )
+  //                 <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem} jobId={id} jobsList={[jobDetails]} candidateList={candidateList} setCandidateList={setCandidateList} />
+  //                 ))                    
+  //             }
+  //         </table>
+  //         {candidateList.length === 0 && 
+  //           <p className='no-candidates-error '>
+  //               {
+  //                   apiStatus === apiStatusConstant.inProgress ?
+  //                   <Oval
+  //                       visible={true}
+  //                       height="20"
+  //                       width="20"
+  //                       color="#EB6A4D"
+  //                       strokeWidth="4"
+  //                       ariaLabel="oval-loading"
+  //                       wrapperStyle={{}}
+  //                       secondaryColor="#EB6A4D"
+  //                       wrapperClass=""
+  //                   />
+  //                   :
+  //                   "no records found!"
+  //               }
+  //           </p>}
+  //       </div>
+  //       <Pagination
+  //         current={page}
+  //         total={totalItems}
+  //         pageSize={itemsPerPage}
+  //         onChange={handlePageChange}
+  //         className="pagination-class pagination-class-candidates"
+  //         style={{marginTop: '20px'}}
+  //         itemRender={itemRender}
+  //         showSizeChanger
+  //       />
+  //     </div>
+  //   )
 
   const renderJobDetailsFailure = () => (
     <div className="jobs-details-failure-container">
@@ -880,18 +986,20 @@ const JobDetailsPage = () => {
     }
   }
 
-    const role = Cookies.get('role')
+    // const role = Cookies.get('role')
 
     return (
       <div className='job-details-main-container'>
-        {/* <NavBar isLoggedIn={true} /> */}
         {
           isEditJob ? 
           <EditJobDetails updateJobDetails={updateJobDetails} jobDetails={jobDetails} setIsEditJob={setIsEditJob} />
-          : renderSwitchCase()
+          : isSubEditJob ?
+          <EditSubJobDetails updateJobDetails={updateJobDetails} jobDetails={jobDetails} setIsEditJob={setIsSubEditJob} />
+          :
+          renderSwitchCase()
         }
 
-        {role !== 'BDE' && renderCandidates()}
+        {/* {role !== 'BDE' && renderCandidates()}
         {
           viewCandidateDetails && 
           <div className="view-candidate-details-modal">
@@ -906,8 +1014,7 @@ const JobDetailsPage = () => {
             <div className='view-candidate-details-modal-overlay' onClick={onShowScheduleInterviewPopup}></div>
             <ScheduleInterview onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} interviewDetails={interviewDetails} />
           </div>
-        }
-        {/* <Footer /> */}
+        } */}
       </div>
     )
 }

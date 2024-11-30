@@ -1,0 +1,35 @@
+.sub-job-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.sub-job-form {
+    width: 100%;
+    display: flex;
+    padding: 20px 15px;
+    flex-direction: column;
+    border-radius: 10px;
+    border: 1px solid #EB6A4D;
+    margin-top: 25px;
+    margin-bottom: 10vh;
+    max-width: 550px;
+}
+
+.sub-job-container {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+    .sub-job-content {
+        margin-top: 20px;
+    }
+    
+}

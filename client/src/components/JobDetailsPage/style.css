@@ -27,6 +27,13 @@
   height: 100%;
 }
 
+.copied-text {
+  color: #EB6A4D;
+  font-size: 15px;
+  margin-top: 15px;
+  text-align: center;
+}
+
 .jobs-details-logo-img {
   width: 100px;
   height: 100px;
