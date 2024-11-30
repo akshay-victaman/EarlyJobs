@@ -152,9 +152,31 @@ const PublicJobDetailsPage = () => {
         console.log(formattedData)
         setJobDetails(formattedData)
         setApiStatus(apiStatusConstant.success)
-        const title = `${formattedData.role} - ${formattedData.compname} | Earlyjobs`
-        document.title = title
-        document.querySelector('meta[name="description"]').setAttribute('content', title)
+        const title = `${formattedData.role} in ${formattedData.area} ${formattedData.city} | Earlyjobs`;
+        const description = `${formattedData.role} in ${formattedData.category} at ${formattedData.compname} | ${formattedData.role} in ${formattedData.category} at ${formattedData.city} | ${formattedData.role} in ${formattedData.city} | Earlyjobs`;
+
+        const keywords = `
+            ${formattedData.role} in ${formattedData.area} ${formattedData.city}, 
+            ${formattedData.role} in ${formattedData.category} at ${formattedData.compname},
+            ${formattedData.role} in ${formattedData.city}, 
+            freshers jobs, 
+            Entry-level jobs near me,
+            Jobs for freshers in ${formattedData.city},
+            ${formattedData.role} openings in ${formattedData.city},
+            Remote jobs hiring now,
+            Freelance jobs in ${formattedData.city},
+            ${formattedData.category} jobs for freshers,
+            Internships in ${formattedData.category},
+            Top companies hiring in ${formattedData.category}/${formattedData.city},
+            Jobs with no experience required,
+            ${formattedData.role} jobs for recent graduates,
+            Best jobs for freshers in India,
+            ${formattedData.role} vacancy in ${formattedData.city}
+        `.trim();
+
+        document.title = title;
+        document.querySelector('meta[name="description"]').setAttribute('content', description);
+        document.querySelector('meta[name="keywords"]').setAttribute('content', keywords);
       }
     } else {
       setApiStatus(apiStatusConstant.failure)
