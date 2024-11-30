@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { IoIosClose } from "react-icons/io";
 import Select from 'react-select';
 import {Oval} from 'react-loader-spinner'
@@ -64,7 +64,7 @@ const PublicApplicationForm = ({jobDetails, setApply}) => {
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL
 
     const [candidateDetails, setCandidateDetails] = useState({
-        jobId: jobDetails.id,
+        jobId: jobDetails.jobId ? jobDetails.jobId : jobDetails.id,
         fullName: '',
         fatherName: '',
         email: '',
@@ -81,8 +81,16 @@ const PublicApplicationForm = ({jobDetails, setApply}) => {
         jobCategory: jobDetails.category,
         offerStatus: 'Ongoing',
         shiftTimings: jobDetails.shiftTimings,
-        employmentType: jobDetails.employmentType
+        employmentType: jobDetails.employmentType,
+        subJobId: jobDetails.id,
+        postedBy: jobDetails.postedBy
       })
+
+      console.log(jobDetails)
+
+      useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
 
     const handleCandidateInputChange = (e) => {
         const {name, value} = e.target
@@ -260,7 +268,9 @@ const PublicApplicationForm = ({jobDetails, setApply}) => {
                         jobCategory: jobDetails.category,
                         offerStatus: 'Ongoing',
                         shiftTimings: jobDetails.shiftTimings,
-                        employmentType: jobDetails.employmentType
+                        employmentType: jobDetails.employmentType,
+                        subJobId: jobDetails.jobId,
+                        postedBy: jobDetails.postedBy
                     })
                     setShowForm(false)
                 }

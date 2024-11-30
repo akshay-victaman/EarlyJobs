@@ -25,15 +25,80 @@ const PublicJobDetailsPage = () => {
 
 
   const backendUrl = process.env.REACT_APP_BACKEND_API_URL
+  const params = useParams()
 
   useEffect(() => {
-    getJobDetails()
+    const {id} = params
+    const jobId = id.split('_')[id.split('_').length - 1]
+    if(jobId.length === 20) {
+      getSubJobDetails()
+    } else {
+      getJobDetails()
+    }
     window.scrollTo(0, 0)
   }, [])
 
 
-  const params = useParams()
 
+  const getSubJobDetails = async () => {
+    setApiStatus(apiStatusConstant.inProgress)
+    const {id} = params
+    const jobId = id.split('_')[id.split('_').length - 1]
+    const apiUrl = `${backendUrl}/api/public/sub-jobs-details/${jobId}`
+
+    const response = await fetch(apiUrl)
+    const data = await response.json()
+    if (response.ok === true) {
+      if(data.error) {
+        setApiStatus(apiStatusConstant.failure)
+      } else {
+        const formattedData = {
+          id: data.id,
+          jobId: data.job_id,
+          category: data.category,
+          shiftTimings: data.shift_timings,
+          compname: data.company_name,
+          companyLogoUrl: data.company_logo_url,
+          currency: data.currency,
+          salaryMode: data.salary_mode,
+          minSalary: data.min_salary,
+          maxSalary: data.max_salary,
+          noOfOpenings: data.no_of_openings,
+          employmentType: data.employment_type,
+          jobDescription: data.description,
+          area: data.area,
+          streetAddress: data.street,
+          city: data.city,
+          pincode: data.pincode,
+          location: data.location,
+          locationLink: data.location_link,
+          role: data.title,
+          workType: data.work_type,
+          hiringNeed: data.hiring_need,
+          postedBy: data.posted_by,
+          skills: data.skills,
+          language: data.language,
+          status: data.status,
+          createdAt: data.created_at,
+          qualification: data.qualification,
+          minExperience: data.min_experience,
+          maxExperience: data.max_experience,
+          minAge: data.min_age,
+          maxAge: data.max_age,
+          keywords: data.keywords ? data.keywords.split(',') : [],
+        }
+        console.log(data)
+        console.log(formattedData)
+        setJobDetails(formattedData)
+        setApiStatus(apiStatusConstant.success)
+        const title = `${formattedData.role} - ${formattedData.compname} | Earlyjobs`
+        document.title = title
+        document.querySelector('meta[name="description"]').setAttribute('content', title)
+      }
+    } else {
+      setApiStatus(apiStatusConstant.failure)
+    }
+  }
   const getJobDetails = async () => {
     setApiStatus(apiStatusConstant.inProgress)
     const {id} = params

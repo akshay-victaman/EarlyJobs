@@ -16,7 +16,7 @@ const apiStatusConstant = {
     failure: 'FAILURE',
 }
 
-const Applications = ({ setShowCandidateForm }) => {
+const Applications = ({ setShowCandidateForm, showCandidateForm }) => {
     const [searchInput, setSearchInput] = useState('');
     const [candidateList, setCandidateList] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
@@ -42,7 +42,7 @@ const Applications = ({ setShowCandidateForm }) => {
 
     useEffect(() => {
         getApplications()
-    }, [page, applicationStatus, jobId, fromDate, toDate])
+    }, [page, applicationStatus, jobId, fromDate, toDate, showCandidateForm])
 
     const itemsPerPage = 10; 
 
@@ -135,15 +135,25 @@ const Applications = ({ setShowCandidateForm }) => {
     const getApplications = async () => {
         setApiStatus(apiStatusConstant.inProgress);
         let url = process.env.REACT_APP_BACKEND_API_URL
-        if (Cookies.get('role') === 'BDE') {
-          url = `${url}/api/public/applications/bde?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
-        } else {
+        if (showCandidateForm === 19) {
           if (applicationStatus === 0) {
-            url = `${url}/api/public/applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+            url = `${url}/api/public/sub-jobs-applications/?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
           } else if (applicationStatus === 1) {
-            url = `${url}/api/public//approved-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+            url = `${url}/api/public/approved-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
           } else {
-            url = `${url}/api/public//rejected-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+            url = `${url}/api/public/rejected-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+          }
+        } else {
+          if (Cookies.get('role') === 'BDE') {
+            url = `${url}/api/public/applications/bde?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+          } else {
+            if (applicationStatus === 0) {
+              url = `${url}/api/public/applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+            } else if (applicationStatus === 1) {
+              url = `${url}/api/public/approved-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+            } else {
+              url = `${url}/api/public/rejected-applications?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}&page=${page}`
+            }
           }
         }
         const options = {
@@ -202,15 +212,25 @@ const Applications = ({ setShowCandidateForm }) => {
 
     const getApplicationsForExcel = async () => {
       let url = process.env.REACT_APP_BACKEND_API_URL
-      if (Cookies.get('role') === 'BDE') {
-        url = `${url}/api/public/applications/bde/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
-      } else {
+      if (showCandidateForm === 19) {
         if (applicationStatus === 0) {
-          url = `${url}/api/public/applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+          url = `${url}/api/public/sub-jobs-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
         } else if (applicationStatus === 1) {
           url = `${url}/api/public/approved-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
         } else {
           url = `${url}/api/public/rejected-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+        }
+      } else {
+        if (Cookies.get('role') === 'BDE') {
+          url = `${url}/api/public/applications/bde/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+        } else {
+          if (applicationStatus === 0) {
+            url = `${url}/api/public/applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+          } else if (applicationStatus === 1) {
+            url = `${url}/api/public/approved-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+          } else {
+            url = `${url}/api/public/rejected-applications/excel?search=${searchInput}&jobId=${jobId}&createdFrom=${fromDate}&createdTo=${toDate}`
+          }
         }
       }
       const options = {

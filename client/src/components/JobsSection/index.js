@@ -23,6 +23,7 @@ import Applications from '../ViewCandidates/Applications';
 import ViewCompanies from '../ViewCompanies';
 import { TenureApprovedCandidates } from '../ViewCandidates/TenureApprovedCandidates';
 import { RecommendedCandidates } from '../RecommendedCandidates';
+import CreateSubJob from '../CreateSubJob';
 
 
 const apiStatusConstant = {
@@ -64,6 +65,9 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
 
 
   useEffect(() => {
+    if(showCandidateForm === 18) {
+      getHRSubJobCards()
+    }
     if(showCandidateForm === 4) {
       getHirignReqCard()
     } else if(showCandidateForm === 4 || showCandidateForm === 0) {
@@ -211,6 +215,58 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
     }
   }
 
+  const getHRSubJobCards = async () => {
+    setApiStatus(apiStatusConstant.inProgress)
+    let apiUrl = `${backendUrl}/api/public/sub-jobs?page=${page}`
+    const jwtToken = Cookies.get('jwt_token')
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+    const response = await fetch(apiUrl, options)
+    const data = await response.json()
+    console.log('api data', data)
+    
+    if (response.ok === true) {
+      if(data.error) {
+        setApiStatus(apiStatusConstant.failure)
+        alert(data.error)
+      } else {
+        const updatedData = data.jobs.map(eachItem => ({
+          id: eachItem.id,
+          companyLogoUrl: eachItem.company_logo_url,
+          category: eachItem.category,
+          compname: eachItem.company_name,
+          currency: eachItem.currency,
+          salaryMode: eachItem.salary_mode,
+          minSalary: eachItem.min_salary,
+          maxSalary: eachItem.max_salary,
+          noOfOpenings: eachItem.no_of_openings,
+          employmentType: eachItem.employment_type,
+          jobDescription: eachItem.description,
+          location: eachItem.location,
+          role: eachItem.title,
+          workType: eachItem.work_type,
+          hiringNeed: eachItem.hiring_need,
+          postedBy: eachItem.posted_by,
+          skills: eachItem.skills,
+          status: eachItem.status,
+          createdAt: eachItem.created_at,
+        }))
+        console.log('updated data',updatedData)
+
+        setJobsList(updatedData)
+        setTotalItems(data.count)
+        setApiStatus(apiStatusConstant.success)
+      }
+    } else {
+      setApiStatus(apiStatusConstant.failure)
+      alert(data.error)
+    }
+  }
+
   const getJobsCard = async () => {
     setApiStatus(apiStatusConstant.inProgress)
     const role = Cookies.get('role')
@@ -222,6 +278,8 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
     } else if (role === 'HR') {
       apiUrl = `${backendUrl}/jobs/hr/?company=${companyName}&location=${location}&title=${title}&page=${page}`
     } else if (role === 'BDE') {
+      apiUrl = `${backendUrl}/jobs/master-bde/?company=${companyName}&location=${location}&title=${title}&page=${page}`
+    } else if (role === 'FBDE') {
       apiUrl = `${backendUrl}/jobs/bde/?company=${companyName}&location=${location}&title=${title}&page=${page}`
     } else {
       apiUrl = `${backendUrl}/admin/get-jobs/all/?company=${companyName}&location=${location}&title=${title}&page=${page}`
@@ -585,10 +643,13 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
             : showCandidateForm===3 ? <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
             : showCandidateForm===4 ? renderAllSections()
             : showCandidateForm >= 5 && showCandidateForm <= 12 ? <OfferStatusCandidates key={showCandidateForm} showCandidateForm={showCandidateForm} onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} />
-            : showCandidateForm===13 ? <Applications setShowCandidateForm={setShowCandidateForm} />
+            : showCandidateForm===13 ? <Applications setShowCandidateForm={setShowCandidateForm} showCandidateForm={showCandidateForm} />
             : showCandidateForm===14 ? <ViewCompanies onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} />
             : showCandidateForm===15 ? <TenureApprovedCandidates onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm}/>
             : showCandidateForm===16 ? <RecommendedCandidates onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} />
+            : showCandidateForm===17 ? <CreateSubJob setShowCandidateForm={setShowCandidateForm} />
+            : showCandidateForm===18 ? renderAllSections()
+            : showCandidateForm===19 ? <Applications setShowCandidateForm={setShowCandidateForm} showCandidateForm={showCandidateForm} />
             : renderAllSections()
           }
         </div>
