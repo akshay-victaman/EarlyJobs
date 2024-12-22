@@ -104,9 +104,9 @@ const JobDetailsPage = () => {
   const copyLink = async () => {
     try {
       const {role, compname, city} = jobDetails
-      let encodedUrl = encodeURI(`${role}_${compname}_${city}_${id}`)
+      let encodedUrl = encodeURI(`${role}_${compname}_${city}_id=${id}`)
       if(encodedUrl.includes('/')) {
-        const newUrl = encodedUrl.replace(/\//g, '_')
+        const newUrl = encodedUrl.replace(/\//g, '_id=')
         encodedUrl = newUrl
       }
         const text = 'https://earlyjobs.in/job-openings/' + encodedUrl;
