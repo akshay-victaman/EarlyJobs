@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import Cookies from "js-cookie";
@@ -63,6 +63,11 @@ const App = ({ initialState }) => {
 
   const [showContactForm, setShowContactForm] = useState(false);
   const [showComplaintsForm, setShowComplaintsForm] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleShowContactForm = () => {
     setShowContactForm(!showContactForm);
@@ -73,29 +78,31 @@ const App = ({ initialState }) => {
   };
 
   return (
-    <>
-      <NavBar handleShowComplaintsForm={handleShowComplaintsForm} />
-      {/* {Cookies.get('jwt_token') === undefined && <SubNavBar handleShowContactForm={handleShowContactForm} />} */}
-      {showContactForm && (
-        <ContactForm handleShowContactForm={handleShowContactForm} />
-      )}
-      {Cookies.get("jwt_token") === undefined && (
-        <button
-          className="sticky-side-contact-button"
-          onClick={handleShowContactForm}
-        >
-          Contact Us
-        </button>
-      )}
-      {showComplaintsForm && (
-        <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} />
-      )}
-      <EachRoute initialState={initialState} />
-      <Footer handleShowContactForm={handleShowContactForm} />
-      {Cookies.get("jwt_token") === undefined && <FooterScroll />}
-      <ScrollUp />
-      <ToastContainer autoClose={4000} />
-    </>
+    isMounted && (
+      <>
+        <NavBar handleShowComplaintsForm={handleShowComplaintsForm} />
+        {/* {Cookies.get('jwt_token') === undefined && <SubNavBar handleShowContactForm={handleShowContactForm} />} */}
+        {showContactForm && (
+          <ContactForm handleShowContactForm={handleShowContactForm} />
+        )}
+        {Cookies.get("jwt_token") === undefined && (
+          <button
+            className="sticky-side-contact-button"
+            onClick={handleShowContactForm}
+          >
+            Contact Us
+          </button>
+        )}
+        {showComplaintsForm && (
+          <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} />
+        )}
+        <EachRoute initialState={initialState} />
+        <Footer handleShowContactForm={handleShowContactForm} />
+        {Cookies.get("jwt_token") === undefined && <FooterScroll />}
+        <ScrollUp />
+        <ToastContainer autoClose={4000} />
+      </>
+    )
   );
 };
 
