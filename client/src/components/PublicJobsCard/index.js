@@ -1,5 +1,6 @@
 import {TiLocation} from 'react-icons/ti'
 import {Link} from 'react-router-dom'
+import React from 'react';
 import {BsFillBriefcaseFill} from 'react-icons/bs'
 import './style.css'
 import { FiBriefcase } from 'react-icons/fi'

@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie'
+import React from 'react';
 import { useState, useEffect } from 'react'
 import { formatDistanceToNow } from 'date-fns';
 import { FiBriefcase } from "react-icons/fi";

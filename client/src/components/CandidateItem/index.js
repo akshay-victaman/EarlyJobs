@@ -1,5 +1,5 @@
 import Popup from "reactjs-popup";
-
+import React from 'react';
 
 const CandidateItem = ({ candidate, updateCandidateIsJoined, onShowCandidateDetails, onShowCandidateApplications }) => {
     const { id, name, fatherName, isJoined, email, phone, createdAt } = candidate;

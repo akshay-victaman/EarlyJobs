@@ -1,4 +1,5 @@
 import { IoIosClose } from "react-icons/io";
+import React from 'react';
 
 const QualificationForm = (props) => {
     const { 

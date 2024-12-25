@@ -1,4 +1,5 @@
 import { FaCheckCircle } from "react-icons/fa";
+import React from 'react';
 import './style.css';
 import ClientCarousel from "../../components/ClientCarousal";
 import ConsultationForm from "../../components/ConsultationForm";

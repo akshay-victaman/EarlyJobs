@@ -1,4 +1,5 @@
 import Stepper from 'react-stepper-horizontal';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";

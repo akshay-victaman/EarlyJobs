@@ -1,4 +1,5 @@
 import Stepper from 'react-stepper-horizontal';
+import React from 'react';
 import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {v4 as uuidv4} from 'uuid';

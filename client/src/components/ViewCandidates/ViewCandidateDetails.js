@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import { useEffect } from "react";
+import React from 'react';
 import { useState } from "react";
 import { parseISO, format } from 'date-fns';
 import { ThreeCircles } from 'react-loader-spinner'

@@ -1,4 +1,5 @@
 import {Link, useHistory} from 'react-router-dom'
+import React from 'react';
 import { useState } from 'react';
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import Cookies from 'js-cookie';
