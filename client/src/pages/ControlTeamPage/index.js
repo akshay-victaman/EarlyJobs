@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import React from 'react';
 import { MutatingDots } from 'react-loader-spinner';
 import { Redirect } from 'react-router-dom';
 import { FaLinkedin } from "react-icons/fa";

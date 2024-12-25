@@ -1,4 +1,5 @@
 import { FaCheckDouble } from 'react-icons/fa6'
+import React from 'react';
 import ConsultationForm from '../ConsultationForm'
 
 function HeroSection({heroSectionData}) {

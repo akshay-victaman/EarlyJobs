@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-
+import React from 'react';
 const AboutForm = (props) => {
     const { 
         handleAboutInputChange,

@@ -1,3 +1,4 @@
+import React from 'react';
 import { FaFacebook, FaLinkedin, FaTelegram } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 import './style.css';

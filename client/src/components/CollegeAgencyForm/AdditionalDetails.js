@@ -1,5 +1,5 @@
 import { Oval } from 'react-loader-spinner';
-
+import React from 'react';
 const AdditionalDetails = (props) => {
     const { 
         handlePerson1InputChange,

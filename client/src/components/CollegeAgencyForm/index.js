@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import React from 'react';
 import Stepper from 'react-stepper-horizontal';
 import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";

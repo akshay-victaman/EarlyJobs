@@ -1,4 +1,5 @@
 import './style.css'
+import React from 'react';
 
 const WorkPlaceTypeList = ({workplaceTypeItem, onSelectWorkPlaceType}) => {
   const {workplaceTypeId, label} = workplaceTypeItem

@@ -1,6 +1,7 @@
 import { IoMdMailUnread, IoMdMailOpen } from 'react-icons/io';
 import { parseISO, format } from 'date-fns';
 import { Link } from 'react-router-dom';
+import React from 'react';
 
 const CompliantItem = ({ compliant }) => {
 

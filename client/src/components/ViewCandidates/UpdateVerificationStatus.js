@@ -1,3 +1,4 @@
+import React from 'react';
 
 const UpdateVerificationStatus = ({ candidate, onUpdate }) => {
 

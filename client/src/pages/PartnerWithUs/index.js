@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import React from 'react';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; 
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { Oval } from 'react-loader-spinner';

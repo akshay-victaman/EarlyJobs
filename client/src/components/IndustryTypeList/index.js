@@ -1,4 +1,5 @@
 import './style.css'
+import React from 'react';
 
 const IndustryTypeList = ({industryItem, onSelectIndustryType}) => {
   const {industryId, label} = industryItem

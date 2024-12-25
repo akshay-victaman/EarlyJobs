@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import React from 'react';
 import OpeningsSection from '../../components/OpeningsSection'
 import './style.css'
 import { metaConstants } from '../../utils/metaConstants'

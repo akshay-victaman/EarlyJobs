@@ -1,4 +1,5 @@
 import { useParams, useHistory } from "react-router-dom"
+import React from 'react';
 import Popup from 'reactjs-popup';
 import {v4 as uuid} from 'uuid'
 import { useEffect, useState } from "react"

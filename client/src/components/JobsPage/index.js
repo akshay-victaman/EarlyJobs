@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import React from 'react';
 import JobsSection from '../JobsSection'
 import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails'
 import ScheduleInterview from '../ViewCandidates/ScheduleInterview'
