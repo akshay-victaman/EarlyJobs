@@ -21,9 +21,13 @@ const indexTemplate = fs.readFileSync(
 // Helper function to fetch job data
 async function fetchJobData(jobId) {
   try {
-    const response = await axios.get(
-      `https://07mz59w9ch.execute-api.ap-south-1.amazonaws.com/prod/api/public/jobs/${jobId}`
-    );
+    let url = '';
+    if(jobId.length === 20) {
+      url = `https://07mz59w9ch.execute-api.ap-south-1.amazonaws.com/prod/api/public/sub-jobs-details/${jobId}`
+    } else {
+      url = `https://07mz59w9ch.execute-api.ap-south-1.amazonaws.com/prod/api/public/jobs/${jobId}`
+    }
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     console.error("Error fetching job data:", error);
@@ -126,7 +130,7 @@ const renderWithSSR = async (req, res, jobData) => {
 app.get("/job-openings/:details", async (req, res) => {
   try {
     const { details } = req.params;
-    const jobId = details.split("_").pop();
+    const jobId = details.split("_id=").pop();
 
     // Fetch job data before rendering
     const jobData = await fetchJobData(jobId);
