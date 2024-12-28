@@ -20,7 +20,7 @@ const PublicJobsCard = ({jobsItem}) => {
     keywords
   } = jobsItem
 
-  let encodedUrl = encodeURI(`${role}_${compname}_${city}_${id}`)
+  let encodedUrl = encodeURI(`${role}_${compname}_${city}_id=${id}`)
   if(encodedUrl.includes('/')) {
     const newUrl = encodedUrl.replace(/\//g, '_')
     encodedUrl = newUrl

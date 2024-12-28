@@ -129,7 +129,8 @@ const PublicJobDetailsPage = ({ initialState }) => {
   const getJobDetails = async () => {
     setApiStatus(apiStatusConstant.inProgress);
     const { id } = params;
-    const jobId = id.split("_")[id.split("_").length - 1];
+    // const jobId = id.split("_")[id.split("_").length - 1];
+    const jobId = id.split('_id=')[id.split('_id=').length - 1]
     const apiUrl = `${backendUrl}/api/public/jobs/${jobId}`;
 
     const response = await fetch(apiUrl);
