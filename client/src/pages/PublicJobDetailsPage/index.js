@@ -44,20 +44,19 @@ const PublicJobDetailsPage = ({ initialState }) => {
   const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
   const [apply, setApply] = useState(false);
 
-
-  const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-  const params = useParams()
+  const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+  const params = useParams();
 
   useEffect(() => {
-    const {id} = params
-    const jobId = id.split('_id=')[id.split('_id=').length - 1]
-    if(jobId.length === 20) {
-      getSubJobDetails()
+    const { id } = params;
+    const jobId = id.split("_id=")[id.split("_id=").length - 1];
+    if (jobId.length === 20) {
+      getSubJobDetails();
     } else {
-      getJobDetails()
+      getJobDetails();
     }
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (document) {
@@ -66,18 +65,17 @@ const PublicJobDetailsPage = ({ initialState }) => {
     }
   }, [jobDetails, document]);
 
-
   const getSubJobDetails = async () => {
-    setApiStatus(apiStatusConstant.inProgress)
-    const {id} = params
-    const jobId = id.split('_id=')[id.split('_id=').length - 1]
-    const apiUrl = `${backendUrl}/api/public/sub-jobs-details/${jobId}`
+    setApiStatus(apiStatusConstant.inProgress);
+    const { id } = params;
+    const jobId = id.split("_id=")[id.split("_id=").length - 1];
+    const apiUrl = `${backendUrl}/api/public/sub-jobs-details/${jobId}`;
 
-    const response = await fetch(apiUrl)
-    const data = await response.json()
+    const response = await fetch(apiUrl);
+    const data = await response.json();
     if (response.ok === true) {
-      if(data.error) {
-        setApiStatus(apiStatusConstant.failure)
+      if (data.error) {
+        setApiStatus(apiStatusConstant.failure);
       } else {
         const formattedData = {
           id: data.id,
@@ -112,25 +110,27 @@ const PublicJobDetailsPage = ({ initialState }) => {
           maxExperience: data.max_experience,
           minAge: data.min_age,
           maxAge: data.max_age,
-          keywords: data.keywords ? data.keywords.split(',') : [],
-        }
-        console.log(data)
-        console.log(formattedData)
-        setJobDetails(formattedData)
-        setApiStatus(apiStatusConstant.success)
-        const title = `${formattedData.role} - ${formattedData.compname} | Earlyjobs`
-        document.title = title
-        document.querySelector('meta[name="description"]').setAttribute('content', title)
+          keywords: data.keywords ? data.keywords.split(",") : [],
+        };
+        console.log(data);
+        console.log(formattedData);
+        setJobDetails(formattedData);
+        setApiStatus(apiStatusConstant.success);
+        const title = `${formattedData.role} - ${formattedData.compname} | Earlyjobs`;
+        document.title = title;
+        document
+          .querySelector('meta[name="description"]')
+          .setAttribute("content", title);
       }
     } else {
-      setApiStatus(apiStatusConstant.failure)
+      setApiStatus(apiStatusConstant.failure);
     }
-  }
+  };
   const getJobDetails = async () => {
     setApiStatus(apiStatusConstant.inProgress);
     const { id } = params;
     // const jobId = id.split("_")[id.split("_").length - 1];
-    const jobId = id.split('_id=')[id.split('_id=').length - 1]
+    const jobId = id.split("_id=")[id.split("_id=").length - 1];
     const apiUrl = `${backendUrl}/api/public/jobs/${jobId}`;
 
     const response = await fetch(apiUrl);
@@ -268,14 +268,16 @@ const PublicJobDetailsPage = ({ initialState }) => {
                 <div className="job-details-location-type">
                   <TiLocation className="job-details-location-icon" />
                   <p className="job-details-location">{location}</p>
-                  <a
-                    href={locationLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="job-details-location-link"
-                  >
-                    View Location
-                  </a>
+                  {locationLink && (
+                    <a
+                      href={locationLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="job-details-location-link"
+                    >
+                      View Location
+                    </a>
+                  )}
                 </div>
                 <div className="job-details-location-type">
                   <BsFillBriefcaseFill className="job-details-location-icon" />

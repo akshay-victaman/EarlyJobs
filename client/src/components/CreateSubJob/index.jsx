@@ -247,9 +247,10 @@ const CreateSubJob = ({ setShowCandidateForm }) => {
       city: postNewJob.city.trim().length === 0,
       pincode: postNewJob.pincode.trim().length === 0,
       locationLink:
-        postNewJob.locationLink.trim().length === 0 ||
-        (!postNewJob.locationLink.startsWith("http://") &&
-          !postNewJob.locationLink.startsWith("https://")),
+        postNewJob.workType !== "Remote" &&
+        (postNewJob.locationLink.trim().length === 0 ||
+          (!postNewJob.locationLink.startsWith("http://") &&
+            !postNewJob.locationLink.startsWith("https://"))),
       salary:
         postNewJob.salaryMin.trim().length === 0 ||
         postNewJob.salaryMax.trim().length === 0 ||
@@ -332,7 +333,8 @@ const CreateSubJob = ({ setShowCandidateForm }) => {
       area: postNewJob.area,
       city: postNewJob.city,
       pincode: postNewJob.pincode,
-      locationLink: postNewJob.locationLink,
+      locationLink:
+        postNewJob.workType === "Remote" ? null : postNewJob.locationLink,
       currency: postNewJob.currency,
       salaryMode: postNewJob.salaryMode,
       minSalary: postNewJob.salaryMin,
@@ -491,6 +493,51 @@ const CreateSubJob = ({ setShowCandidateForm }) => {
         </div>
       </div>
 
+      <div className="salary-container">
+        <div className="emp-work-sub-con">
+          <label className="bde-form-label" htmlFor="employment-type">
+            Employment Type<span className="hr-form-span"> *</span>
+          </label>
+          <select
+            className="bde-form-input emp-work-input"
+            id="employment-type"
+            onChange={handleInputChange}
+            name="employmentType"
+            value={postNewJob.employmentType}
+          >
+            <option value="">Select Employment Type</option>
+            {employmentTypeOptions.map((type, index) => (
+              <option key={index} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+          {employmentError && (
+            <p className="hr-error">*Please select employment type</p>
+          )}
+        </div>
+        <div className="emp-work-sub-con">
+          <label className="bde-form-label" htmlFor="work-type">
+            Work Type<span className="hr-form-span"> *</span>
+          </label>
+          <select
+            className="bde-form-input emp-work-input"
+            id="work-type"
+            onChange={handleInputChange}
+            value={postNewJob.workType}
+            name="workType"
+          >
+            <option value="">Select Work Type</option>
+            {workTypeOptions.map((type, index) => (
+              <option key={index} value={type.value}>
+                {type.label}
+              </option>
+            ))}
+          </select>
+          {workError && <p className="hr-error">*Please select work type</p>}
+        </div>
+      </div>
+
       <label className="bde-form-label" htmlFor="description">
         Job Description<span className="hr-form-span"> *</span>
       </label>
@@ -572,22 +619,26 @@ const CreateSubJob = ({ setShowCandidateForm }) => {
         </div>
       </div>
 
-      <label className="bde-form-label" htmlFor="location-link">
-        Location Link<span className="hr-form-span"> *</span>
-      </label>
-      <input
-        className="bde-form-input"
-        id="location-link"
-        onChange={handleInputChange}
-        value={postNewJob.locationLink}
-        name="locationLink"
-        type="text"
-        placeholder="Enter Location Link"
-      />
-      {locationLinkError && (
-        <p className="hr-error">
-          *Please enter location link, must starts with http:// or https://
-        </p>
+      {postNewJob.workType !== "Remote" && (
+        <>
+          <label className="bde-form-label" htmlFor="location-link">
+            Location Link<span className="hr-form-span"> *</span>
+          </label>
+          <input
+            className="bde-form-input"
+            id="location-link"
+            onChange={handleInputChange}
+            value={postNewJob.locationLink}
+            name="locationLink"
+            type="text"
+            placeholder="Enter Location Link"
+          />
+          {locationLinkError && (
+            <p className="hr-error">
+              *Please enter location link, must starts with http:// or https://
+            </p>
+          )}
+        </>
       )}
 
       <label className="bde-form-label" htmlFor="salary">
@@ -745,51 +796,6 @@ const CreateSubJob = ({ setShowCandidateForm }) => {
             styles={customStyles}
           />
           {languageError && <p className="hr-error">*Please select language</p>}
-        </div>
-      </div>
-
-      <div className="salary-container">
-        <div className="emp-work-sub-con">
-          <label className="bde-form-label" htmlFor="employment-type">
-            Employment Type<span className="hr-form-span"> *</span>
-          </label>
-          <select
-            className="bde-form-input emp-work-input"
-            id="employment-type"
-            onChange={handleInputChange}
-            name="employmentType"
-            value={postNewJob.employmentType}
-          >
-            <option value="">Select Employment Type</option>
-            {employmentTypeOptions.map((type, index) => (
-              <option key={index} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-          {employmentError && (
-            <p className="hr-error">*Please select employment type</p>
-          )}
-        </div>
-        <div className="emp-work-sub-con">
-          <label className="bde-form-label" htmlFor="work-type">
-            Work Type<span className="hr-form-span"> *</span>
-          </label>
-          <select
-            className="bde-form-input emp-work-input"
-            id="work-type"
-            onChange={handleInputChange}
-            value={postNewJob.workType}
-            name="workType"
-          >
-            <option value="">Select Work Type</option>
-            {workTypeOptions.map((type, index) => (
-              <option key={index} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </select>
-          {workError && <p className="hr-error">*Please select work type</p>}
         </div>
       </div>
 
