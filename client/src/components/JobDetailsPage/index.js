@@ -1,53 +1,52 @@
-import Cookies from 'js-cookie'
-import { useState, useEffect } from 'react'
-import React from 'react';
-import { formatDistanceToNow, parseISO, format } from 'date-fns';
-import {Oval} from 'react-loader-spinner'
+import Cookies from "js-cookie";
+import { useState, useEffect } from "react";
+import React from "react";
+import { formatDistanceToNow, parseISO, format } from "date-fns";
+import { Oval } from "react-loader-spinner";
 // import Pagination from 'rc-pagination';
 import { FaCircleCheck } from "react-icons/fa6";
 import { FiBriefcase, FiEdit, FiLink } from "react-icons/fi";
 import { IoIosCloseCircle } from "react-icons/io";
-import { useParams } from 'react-router-dom'
-import {IoIosClose} from 'react-icons/io'
-import Popup from 'reactjs-popup';
-import {TiLocation} from 'react-icons/ti'
-import {BsFillBriefcaseFill} from 'react-icons/bs'
-import {HiOutlineExternalLink} from 'react-icons/hi'
-import {ThreeCircles} from 'react-loader-spinner'
-import './style.css'
+import { useParams } from "react-router-dom";
+import { IoIosClose } from "react-icons/io";
+import Popup from "reactjs-popup";
+import { TiLocation } from "react-icons/ti";
+import { BsFillBriefcaseFill } from "react-icons/bs";
+import { HiOutlineExternalLink } from "react-icons/hi";
+import { ThreeCircles } from "react-loader-spinner";
+import "./style.css";
 // import UpdateCandidateStatus from '../ViewCandidates/UpdateCandidateStatus';
 // import ViewCandidateDetails from '../ViewCandidates/ViewCandidateDetails';
-import EditJobDetails from '../EditJobDetails';
-import { toast } from 'react-toastify';
-import EditSubJobDetails from '../EditJobDetails/EditSubJobDetails';
+import EditJobDetails from "../EditJobDetails";
+import { toast } from "react-toastify";
+import EditSubJobDetails from "../EditJobDetails/EditSubJobDetails";
 // import ScheduleInterview from '../ViewCandidates/ScheduleInterview';
 
 const apiStatusConstant = {
-  initial: 'INITIAL',
-  inProgress: 'IN_PROGRESS',
-  success: 'SUCCESS',
-  failure: 'FAILURE',
-}
+  initial: "INITIAL",
+  inProgress: "IN_PROGRESS",
+  success: "SUCCESS",
+  failure: "FAILURE",
+};
 
 const JobDetailsPage = () => {
-  const [jobDetails, setJobDetails] = useState({})
-  const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
-  const [hmOrHrList, setShmOrHrList] = useState([])
-  const [selectedHR, setSelectedHR] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [hrOrHmAssigned, setHrOrHmAssigned] = useState(0)
+  const [jobDetails, setJobDetails] = useState({});
+  const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
+  const [hmOrHrList, setShmOrHrList] = useState([]);
+  const [selectedHR, setSelectedHR] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hrOrHmAssigned, setHrOrHmAssigned] = useState(0);
   // const [candidateList, setCandidateList] = useState([])
   // const [viewCandidateDetails, setViewCandidateDetails] = useState(false)
   // const [viewScheduleInterviewPopup, setViewScheduleInterviewPopup] = useState(false)
   // const [interviewDetails, setInterviewDetails] = useState({})
   // const [candidateId, setCandidateId] = useState('')
-  const [isEditJob, setIsEditJob] = useState(false)
+  const [isEditJob, setIsEditJob] = useState(false);
   // const [page, setPage] = useState(1)
   // const [totalItems, setTotalItems] = useState(0);
-  const [hrLoader, setHrLoader] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [isSubEditJob, setIsSubEditJob] = useState(false)
-
+  const [hrLoader, setHrLoader] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [isSubEditJob, setIsSubEditJob] = useState(false);
 
   // const onShowCandidateDetails = (candidateId) => {
   //   setViewCandidateDetails(!viewCandidateDetails)
@@ -65,29 +64,29 @@ const JobDetailsPage = () => {
   //   })
   // }
 
-  const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-  const params = useParams()
-  const {id} = params
+  const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+  const params = useParams();
+  const { id } = params;
 
   useEffect(() => {
-    const {id} = params
-    if(id.length === 20) {
-      getSubJobDetails()
+    const { id } = params;
+    if (id.length === 20) {
+      getSubJobDetails();
     } else {
-      getJobDetails()
+      getJobDetails();
     }
-    window.scrollTo(0, 0)
-    const role = Cookies.get('role')
-   
-    if(role === 'AC' && id.length !== 20) {
-      fetchHumanResources()
-      getHRsForJob()
+    window.scrollTo(0, 0);
+    const role = Cookies.get("role");
+
+    if (role === "AC" && id.length !== 20) {
+      fetchHumanResources();
+      getHRsForJob();
     }
-    if(role === 'SHM' && id.length !== 20) {
-      fetchHiringManagers()
-      getHMsForJob()
+    if (role === "SHM" && id.length !== 20) {
+      fetchHiringManagers();
+      getHMsForJob();
     }
-  }, [])
+  }, []);
 
   // useEffect(() => {
   //   if(Cookies.get('role') !== 'BDE' && Cookies.get('role') !== 'FBDE') {
@@ -97,46 +96,46 @@ const JobDetailsPage = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setHrOrHmAssigned(0)
-    }, 5000)
-    return () => clearTimeout(timer)
-  }, [hrOrHmAssigned])
+      setHrOrHmAssigned(0);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [hrOrHmAssigned]);
 
   const copyLink = async () => {
     try {
-      const {role, compname, city} = jobDetails
-      let encodedUrl = encodeURI(`${role}_${compname}_${city}_id=${id}`)
-      if(encodedUrl.includes('/')) {
-        const newUrl = encodedUrl.replace(/\//g, '_id=')
-        encodedUrl = newUrl
+      const { role, compname, city } = jobDetails;
+      let encodedUrl = encodeURI(`${role}_${compname}_${city}_id=${id}`);
+      if (encodedUrl.includes("/")) {
+        const newUrl = encodedUrl.replace(/\//g, "_id=");
+        encodedUrl = newUrl;
       }
-        const text = 'https://earlyjobs.in/job-openings/' + encodedUrl;
-        await navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
+      const text = "https://earlyjobs.in/job-openings/" + encodedUrl;
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
     } catch (err) {
-        console.error('Failed to copy text to clipboard:', err);
-        toast.error('Failed to copy text to clipboard')
+      console.error("Failed to copy text to clipboard:", err);
+      toast.error("Failed to copy text to clipboard");
     }
-  };  
+  };
 
   const getSubJobDetails = async () => {
-    setApiStatus(apiStatusConstant.inProgress)
-    const {id} = params
-    const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `${backendUrl}/api/public/sub-jobs-details/${id}`
+    setApiStatus(apiStatusConstant.inProgress);
+    const { id } = params;
+    const jwtToken = Cookies.get("jwt_token");
+    const apiUrl = `${backendUrl}/api/public/sub-jobs-details/${id}`;
     const options = {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
-    }
-    const response = await fetch(apiUrl, options)
-    const data = await response.json()
-    console.log(data)
+    };
+    const response = await fetch(apiUrl, options);
+    const data = await response.json();
+    console.log(data);
     if (response.ok === true) {
-      if(data.error) {
-        setApiStatus(apiStatusConstant.failure)
+      if (data.error) {
+        setApiStatus(apiStatusConstant.failure);
       } else {
         const formattedData = {
           id: data.id,
@@ -171,33 +170,33 @@ const JobDetailsPage = () => {
           maxExperience: data.max_experience,
           minAge: data.min_age,
           maxAge: data.max_age,
-          keywords: data.keywords ? data.keywords.split(',') : []
-        }
-        console.log(formattedData)
-        setJobDetails(formattedData)
-        setApiStatus(apiStatusConstant.success)
+          keywords: data.keywords ? data.keywords.split(",") : [],
+        };
+        console.log(formattedData);
+        setJobDetails(formattedData);
+        setApiStatus(apiStatusConstant.success);
       }
     } else {
-      setApiStatus(apiStatusConstant.failure)
+      setApiStatus(apiStatusConstant.failure);
     }
-  }
+  };
 
   const getJobDetails = async () => {
-    setApiStatus(apiStatusConstant.inProgress)
-    const {id} = params
-    const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `${backendUrl}/jobs/details/${id}`
+    setApiStatus(apiStatusConstant.inProgress);
+    const { id } = params;
+    const jwtToken = Cookies.get("jwt_token");
+    const apiUrl = `${backendUrl}/jobs/details/${id}`;
     const options = {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
-    }
-    const response = await fetch(apiUrl, options)
-    const data = await response.json()
+    };
+    const response = await fetch(apiUrl, options);
+    const data = await response.json();
     if (response.ok === true) {
-      if(data.error) {
-        setApiStatus(apiStatusConstant.failure)
+      if (data.error) {
+        setApiStatus(apiStatusConstant.failure);
       } else {
         const formattedData = {
           id: data.id,
@@ -235,16 +234,16 @@ const JobDetailsPage = () => {
           maxExperience: data.max_experience,
           minAge: data.min_age,
           maxAge: data.max_age,
-          keywords: data.keywords ? data.keywords.split(',') : []
-        }
-        console.log(formattedData)
-        setJobDetails(formattedData)
-        setApiStatus(apiStatusConstant.success)
+          keywords: data.keywords ? data.keywords.split(",") : [],
+        };
+        console.log(formattedData);
+        setJobDetails(formattedData);
+        setApiStatus(apiStatusConstant.success);
       }
     } else {
-      setApiStatus(apiStatusConstant.failure)
+      setApiStatus(apiStatusConstant.failure);
     }
-  }
+  };
 
   // const formatDate = (date) => {
   //   const dbDate = parseISO(date);
@@ -299,290 +298,310 @@ const JobDetailsPage = () => {
 
   const fetchHiringManagers = async () => {
     const options = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Cookies.get('jwt_token')}`
-        },
-    }
-    const response = await fetch(`${backendUrl}/api/users/all/hiring-managers`, options)
-    const data = await response.json()
-    console.log(data)
-    setShmOrHrList(data)
-  }
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+      },
+    };
+    const response = await fetch(
+      `${backendUrl}/api/users/all/hiring-managers`,
+      options
+    );
+    const data = await response.json();
+    console.log(data);
+    setShmOrHrList(data);
+  };
 
   const fetchHumanResources = async () => {
-    const email = Cookies.get('email')
+    const email = Cookies.get("email");
     const options = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Cookies.get('jwt_token')}`
-        },
-    }
-    const response = await fetch(`${backendUrl}/api/users/all/hr/${email}`, options)
-    const data = await response.json()
-    console.log(data)
-    setShmOrHrList(data)
-  }
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+      },
+    };
+    const response = await fetch(
+      `${backendUrl}/api/users/all/hr/${email}`,
+      options
+    );
+    const data = await response.json();
+    console.log(data);
+    setShmOrHrList(data);
+  };
 
   const getHMsForJob = async () => {
-    setHrLoader(true)
-    const {id} = params
-    const jwtToken = Cookies.get('jwt_token')
-    const apiUrl = `${backendUrl}/jobs/assigned-hm/${id}`
+    setHrLoader(true);
+    const { id } = params;
+    const jwtToken = Cookies.get("jwt_token");
+    const apiUrl = `${backendUrl}/jobs/assigned-hm/${id}`;
     const options = {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
-    }
+    };
     try {
-      const response = await fetch(apiUrl, options)
-      const data = await response.json()
-      console.log(data)
+      const response = await fetch(apiUrl, options);
+      const data = await response.json();
+      console.log(data);
       if (response.ok === true) {
-        if(data.error) {
-          alert(data.error)
+        if (data.error) {
+          alert(data.error);
         } else {
-          const hmEmails = data.map(item => item.assigned_to)
-          setSelectedHR(hmEmails)
+          const hmEmails = data.map((item) => item.assigned_to);
+          setSelectedHR(hmEmails);
         }
       } else {
-        alert(data.error)
+        alert(data.error);
       }
     } catch (error) {
-      alert(error)
+      alert(error);
     }
     setTimeout(() => {
-      setHrLoader(false)
+      setHrLoader(false);
     }, 2000);
-  }
+  };
 
   const getHRsForJob = async () => {
-    setHrLoader(true)
-    const {id} = params
-    const jwtToken = Cookies.get('jwt_token')
-    const email = Cookies.get('email')
-    const apiUrl = `${backendUrl}/jobs/assigned-hr/${id}/${email}`
+    setHrLoader(true);
+    const { id } = params;
+    const jwtToken = Cookies.get("jwt_token");
+    const email = Cookies.get("email");
+    const apiUrl = `${backendUrl}/jobs/assigned-hr/${id}/${email}`;
     const options = {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
-    }
+    };
     try {
-      const response = await fetch(apiUrl, options)
-      const data = await response.json()
+      const response = await fetch(apiUrl, options);
+      const data = await response.json();
       if (response.ok === true) {
-        if(data.error) {
-          alert(data.error)
+        if (data.error) {
+          alert(data.error);
         } else {
-          const hrEmails = data.map(item => item.assigned_to)
-          setSelectedHR(hrEmails)
+          const hrEmails = data.map((item) => item.assigned_to);
+          setSelectedHR(hrEmails);
         }
       } else {
-        alert(data.error)
+        alert(data.error);
       }
     } catch (error) {
-      alert(error)
+      alert(error);
     }
     setTimeout(() => {
-      setHrLoader(false)
+      setHrLoader(false);
     }, 2000);
-  }
+  };
 
   const handleAddHR = (e) => {
-    if(e.target.value === "") return
-    if(selectedHR.includes(e.target.value)) return;
-    const hrRecruiter = [...selectedHR]
-    hrRecruiter.push(e.target.value)
-    setSelectedHR(hrRecruiter)
-  }
+    if (e.target.value === "") return;
+    if (selectedHR.includes(e.target.value)) return;
+    const hrRecruiter = [...selectedHR];
+    hrRecruiter.push(e.target.value);
+    setSelectedHR(hrRecruiter);
+  };
 
   const handleRemoveHR = (email) => {
-    const hrRecruiter = selectedHR.filter(item => item !== email)
-    setSelectedHR(hrRecruiter)
-  }
+    const hrRecruiter = selectedHR.filter((item) => item !== email);
+    setSelectedHR(hrRecruiter);
+  };
 
   const updateJobDetails = (updatedData) => {
-    const {jobId,
-            companyName,
-            companyLogoUrl,
-            companyId,
-            title,
-            category,
-            shiftTimings,
-            description,
-            location,
-            locationLink,
-            currency,
-            salaryMode,
-            minSalary,
-            maxSalary,
-            skills,
-            language,
-            employmentType,
-            workType,
-            commissionFee,
-            commissionType,
-            tenureInDays,
-            noOfOpenings,
-            status,
-            hiringNeed,
-            qualification,
-            minExperience,
-            maxExperience,
-            minAge,
-            maxAge,
-            keywords
-            } = updatedData
-            console.log(typeof keywords)
+    const {
+      jobId,
+      companyName,
+      companyLogoUrl,
+      companyId,
+      title,
+      category,
+      shiftTimings,
+      description,
+      location,
+      locationLink,
+      currency,
+      salaryMode,
+      minSalary,
+      maxSalary,
+      skills,
+      language,
+      employmentType,
+      workType,
+      commissionFee,
+      commissionType,
+      tenureInDays,
+      noOfOpenings,
+      status,
+      hiringNeed,
+      qualification,
+      minExperience,
+      maxExperience,
+      minAge,
+      maxAge,
+      keywords,
+    } = updatedData;
+    console.log(typeof keywords);
     setJobDetails({
-      ...jobDetails, 
-        id: jobId,
-        category: category,
-        shiftTimings: shiftTimings,
-        commissionType: commissionType,
-        commissionFee: commissionFee,
-        tenureInDays: tenureInDays,
-        compname: companyName,
-        companyLogoUrl: companyLogoUrl,
-        companyId: companyId,
-        currency: currency,
-        salaryMode: salaryMode,
-        minSalary: minSalary,
-        maxSalary: maxSalary,
-        noOfOpenings: noOfOpenings,
-        employmentType: employmentType,
-        jobDescription: description,
-        location: location,
-        locationLink: locationLink,
-        role: title,
-        workType: workType,
-        hiringNeed: hiringNeed,
-        postedBy: jobDetails.postedBy,
-        skills: skills,
-        language: language,
-        status: status,
-        createdAt: jobDetails.createdAt,
-        qualification: qualification,
-        minExperience: minExperience,
-        maxExperience: maxExperience,
-        minAge: minAge,
-        maxAge: maxAge,
-        keywords: keywords ? keywords.split(',') : []
-      }
-    )
-  }
+      ...jobDetails,
+      id: jobId,
+      category: category,
+      shiftTimings: shiftTimings,
+      commissionType: commissionType,
+      commissionFee: commissionFee,
+      tenureInDays: tenureInDays,
+      compname: companyName,
+      companyLogoUrl: companyLogoUrl,
+      companyId: companyId,
+      currency: currency,
+      salaryMode: salaryMode,
+      minSalary: minSalary,
+      maxSalary: maxSalary,
+      noOfOpenings: noOfOpenings,
+      employmentType: employmentType,
+      jobDescription: description,
+      location: location,
+      locationLink: locationLink,
+      role: title,
+      workType: workType,
+      hiringNeed: hiringNeed,
+      postedBy: jobDetails.postedBy,
+      skills: skills,
+      language: language,
+      status: status,
+      createdAt: jobDetails.createdAt,
+      qualification: qualification,
+      minExperience: minExperience,
+      maxExperience: maxExperience,
+      minAge: minAge,
+      maxAge: maxAge,
+      keywords: keywords ? keywords.split(",") : [],
+    });
+  };
 
   const assignJobToHM = async () => {
-    setLoading(true)
-    const email = Cookies.get('email')
+    setLoading(true);
+    const email = Cookies.get("email");
     const assignedData = {
       jobId: jobDetails.id,
       assignedTo: selectedHR,
       assignedBy: email,
-    }
+    };
     const options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Cookies.get('jwt_token')}`
-        },
-        body: JSON.stringify(assignedData)
-    }
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+      },
+      body: JSON.stringify(assignedData),
+    };
     try {
-      const response = await fetch(`${backendUrl}/jobs/assigned-hm/update`, options)
-      const data = await response.json()
-      if(response.ok === true) {
-        if(data.error) {
-            const hrEmails = data.hrEmails.map(item => {
-              const hrName = hmOrHrList.find(hr => hr.email === item)
-              return hrName.username
-            })
-            alert(`Job already assigned to ${hrEmails.join(', ')} HMs. Please remove them and try again.`)
-            setHrOrHmAssigned(2)
+      const response = await fetch(
+        `${backendUrl}/jobs/assigned-hm/update`,
+        options
+      );
+      const data = await response.json();
+      if (response.ok === true) {
+        if (data.error) {
+          const hrEmails = data.hrEmails.map((item) => {
+            const hrName = hmOrHrList.find((hr) => hr.email === item);
+            return hrName.username;
+          });
+          alert(
+            `Job already assigned to ${hrEmails.join(
+              ", "
+            )} HMs. Please remove them and try again.`
+          );
+          setHrOrHmAssigned(2);
         } else {
-          setHrOrHmAssigned(1)
+          setHrOrHmAssigned(1);
         }
       } else {
-        setHrOrHmAssigned(2)
+        setHrOrHmAssigned(2);
       }
     } catch (error) {
-      alert(error)
+      alert(error);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const assignJobToHR = async () => {
-    setLoading(true)
-    const email = Cookies.get('email')
+    setLoading(true);
+    const email = Cookies.get("email");
     const assignedData = {
       jobId: jobDetails.id,
       assignedTo: selectedHR,
       assignedBy: email,
-    }
+    };
     const options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Cookies.get('jwt_token')}`
-        },
-        body: JSON.stringify(assignedData)
-    }
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+      },
+      body: JSON.stringify(assignedData),
+    };
     try {
-    const response = await fetch(`${backendUrl}/jobs/assigned-hr/update`, options)
-    const data = await response.json()
-    
-    if(response.ok === true) {
-        if(data.error) {
-            const hrEmails = data.hrEmails.map(item => {
-              const hrName = hmOrHrList.find(hr => hr.email === item)
-              return hrName.username
-            })
-            alert(`Job already assigned to ${hrEmails.join(', ')} HRs. Please remove them and try again.`)
-            setHrOrHmAssigned(2)
+      const response = await fetch(
+        `${backendUrl}/jobs/assigned-hr/update`,
+        options
+      );
+      const data = await response.json();
+
+      if (response.ok === true) {
+        if (data.error) {
+          const hrEmails = data.hrEmails.map((item) => {
+            const hrName = hmOrHrList.find((hr) => hr.email === item);
+            return hrName.username;
+          });
+          alert(
+            `Job already assigned to ${hrEmails.join(
+              ", "
+            )} HRs. Please remove them and try again.`
+          );
+          setHrOrHmAssigned(2);
         } else {
-          setHrOrHmAssigned(1)
+          setHrOrHmAssigned(1);
         }
-    } else {
-        setHrOrHmAssigned(2)
+      } else {
+        setHrOrHmAssigned(2);
+      }
+    } catch (error) {
+      alert(error);
     }
-  } catch (error) {
-    alert(error)
-  }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const handleArchieveJob = async (close) => {
-    const url = `${backendUrl}/admin/archive-job/${jobDetails.id}`
+    const url = `${backendUrl}/admin/archive-job/${jobDetails.id}`;
     const options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Cookies.get('jwt_token')}`
-        },
-    }
-    const response = await fetch(url, options)
-    const data = await response.json()
-    if(response.ok === true) {
-        if(data.error) {
-            alert(data.error)
-        } else {
-            setJobDetails({
-              ...jobDetails,
-              status: 'ARCHIVED'
-            })
-            alert(data.message)
-            close()
-        }
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+      },
+    };
+    const response = await fetch(url, options);
+    const data = await response.json();
+    if (response.ok === true) {
+      if (data.error) {
+        alert(data.error);
+      } else {
+        setJobDetails({
+          ...jobDetails,
+          status: "ARCHIVED",
+        });
+        alert(data.message);
+        close();
+      }
     } else {
-        alert(data.error)
+      alert(data.error);
     }
-  }
+  };
 
-  // const itemsPerPage = 10; 
+  // const itemsPerPage = 10;
 
   // const handlePageChange = (page) => {
   //   setPage(page)
@@ -624,112 +643,151 @@ const JobDetailsPage = () => {
     <div data-testid="loader" className="loader-container-job-details">
       <ThreeCircles type="ThreeDots" color="#EB6A4D" height="50" width="50" />
     </div>
-  )
+  );
 
-  const renderAssignToHmOrHr = () => (
-    hrLoader ? 
-    <Oval
+  const renderAssignToHmOrHr = () =>
+    hrLoader ? (
+      <Oval
         height={16}
         width={16}
         color="#EB6A4D"
         wrapperStyle={{}}
         wrapperClass=""
         visible={true}
-        ariaLabel='oval-loading'
+        ariaLabel="oval-loading"
         secondaryColor="#EB6A4D"
         strokeWidth={3}
         strokeWidthSecondary={3}
-    />
-    :
-    <>
-      <div className='job-details-assign-con'>
-        <div className='job-details-assign-sub-con'>
-          <label className='job-details-assign'>Assign to {Cookies.get('role') === 'AC' ? "HR" : "HM"}: </label>
-          <select className='job-details-select' value={selectedHR} onChange={handleAddHR}>
-            <option value=''>Select {Cookies.get('role') === 'AC' ? "HR" : "HM"}</option>
-              {   hmOrHrList.length > 0 &&
-                  hmOrHrList.map(eachItem => <option key={eachItem.email} value={eachItem.email}>{eachItem.username + ' - ' + eachItem.hiring_category}</option>)
+      />
+    ) : (
+      <>
+        <div className="job-details-assign-con">
+          <div className="job-details-assign-sub-con">
+            <label className="job-details-assign">
+              Assign to {Cookies.get("role") === "AC" ? "HR" : "HM"}:{" "}
+            </label>
+            <select
+              className="job-details-select"
+              value={selectedHR}
+              onChange={handleAddHR}
+            >
+              <option value="">
+                Select {Cookies.get("role") === "AC" ? "HR" : "HM"}
+              </option>
+              {hmOrHrList.length > 0 &&
+                hmOrHrList.map((eachItem) => (
+                  <option key={eachItem.email} value={eachItem.email}>
+                    {eachItem.username + " - " + eachItem.hiring_category}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="job-details-assign-sub-con">
+            <button
+              className="job-details-assign-button"
+              disabled={loading}
+              onClick={
+                Cookies.get("role") === "AC" ? assignJobToHR : assignJobToHM
               }
-          </select>
-        </div>
-        <div className='job-details-assign-sub-con'>
-          <button className='job-details-assign-button' disabled={loading} onClick={Cookies.get('role') === 'AC' ? assignJobToHR : assignJobToHM} >
-            {loading ? 
-              <Oval
+            >
+              {loading ? (
+                <Oval
                   height={16}
                   width={16}
                   color="#ffffff"
                   wrapperStyle={{}}
                   wrapperClass=""
                   visible={true}
-                  ariaLabel='oval-loading'
+                  ariaLabel="oval-loading"
                   secondaryColor="#ffffff"
                   strokeWidth={3}
                   strokeWidthSecondary={3}
-              />
-              :
-              "Assign"
-            }
-          </button>
-          <p className='job-details-assign-status'>
-            {hrOrHmAssigned === 1 && <FaCircleCheck className='check-icon' /> }
-            {hrOrHmAssigned === 2 && <IoIosCloseCircle className='cross-circle-icon' /> }
-            {hrOrHmAssigned === 2 && "Try Again"}
-          </p>
+                />
+              ) : (
+                "Assign"
+              )}
+            </button>
+            <p className="job-details-assign-status">
+              {hrOrHmAssigned === 1 && <FaCircleCheck className="check-icon" />}
+              {hrOrHmAssigned === 2 && (
+                <IoIosCloseCircle className="cross-circle-icon" />
+              )}
+              {hrOrHmAssigned === 2 && "Try Again"}
+            </p>
+          </div>
         </div>
-      </div>
-      <div style={{marginTop: '12px'}} className='hr-input-list-con'>
-            { selectedHR.length > 0 && 
-              selectedHR.map((email, index) => {
-                    const hrName = hmOrHrList.find(item => item.email === email) 
-                    return (
-                        <div className='hr-input-list' key={index}>
-                            <p className='hr-input-list-item'>{hrName && hrName.username}</p>
-                            <button type='button' className='hr-remove-item-button' onClick={() => handleRemoveHR(email)}><IoIosClose className='hr-close-icon' /></button>
-                        </div>
-                    )}
-                )
-            }
-      </div>
-    </>
-  )
+        <div style={{ marginTop: "12px" }} className="hr-input-list-con">
+          {selectedHR.length > 0 &&
+            selectedHR.map((email, index) => {
+              const hrName = hmOrHrList.find((item) => item.email === email);
+              return (
+                <div className="hr-input-list" key={index}>
+                  <p className="hr-input-list-item">
+                    {hrName && hrName.username}
+                  </p>
+                  <button
+                    type="button"
+                    className="hr-remove-item-button"
+                    onClick={() => handleRemoveHR(email)}
+                  >
+                    <IoIosClose className="hr-close-icon" />
+                  </button>
+                </div>
+              );
+            })}
+        </div>
+      </>
+    );
 
-  const renderArchieveJob = close => (
+  const renderArchieveJob = (close) => (
     <div className="modal-form">
-        <button className="modal-close-button" onClick={close}>
-          &times;
+      <button className="modal-close-button" onClick={close}>
+        &times;
+      </button>
+      <label className="homepage-label">
+        Do you really want to archieve this job?
+      </label>
+      <div className="achieve-button-con">
+        <button
+          className="job-details-upload-candidate-button"
+          onClick={() => handleArchieveJob(close)}
+        >
+          YES
         </button>
-        <label className="homepage-label">Do you really want to archieve this job?</label>
-        <div className='achieve-button-con'>
-          <button className='job-details-upload-candidate-button' onClick={() => handleArchieveJob(close)}>YES</button>
-          <button className='job-details-upload-candidate-button archieve-cancel-btn' onClick={close}>NO</button>
-        </div>
+        <button
+          className="job-details-upload-candidate-button archieve-cancel-btn"
+          onClick={close}
+        >
+          NO
+        </button>
+      </div>
     </div>
-  )
+  );
 
   const renderButtons = () => {
-    const userType = Cookies.get('role');
-    if(jobDetails.status === 'ARCHIVED') {
-      return  <p className="job-details-posted-at">This job is archived</p> 
-    } else if(userType === 'ADMIN') {
+    const userType = Cookies.get("role");
+    if (jobDetails.status === "ARCHIVED") {
+      return <p className="job-details-posted-at">This job is archived</p>;
+    } else if (userType === "ADMIN") {
       return (
         <Popup
-          trigger={<button className='job-details-upload-candidate-button'>Archieve Job</button>}
+          trigger={
+            <button className="job-details-upload-candidate-button">
+              Archieve Job
+            </button>
+          }
           modal
         >
-          {close => (
+          {(close) => (
             <div className="modal">
-              {
-                userType === 'ADMIN' && renderArchieveJob(close)
-              }
+              {userType === "ADMIN" && renderArchieveJob(close)}
             </div>
           )}
         </Popup>
-      )
+      );
     }
-    return null
-  }
-
+    return null;
+  };
 
   const renderJobDetails = () => {
     const {
@@ -760,88 +818,150 @@ const JobDetailsPage = () => {
       minExperience,
       maxExperience,
       minAge,
-      maxAge
-    } = jobDetails
+      maxAge,
+    } = jobDetails;
     const formattedDate = formatDistanceToNow(createdAt, { addSuffix: true });
 
-    const userType = Cookies.get('role')
-    const hiringFor = Cookies.get('hiring_for')
+    const userType = Cookies.get("role");
+    const hiringFor = Cookies.get("hiring_for");
 
     return (
       <div className="job-details-container">
         <div className="job-details-card">
           <div className="job-details-logo-title-con">
-            <div className='job-details-logo-title-con-2'>
-              { companyLogoUrl ?
-                <img src={companyLogoUrl} alt="company logo" className="jobs-details-logo-img" />
-                :
+            <div className="job-details-logo-title-con-2">
+              {companyLogoUrl ? (
+                <img
+                  src={companyLogoUrl}
+                  alt="company logo"
+                  className="jobs-details-logo-img"
+                />
+              ) : (
                 <FiBriefcase className="job-details-logo" />
-              }
+              )}
               <div className="job-details-title-rating-con">
                 <h1 className="job-details-title">{compname}</h1>
                 <h1 className="job-details-title">{role}</h1>
                 <p className="job-details-rating">{category}</p>
               </div>
             </div>
-            {
-              (userType === 'ADMIN' || userType === 'BDE' || userType === 'FBDE') && 
-            
-                <button className='edit-job-button' onClick={() => setIsEditJob(true)}>
-                  <FiEdit className='edit-icon' /> Edit
-                </button>
-            }
+            {(userType === "ADMIN" ||
+              userType === "BDE" ||
+              userType === "FBDE") && (
+              <button
+                className="edit-job-button"
+                onClick={() => setIsEditJob(true)}
+              >
+                <FiEdit className="edit-icon" /> Edit
+              </button>
+            )}
 
-            {
-              (id.length === 20) && 
-              <div className='edit-job-button-con'>
-                <button className='edit-job-button' onClick={() => setIsSubEditJob(true)}>
-                  <FiEdit className='edit-icon' /> Edit
+            {id.length === 20 && (
+              <div className="edit-job-button-con">
+                <button
+                  className="edit-job-button"
+                  onClick={() => setIsSubEditJob(true)}
+                >
+                  <FiEdit className="edit-icon" /> Edit
                 </button>
-                {copied ? <p className='copied-text'>Copied!</p> :
-                  <button className='edit-job-button' onClick={copyLink}>
-                    <FiLink className='edit-icon' />Link
+                {copied ? (
+                  <p className="copied-text">Copied!</p>
+                ) : (
+                  <button className="edit-job-button" onClick={copyLink}>
+                    <FiLink className="edit-icon" />
+                    Link
                   </button>
-                }
+                )}
               </div>
-            }
-
+            )}
           </div>
-          {((userType === 'AC' || userType === 'SHM') && id.length !== 20) && renderAssignToHmOrHr()}
+          {(userType === "AC" || userType === "SHM") &&
+            id.length !== 20 &&
+            renderAssignToHmOrHr()}
           <div className="job-details-location-type-salary-con">
             <div className="job-details-location-type-con">
               <div className="job-details-location-type">
                 <TiLocation className="job-details-location-icon" />
                 <p className="job-details-location">{location}</p>
-                <a href={locationLink} target="_blank" rel="noreferrer" className="job-details-location-link">View Location</a>
+                {locationLink && (
+                  <a
+                    href={locationLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="job-details-location-link"
+                  >
+                    View Location
+                  </a>
+                )}
               </div>
               <div className="job-details-location-type">
                 <BsFillBriefcaseFill className="job-details-location-icon" />
                 <p className="job-details-location">{employmentType}</p>
               </div>
             </div>
-            <p className="job-details-location" style={{fontWeight: 'bold'}}>{currency?.split(',')[0]}{minSalary} - {currency?.split(',')[0]}{maxSalary} {salaryMode}</p>
+            <p className="job-details-location" style={{ fontWeight: "bold" }}>
+              {currency?.split(",")[0]}
+              {minSalary} - {currency?.split(",")[0]}
+              {maxSalary} {salaryMode}
+            </p>
           </div>
           <hr className="line" />
-          <p className="job-detials-misc"><span className='misc-head'>Status:</span> {status}</p>
-          {id.length !== 20 &&
-            <p className="job-detials-misc"><span className='misc-head'>Assigned By:</span> {postedBy}</p>
-          }
-          {
-            ((hiringFor === "Freelance HR Recruiter" || userType !== "HR") && id.length !== 20) && <p className="job-detials-misc"><span className='misc-head'>Commission:</span> {commissionType === "Fixed" ? `₹ ${((commissionFee/100)*70).toFixed(2)} Per Joining` : `${((commissionFee/100)*50).toFixed(2)}% of Annual CTC` }</p>
-          }
-          {
-            ((hiringFor === "Freelance HR Recruiter" || userType !== "HR") && id.length !== 20) && <p className="job-detials-misc"><span className='misc-head'>Tenure:</span> {tenureInDays} days</p>
-          }
-          <p className="job-detials-misc"><span className='misc-head'>Notice Period:</span> {hiringNeed}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Shift Timings:</span> {shiftTimings}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Work Type:</span> {workType}</p>
-          <p className="job-detials-misc"><span className='misc-head'>No of Openings:</span> {noOfOpenings}</p>
-          <p className='job-detials-misc'><span className='misc-head'>Salary:</span> {currency?.split(',')[0]}{minSalary} - {currency?.split(',')[0]}{maxSalary} {currency?.split(',')[1]} {salaryMode}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Language:</span> {jobDetails.language}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Skills:</span> {skills}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Experience:</span> {minExperience} - {maxExperience} years</p>
-          <p className="job-detials-misc"><span className='misc-head'>Qualification:</span> {qualification}</p>
-          <p className="job-detials-misc"><span className='misc-head'>Age:</span> {minAge} - {maxAge} years</p>
+          <p className="job-detials-misc">
+            <span className="misc-head">Status:</span> {status}
+          </p>
+          {id.length !== 20 && (
+            <p className="job-detials-misc">
+              <span className="misc-head">Assigned By:</span> {postedBy}
+            </p>
+          )}
+          {(hiringFor === "Freelance HR Recruiter" || userType !== "HR") &&
+            id.length !== 20 && (
+              <p className="job-detials-misc">
+                <span className="misc-head">Commission:</span>{" "}
+                {commissionType === "Fixed"
+                  ? `₹ ${((commissionFee / 100) * 70).toFixed(2)} Per Joining`
+                  : `${((commissionFee / 100) * 50).toFixed(2)}% of Annual CTC`}
+              </p>
+            )}
+          {(hiringFor === "Freelance HR Recruiter" || userType !== "HR") &&
+            id.length !== 20 && (
+              <p className="job-detials-misc">
+                <span className="misc-head">Tenure:</span> {tenureInDays} days
+              </p>
+            )}
+          <p className="job-detials-misc">
+            <span className="misc-head">Notice Period:</span> {hiringNeed}
+          </p>
+          <p className="job-detials-misc">
+            <span className="misc-head">Shift Timings:</span> {shiftTimings}
+          </p>
+          <p className="job-detials-misc">
+            <span className="misc-head">Work Type:</span> {workType}
+          </p>
+          <p className="job-detials-misc">
+            <span className="misc-head">No of Openings:</span> {noOfOpenings}
+          </p>
+          <p className="job-detials-misc">
+            <span className="misc-head">Salary:</span> {currency?.split(",")[0]}
+            {minSalary} - {currency?.split(",")[0]}
+            {maxSalary} {currency?.split(",")[1]} {salaryMode}
+          </p>
+          <p className="job-detials-misc">
+            <span className="misc-head">Language:</span> {jobDetails.language}
+          </p>
+          <p className="job-detials-misc">
+            <span className="misc-head">Skills:</span> {skills}
+          </p>
+          <p className="job-detials-misc">
+            <span className="misc-head">Experience:</span> {minExperience} -{" "}
+            {maxExperience} years
+          </p>
+          <p className="job-detials-misc">
+            <span className="misc-head">Qualification:</span> {qualification}
+          </p>
+          <p className="job-detials-misc">
+            <span className="misc-head">Age:</span> {minAge} - {maxAge} years
+          </p>
           <div className="job-details-desc-visit-con">
             <h1 className="job-details-desc-heading">Description</h1>
             <a
@@ -854,22 +974,25 @@ const JobDetailsPage = () => {
               <HiOutlineExternalLink />
             </a>
           </div>
-          <p className="job-details-desc" dangerouslySetInnerHTML={{__html: jobDescription}}></p> 
+          <p
+            className="job-details-desc"
+            dangerouslySetInnerHTML={{ __html: jobDescription }}
+          ></p>
           <h1 className="job-details-desc-heading">Keywords</h1>
           <div className="job-details-keywords-con">
             {console.log(jobDetails.keywords)}
-            {
-              jobDetails.keywords.map((eachItem, index) => (
-                <p key={index} className="job-details-keywords">{eachItem}</p>
-              ))
-            }
+            {jobDetails.keywords.map((eachItem, index) => (
+              <p key={index} className="job-details-keywords">
+                {eachItem}
+              </p>
+            ))}
           </div>
           <p className="job-details-posted-at">Posted {formattedDate}</p>
           {renderButtons()}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   // const renderCandidates = () => (
   //   // offeredDate: eachItem.offered_date
@@ -900,7 +1023,7 @@ const JobDetailsPage = () => {
   //                 <th className="job-details-candidates-table-heading-cell">
   //                   Interveiw Date
   //                 </th>
-                
+
   //               {
   //                 Cookies.get('role') !== 'ADMIN' && (
   //                   <th className="job-details-candidates-table-heading-cell">
@@ -908,17 +1031,17 @@ const JobDetailsPage = () => {
   //                   </th>
   //                 )
   //               }
-                
+
   //             </tr>
 
   //             {
   //                 candidateList.length > 0 && candidateList.map(eachItem => (
-                  
+
   //                 <UpdateCandidateStatus key={eachItem.applicationId} onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} candidateDetails={eachItem} jobId={id} jobsList={[jobDetails]} candidateList={candidateList} setCandidateList={setCandidateList} />
-  //                 ))                    
+  //                 ))
   //             }
   //         </table>
-  //         {candidateList.length === 0 && 
+  //         {candidateList.length === 0 &&
   //           <p className='no-candidates-error '>
   //               {
   //                   apiStatus === apiStatusConstant.inProgress ?
@@ -972,35 +1095,42 @@ const JobDetailsPage = () => {
         Retry
       </button>
     </div>
-  )
+  );
 
   const renderSwitchCase = () => {
     switch (apiStatus) {
       case apiStatusConstant.inProgress:
-        return renderLoader()
+        return renderLoader();
       case apiStatusConstant.success:
-        return renderJobDetails()
+        return renderJobDetails();
       case apiStatusConstant.failure:
-        return renderJobDetailsFailure()
+        return renderJobDetailsFailure();
       default:
-        return null
+        return null;
     }
-  }
+  };
 
-    // const role = Cookies.get('role')
+  // const role = Cookies.get('role')
 
-    return (
-      <div className='job-details-main-container'>
-        {
-          isEditJob ? 
-          <EditJobDetails updateJobDetails={updateJobDetails} jobDetails={jobDetails} setIsEditJob={setIsEditJob} />
-          : isSubEditJob ?
-          <EditSubJobDetails updateJobDetails={updateJobDetails} jobDetails={jobDetails} setIsEditJob={setIsSubEditJob} />
-          :
-          renderSwitchCase()
-        }
+  return (
+    <div className="job-details-main-container">
+      {isEditJob ? (
+        <EditJobDetails
+          updateJobDetails={updateJobDetails}
+          jobDetails={jobDetails}
+          setIsEditJob={setIsEditJob}
+        />
+      ) : isSubEditJob ? (
+        <EditSubJobDetails
+          updateJobDetails={updateJobDetails}
+          jobDetails={jobDetails}
+          setIsEditJob={setIsSubEditJob}
+        />
+      ) : (
+        renderSwitchCase()
+      )}
 
-        {/* {role !== 'BDE' && renderCandidates()}
+      {/* {role !== 'BDE' && renderCandidates()}
         {
           viewCandidateDetails && 
           <div className="view-candidate-details-modal">
@@ -1016,8 +1146,8 @@ const JobDetailsPage = () => {
             <ScheduleInterview onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} interviewDetails={interviewDetails} />
           </div>
         } */}
-      </div>
-    )
-}
+    </div>
+  );
+};
 
-export default JobDetailsPage
+export default JobDetailsPage;
