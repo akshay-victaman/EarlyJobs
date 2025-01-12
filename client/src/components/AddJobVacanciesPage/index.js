@@ -137,6 +137,7 @@ const AddJobVacanciesPage = () => {
   const [experienceError, setExperienceError] = useState(false);
   const [ageError, setAgeError] = useState(false);
   const [tenureError, setTenureError] = useState(false);
+  const [isCompanyError, setIsCompanyError] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
   const [step, setStep] = useState(1);
   const [docId, setDocId] = useState(null);
@@ -177,6 +178,7 @@ const AddJobVacanciesPage = () => {
       email: "",
       contactNo: "",
     },
+    isCompany: null,
   });
 
   useEffect(() => {
@@ -291,6 +293,7 @@ const AddJobVacanciesPage = () => {
 
   const toggleJobForm = () => {
     setShowJobForm(!showJobForm);
+    setStep(1);
   };
 
   const sendEmail = (newJob) => {
@@ -426,6 +429,7 @@ const AddJobVacanciesPage = () => {
           email: "",
           contactNo: "",
         },
+        isCompany: null,
       });
     }
     setLoading(false);
@@ -446,6 +450,7 @@ const AddJobVacanciesPage = () => {
       commission: addJobVacancies.commission,
       commissionType: addJobVacancies.commissionType,
       tenureInDays: addJobVacancies.tenureInDays,
+      isCompany: addJobVacancies.isCompany,
     };
 
     setLoading(true);
@@ -474,10 +479,12 @@ const AddJobVacanciesPage = () => {
       tenureInDays:
         parseInt(addJobVacancies.tenureInDays) < 0 ||
         addJobVacancies.tenureInDays.trim().length === 0,
+      isCompany: addJobVacancies.isCompany === null,
     };
 
     setCommissionError(errors.commission);
     setTenureError(errors.tenureInDays);
+    setIsCompanyError(errors.isCompany);
 
     return !Object.values(errors).some(Boolean);
   };
@@ -625,6 +632,7 @@ const AddJobVacanciesPage = () => {
       minAge: addJobVacancies.minAge,
       maxAge: addJobVacancies.maxAge,
       keywords: addJobVacancies.keywords,
+      isCompany: addJobVacancies.isCompany,
     };
 
     console.log(newJob);
@@ -1367,6 +1375,38 @@ const AddJobVacanciesPage = () => {
           />
           {tenureError && (
             <p className="hr-error">*Please enter tenure in days &gt;= 0</p>
+          )}
+
+          <label className="bde-form-label" htmlFor="isCompany">
+            Are you a Recruitment agency/Consultancy or Own company
+            <span className="hr-form-span"> *</span>
+          </label>
+          <div className="is-company-con" style={{ margin: "10px 0px" }}>
+            <div className="is-company-con">
+              <input
+                type="radio"
+                id="company"
+                name="isCompany"
+                className="radio-input"
+                value="Yes"
+                onChange={handleInputChange}
+              />
+              <label htmlFor="company">Yes</label>
+            </div>
+            <div className="is-company-con">
+              <input
+                type="radio"
+                id="recruitment"
+                name="isCompany"
+                className="radio-input"
+                value="No"
+                onChange={handleInputChange}
+              />
+              <label htmlFor="recruitment">No</label>
+            </div>
+          </div>
+          {isCompanyError && (
+            <p className="hr-error">*Please select your response</p>
           )}
 
           <button className="bde-form-btn" type="submit" disabled={loading}>
