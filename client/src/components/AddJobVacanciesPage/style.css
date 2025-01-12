@@ -67,6 +67,19 @@
     align-items: flex-start;
 }
 
+.is-company-con {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.radio-input {
+    width: 17px;
+    height: 17px;
+    margin: 0px;
+    padding: 0px;
+}
+
 .bde-form-con {
     display: flex;
     justify-content: center;

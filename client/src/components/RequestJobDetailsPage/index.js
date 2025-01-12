@@ -602,6 +602,14 @@ const RequestJobDetailsPage = () => {
                 {firebaseJob.companyDetails.contactNo}
               </p>
             </div>
+            <div className="job-details-company-details-item">
+              <p className="job-details-company-details-item-heading">
+                Are you a Recruitment agency/Consultancy or Own company:{" "}
+              </p>
+              <p className="job-details-company-details-item-value">
+                {firebaseJob.isCompany}
+              </p>
+            </div>
           </div>
           <p className="job-details-posted-at">Posted {formattedDate}</p>
           <div className="hiring-partner-details-button-con">
