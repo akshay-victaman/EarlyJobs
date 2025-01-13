@@ -127,3 +127,9 @@
         margin-top: 0px;
     }
 }
+
+@media screen and (min-width: 1600px) {
+    .bde-job-form {
+        max-width: 900px;
+    }
+}
