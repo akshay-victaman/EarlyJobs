@@ -36,6 +36,7 @@ const RequestJobDetailsPage = lazy(() =>
 const PartnerWithUs = lazy(() => import("../pages/PartnerWithUs"));
 const FranchiseWithUs = lazy(() => import("../pages/FranchiseWithUs"));
 const AboutUs = lazy(() => import("../pages/AboutUs"));
+const ManagementPage = lazy(() => import("../pages/ManagementPage"));
 const OpeningsPage = lazy(() => import("../pages/OpeningsPage"));
 const PublicJobDetailsPage = lazy(() =>
   import("../pages/PublicJobDetailsPage")
@@ -287,6 +288,16 @@ const EachRoute = ({ initialState }) => {
         render={() => (
           <Suspense fallback={<Loader />}>
             <AboutUs />
+          </Suspense>
+        )}
+      />
+
+      <Route
+        exact
+        path="/management"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <ManagementPage />
           </Suspense>
         )}
       />

@@ -1,0 +1,121 @@
+.management-page__content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 30px 80px;
+    gap: 20px;
+}
+
+.management-page__content__team {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 50%;
+}
+
+.management-page__content__image {
+    width: 100%;
+    max-width: 420px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.management-page__content__team__heading {
+    font-size: 26px;
+    font-weight: 600;
+    color: #EB6A4D;
+    margin-bottom: 10px;
+    line-height: 36px;
+}
+
+.management-page__content__team__para {
+    font-size: 16px;
+    font-weight: 400;
+    color: #272727;
+    line-height: 24px;
+    margin-bottom: 20px;
+}
+
+.management-team-con {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    gap: 100px;
+    padding: 20px 80px;
+}
+
+.management-team-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.management-team-name {
+    font-size: 26px;
+    font-weight: 600;
+    color: #1f1f1f;
+    margin-bottom: 10px;
+    line-height: 100%;
+    margin: 0px;
+}
+
+.management-team-designation {
+    font-size: 18px;
+    font-weight: 600;
+    color: #EB6A4D;
+    margin-bottom: 10px;
+    margin: 0px;
+    line-height: 100%;
+}
+
+.management-team-desc {
+    font-size: 16px;
+    font-weight: 400;
+    color: #767676;
+    line-height: 22px;
+    margin: 0px;
+    margin-bottom: 20px;
+}
+
+.management-team-img {
+    width: 100%;
+    object-fit: cover;
+    max-width: 350px;
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .management-page__content {
+        flex-direction: column;
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .management-page__content__team {
+        width: 100%;
+        order: 1;
+    }
+
+    .management-page__content__image {
+        width: 100%;
+        max-width: 100%;
+        order: 0;
+    }
+
+    .management-team-con {
+        flex-direction: column;
+        gap: 20px;
+        padding: 15px;
+    }
+
+    .management-team-img {
+        max-width: 100%;
+        order: 0;
+    }
+
+    .management-team-detail {
+        order: 1;
+    }
+}

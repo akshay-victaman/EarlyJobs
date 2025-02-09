@@ -101,6 +101,9 @@ const NavBar = ({handleShowComplaintsForm}) => {
                                 <li className='nav-options-item'>
                                     <Link to='/team' className='nav-options-link' onClick={() => setCompanyHover(false)}>Our Team</Link>
                                 </li>
+                                <li className='nav-options-item'>
+                                    <Link to='/management' className='nav-options-link' onClick={() => setCompanyHover(false)}>Management</Link>
+                                </li>
                             </ul>
                         }
                     </li>
@@ -120,7 +123,7 @@ const NavBar = ({handleShowComplaintsForm}) => {
                     }
 
                     {
-                        role !== 'BDE' &&
+                        (role !== 'BDE' && role !== 'FBDE') &&
                         <li className='nav-item'>
                             <Link to='/free-job-posting' className='nav-link'>
                                 <button type='button' className='signup-button'>Free Job Posting</button>
@@ -221,6 +224,9 @@ const NavBar = ({handleShowComplaintsForm}) => {
                                     </li>
                                     <li className='nav-options-item'>
                                         <Link to='/team' className='nav-options-link' onClick={() => setCompanyHover(false)}>Our Team</Link>
+                                    </li>
+                                    <li className='nav-options-item'>
+                                        <Link to='/management' className='nav-options-link' onClick={() => setCompanyHover(false)}>Management</Link>
                                     </li>
                                 </ul>
                             }
