@@ -68,6 +68,11 @@
     user-select: none;
 }
 
+.strong-text-gray {
+    color: #6a6a6a;
+    font-weight: 600;
+}
+
 @media screen and (max-width: 768px) {
 
     .about-us-curtural-fit-container {
