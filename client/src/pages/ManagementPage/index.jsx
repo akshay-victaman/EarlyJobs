@@ -17,12 +17,7 @@ const ManagementPage = () => {
             desc: "Ravi Kumar originating from Gaya in Bihar, the Founder & Director of Earlyjobs has been a stalwart in the recruitment industry running his agency with dedication and precision. He as an overall experience of 10+ years of experience in various domains. With over a decade of experience across various domains, he has been instrumental in overseeing all operational aspects of Victaman, ensuring efficiency, growth, and strategic alignment. Ravi Prakash Kumar's leadership has been pivotal in driving the success and growth of both Earlyjobs and VictaMan Services Pvt. Ltd., contributing significantly to the recruitment industry.",
             img: '/about_us_imgs/Ravi-Prakash.jpg'
         },
-        {
-            name: 'Saurav Kumar',
-            designation: 'Co-Founder & Strategic Adviser ',
-            desc: "Saurav Kumar is a dynamic business strategist and entrepreneur with over 10 years of experience in driving business growth, innovation, and operational excellence. He holds a Master’s degree from SRM University, Chennai, and has founded multiple successful ventures, including Victaman Services Pvt Ltd, Goformeet, English Wizard, and Meet XO. <br/> <br/> Currently, Saurav plays a key role in planning, strategic advice at Earlyjobs, leveraging his expertise in IT solutions, business development, and strategic leadership. He envisions revolutionizing the job market in the country by providing employment opportunities to the masses, reflecting his commitment to impactful and scalable solutions.",
-            img: '/about_us_imgs/Saurav-Kumar.jpg'
-        },
+     
         {
             name: 'Surbhi Rani',
             designation: 'Co-Founder & Director',
@@ -34,6 +29,12 @@ const ManagementPage = () => {
             designation: 'Head of operations',
             desc: "Akanksha Bharati is a Senior Hiring Manager at Earlyjobs, bringing over a year of experience in recruitment and leadership. A graduate of the University of Calcutta, she is passionate about hiring new talent for organizations. In her role, Akansha is responsible for developing and implementing effective recruitment strategies, sourcing and attracting qualified candidates, and collaborating with hiring managers to understand their staffing needs. Her dedication to talent acquisition and her leadership skills contribute significantly to the growth and success of Earlyjobs.",
             img: '/about_us_imgs/Akanksha.jpg'
+        },
+           {
+            name: 'Saurav Kumar',
+            designation: 'Co-Founder & Strategic Adviser ',
+            desc: "Saurav Kumar is a dynamic business strategist and entrepreneur with over 10 years of experience in driving business growth, innovation, and operational excellence. He holds a Master’s degree from SRM University, Chennai, and has founded multiple successful ventures, including Victaman Services Pvt Ltd, Goformeet, English Wizard, and Meet XO. <br/> <br/> Currently, Saurav plays a key role in planning, strategic advice at Earlyjobs, leveraging his expertise in IT solutions, business development, and strategic leadership. He envisions revolutionizing the job market in the country by providing employment opportunities to the masses, reflecting his commitment to impactful and scalable solutions.",
+            img: '/about_us_imgs/Saurav-Kumar.jpg'
         },
     ]
 
