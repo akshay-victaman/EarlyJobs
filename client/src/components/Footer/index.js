@@ -88,7 +88,7 @@ const Footer = ({handleShowContactForm}) => {
                     <Link to='/job-openings?page=1&location=Gurgaon' className="footer-link">Jobs in Gurgaon</Link>
                 </div>
             </div>
-            <p className="footer-address footer-rights" style={{textAlign: 'center'}}>© 2024 EarlyJobs | All rights reserved.</p>
+            <p className="footer-address footer-rights" style={{textAlign: 'center'}}>© 2024-25 EarlyJobs | All rights reserved.</p>
         </footer>
     );
 }
