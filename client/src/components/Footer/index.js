@@ -57,13 +57,14 @@ const Footer = ({handleShowContactForm}) => {
                 <div className="footer-links-container">
                     <h3 className="footer-heading">COMPANY</h3>
                     <Link to='/about' className="footer-link">About Us</Link>
+                    <Link to='/management' className="footer-link">Management Team</Link>
                     <Link to='/team' className="footer-link">Our Team</Link>
-                    <Link to='/franchise-with-us' className="footer-link">Franchise With Us</Link>
-                    <Link to='/partner-with-us' className="footer-link">Partner With Us</Link>
-                    <Link to='/terms-and-conditions' className="footer-link">Terms & Conditions</Link>
-                    <Link to='/privacy-policy' className="footer-link">Privacy Policy</Link> 
                     <Link to='/blogs' className="footer-link">Blogs</Link>
-                    <p className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact Us</p>
+                    <Link to='/partner-with-us' className="footer-link">Partner With Us</Link>
+                    <Link to='/franchise-with-us' className="footer-link">Franchise With Us</Link>
+                    <Link to='/privacy-policy' className="footer-link">Privacy Policy</Link> 
+                    <Link to='/terms-and-conditions' className="footer-link">Terms & Conditions</Link>
+                    // <p className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact Us</p>
                 </div>
                 <div className="footer-links-container">
                     <h3 className="footer-heading">OUR SERVICES</h3>
