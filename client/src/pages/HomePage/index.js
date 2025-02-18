@@ -296,7 +296,7 @@ const HomePage = () => {
                 </div>
                 <div className="landing-page-s3-image-con">
                     <p className="landing-page-s3-image-text">From startups to SMEs to established enterprises, EarlyJobs Recruitment team revolutionizes the way businesses find high-quality talent quickly & effortlessly.</p>
-                    <img src="https://hirekey.in/wp-content/uploads/2023/11/Employment-services.png.webp" alt="landing-page-3" className="landing-page-s3-image" />
+                    <img src="https://hirekey.in/wp-content/uploads/2023/11/Headhunting-services.png" alt="landing-page-3" className="landing-page-s3-image" />
                 </div>
             </div>
             <div className="landing-page-screen-4-container">
@@ -315,7 +315,7 @@ const HomePage = () => {
                         We can engage in core part of your business by providing you the right talent that matches your requirement, thus helping you build a competitive, committed and a capable team.
                     </p>
                     <a href="tel:+918217527926" className="landing-page-s5-link-btn">Connect With Our Recruiters</a>
-                    <img src="https://hirekey.in/wp-content/uploads/2023/11/Headhunting-services.png" alt="landing-page-5" draggable={false} className="landing-page-s5-image" />
+                    <img src="https://res.cloudinary.com/djocenrah/image/upload/v1739907873/Headhunting-services_bmobo5.png" alt="landing-page-5" draggable={false} className="landing-page-s5-image" />
                 </div>
                 <div className="landing-page-s5-featured-services-con">
                     <h2 className="landing-page-s5-featured-services-heading">Featured Services</h2>
