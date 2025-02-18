@@ -12,9 +12,9 @@ const ManagementPage = () => {
             img: '/about_us_imgs/Asish-Chakraborty.jpg'
         },
         {
-            name: 'Ravi Kumar',
+            name: 'Ravi Prakash Kumar',
             designation: 'Founder & Director',
-            desc: "Ravi Kumar originating from Gaya in Bihar, the Founder & Director of Earlyjobs has been a stalwart in the recruitment industry running his agency with dedication and precision. He as an overall experience of 10+ years of experience in various domains. With over a decade of experience across various domains, he has been instrumental in overseeing all operational aspects of Victaman, ensuring efficiency, growth, and strategic alignment. Ravi Prakash Kumar's leadership has been pivotal in driving the success and growth of both Earlyjobs and VictaMan Services Pvt. Ltd., contributing significantly to the recruitment industry.",
+            desc: "Ravi Prakash Kumar originating from Gaya in Bihar, the Founder & Director of Earlyjobs has been a stalwart in the recruitment industry running his agency with dedication and precision. He as an overall experience of 10+ years of experience in various domains. With over a decade of experience across various domains, he has been instrumental in overseeing all operational aspects of Victaman, ensuring efficiency, growth, and strategic alignment. Ravi Prakash Kumar's leadership has been pivotal in driving the success and growth of both Earlyjobs and Victaman Services Pvt. Ltd., contributing significantly to the recruitment industry.",
             img: '/about_us_imgs/Ravi-Prakash.jpg'
         },
      
@@ -26,7 +26,7 @@ const ManagementPage = () => {
         },
         {
             name: 'Akanksha Bharati',
-            designation: 'Head of operations',
+            designation: 'Founding Member & Head of operations',
             desc: "Akanksha Bharati is a Senior Hiring Manager at Earlyjobs, bringing over a year of experience in recruitment and leadership. A graduate of the University of Calcutta, she is passionate about hiring new talent for organizations. In her role, Akansha is responsible for developing and implementing effective recruitment strategies, sourcing and attracting qualified candidates, and collaborating with hiring managers to understand their staffing needs. Her dedication to talent acquisition and her leadership skills contribute significantly to the growth and success of Earlyjobs.",
             img: '/about_us_imgs/Akanksha.jpg'
         },
