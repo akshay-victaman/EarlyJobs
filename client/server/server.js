@@ -86,7 +86,7 @@ const renderWithSSR = async (req, res, jobData) => {
     <meta name="keywords" content="${keywords}" />
     <meta property="og:title" content="${pageTitle}" />
     <meta property="og:description" content="${jobData.title} in ${jobData.category} at ${jobData.company_name}" />
-    <meta property="og:image" content="${jobData.company_logo_url}" />
+    <meta property="og:image" content="/ej-1.jpg" />
   `;
 
   // Create a script tag to inject the initial state
