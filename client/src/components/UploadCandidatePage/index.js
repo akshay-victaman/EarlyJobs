@@ -170,8 +170,10 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
           apiUrl = `${backendUrl}/jobs/hm/all`
         } else if (role === 'HR') {
           apiUrl = `${backendUrl}/jobs/hr/all/`
-        } else if (role === 'BDE') {
+        } else if (role === 'FBDE') {
           apiUrl = `${backendUrl}/jobs/bde/all/`
+        } else if (role === 'BDE') {
+            apiUrl = `${backendUrl}/jobs/master-bde/all/`
         } else {
           apiUrl = `${backendUrl}/admin/get-admin-jobs/all`
           console.log('api url', apiUrl)

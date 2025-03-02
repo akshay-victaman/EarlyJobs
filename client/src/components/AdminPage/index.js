@@ -62,8 +62,8 @@ const AdminPage = () => {
     })
 
     useEffect(() => {
-        const hiringFor = signUpDetails.role === 'AC' ? 'Fulltime Hiring Manager' : signUpDetails.role === 'HR' ? '' : signUpDetails.role === 'ADMIN' ? 'Admin' : signUpDetails.role === 'BDE' ? 'BDE' : ''
-        const docId = (signUpDetails.role !== 'ADMIN' && signUpDetails.role !== 'BDE') ? "TBF" : "";
+        const hiringFor = signUpDetails.role === 'AC' ? 'Fulltime Hiring Manager' : signUpDetails.role === 'HR' ? '' : signUpDetails.role === 'ADMIN' ? 'Admin' : signUpDetails.role === 'BDE' ? 'BDE' : signUpDetails.role === 'FBDE' ? 'FBDE' : '';
+        const docId = (signUpDetails.role !== 'ADMIN' && signUpDetails.role !== 'BDE' && signUpDetails.role !== 'FBDE') ? "TBF" : "";
         setSignUpDetails({ ...signUpDetails, hiringFor, docId })
     }, [signUpDetails.role])
 
@@ -273,7 +273,7 @@ const AdminPage = () => {
                 <button className="modal-close-button" style={{right: '10px', top: '10px'}} disabled={createStatus} onClick={close}>
                     &times;
                 </button>
-                <label className="homepage-label">Create new account for {signUpDetails.role === 'AC' ? "Hiring Manager" : signUpDetails.role === 'HR' ? "HR Recruiter" : signUpDetails.role === 'BDE' ? "BDE" : signUpDetails.role === "ADMIN" ? "Admin" : "User type"}</label>
+                <label className="homepage-label">Create new account for {signUpDetails.role === 'AC' ? "Hiring Manager" : signUpDetails.role === 'HR' ? "HR Recruiter" : signUpDetails.role === 'BDE' ? "Master BDE" : signUpDetails.role === "ADMIN" ? "Admin" : signUpDetails.role === 'FBDE' ? "BDE" : "User type"}</label>
                 <label className="homepage-label">Credentials will be sent to {signUpDetails.email}</label>
                 <label className="homepage-label" style={{marginTop: "10px"}}>User Type (Role)</label>
                 <select className="homepage-input" id="role" name="role" required value={signUpDetails.role} onChange={handleInputChange} >
@@ -282,7 +282,8 @@ const AdminPage = () => {
                     <option value="AC">Hiring Manager</option>
                     <option value="HR">HR Recruiter</option>
                     <option value="ADMIN">Admin</option>
-                    <option value="BDE">BDE</option>
+                    <option value="BDE">Master BDE</option>
+                    <option value="FBDE">BDE</option>
                     <option value="COLLEGE">College</option>
                     <option value="AGENCY">Agency</option>
                 </select>

@@ -76,6 +76,7 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
   const [popupError, setPopupError] = useState("");
   const [popupLoading, setPopupLoading] = useState(false);
   const [seniorHiringManagers, setSeniorHiringManagers] = useState([]);
+  const [bdeList, setBdeList] = useState([]);
   const [skills, setSkills] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -148,6 +149,7 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
     status: "Open",
     hiringNeed: jobDetails.hiringNeed,
     assignedTo: [],
+    bdeAssignedTo: [],
     qualification: jobDetails.qualification,
     minExperience: jobDetails.minExperience,
     maxExperience: jobDetails.maxExperience,
@@ -156,12 +158,22 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
     keywords: jobDetails.keywords.join(","),
   });
 
-  console.log(jobDetails);
 
   useEffect(() => {
-    fetchSeniorHiringManagers();
-    fetchCompanies();
-    fetchAssignedSeniorHiringManagers();
+    async function fetchData() {
+      // setHmLoader(true);
+      console.log('LOADER SET TO TRUE')
+      await fetchSeniorHiringManagers();
+      await fetchAssignedSeniorHiringManagers();
+      if (Cookies.get("role") === "BDE") {
+       await fetchBDEs();
+       await fetchAssignedBDEs();
+      }
+      await fetchCompanies();
+      // setHmLoader(false);
+      console.log('LOADER SET TO FALSE')
+    }
+    fetchData();
   }, []);
 
   const s3Client = new S3Client({
@@ -180,12 +192,10 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
         Authorization: `Bearer ${Cookies.get("jwt_token")}`,
       },
     };
-    console.log(editJob);
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
       const response = await fetch(`${backendUrl}/api/companies`, options);
       const data = await response.json();
-      console.log(data);
       if (response.ok) {
         const options = data.companies.map((company) => ({
           value: company.name,
@@ -207,12 +217,35 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
         alert(data.error);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const fetchSeniorHiringManagers = async () => {
-    setHmLoader(true);
+    try {
+      // setHmLoader(true);
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+        },
+      };
+      const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(
+        `${backendUrl}/api/users/all/senior-hms`,
+        options
+      );
+      const data = await response.json();
+      setSeniorHiringManagers(data);
+      console.log('FETCHED SENIOR HIRING MANAGERS')
+    } catch (error) {
+      console.error(error);
+      // setHmLoader(false);
+    }
+  };
+
+  const fetchBDEs = async () => {
     const options = {
       method: "GET",
       headers: {
@@ -220,35 +253,73 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
         Authorization: `Bearer ${Cookies.get("jwt_token")}`,
       },
     };
-    const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
-    const response = await fetch(
-      `${backendUrl}/api/users/all/senior-hms`,
-      options
-    );
-    const data = await response.json();
-    setSeniorHiringManagers(data);
-    console.log(data);
-    setTimeout(() => {
-      setHmLoader(false);
-    }, 1000);
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(`${backendUrl}/api/users/all/bdes`, options);
+      const data = await response.json();
+      if (response.ok) {
+        setBdeList(data);
+        console.log('FETCHED BDEs')
+        // setHmLoader(state => [state[0], false, state[2]]);
+      } else {
+        // setHmLoader(state => [state[0], false, state[2]]);
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error(error);
+      // setHmLoader(state => [state[0], false, state[2]]);
+    }
   };
 
   const fetchAssignedSeniorHiringManagers = async () => {
-    const options = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Cookies.get("jwt_token")}`,
-      },
-    };
-    const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
-    const response = await fetch(
-      `${backendUrl}/jobs/assigned-shm/${jobDetails.id}`,
-      options
-    );
-    const data = await response.json();
-    setEditJob({ ...editJob, assignedTo: data.map((item) => item.shm_email) });
-    console.log(data);
+    try {
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+        },
+      };
+      const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(
+        `${backendUrl}/jobs/assigned-shm/${jobDetails.id}`,
+        options
+      );
+      const data = await response.json();
+      setEditJob({ ...editJob, assignedTo: data.map((item) => item.shm_email) });
+      console.log('FETCHED ASSIGNED SENIOR HIRING MANAGERS')
+      setTimeout(() => {
+        // setHmLoader(false);
+      }, 1000);
+    } catch (error) {
+      console.error(error);
+      // setHmLoader(false);
+    }
+  };
+
+  const fetchAssignedBDEs = async () => {
+    try {
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+        },
+      };
+      // setHmLoader(state => [state[0], state[1], true]);
+      const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(
+        `${backendUrl}/jobs/assigned-bde/${jobDetails.id}`,
+        options
+      );
+      const data = await response.json();
+      setEditJob({ ...editJob, bdeAssignedTo: data.map((item) => item.bde_email) });
+      console.log('FETCHED ASSIGNED BDEs')
+      // setHmLoader(state => [state[0], state[1], false]);
+    } catch (error) {
+      console.error(error);
+      // setHmLoader(state => [state[0], state[1], false]);
+    }
   };
 
   const handleCompanyChange = (newValue) => {
@@ -280,7 +351,6 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
     const file = event.target.files[0];
     if (!file) return;
     setFile(file);
-    console.log("File selected:", file);
   }
 
   const handleInputChange = (e) => {
@@ -351,9 +421,24 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
     setEditJob({ ...editJob, assignedTo: hiringManagers });
   };
 
+  const handleAddRegionalBDE = (e) => {
+    if (e.target.value === "") return;
+    if (editJob.bdeAssignedTo.includes(e.target.value)) return;
+    const bdesList = editJob.bdeAssignedTo;
+    bdesList.push(e.target.value);
+    setEditJob({ ...editJob, bdeAssignedTo: bdesList });
+  };
+
   const handleRemoveHiringManager = (email) => {
     const hiringManagers = editJob.assignedTo.filter((item) => item !== email);
     setEditJob({ ...editJob, assignedTo: hiringManagers });
+  };
+
+  const handleRemoveRegionalBDE = (email) => {
+    const bdesList = editJob.bdeAssignedTo.filter(
+      (item) => item !== email
+    );
+    setEditJob({ ...editJob, bdeAssignedTo: bdesList });
   };
 
   const validate = () => {
@@ -476,6 +561,7 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
       status: editJob.status,
       hiringNeed: editJob.hiringNeed,
       assignedTo: editJob.assignedTo,
+      bdeAssignedTo: editJob.bdeAssignedTo,
       qualification: editJob.qualification,
       minExperience: editJob.minExperience,
       maxExperience: editJob.maxExperience,
@@ -483,7 +569,6 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
       maxAge: editJob.maxAge,
       keywords: editJob.keywords,
     };
-    console.log(editJob);
     // return
     setLoading(true);
     const options = {
@@ -496,7 +581,6 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
     };
     const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
     const response = await fetch(`${backendUrl}/jobs/edit`, options);
-    console.log(response);
     const data = await response.json();
     if (response.ok === true) {
       if (data.error) {
@@ -530,7 +614,6 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
       await s3Client.send(command);
 
       const imageUrl = `https://${process.env.REACT_APP_AWS_COMPANY_LOGO_BUCKET}.s3.${process.env.REACT_APP_AWS_BUCKET_REGION}.amazonaws.com/${params.Key}`;
-      console.log("Image uploaded to S3:", imageUrl);
       setFile(null);
       return imageUrl;
     } catch (error) {
@@ -580,9 +663,7 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
       return;
     }
     setPopupError("");
-    console.log(companyDetails);
     const imageUrl = await uploadImage();
-    console.log(imageUrl);
 
     const url = process.env.REACT_APP_BACKEND_API_URL + "/api/companies";
     const options = {
@@ -596,7 +677,6 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
     try {
       const response = await fetch(url, options);
       const data = await response.json();
-      console.log(data);
       if (response.ok) {
         if (data.error) {
           setPopupError(data.error);
@@ -641,21 +721,19 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
       }
     } catch (error) {
       toast.error(error);
-      console.log(error);
+      console.error(error);
     }
     setPopupLoading(false);
   };
 
   const renderHiringManagerOptions = () => {
     if (editJob.assignedTo.length > 0 && seniorHiringManagers.length > 0) {
-      console.log(seniorHiringManagers);
-      return editJob.assignedTo.map((email, index) => {
+      return editJob.assignedTo.map((email) => {
         const hiringManagerName = seniorHiringManagers.find(
           (item) => item.email === email
         );
-        console.log(email);
         return (
-          <div className="hr-input-list" key={index}>
+          <div className="hr-input-list" key={email}>
             <p className="hr-input-list-item">
               {hiringManagerName && hiringManagerName.username}
             </p>
@@ -1415,7 +1493,7 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
       <label className="bde-form-label">
         Assign To Senior Hiring Manager<span className="hr-form-span"> *</span>
       </label>
-      <div className="hr-input-list-con">{renderHiringManagerOptions()}</div>
+      <div className="hr-input-list-con">{!hmLoader && renderHiringManagerOptions()}</div>
       <select
         className="bde-form-input"
         name="assignedTo"
@@ -1438,10 +1516,55 @@ const EditJobDetails = ({ jobDetails, setIsEditJob, updateJobDetails }) => {
         <p className="hr-error">*Please select Senior Hiring manager</p>
       )}
 
+      {Cookies.get("role") === "BDE" && (
+        <>
+          <label className="bde-form-label">
+            Assign To Regional BDE
+          </label>
+          <div className="hr-input-list-con">
+            {editJob.bdeAssignedTo.map((email, index) => {
+              const bdeName = bdeList.find(
+                (item) => item.email === email
+              );
+              return (
+                <div className="hr-input-list" key={index}>
+                  <p className="hr-input-list-item">{bdeName.username}</p>
+                  <button
+                    type="button"
+                    className="hr-remove-item-button"
+                    onClick={() => handleRemoveRegionalBDE(email)}
+                  >
+                    <IoIosClose className="hr-close-icon" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          <select
+            className="bde-form-input"
+            name="bdeAssignedTo"
+            value={editJob.bdeAssignedTo}
+            onChange={handleAddRegionalBDE}
+          >
+            <option value="">Select Regional BDE</option>
+            {bdeList.length > 0 &&
+              bdeList.map((eachItem) => (
+                <option value={eachItem.email}>
+                  {eachItem.username +
+                    " - " +
+                    eachItem.location +
+                    " - " +
+                    eachItem.phone}
+                </option>
+              ))}
+          </select>
+        </>
+        )
+      }
+
       <label className="bde-form-label">
         Also Search For<span className="hr-form-span"> (Max 30 keywords)</span>
       </label>
-      {console.log(typeof editJob.keywords)}
       <textarea
         type="text"
         placeholder="Ex: Customer Support"

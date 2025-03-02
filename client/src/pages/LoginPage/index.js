@@ -87,7 +87,7 @@ const LoginPage = () => {
             history.replace('/admin')
             window.location.reload();
             return
-        } else if(role === 'BDE') {
+        } else if(role === 'BDE' || role === 'FBDE') {
             history.replace('/bde-portal')
             window.location.reload();
             return
@@ -139,7 +139,7 @@ const LoginPage = () => {
         const role = Cookies.get('role')
         if(role === 'ADMIN') {
             return <Redirect to='/admin' />
-        } else if(role === 'BDE') {
+        } else if(role === 'BDE' || role === 'FBDE') {
             return <Redirect to='/bde-portal' />
         } else if(role === 'AC' || role === 'HR' || role === 'SHM') {
             return <Redirect to='/jobs' />
