@@ -93,8 +93,10 @@ const Applications = ({ setShowCandidateForm, showCandidateForm }) => {
       const backendUrl = process.env.REACT_APP_BACKEND_API_URL
       const role = Cookies.get('role');
       let apiUrl = ''
-      if (role === 'BDE') {
+      if (role === 'FBDE') {
         apiUrl = `${backendUrl}/jobs/bde/all`
+      } else if (role === 'BDE') {
+        apiUrl = `${backendUrl}/jobs/master-bde/all/`
       } else if (role === 'SHM') {
         apiUrl = `${backendUrl}/jobs/senior-hm/all`
       } else {

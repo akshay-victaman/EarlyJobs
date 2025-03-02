@@ -73,6 +73,7 @@ const customStyles = {
 
 const BDEPage = () => {
   const [accountManagers, setAccountManagers] = useState([]);
+  const [bdeList, setBdeList] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [showCompanyPopup, setShowCompanyPopup] = useState(false);
   const [popupError, setPopupError] = useState("");
@@ -148,6 +149,7 @@ const BDEPage = () => {
     status: "Open",
     hiringNeed: "",
     assignedTo: [],
+    bdeAssignedTo: [],
     qualification: "",
     minExperience: "",
     maxExperience: "",
@@ -158,6 +160,9 @@ const BDEPage = () => {
 
   useEffect(() => {
     fetchSeniorHiringManagers();
+    if (Cookies.get("role") === "BDE") {
+      fetchBDEs();
+    }
     fetchCompanies();
   }, []);
 
@@ -215,6 +220,29 @@ const BDEPage = () => {
       const data = await response.json();
       if (response.ok) {
         setAccountManagers(data);
+        console.log(data);
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchBDEs = async () => {
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("jwt_token")}`,
+      },
+    };
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(`${backendUrl}/api/users/all/bdes`, options);
+      const data = await response.json();
+      if (response.ok) {
+        setBdeList(data);
         console.log(data);
       } else {
         alert(data.error);
@@ -322,11 +350,26 @@ const BDEPage = () => {
     setPostNewJob({ ...postNewJob, assignedTo: hiringManagers });
   };
 
+  const handleAddRegionalBDE = (e) => {
+    if (e.target.value === "") return;
+    if (postNewJob.bdeAssignedTo.includes(e.target.value)) return;
+    const bdesList = postNewJob.bdeAssignedTo;
+    bdesList.push(e.target.value);
+    setPostNewJob({ ...postNewJob, bdeAssignedTo: bdesList });
+  };
+
   const handleRemoveHiringManager = (email) => {
     const hiringManagers = postNewJob.assignedTo.filter(
       (item) => item !== email
     );
     setPostNewJob({ ...postNewJob, assignedTo: hiringManagers });
+  };
+
+  const handleRemoveRegionalBDE = (email) => {
+    const bdesList = postNewJob.bdeAssignedTo.filter(
+      (item) => item !== email
+    );
+    setPostNewJob({ ...postNewJob, bdeAssignedTo: bdesList });
   };
 
   const toggleJobForm = () => {
@@ -464,6 +507,7 @@ const BDEPage = () => {
       hiringNeed: postNewJob.hiringNeed,
       postedBy: email,
       assignedTo: postNewJob.assignedTo,
+      bdeAssignedTo: postNewJob.bdeAssignedTo,
       qualification: postNewJob.qualification,
       minExperience: postNewJob.minExperience,
       maxExperience: postNewJob.maxExperience,
@@ -517,6 +561,7 @@ const BDEPage = () => {
           status: "Open",
           hiringNeed: "",
           assignedTo: [],
+          bdeAssignedTo: [],
           qualification: "",
           minExperience: "",
           maxExperience: "",
@@ -1458,6 +1503,52 @@ const BDEPage = () => {
       {assignedToError && (
         <p className="hr-error">*Please select Senior Hiring manager</p>
       )}
+
+      {role === "BDE" && (
+        <>
+          <label className="bde-form-label">
+            Assign To Regional BDE
+          </label>
+          <div className="hr-input-list-con">
+            {postNewJob.bdeAssignedTo.map((email, index) => {
+              const bdeName = bdeList.find(
+                (item) => item.email === email
+              );
+              return (
+                <div className="hr-input-list" key={index}>
+                  <p className="hr-input-list-item">{bdeName.username}</p>
+                  <button
+                    type="button"
+                    className="hr-remove-item-button"
+                    onClick={() => handleRemoveRegionalBDE(email)}
+                  >
+                    <IoIosClose className="hr-close-icon" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          <select
+            className="bde-form-input"
+            name="bdeAssignedTo"
+            value={postNewJob.bdeAssignedTo}
+            onChange={handleAddRegionalBDE}
+          >
+            <option value="">Select Regional BDE</option>
+            {bdeList.length > 0 &&
+              bdeList.map((eachItem) => (
+                <option value={eachItem.email}>
+                  {eachItem.username +
+                    " - " +
+                    eachItem.location +
+                    " - " +
+                    eachItem.phone}
+                </option>
+              ))}
+          </select>
+        </>
+        )
+      }
 
       <label className="bde-form-label">
         Also Search For<span className="hr-form-span"> (Max 30 keywords)</span>
