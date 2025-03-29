@@ -385,6 +385,92 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
         }
     }
 
+    const sendWhatsAppMessage = async (phone, message, scheduleAt = null) => {
+        console.log(phone, message, scheduleAt)
+        const baseUrl = "https://mediaapi.smsgupshup.com/GatewayAPI/rest";
+        const userid = process.env.REACT_APP_GUPSHUP_USER_ID;
+        const password = process.env.REACT_APP_GUPSHUP_PASSWORD;
+    
+        let url = `${baseUrl}?userid=${userid}&password=${password}&send_to=${phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=${encodeURIComponent(message)}&isTemplate=true`;
+    
+        // If scheduleAt is provided, add it to the URL
+        if (scheduleAt) {
+            url += `&schedule=${encodeURIComponent(scheduleAt)}`;
+        }
+    
+        try {
+            const response = await fetch(url);
+            const body = await response.json();
+    
+            if (response.ok) {
+                console.log("WhatsApp message sent successfully:", body);
+                return true;
+            } else {
+                console.error("Error sending WhatsApp message:", {
+                    status: response.status,
+                    details: body.details || "No details provided",
+                });
+                return false;
+            }
+        } catch (error) {
+            console.error("Error sending WhatsApp message:", error);
+            return false;
+        }
+    };
+    
+    // Function to send WhatsApp interview messages
+    const sendInterviewWhatsAppMessages = async (candidateDetails, jobsList, hmHrData) => {
+        console.log(candidateDetails, jobsList, hmHrData)
+        const job = jobsList.find(job => job.id === candidateDetails.jobId);
+        const role = Cookies.get('role');
+        const username = Cookies.get('username');
+    
+        const interviewDateTime = parseISO(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
+        const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
+    
+        const contactPerson = role === "SHM"
+            ? `${username}, at ${hmHrData.shm[0].phone}`
+            : role === "AC"
+            ? `${username}, at ${hmHrData.hm[0].phone}, or ${hmHrData.shm[0].username} at ${hmHrData.shm[0].phone}`
+            : `${username}, at ${hmHrData.hr[0].phone}, or ${hmHrData.hm[0].username} at ${hmHrData.hm[0].phone}`;
+        let phone = null;
+        let email = null;
+        if (role === "SHM") {
+            phone = hmHrData.shm[0].phone;
+            email = hmHrData.shm[0].email;
+        } else if (role === "AC") {
+            phone = hmHrData.hm[0].phone;
+            email = hmHrData.hm[0].email;
+        } else {
+            phone = hmHrData.hr[0].phone;
+            email = hmHrData.hr[0].email;
+        }
+    
+        const interviewMessage = `📌 Interview Scheduled - ${job.role} \n\n Hi ${candidateDetails.fullName},\n Thank you for your interest in joining  ${job.compname}! Your interview for the ${job.role} role has been scheduled. \n\n 📅 Date: ${candidateDetails.interviewDate} \n ⏰ Time: ${candidateDetails.interviewTime} \n 📍 Location: ${job.location} \n\n If you have any questions, feel free to reach out to us. \n Looking forward to meeting you! 😊 \n\n 📞 Contact: ${phone} \n 📧 Email: ${email} \n\n EarlyJobs Recruitment Team`;
+    
+        const reminderMessage = `⏳ Interview Reminder - ${job.role} \n\n Hi ${candidateDetails.fullName},\n This is a gentle reminder about your interview for the ${job.role} role scheduled for tomorrow at ${job.compname}. \n\n 📅 Date: ${candidateDetails.interviewDate} \n ⏰ Time: ${candidateDetails.interviewTime} \n 📍 Location: ${job.location} \n\n Please ensure you are available on time. Best of luck! 💼🚀. \n\n 📞 Contact: ${phone} \n 📧 Email: ${email} \n\n EarlyJobs Recruitment Team`;
+    
+        const dayOfInterviewMessage = `🔔 Interview Today - ${job.role} \n\n Hi ${candidateDetails.fullName},\n Hope you're doing great! Just a quick reminder about your interview for the ${job.role} role at ${job.compname} today. \n\n ⏰ Time: ${candidateDetails.interviewTime} \n 📍 Location: ${job.location} \n\n Wishing you all the best! See you soon. 😊 \n\n 📞 Contact: ${phone} \n 📧 Email: ${email} \n\n EarlyJobs Recruitment Team`;
+    
+        const currentDate = new Date();
+        const interviewDate = parseISO(candidateDetails.interviewDate);
+        const diff = differenceInDays(interviewDate, currentDate);
+    
+        if (diff === 0) {
+            sendWhatsAppMessage(candidateDetails.phone, interviewMessage);
+        } else if (diff === 1) {
+            sendWhatsAppMessage(candidateDetails.phone, interviewMessage);
+            sendWhatsAppMessage(candidateDetails.phone, dayOfInterviewMessage, `${candidateDetails.interviewDate} 07:00:00`);
+        } else if (diff >= 2) {
+            const dayBefore = sub(interviewDateTime, { days: 1 });
+            const dayBeforeDate = format(dayBefore, "yyyy-MM-dd 18:00:00");
+    
+            sendWhatsAppMessage(candidateDetails.phone, interviewMessage);
+            sendWhatsAppMessage(candidateDetails.phone, reminderMessage, dayBeforeDate);
+            sendWhatsAppMessage(candidateDetails.phone, dayOfInterviewMessage, `${candidateDetails.interviewDate} 07:00:00`);
+        }
+    };
+
 
     const postCandidateDetails = async (event) => {
         event.preventDefault()
@@ -517,6 +603,7 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
                 })
                 if (Cookies.get('role') !== 'BDE') {
                     sendInterviewEmails()
+                    sendInterviewWhatsAppMessages(candidateDetails, jobsList, hmHrData)
                 }
                 setShowForm(false)
             }
