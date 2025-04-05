@@ -8,12 +8,15 @@ const router = express.Router();
 router.post('/add/new', authenticateToken, checkUserBlockStatus, jobController.addJobDetials);
 router.put('/edit', authenticateToken, checkUserBlockStatus, jobController.editJobDetials);
 router.get('/assigned-shm/:jobId', authenticateToken, checkUserBlockStatus, jobController.getAssignedSHMsForJob);
+router.get('/assigned-bde/:jobId', authenticateToken, checkUserBlockStatus, jobController.getAssignedBdesForJob);
 router.get('/details/:jobId', authenticateToken, checkUserBlockStatus, jobController.getJobDetails);
 router.post('/assign', authenticateToken, checkUserBlockStatus, jobController.assignJobToHrByAccountManager);
 router.get('/assigned-hm/:jobId', authenticateToken, checkUserBlockStatus, jobController.getAssignedHMsForJob);
 router.get('/assigned-hr/:jobId/:email', authenticateToken, checkUserBlockStatus, jobController.getAssignedHRsForJob);
 router.put('/assigned-hm/update', authenticateToken, checkUserBlockStatus, jobController.updateJobAssignmentBySHM);
 router.put('/assigned-hr/update', authenticateToken, checkUserBlockStatus, jobController.updateJobAssignmentByHM);
+router.get('/master-bde', authenticateToken, checkUserBlockStatus, jobController.getJobsForMasterBDE);
+router.get('/master-bde/all', authenticateToken, checkUserBlockStatus, jobController.getAllJobsForMasterBDE);
 router.get('/bde', authenticateToken, checkUserBlockStatus, jobController.getJobsForBDE);
 router.get('/bde/all/', authenticateToken, checkUserBlockStatus, jobController.getAllJobsForBDE);
 router.get('/senior-hm', authenticateToken, checkUserBlockStatus, jobController.getSeniorHMJobs);
@@ -46,5 +49,6 @@ router.put('/candidate/employment-details', authenticateToken, checkUserBlockSta
 router.delete('/candidate/employment-details/:applicationId', authenticateToken, checkUserBlockStatus, jobController.deleteEmploymentDetails);
 router.put('/candidate/verification-status/update', authenticateToken, checkUserBlockStatus, jobController.updateVerificationStatus);
 router.get('/candidate/joined-company-details/:id', authenticateToken, checkUserBlockStatus, jobController.getJoinedCandidateCompanyDetails);
+router.post('/candidate/sendInterviewWhatsAppMessages', authenticateToken, checkUserBlockStatus, jobController.sendInterviewWhatsAppMessages);
 
 module.exports = router;

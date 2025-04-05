@@ -8,6 +8,7 @@ const publicJobRoutes = require('./routes/publicJobRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const recommendationRoutes = require('./routes/recommendationRoutes');
 const blogRouter = require('./routes/blogRoutes.js');
+const logRequestResponse = require('./middleware/logRequestResponse.js');
 
 app.use(cors());
 
@@ -21,6 +22,8 @@ app.use((req, res, next) => {
     next();
 }); 
 
+// app.use(logRequestResponse);
+
 
 app.use('/api', userRoutes);
 app.use('/jobs', jobRoutes);
@@ -30,8 +33,8 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use("/", blogRouter);
 
-const PORT = process.env.PORT || 5000;
- app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
- });
-// module.exports.server = sls(app)
+// const PORT = process.env.PORT || 5000;
+//  app.listen(PORT, () => {
+//   console.log(`Server is running on http://localhost:${PORT}`);
+//  });
+module.exports.server = sls(app)

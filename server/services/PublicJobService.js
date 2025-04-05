@@ -1,4 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
+const { nanoid } = require('nanoid');
+
 const db = require('../config/database');
 
 const getAllJobs = async (company, location, title, search, page) => {
@@ -126,15 +128,23 @@ const addPublicApplicationForJob = async (applicationData) => {
         jobCategory,
         shiftTimings,
         employmentType,
+        subJobId,
+        postedBy
     } = applicationData;
 
-    const hmEmails = await getAssignedHMsForJob(jobId);
-    const hmEmailsString = hmEmails.map(hm => hm.hm_email).join(',');
+    let hmEmailsString = null;
+
+    console.log(subJobId.length)
+
+    if (subJobId.length === 36) {
+        const hmEmails = await getAssignedHMsForJob(jobId);
+        hmEmailsString = hmEmails.map(hm => hm.hm_email).join(','); 
+    }
     
     const query = `
         INSERT INTO public_applications 
-        (id, job_id, name, email, phone, father_name, offer_status, date_of_birth, gender, aadhar_number, highest_qualification, current_location, spoken_languages, experience_in_years, experience_in_months, skills, job_category, shift_timings, employment_type, hm_emails) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+        (id, job_id, name, email, phone, father_name, offer_status, date_of_birth, gender, aadhar_number, highest_qualification, current_location, spoken_languages, experience_in_years, experience_in_months, skills, job_category, shift_timings, employment_type, hm_emails, recruiter_email, sub_job_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
     try {
         const application = await getPublicApplicationForJob(jobId, email, phone);
         const existingApplication = await getPublicApplicationForJobApproved(jobId, email, phone);
@@ -144,7 +154,7 @@ const addPublicApplicationForJob = async (applicationData) => {
             throw error;
         }
 
-        const result = await db.query(query, [uuidv4(), jobId, fullName, email, phone, fatherName, offerStatus, dateOfBirth, gender, aadharNumber, highestQualification, currentLocation, spokenLanguages.join(","), experienceInYears, experienceInMonths, skills.join(","), jobCategory, shiftTimings, employmentType, hmEmailsString]);
+        const result = await db.query(query, [uuidv4(), jobId, fullName, email, phone, fatherName, offerStatus, dateOfBirth, gender, aadharNumber, highestQualification, currentLocation, spokenLanguages.join(","), experienceInYears, experienceInMonths, skills.join(","), jobCategory, shiftTimings, employmentType, hmEmailsString, postedBy, subJobId.length === 36 ? null : subJobId]);
         if(result[0].affectedRows > 0) {
             return {success: "Application submitted successfully"};
         }
@@ -681,6 +691,317 @@ const getLocationTitleAndCompanyListWithJobCount = async () => {
     return {companyList, locationList, titleList};
 }
 
+const getCompanyDetailsForJob = async (jobId) => {
+    const query = `
+        SELECT company_name, company_logo_url FROM jobs
+        WHERE id = ?;`;
+    try {
+        const result = await db.query(query, [jobId]);
+        return result[0];
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const createSubJobByHiringNeed = async (job) => {
+    const {
+        jobId,
+        title, 
+        category, 
+        shiftTimings,
+        description, 
+        streetAddress,
+        city,
+        area,
+        pincode,
+        locationLink,
+        currency,
+        salaryMode,
+        minSalary, 
+        maxSalary, 
+        skills, 
+        language,
+        employmentType, 
+        workType, 
+        noOfOpenings, 
+        status, 
+        hiringNeed, 
+        postedBy, 
+        qualification,
+        maxExperience,
+        minExperience,
+        minAge,
+        maxAge,
+        keywords
+    } = job;
+    const subJobId = nanoid(20); // Generates a 16-character ID
+    const query = `
+    INSERT INTO hr_job_postings (
+        id, 
+        job_id,
+        company_name, 
+        company_logo_url,
+        title, 
+        category, 
+        shift_timings,
+        description, 
+        street,
+        city,
+        area,
+        pincode,
+        location,
+        location_link, 
+        currency,
+        salary_mode,
+        min_salary, 
+        max_salary, 
+        skills, 
+        language, 
+        employment_type, 
+        work_type, 
+        no_of_openings, 
+        status, 
+        hiring_need, 
+        posted_by,
+        qualification,
+        min_experience,
+        max_experience,
+        min_age,
+        max_age,
+        keywords
+        ) VALUES (?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    `;
+    
+    try {
+        const companyDetails = await getCompanyDetailsForJob(jobId);
+        const companyName = companyDetails[0].company_name;
+        const companyLogoUrl = companyDetails[0].company_logo_url;
+        const result = await db.query(query, [subJobId, jobId, companyName, companyLogoUrl, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, currency, salaryMode, minSalary, maxSalary, skills, language, employmentType, workType, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge, keywords]);
+
+        if (result[0].affectedRows > 0) {
+            return {success: "Job Posted Successfully"};
+        }
+    } catch (error) {
+        console.log(error)
+        return {error: error.message};
+    }
+}
+
+const EditSubJobByHiringNeed = async (job, email) => {
+    if(job.postedBy !== email) {
+        return {error: "You are not authorized to edit this job"};
+    }
+    const {
+        id,
+        jobId,
+        title, 
+        category, 
+        shiftTimings,
+        description, 
+        streetAddress,
+        city,
+        area,
+        pincode,
+        locationLink,
+        currency,
+        salaryMode,
+        minSalary, 
+        maxSalary, 
+        skills, 
+        language,
+        employmentType, 
+        workType, 
+        noOfOpenings, 
+        status, 
+        hiringNeed, 
+        qualification,
+        maxExperience,
+        minExperience,
+        minAge,
+        maxAge,
+        keywords
+    } = job;
+    const query = `
+    UPDATE hr_job_postings SET
+        job_id = ?,
+        company_name = ?, 
+        company_logo_url = ?,
+        title = ?, 
+        category = ?, 
+        shift_timings = ?,
+        description = ?, 
+        street = ?,
+        city = ?,
+        area = ?,
+        pincode = ?,
+        location = ?,
+        location_link = ?,
+        currency = ?,
+        salary_mode = ?,
+        min_salary = ?,
+        max_salary = ?,
+        skills = ?,
+        language = ?,
+        employment_type = ?,
+        work_type = ?,
+        no_of_openings = ?,
+        status = ?,
+        hiring_need = ?,
+        qualification = ?,
+        min_experience = ?,
+        max_experience = ?,
+        min_age = ?,
+        max_age = ?,
+        keywords = ?
+    WHERE id = ?;
+    `;
+    
+    try {
+        const companyDetails = await getCompanyDetailsForJob(jobId);
+        const companyName = companyDetails[0].company_name;
+        const companyLogoUrl = companyDetails[0].company_logo_url;
+        const result = await db.query(query, [jobId, companyName, companyLogoUrl, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, currency, salaryMode, minSalary, maxSalary, skills, language, employmentType, workType, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, keywords, id]);
+
+        if (result[0].affectedRows > 0) {
+            return {success: "Job Posted Successfully"};
+        }
+    } catch (error) {
+        console.log(error)
+        return {error: error.message};
+    }
+}
+
+const getSubJobsForHR = async (email, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const query = `
+        SELECT * FROM hr_job_postings
+        WHERE posted_by = ?
+        order by created_at desc Limit ? offset ?;`;
+    const countQuery = `
+        SELECT count(*) as count FROM hr_job_postings
+        WHERE posted_by = ?`;
+    try {
+        const result = await db.query(query, [email, pageSize, startIndex]);
+        const countResult = await db.query(countQuery, [email]);
+        return {jobs: result[0], count: countResult[0][0].count};
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const getSubJobDetails = async (jobId) => {
+    const query = `
+        SELECT * FROM hr_job_postings
+        WHERE id = ?;`;
+    try {
+        const result = await db.query(query, [jobId]);
+        return result[0][0];
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
+const getSubJobPublicApplications = async (jobId, email, search, createdTo, createdFrom, page) => {
+    const pageSize = 10;
+    const startIndex = (page - 1) * pageSize;
+    const query = `
+        SELECT public_applications.*, company_name, title 
+        FROM public_applications 
+        INNER JOIN jobs ON public_applications.job_id = jobs.id
+        WHERE 
+        ${search === "" ?
+        `DATE(public_applications.created_at) >= ? 
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
+        AND is_rejected = 0
+        AND recruiter_email = ?
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        order by created_at desc Limit ? offset ?;`;
+    const countQuery = `
+        SELECT count(*) as count FROM public_applications INNER JOIN jobs ON public_applications.job_id = jobs.id
+        WHERE 
+        ${search === "" ?
+        `DATE(public_applications.created_at) >= ?
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
+        AND is_rejected = 0
+        AND recruiter_email LIKE ?
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ""}
+        `;
+    try {
+        let params = [email];
+        if (search === "") {
+            params.splice(0, 0, createdFrom, createdTo);
+        }
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        params.push(pageSize);
+        params.push(startIndex);
+        const result = await db.query(query, params);
+        let countParams = [email];
+        if (search === "") {
+            countParams.splice(0, 0, createdFrom, createdTo);
+        }
+        if(jobId) {
+            countParams.push(jobId);
+        }
+        if (search) {
+            countParams.push(`%${search}%`);
+            countParams.push(`%${search}%`);
+            countParams.push(`%${search}%`);
+        }
+        const countResult = await db.query(countQuery, countParams);
+        return {applications: result[0], count: countResult[0][0].count};
+    } catch (error) {
+        console.log(error);
+        return {error: error.message};
+    }
+}
+
+const getSubJobPublicApplicationsForExcel = async (jobId, email, search, createdTo, createdFrom) => {
+    const query = `
+        SELECT public_applications.*, company_name, title 
+        FROM public_applications 
+        INNER JOIN jobs ON public_applications.job_id = jobs.id
+        WHERE 
+        ${search === "" ?
+        `DATE(public_applications.created_at) >= ? 
+        AND DATE(public_applications.created_at) < DATE_ADD(?, INTERVAL 1 DAY)`
+        : ""}
+        AND is_rejected = 0
+        AND recruiter_email LIKE ?
+        ${jobId ? 'AND job_id = ?' : ''}
+        ${search ? 'AND (name LIKE ? OR email LIKE ? OR phone LIKE ?)' : ''}
+        order by created_at desc;`;
+    try {
+        let params = [email];
+        if (search === "") {
+            params.splice(0, 0, createdFrom, createdTo);
+        }
+        if(jobId) {
+            params.push(jobId);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+            params.push(`%${search}%`);
+        }
+        const result = await db.query(query, params);
+        return result[0];
+    } catch (error) {
+        return {error: error.message};
+    }
+}
+
 module.exports = {
     getAllJobs,
     getJobDetails,
@@ -695,5 +1016,11 @@ module.exports = {
     getRejectedApplicationsExcel,
     getApprovedApplications,
     getApprovedApplicationsExcel,
-    getLocationTitleAndCompanyListWithJobCount
+    getLocationTitleAndCompanyListWithJobCount,
+    createSubJobByHiringNeed,
+    EditSubJobByHiringNeed,
+    getSubJobsForHR,
+    getSubJobDetails,
+    getSubJobPublicApplications,
+    getSubJobPublicApplicationsForExcel
 }

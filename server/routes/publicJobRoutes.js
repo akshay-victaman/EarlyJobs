@@ -19,5 +19,11 @@ router.get('/rejected-applications/excel', authenticateToken, checkUserBlockStat
 router.get('/approved-applications', authenticateToken, checkUserBlockStatus, publiceJobController.getApprovedApplications);
 router.get('/approved-applications/excel', authenticateToken, checkUserBlockStatus, publiceJobController.getApprovedApplicationsExcel);
 router.get('/companies-and-locations', publiceJobController.getLocationTitleAndCompanyListWithJobCount);
+router.post('/create-sub-jobs', authenticateToken, checkUserBlockStatus, publiceJobController.createSubJobByHiringNeed);
+router.put('/edit-sub-jobs', authenticateToken, checkUserBlockStatus, publiceJobController.EditSubJobByHiringNeed);
+router.get('/sub-jobs', authenticateToken, checkUserBlockStatus, publiceJobController.getSubJobsForHR);
+router.get('/sub-jobs-details/:jobId', publiceJobController.getSubJobDetails);
+router.get('/sub-jobs-applications', authenticateToken, checkUserBlockStatus, publiceJobController.getSubJobPublicApplications);
+router.get('/sub-jobs-applications/excel', authenticateToken, checkUserBlockStatus, publiceJobController.getSubJobPublicApplicationsForExcel);
 
 module.exports = router;

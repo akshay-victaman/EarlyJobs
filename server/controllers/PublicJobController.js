@@ -178,6 +178,78 @@ const getLocationTitleAndCompanyListWithJobCount = async (req, res) => {
     }
 }
 
+const createSubJobByHiringNeed = async (req, res) => {
+    const job = req.body;
+    try {
+      const newJob = await publicJobService.createSubJobByHiringNeed(job);
+      res.json(newJob);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const EditSubJobByHiringNeed = async (req, res) => {
+    const job = req.body;
+    const email = req.email;
+    try {
+      const newJob = await publicJobService.EditSubJobByHiringNeed(job, email);
+      res.json(newJob);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getSubJobsForHR = async (req, res) => {
+    const email = req.email;
+    const page = req.query.page || 1;
+    try {
+      const jobs = await publicJobService.getSubJobsForHR(email, page);
+      res.json(jobs);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getSubJobDetails = async (req, res) => {
+    const jobId = req.params.jobId;
+    try {
+      const job = await publicJobService.getSubJobDetails(jobId);
+      res.json(job);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
+const getSubJobPublicApplications = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const email = req.email;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const page = req.query.page || 1;
+        const result = await publicJobService.getSubJobPublicApplications(jobId, email, search, createdTo, createdFrom, page);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const getSubJobPublicApplicationsForExcel = async (req, res) => {
+    try {
+        const jobId = req.query.jobId;
+        const email = req.email;
+        const createdTo = req.query.createdTo;
+        const createdFrom = req.query.createdFrom;
+        const search = req.query.search;
+        const result = await publicJobService.getSubJobPublicApplicationsForExcel(jobId, email, search, createdTo, createdFrom);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
 module.exports = {
     getAllJobs,
     getJobDetails,
@@ -192,5 +264,11 @@ module.exports = {
     getRejectedApplicationsExcel,
     getApprovedApplications,
     getApprovedApplicationsExcel,
-    getLocationTitleAndCompanyListWithJobCount
+    getLocationTitleAndCompanyListWithJobCount,
+    createSubJobByHiringNeed,
+    EditSubJobByHiringNeed,
+    getSubJobsForHR,
+    getSubJobDetails,
+    getSubJobPublicApplications,
+    getSubJobPublicApplicationsForExcel
 }

@@ -471,6 +471,31 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
         }
     };
 
+    const sendWhatsAppMessage2 = async (candidateDetails, jobsList, hmHrData) => {
+        const role = Cookies.get('role');
+        const username = Cookies.get('username');
+        try {
+            const url = `${backendUrl}/jobs/candidate/sendInterviewWhatsAppMessages`;
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${Cookies.get('jwt_token')}`
+                },
+                body: JSON.stringify({candidateDetails, jobsList, hmHrData, role, username})
+            };
+            const response = await fetch(url, options);
+            const data = await response.json();
+            if (response.ok) {
+                console.log('WhatsApp message sent successfully:', data);
+            } else {
+                console.error('Error sending WhatsApp message:', data.error);
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
 
     const postCandidateDetails = async (event) => {
         event.preventDefault()
@@ -603,7 +628,8 @@ const UploadCandidatePage = ({setShowCandidateForm}) => {
                 })
                 if (Cookies.get('role') !== 'BDE') {
                     sendInterviewEmails()
-                    sendInterviewWhatsAppMessages(candidateDetails, jobsList, hmHrData)
+                    // sendInterviewWhatsAppMessages(candidateDetails, jobsList, hmHrData)
+                    sendWhatsAppMessage2(candidateDetails, jobsList, hmHrData)
                 }
                 setShowForm(false)
             }

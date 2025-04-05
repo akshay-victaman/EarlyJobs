@@ -107,6 +107,15 @@ const loginUser = async (req, res) => {
     }
 }
 
+const getAllBDEs = async (req, res) => {
+    try {
+      const users = await userService.getAllBDEs();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const getAllSeniorHMs = async (req, res) => {
     try {
       const users = await userService.getAllSeniorHMs();
@@ -242,7 +251,8 @@ const migrateHrAssignedHm = async (req, res) => {
       const hrEmail = req.body.hrEmail;
       const currentHM = req.email;
       const newHM = req.body.newHmEmail;
-      const result = await userService.migrateHrAssignedHm(hrEmail, currentHM, newHM);
+      const assignedDate = req.body.assignedDate;
+      const result = await userService.migrateHrAssignedHm(hrEmail, currentHM, newHM, assignedDate);
       res.json(result);
     } catch (error) {
       res.status(error.statusCode || 500).json({ error: error.message });
@@ -254,7 +264,8 @@ const migrateHmAssignedShm = async (req, res) => {
       const hmEmail = req.body.hrEmail;
       const currentSHM = req.email;
       const newSHM = req.body.newHmEmail;
-      const result = await userService.migrateHmAssignedShm(hmEmail, currentSHM, newSHM);
+      const assignedDate = req.body.assignedDate;
+      const result = await userService.migrateHmAssignedShm(hmEmail, currentSHM, newSHM, assignedDate);
       res.json(result);
     } catch (error) {
       res.status(error.statusCode || 500).json({ error: error.message });
@@ -272,6 +283,7 @@ module.exports = {
   updatePassword,
   updateDocId,
   loginUser,
+  getAllBDEs,
   getAllSeniorHMs,
   getAllHMs,
   getAllHMsForSHM,
