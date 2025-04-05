@@ -39,6 +39,16 @@ const getAssignedSHMsForJob = async (req, res) => {
     }
 }
 
+const getAssignedBdesForJob = async (req, res) => {
+    const jobId = req.params.jobId;
+    try {
+      const assignedBdes = await jobService.getAssignedBdesForJob(jobId);
+      res.json(assignedBdes);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+}
+
 const getJobDetails = async (req, res) => {
     const jobId = req.params.jobId;
     try {
@@ -100,6 +110,28 @@ const updateJobAssignmentByHM = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
+}
+
+const getJobsForMasterBDE = async (req, res) => {
+  const company = req.query.company;
+  const location = req.query.location;
+  const title = req.query.title;
+  const page = parseInt(req.query.page) || 1;
+  try {
+    const jobs = await jobService.getJobsForMasterBDE(company, location, title, page);
+    res.json(jobs);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const getAllJobsForMasterBDE = async (req, res) => {
+  try {
+    const jobs = await jobService.getAllJobsForMasterBDE();
+    res.json(jobs);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 }
 
 const getJobsForBDE = async (req, res) => {
@@ -515,17 +547,31 @@ const getJoinedCandidateCompanyDetails = async (req, res) => {
     }
 }
 
+const sendInterviewWhatsAppMessages = async (req, res) => {
+  const {candidateDetails, jobsList, hmHrData, role, username} = req.body;
+  try {
+    const response = await jobService.sendInterviewWhatsAppMessages(candidateDetails, jobsList, hmHrData, role, username);
+    res.json(response);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = {
     getAllJobs,
     addJobDetials,
     editJobDetials,
     getAssignedSHMsForJob,
+    getAssignedBdesForJob,
     getJobDetails,
     assignJobToHrByAccountManager,
     getAssignedHMsForJob,
     getAssignedHRsForJob,
     updateJobAssignmentBySHM,
     updateJobAssignmentByHM,
+    getJobsForMasterBDE,
+    getAllJobsForMasterBDE,
     getJobsForBDE,
     getAllJobsForBDE,
     getSeniorHMJobs,
@@ -557,5 +603,6 @@ module.exports = {
     editEmploymentDetails,
     deleteEmploymentDetails,
     updateVerificationStatus,
-    getJoinedCandidateCompanyDetails
+    getJoinedCandidateCompanyDetails,
+    sendInterviewWhatsAppMessages
 }

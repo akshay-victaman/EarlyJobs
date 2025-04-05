@@ -8,6 +8,7 @@ const router = express.Router();
 router.get('/users', userController.getAllUsers);
 router.get('/users/v1/:email/:phone', userController.getUserByEmailPhone);
 router.get('/users/:username', authenticateToken, checkUserBlockStatus, userController.getUserByEmail);
+router.get('/users/all/bdes', authenticateToken, checkUserBlockStatus, userController.getAllBDEs);
 router.get('/users/all/senior-hms', authenticateToken, checkUserBlockStatus, userController.getAllSeniorHMs);
 router.get('/users/all/hms', authenticateToken, checkUserBlockStatus, userController.getAllHMs);
 router.get('/users/all/hiring-managers', authenticateToken, checkUserBlockStatus, userController.getAllHMsForSHM);

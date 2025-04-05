@@ -27,12 +27,15 @@ const getAllUsers = async (role, isBlocked, search, page) => {
         const startIndex = (page - 1) * pageSize;
         const query = `
             SELECT users.*, hrassignedhm.hm_email as hm_email, hm_assigned_shm.shm_email as shm_email FROM users 
-            LEFT JOIN hrassignedhm ON users.email = hrassignedhm.hr_email
+            LEFT JOIN hrassignedhm ON users.email = hrassignedhm.hr_email 
+            AND hrassignedhm.unassigned_date IS NULL
             LEFT JOIN hm_assigned_shm ON (hrassignedhm.hm_email = hm_assigned_shm.hm_email OR users.email = hm_assigned_shm.hm_email)
+            AND hm_assigned_shm.unassigned_date IS NULL
             WHERE role != 'ADMIN' 
             ${role !== 'null' ? `AND role = '${role}'` : ''} 
             ${isBlocked !== 'null' ? `AND is_blocked = ${parseInt(isBlocked)}` : ''} 
             ${search ? `AND (username LIKE '%${search}%' OR email LIKE '%${search}%' OR phone LIKE '%${search}%')` : ''}
+            AND (hrassignedhm.unassigned_date IS NULL OR hm_assigned_shm.unassigned_date IS NULL)
             order by created_at desc, username asc
             Limit ? offset ?;
             ;`;
@@ -112,11 +115,12 @@ const changeUserRole = async (connection, email, role, hiringFor) => {
     }
 }
 
-const removeHrAssignment = async (connection, email) => {
+const removeHrAssignment = async (connection, email, assignedDate) => {
     try {
-        const query = `DELETE FROM hrassignedhm WHERE hr_email = ?;`
+        // const query = `DELETE FROM hrassignedhm WHERE hr_email = ?;`
+        const query = `UPDATE hrassignedhm SET unassigned_date = ? WHERE hr_email = ? AND unassigned_date IS NULL;`
         // await db.query(query, email);
-        await connection.execute(query, [email]);
+        await connection.execute(query, [assignedDate, email]);
         return true
     } catch (error) {
         console.error('Error in removeHrAssignment:', error);
@@ -124,23 +128,25 @@ const removeHrAssignment = async (connection, email) => {
     }
 };
 
-const removeHMAssignment = async (connection, email) => {
+const removeHMAssignment = async (connection, email, assignedDate) => {
     try {
-        const query = `DELETE FROM hm_assigned_shm WHERE hm_email = ?;`
+        // const query = `DELETE FROM hm_assigned_shm WHERE hm_email = ?;`
+        const query = `UPDATE hm_assigned_shm SET unassigned_date = ? WHERE hm_email = ? AND unassigned_date IS NULL;`
         // await db.query(query, email);
-        await connection.execute(query, [email]);
+        await connection.execute(query, [assignedDate, email]);
         return true
     } catch (error) {
-        console.error('Error in removeHmAssignment:', error);
+        console.error('Error in removeHMAssignment:', error);
         throw error;
     }
 };
 
-const addHrAssignment = async (connection, hrEmail, hmEmail) => {
+const addHrAssignment = async (connection, hrEmail, hmEmail, assignedDate) => {
     try {
-        const query = `INSERT INTO hrassignedhm (hr_email, hm_email) VALUES (?, ?);`
+        // const query = `INSERT INTO hrassignedhm (hr_email, hm_email) VALUES (?, ?);`
+        const query = `INSERT INTO hrassignedhm (hr_email, hm_email, assigned_date) VALUES (?, ?, ?);`
         // const result = await db.query(query, [hrEmail, hmEmail]);
-        const [result] = await connection.execute(query, [hrEmail, hmEmail]);
+        const [result] = await connection.execute(query, [hrEmail, hmEmail, assignedDate]);
         if(result.affectedRows === 0) {
             const error = new Error("Error adding HR assignment")
             error.statusCode = 404;
@@ -153,11 +159,12 @@ const addHrAssignment = async (connection, hrEmail, hmEmail) => {
     }
 }
 
-const addHmAssignment = async (connection, hmEmail, shmEmail) => {
+const addHmAssignment = async (connection, hmEmail, shmEmail, assignedDate) => {
     try {
-        const query = `INSERT INTO hm_assigned_shm (hm_email, shm_email) VALUES (?, ?);`
+        // const query = `INSERT INTO hm_assigned_shm (hm_email, shm_email) VALUES (?, ?);`
+        const query = `INSERT INTO hm_assigned_shm (hm_email, shm_email, assigned_date) VALUES (?, ?, ?);`
         // const result = await db.query(query, [hmEmail, shmEmail]);
-        const [result] = await connection.execute(query, [hmEmail, shmEmail]);
+        const [result] = await connection.execute(query, [hmEmail, shmEmail, assignedDate]);
         if(result.affectedRows === 0) {
             const error = new Error("Error adding HM assignment")
             error.statusCode = 404;
@@ -177,12 +184,12 @@ const changeUserRoleAssignment = async (email, role, hiringFor, hmShmEmail, star
 
         const result = await changeUserRole(connection, email, role, hiringFor);
         if (result === true) {
-            await removeHrAssignment(connection, email);
-            await removeHMAssignment(connection, email);
+            await removeHrAssignment(connection, email, startDate);
+            await removeHMAssignment(connection, email, startDate);
             if (role === 'HR') {
-                await addHrAssignment(connection, email, hmShmEmail);
+                await addHrAssignment(connection, email, hmShmEmail, startDate);
             } else if (role === 'AC') {
-                await addHmAssignment(connection, email, hmShmEmail);
+                await addHmAssignment(connection, email, hmShmEmail, startDate);
             }
             await updateRoleHistory(connection, email, role, startDate);
         }
