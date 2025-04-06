@@ -284,7 +284,7 @@ const getAllJobs = async (page) => {
 }
 
 const getAllAdminJobs = async () => {
-    const query = `SELECT id, company_name, title FROM jobs order by created_at desc;`;
+    const query = `SELECT id, company_name, title, location_link FROM jobs order by created_at desc;`;
     const result = await db.query(query);
     return result[0];
 }
