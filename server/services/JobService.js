@@ -362,6 +362,7 @@ const getAllJobsForMasterBDE = async () => {
         company_name,
         title,
         location,
+        location_link,
         city,
         area
     FROM jobs 
@@ -417,6 +418,7 @@ const getAllJobsForBDE = async (email) => {
         company_name,
         title,
         location,
+        location_link,
         city,
         area
     FROM jobs 
@@ -471,6 +473,7 @@ const getAllSeniorHMJobs = async (email) => {
         company_name,
         title,
         location,
+        location_link,
         city,
         area
     FROM jobs INNER JOIN job_assigned_by_bde 
@@ -522,6 +525,7 @@ const getAllHmJobs = async (email) => {
             company_name,
             title,
             location,
+            location_link,
             city,
             area
         FROM jobs
@@ -596,6 +600,7 @@ const getAllHRJobs = async (email) => {
         company_name,
         title,
         location,
+        location_link,
         city,
         area
     FROM jobs
@@ -2716,13 +2721,13 @@ const getJoinedCandidateCompanyDetails = async (candidateId) => {
     }
 }
 
-const sendWhatsAppMessage = async (phone) => {
+const sendWhatsAppMessage = async (url) => {
     const baseUrl = "https://mediaapi.smsgupshup.com/GatewayAPI/rest";
     const userid = process.env.GUPSHUP_USER_ID;
     const password = process.env.GUPSHUP_PASSWORD;
 
     // const url = `${baseUrl}?userid=${userid}&password=${password}&send_to=${phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hello+Recruiters%2C%0A%0AWelcome+to+EarlyJobs&isTemplate=true&wa_template_json=%7B%22components%22%3A%5B%7B%22sub_type%22%3A%22url%22%2C%22index%22%3A%221%22%2C%22parameters%22%3A%5B%7B%22text%22%3A%22www.earlyjobs.in%22%2C%22type%22%3A%22text%22%7D%5D%2C%22type%22%3A%22button%22%7D%5D%7D`
-    const url = `https://media.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hello+Recruiters%2C%0A%0AWelcome+to+EarlyJobs&isTemplate=true&wa_template_json=%7B%22components%22%3A%5B%7B%22sub_type%22%3A%22url%22%2C%22index%22%3A%221%22%2C%22parameters%22%3A%5B%7B%22text%22%3A%22www.earlyjobs.in%22%2C%22type%22%3A%22text%22%7D%5D%2C%22type%22%3A%22button%22%7D%5D%7D`
+    // const url = `https://media.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hello+Recruiters%2C%0A%0AWelcome+to+EarlyJobs&isTemplate=true&wa_template_json=%7B%22components%22%3A%5B%7B%22sub_type%22%3A%22url%22%2C%22index%22%3A%221%22%2C%22parameters%22%3A%5B%7B%22text%22%3A%22www.earlyjobs.in%22%2C%22type%22%3A%22text%22%7D%5D%2C%22type%22%3A%22button%22%7D%5D%7D`
     console.log(url)
     console.log('')
     console.log('-------------------------------------------------------------------------------------------------------------')
@@ -2755,6 +2760,9 @@ const sendInterviewWhatsAppMessages = async (candidateDetails, jobsList, hmHrDat
     const interviewDateTime = parseISO(`${candidateDetails.interviewDate}T${candidateDetails.interviewTime}`);
     const formattedDateTime = format(interviewDateTime, 'EEE MMM dd yyyy hh:mm aa');
 
+    const userid = process.env.GUPSHUP_USER_ID;
+    const password = process.env.GUPSHUP_PASSWORD;
+
     const contactPerson = role === "SHM"
         ? `${username}, at ${hmHrData.shm[0].phone}`
         : role === "AC"
@@ -2773,6 +2781,15 @@ const sendInterviewWhatsAppMessages = async (candidateDetails, jobsList, hmHrDat
         email = hmHrData.hr[0].email;
     }
 
+    
+    const formattedInterviewDate = format(new Date(candidateDetails.interviewDate), 'EEE, dd MMM yyyy')
+
+    const [hours, minutes] = candidateDetails.interviewTime.split(':')
+    const date = new Date()
+    date.setHours(+hours)
+    date.setMinutes(+minutes)
+    const formattedInterviewTime = format(date, 'hh:mm a') // → '01:14 PM'
+
 
     // const interviewMessage = `Interview Scheduled - ${job.role} \n\n Hi ${candidateDetails.fullName},\n Thank you for your interest in joining  ${job.compname}! Your interview for the ${job.role} role has been scheduled. \n\n Date: ${candidateDetails.interviewDate} \n Time: ${candidateDetails.interviewTime} \n Location: ${job.location} \n\n If you have any questions, feel free to reach out to us. \n Looking forward to meeting you! \n\n Contact: ${phone} \n Email: ${email} \n\n EarlyJobs Recruitment Team`;
 
@@ -2780,8 +2797,9 @@ const sendInterviewWhatsAppMessages = async (candidateDetails, jobsList, hmHrDat
 
     // const dayOfInterviewMessage = `Interview Today - ${job.role} \n\n Hi ${candidateDetails.fullName},\n Hope you're doing great! Just a quick reminder about your interview for the ${job.role} role at ${job.compname} today. \n\n Time: ${candidateDetails.interviewTime} \n Location: ${job.location} \n\n Wishing you all the best! See you soon. \n\n Contact: ${phone} \n Email: ${email} \n\n EarlyJobs Recruitment Team`;
 
+    const templateurl = `https://media.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidateDetails.phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidateDetails.fullName}%2C%0AThank+you+for+your+interest+in+joining+${job.compname}%21+Your+interview+for+the+${job.role}+role+has+been+scheduled.%0A%0ADate%3A+${formattedInterviewDate}%0ATime%3A+${formattedInterviewTime}%0ALocation%3A+${job.location}%0A%0AIf+you+have+any+questions%2C+feel+free+to+reach+out+to+us.+Looking+forward+to+meeting+you%21%0A%0AContact%3A+${phone}%0AEmail%3A+${email}&isTemplate=true&header=Interview+Scheduled&footer=EarlyJobs+HR+Team`
 
-    sendWhatsAppMessage(candidateDetails.phone);
+    sendWhatsAppMessage(templateurl);
     return { message: "Interview scheduled successfully" };
 };
   

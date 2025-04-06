@@ -39,6 +39,7 @@ module.exports.interviewDayHandler = async () => {
 
   try {
     const [results] = await db.execute(query, [formattedDate]);
+    console.log(results);
 
     for (const row of results) {
       const {
