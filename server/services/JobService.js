@@ -1182,10 +1182,132 @@ const updateCandidateOfferStatus = async (candidate) => {
     if (result[0].affectedRows > 0) {
         if (offerStatus === 'Joined') {
             await updateCandidateJoinedStatus(candidateId);
+            // await sendJoinedWhatsappMessage(candidate);
+        }
+        if (offerStatus === 'Selected') {
+            // await sendSelectedWhatsappMessage(candidate);
         }
         return {success: 'Candidate offer status updated successfully'};
     } else {         
         return {error: 'Candidate offer status updation failed'};
+    }
+}
+
+const sendSelectedWhatsappMessage = async (candidate) => {
+    try {
+        const userid = process.env.GUPSHUP_USER_ID;
+        const password = process.env.GUPSHUP_PASSWORD;      
+        const {candidateId, jobId, email, offerStatus, offeredDate} = candidate;
+        const query = `
+            SELECT 
+                jobs.title AS roleName,
+                jobs.company_name AS company_name,
+                candidates.name AS candidate_name,
+                candidates.email AS candidate_email,
+                candidates.phone AS candidate_phone,
+                applications.applied_by AS hr_email,
+                users.username AS hr_name,
+                users.phone AS hr_phone,
+                applications.interview_date AS interview_date,
+                jobs.location_link AS location
+            FROM 
+                applications
+            INNER JOIN 
+                candidates ON applications.candidate_id = candidates.id
+            INNER JOIN 
+                jobs ON applications.job_id = jobs.id
+            INNER JOIN 
+                users ON applications.applied_by = users.email
+            WHERE 
+                candidates.id = ? AND applications.applied_by = ?`;
+        const result = await db.query(query, [candidateId, email]);
+        if (result[0].length > 0) {
+            const candidateDetails = result[0][0];
+
+            const {
+                candidate_name,
+                candidate_phone,
+                roleName,
+                company_name,
+                interview_date,
+                location,
+                hr_name,
+                hr_phone,
+                hr_email
+            } = candidateDetails;
+
+            const interviewDate = new Date(interview_date);
+            const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const msg = `https://media.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AHope+you%27re+doing+great%21+Just+a+quick+reminder+about+your+interview+for+the+${roleName}+role+at+${company_name}+today.%0A%0A%E2%8F%B3+Time%3A+${readableTime}%0A%F0%9F%93%8D+Location%3A+${location}%0A%0AWishing+you+all+the+best%21+See+you+soon.+%F0%9F%98%8A%0A%0A%F0%9F%93%9E+Contact%3A+${hr_phone}%0A%F0%9F%93%A7+Email%3A+${hr_email}&isTemplate=true&header=Interview+Today&footer=EarlyJobs+Recruitment+Team`;
+
+            const res = await fetch(msg);
+            const data = await res.json();
+            console.log(`✅ Message sent to ${candidate_phone}:`, res.data);
+            console.log(`Sending WhatsApp message to ${candidateDetails.candidate_phone}: ${message}`);
+            return {success: 'WhatsApp message sent successfully'};
+        }
+    } catch (error) {
+        console.log(error)
+        return {error: 'Failed to send WhatsApp message'};
+    }
+}
+
+const sendJoinedWhatsappMessage = async (candidate) => {
+    try {
+        const userid = process.env.GUPSHUP_USER_ID;
+        const password = process.env.GUPSHUP_PASSWORD;      
+        const {candidateId, jobId, email, offerStatus, offeredDate} = candidate;
+        const query = `
+            SELECT 
+                jobs.title AS roleName,
+                jobs.company_name AS company_name,
+                candidates.name AS candidate_name,
+                candidates.email AS candidate_email,
+                candidates.phone AS candidate_phone,
+                applications.applied_by AS hr_email,
+                users.username AS hr_name,
+                users.phone AS hr_phone,
+                applications.interview_date AS interview_date,
+                jobs.location_link AS location
+            FROM 
+                applications
+            INNER JOIN 
+                candidates ON applications.candidate_id = candidates.id
+            INNER JOIN 
+                jobs ON applications.job_id = jobs.id
+            INNER JOIN 
+                users ON applications.applied_by = users.email
+            WHERE 
+                candidates.id = ? AND applications.applied_by = ?`;
+        const result = await db.query(query, [candidateId, email]);
+        if (result[0].length > 0) {
+            const candidateDetails = result[0][0];
+
+            const {
+                candidate_name,
+                candidate_phone,
+                roleName,
+                company_name,
+                interview_date,
+                location,
+                hr_name,
+                hr_phone,
+                hr_email
+            } = candidateDetails;
+
+            const interviewDate = new Date(interview_date);
+            const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const msg = `https://media.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AHope+you%27re+doing+great%21+Just+a+quick+reminder+about+your+interview+for+the+${roleName}+role+at+${company_name}+today.%0A%0A%E2%8F%B3+Time%3A+${readableTime}%0A%F0%9F%93%8D+Location%3A+${location}%0A%0AWishing+you+all+the+best%21+See+you+soon.+%F0%9F%98%8A%0A%0A%F0%9F%93%9E+Contact%3A+${hr_phone}%0A%F0%9F%93%A7+Email%3A+${hr_email}&isTemplate=true&header=Interview+Today&footer=EarlyJobs+Recruitment+Team`;
+
+            const res = await fetch(msg);
+            const data = await res.json();
+            console.log(`✅ Message sent to ${candidate_phone}:`, res.data);
+            console.log(`Sending WhatsApp message to ${candidateDetails.candidate_phone}: ${message}`);
+            return {success: 'WhatsApp message sent successfully'};
+        }
+    } catch (error) {
+        console.log(error)
+        return {error: 'Failed to send WhatsApp message'};
     }
 }
 
