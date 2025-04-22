@@ -20,18 +20,14 @@ const indexTemplate = fs.readFileSync(
 
 // Helper function to fetch job data
 async function fetchJobData(jobId) {
-  let baseurl = process.env.REACT_APP_BACKEND_API_URL
+  let baseurl = process.env.REACT_APP_BACKEND_API_URL;
 
   try {
-    let url = '';
-    if(jobId.length === 20) {
-
-      url = `${baseurl}/api/public/sub-jobs-details/${jobId}`
-
+    let url = "";
+    if (jobId.length === 20) {
+      url = `https://api.earlyjobs.in/api/public/sub-jobs-details/${jobId}`;
     } else {
-
-      url = `${baseurl}/api/public/jobs/${jobId}`
-
+      url = `https://api.earlyjobs.in/api/public/jobs/${jobId}`;
     }
     const response = await axios.get(url);
     return response.data;
@@ -136,7 +132,6 @@ const renderWithSSR = async (req, res, jobData) => {
 
 // Handle job details route
 app.get("/job-openings/:details", async (req, res) => {
-
   try {
     const { details } = req.params;
     const jobId = details.split("_id=").pop();
