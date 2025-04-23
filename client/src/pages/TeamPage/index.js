@@ -90,7 +90,7 @@ const TeamPage = () => {
             <div className="team-page__content">
                 {seniorRecruiters.length > 0 &&
                 <>
-                    <h1 className='team-page-subheading'>Senior Recruiters</h1>
+                    <h1 className='team-page-subheading'></h1>
                     <ul className='team-page-list'>
                         {seniorRecruiters.map(member => (
                             <li className='team-page-item' key={member.id}>
@@ -98,10 +98,11 @@ const TeamPage = () => {
                                 <div className='team-member-content'>
                                     <h3 className='team-member-name'>{member.name}</h3>
                                     <p className='team-member-role'>{member.designation}</p>
-                                    <p className='team-member-experience'>{member.experience}+ years of experience</p>
-                                    <hr className='team-member-hr-line' />
-                                    <p className='team-member-experience'>Certified By - <span className='team-member-certified-span'>{member.certifiedBy}</span></p>
                                     <a href={member.linkedInUrl} target="_blank" rel="noreferrer" className='team-member-linkedin'><FaLinkedin className='linkedin-icon' /></a>
+
+                                    {/* <p className='team-member-experience'>{member.experience}+ years of experience</p> */}
+                                    {/* <hr className='team-member-hr-line' /> */}
+                                    {/* <p className='team-member-experience'>Certified By - <span className='team-member-certified-span'>{member.certifiedBy}</span></p> */}
                                 </div>
                             </li>
                         ))}
