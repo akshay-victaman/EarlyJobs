@@ -19,7 +19,7 @@ const ManagementPage = () => {
     {
       name: "Surbhi Rani",
       designation: "Co-Founder & Director",
-      desc: "Surbhi Rani, a graduate of <strong>Magadh University</strong>, is a dynamic leader specializing in building diverse, high-performing teams and crafting impactful recruitment strategies. As the Director of <strong>Earlyjobs</strong>, she plays a pivotal role in full-cycle recruitment, client relationship management, and ensuring a seamless candidate experience. With a deep understanding of talent acquisition, Surbhi is committed to connecting top talent with the right opportunities, driving growth for both candidates and organizations.",
+      desc: "Surbhi Rani, a graduate of Magadh University, is a dynamic leader specializing in marketing and business development. As the Director of <strong>Earlyjobs</strong>, she plays a pivotal role in developing and executing marketing strategies, enhancing brand visibility, and driving business growth. With her expertise in digital marketing and market analysis, Surbhi is instrumental in expanding <strong>Earlyjobs</strong>' market presence and building strong client relationships. Her innovative approach to marketing and deep understanding of industry trends has been crucial in positioning <strong>Earlyjobs</strong> as a leading player in the recruitment sector.",
       img: "/about_us_imgs/SURBHI_1.png",
     },
     {
@@ -36,19 +36,19 @@ const ManagementPage = () => {
     },
     {
       name: "Ratan Saha",
-      designation: "Growth Adviser",
+      designation: "Growth Advisor",
       desc: "Ratan Saha is an Associate Director at <strong>Gupshup Technologies</strong> with over 15 years+ of experience in core sales. He has a proven track record of driving business growth and managing high-performing teams. With his expertise in sales strategy and execution, Ratan plays a pivotal role in identifying new opportunities and implementing innovative solutions to achieve organizational goals. His strategic insights and leadership skills have been instrumental in fostering growth and success. Ratan is deeply committed to helping organizations thrive by providing valuable advice and guidance to the team, ensuring sustainable growth and long-term success.",
       img: "/about_us_imgs/RATAN.png",
     },
     {
       name: "Prashob P",
-      designation: "Chief Technology Adviser",
-      desc: "Prashob P is the Chief Technology Officer at <strong>MeetXO.AI</strong> and serves as the Chief Technology Adviser at <strong>Earlyjobs</strong>. With a strong background in IT, innovation, and technology leadership, Prashob specializes in web and mobile app development. He has been instrumental in driving <strong>Earlyjobs</strong>' technological advancements, ensuring seamless integration of cutting-edge solutions to enhance user experience. Prashob's expertise in technology strategy, coupled with his passion for innovation, plays a pivotal role in shaping <strong>Earlyjobs</strong>' digital platforms, enabling scalable and impactful solutions for job seekers and employers alike.",
+      designation: "Chief Technology Advisor",
+      desc: "Prashob P is the Chief Technology Officer at <strong>MeetXO.AI</strong> and serves as the Chief Technology Advisor at <strong>Earlyjobs</strong>. With a strong background in IT, innovation, and technology leadership, Prashob specializes in web and mobile app development. He has been instrumental in driving <strong>Earlyjobs</strong>' technological advancements, ensuring seamless integration of cutting-edge solutions to enhance user experience. Prashob's expertise in technology strategy, coupled with his passion for innovation, plays a pivotal role in shaping <strong>Earlyjobs</strong>' digital platforms, enabling scalable and impactful solutions for job seekers and employers alike.",
       img: "/about_us_imgs/PRASHOB.png",
     },
     {
       name: "Saurav Kumar",
-      designation: "Co-Founder & Strategic Adviser",
+      designation: "Co-Founder & Strategic Advisor",
       desc: "Saurav Kumar is a dynamic business strategist and entrepreneur with over 10 years+ of experience in driving business growth, innovation, and operational excellence. He holds a Master's degree from <strong>SRM University</strong>, Chennai, and has founded multiple successful ventures, including <strong>Victaman Services Pvt Ltd</strong>, <strong>Goformeet</strong>, <strong>English Wizard</strong>, and <strong>Meet XO</strong>. He also serves as the CEO of <strong>MeetXO</strong>, where he leads the company with a vision to revolutionize communication and collaboration through innovative solutions. Currently, Saurav plays a key role in planning and providing strategic advice at <strong>Earlyjobs</strong>, leveraging his expertise in IT solutions, business development, and strategic leadership. He envisions transforming the job market in the country by providing employment opportunities to the masses, reflecting his commitment to impactful and scalable solutions.",
       img: "/about_us_imgs/SAURAV.png",
     },
