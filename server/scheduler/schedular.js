@@ -15,6 +15,8 @@ const startCronJobs = () => {
     console.log('🛎️  Sending not attended interview followups...');
     await sendInterviewNoAttendedWhatsAppMessage();
     console.log('🛎️  Interview reminders sent successfully!');
+  },{
+    timezone: 'Asia/Kolkata'  // <-- very important!
   });
 
   // Not Attended Interview Followup — runs every day at 7 AM
@@ -24,6 +26,8 @@ const startCronJobs = () => {
     console.log('🛎️  Interview day reminders sent successfully!');
     await sendNotJoinedWhatsAppMessages();
     console.log('🛎️  Not joined interview followups sent successfully!');
+  }, {
+    timezone: 'Asia/Kolkata'  // <-- very important!
   });
 };
 
