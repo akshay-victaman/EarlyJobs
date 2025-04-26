@@ -2,13 +2,10 @@ const axios = require('axios');
 const qs = require('qs');
 const db = require('../config/database');
 
-module.exports.interviewDayHandler = async () => {
-  const baseUrl = "https://mediaapi.smsgupshup.com/GatewayAPI/rest";
+const sendInterviewDayReminder = async () => {
   const userid = process.env.GUPSHUP_USER_ID;
   const password = process.env.GUPSHUP_PASSWORD;
-  
-  sendNotJoinedWhatsAppMessages()
-
+  console.log("sendInterviewDayReminder called")
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -63,7 +60,7 @@ module.exports.interviewDayHandler = async () => {
 
       const res = await fetch(msg);
       const data = await res.json();
-      console.log(`✅ Message sent to ${candidate_phone}:`, res.data);
+      console.log(`✅ Message sent to ${candidate_phone}:`, data);
     }
 
     return { statusCode: 200, body: 'All messages sent' };
@@ -74,7 +71,8 @@ module.exports.interviewDayHandler = async () => {
   }
 };
 
-sendNotJoinedWhatsAppMessages = async () => {
+const sendNotJoinedWhatsAppMessages = async () => {
+  console.log("sendNotJoinedWhatsAppMessages called")
   const userid = process.env.GUPSHUP_USER_ID;
   const password = process.env.GUPSHUP_PASSWORD;
 
@@ -124,12 +122,12 @@ sendNotJoinedWhatsAppMessages = async () => {
 
       const interviewDate = new Date(interview_date);
       const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
-      const msg = `https://media.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AHope+you%27re+doing+great%21+Just+a+quick+reminder+about+your+interview+for+the+${roleName}+role+at+${company_name}+today.%0A%0A%E2%8F%B3+Time%3A+${readableTime}%0A%F0%9F%93%8D+Location%3A+${location}%0A%0AWishing+you+all+the+best%21+See+you+soon.+%F0%9F%98%8A%0A%0A%F0%9F%93%9E+Contact%3A+${hr_phone}%0A%F0%9F%93%A7+Email%3A+${hr_email}&isTemplate=true&header=Interview+Today&footer=EarlyJobs+Recruitment+Team`;
+      const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AWe+noticed+that+your+joining+date+for+the+${roleName}+role+at+${company_name}+has+passed%2C+and+we+haven%27t+heard+from+you+yet.+We+are+still+excited+to+have+you+on+board%21%0A%0APlease+update+us+about+your+decision.+If+you+need+any+assistance+or+have+concerns%2C+feel+free+to+reach+out.%0A%0ALooking+forward+to+your+response%21+%F0%9F%98%8A%0A%0A%F0%9F%93%9E+Contact%3A+${hr_phone}%0A%F0%9F%93%A7+Email%3A+${hr_email}&isTemplate=true&header=Joining+Reminder&footer=EarlyJobs+HR+Team`;
 
       const res = await fetch(msg);
       const data = await res.json();
       await db.query('UPDATE applications SET reminder_count = reminder_count + 1 WHERE id = ?', [row.application_id]);
-      console.log(`✅ Message sent to ${candidate_phone}:`, res.data);
+      console.log(`✅ Message sent to ${candidate_phone}:`, data);
     }
 
     return { statusCode: 200, body: 'All messages sent' };
@@ -139,4 +137,9 @@ sendNotJoinedWhatsAppMessages = async () => {
     return { statusCode: 500, body: 'Error sending messages' };
   }
 };
-     
+
+
+module.exports = {
+  sendInterviewDayReminder,
+  sendNotJoinedWhatsAppMessages
+};

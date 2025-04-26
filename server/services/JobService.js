@@ -793,9 +793,68 @@ const updateInterviewDate = async (candidate) => {
     const query = 'UPDATE applications SET interview_date = ? WHERE job_id = ? AND candidate_id = ?';
     const result = await db.query(query, [interviewDate, jobId, candidateId]);
     if (result[0].affectedRows > 0) {
+        await sendRescheduledWhatsappMessage(candidate);
         return {success: 'Candidate interview date updated successfully'};
     } else {         
         return {error: 'Candidate interview date updation failed'};
+    }
+}
+
+const sendRescheduledWhatsappMessage = async (candidate) => {
+    try {
+        const userid = process.env.GUPSHUP_USER_ID;
+        const password = process.env.GUPSHUP_PASSWORD;      
+        const {candidateId, jobId, interviewDate, hrEmail, offerStatus} = candidate;
+        const query = `
+            SELECT 
+                jobs.title AS roleName,
+                jobs.company_name AS company_name,
+                candidates.name AS candidate_name,
+                candidates.email AS candidate_email,
+                candidates.phone AS candidate_phone,
+                applications.applied_by AS hr_email,
+                users.username AS hr_name,
+                users.phone AS hr_phone,
+                applications.interview_date AS interview_date,
+                jobs.location_link AS location
+            FROM 
+                applications
+            INNER JOIN 
+                candidates ON applications.candidate_id = candidates.id
+            INNER JOIN 
+                jobs ON applications.job_id = jobs.id
+            INNER JOIN 
+                users ON applications.applied_by = users.email
+            WHERE 
+                candidates.id = ? AND applications.applied_by = ?`;
+        const result = await db.query(query, [candidateId, hrEmail]);
+        if (result[0].length > 0) {
+            const candidateDetails = result[0][0];
+
+            const {
+                candidate_name,
+                candidate_phone,
+                roleName,
+                company_name,
+                interview_date,
+                location,
+                hr_name,
+                hr_phone,
+                hr_email                
+            } = candidateDetails;
+
+            const interviewDate = new Date(interview_date);
+            const readableDate = interviewDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0A%0AAs+per+your+request%2C+we%E2%80%99ve+rescheduled+your+interview+for+the+${roleName}+role+at+${company_name}.%0A%0AHere+are+the+updated+details%3A%0A%0ADate%3A+${readableDate}%0ATime%3A+${readableTime}%0ALocation%3A+${location}%0A%0AThanks+for+keeping+us+informed%2C+and+we+appreciate+your+continued+interest.+If+you+have+any+further+questions++feel+free+to+reach+out.%0A%0AContact%3A+${hr_phone}%0AEmail%3A+${hr_email}&isTemplate=true&header=Interview+Rescheduled&footer=EarlyJobs+Recruitment+Team`;
+            const res = await fetch(msg);
+            const data = await res.json();
+            console.log(`✅ Message sent to ${candidate_phone}:`, data);
+            return {success: 'WhatsApp message sent successfully'};
+        }
+    } catch (error) {
+        console.log(error)
+        return {error: 'Failed to send WhatsApp message'};
     }
 }
 
@@ -1182,10 +1241,10 @@ const updateCandidateOfferStatus = async (candidate) => {
     if (result[0].affectedRows > 0) {
         if (offerStatus === 'Joined') {
             await updateCandidateJoinedStatus(candidateId);
-            // await sendJoinedWhatsappMessage(candidate);
+            await sendJoinedWhatsappMessage(candidate);
         }
         if (offerStatus === 'Selected') {
-            // await sendSelectedWhatsappMessage(candidate);
+            await sendSelectedWhatsappMessage(candidate);
         }
         return {success: 'Candidate offer status updated successfully'};
     } else {         
@@ -1238,12 +1297,11 @@ const sendSelectedWhatsappMessage = async (candidate) => {
 
             const interviewDate = new Date(interview_date);
             const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
-            const msg = `https://media.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AHope+you%27re+doing+great%21+Just+a+quick+reminder+about+your+interview+for+the+${roleName}+role+at+${company_name}+today.%0A%0A%E2%8F%B3+Time%3A+${readableTime}%0A%F0%9F%93%8D+Location%3A+${location}%0A%0AWishing+you+all+the+best%21+See+you+soon.+%F0%9F%98%8A%0A%0A%F0%9F%93%9E+Contact%3A+${hr_phone}%0A%F0%9F%93%A7+Email%3A+${hr_email}&isTemplate=true&header=Interview+Today&footer=EarlyJobs+Recruitment+Team`;
+            const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AWe+are+thrilled+to+inform+you+that+you+have+been+selected+for+the+${roleName}+role+at+${company_name}%21%0A%0APlease+confirm+your+acceptance+and+expected+joining+date%0A%0AContact%3A+${hr_phone}%0AEmail%3A+${hr_email}&isTemplate=true&header=Congratulations%21+You%E2%80%99re+Selected&footer=EarlyJobs+HR+Team`;
 
             const res = await fetch(msg);
             const data = await res.json();
-            console.log(`✅ Message sent to ${candidate_phone}:`, res.data);
-            console.log(`Sending WhatsApp message to ${candidateDetails.candidate_phone}: ${message}`);
+            console.log(`✅ Message sent to ${candidate_phone}:`, data);
             return {success: 'WhatsApp message sent successfully'};
         }
     } catch (error) {
@@ -1297,12 +1355,11 @@ const sendJoinedWhatsappMessage = async (candidate) => {
 
             const interviewDate = new Date(interview_date);
             const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
-            const msg = `https://media.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AHope+you%27re+doing+great%21+Just+a+quick+reminder+about+your+interview+for+the+${roleName}+role+at+${company_name}+today.%0A%0A%E2%8F%B3+Time%3A+${readableTime}%0A%F0%9F%93%8D+Location%3A+${location}%0A%0AWishing+you+all+the+best%21+See+you+soon.+%F0%9F%98%8A%0A%0A%F0%9F%93%9E+Contact%3A+${hr_phone}%0A%F0%9F%93%A7+Email%3A+${hr_email}&isTemplate=true&header=Interview+Today&footer=EarlyJobs+Recruitment+Team`;
+            const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C++%0A%0ACongratulations+on+your+new+role+at+${company_name}%21++We%E2%80%99re+thrilled+to+have+been+part+of+your+journey.++%0A%0AWe%E2%80%99d+love+to+hear+about+your+experience+with+Earlyjobs%21+Your+feedback+helps+us+grow+and+continue+connecting+great+talent+with+amazing+opportunities.++%0A%0AIf+you+had+a+smooth+and+positive+hiring+experience%2C+please+take+a+moment+to+leave+us+a+review%3A++%0A%0A${hr_email}%0A%0AYour+kind+words+will+help+others+find+great+opportunities+too%21+%0A%0AThank+you+for+choosing+EarlyJobs.+Wishing+you+all+the+best+in+your+new+role%21&isTemplate=true&header=Share+Your+Experience+%E2%80%93+EarlyJobs&footer=EarlyJobs+Team&buttonUrlParam=https%3A%2F%2Fshorturl.at%2FiQZl9`;
 
             const res = await fetch(msg);
             const data = await res.json();
-            console.log(`✅ Message sent to ${candidate_phone}:`, res.data);
-            console.log(`Sending WhatsApp message to ${candidateDetails.candidate_phone}: ${message}`);
+            console.log(`✅ Message sent to ${candidate_phone}:`, data);
             return {success: 'WhatsApp message sent successfully'};
         }
     } catch (error) {
