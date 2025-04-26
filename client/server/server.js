@@ -20,12 +20,14 @@ const indexTemplate = fs.readFileSync(
 
 // Helper function to fetch job data
 async function fetchJobData(jobId) {
+  let baseurl = process.env.REACT_APP_BACKEND_API_URL;
+
   try {
-    let url = '';
-    if(jobId.length === 20) {
-      url = `https://07mz59w9ch.execute-api.ap-south-1.amazonaws.com/prod/api/public/sub-jobs-details/${jobId}`
+    let url = "";
+    if (jobId.length === 20) {
+      url = `https://api.earlyjobs.in/api/public/sub-jobs-details/${jobId}`;
     } else {
-      url = `https://07mz59w9ch.execute-api.ap-south-1.amazonaws.com/prod/api/public/jobs/${jobId}`
+      url = `https://api.earlyjobs.in/api/public/jobs/${jobId}`;
     }
     const response = await axios.get(url);
     return response.data;
