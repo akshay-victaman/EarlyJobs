@@ -9,6 +9,7 @@ const companyRoutes = require('./routes/companyRoutes');
 const recommendationRoutes = require('./routes/recommendationRoutes');
 const blogRouter = require('./routes/blogRoutes.js');
 const logRequestResponse = require('./middleware/logRequestResponse.js');
+const { startCronJobs } = require('./scheduler/schedular.js');
 
 app.use(cors());
 
@@ -24,6 +25,12 @@ app.use((req, res, next) => {
 
 // app.use(logRequestResponse);
 
+// app.use('/', (req, res, next) => {
+//     res.status(200).json({ message: 'Welcome to the EarlyJobs API' });
+//     next();
+// }
+// );
+
 
 app.use('/api', userRoutes);
 app.use('/jobs', jobRoutes);
@@ -36,5 +43,6 @@ app.use("/", blogRouter);
 const PORT = process.env.PORT || 5000;
  app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+  startCronJobs();
  });
 // module.exports.server = sls(app)
