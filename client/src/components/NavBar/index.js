@@ -44,6 +44,9 @@ const NavBar = ({handleShowComplaintsForm}) => {
                     <li className='nav-item'>
                         <Link to='/' className='nav-link'>Home</Link>
                     </li>
+                    <li className='nav-item'>
+                        <Link to='/press-release' className='nav-link'>Press Release</Link>
+                    </li>
                     {
                         jwtToken && 
                         <li className='nav-item'>
@@ -167,6 +170,9 @@ const NavBar = ({handleShowComplaintsForm}) => {
                     <ul className='nav-list-mobile'>
                         <li className='nav-item-mobile' onClick={handleMenuClick}>
                             <Link to='/' className='nav-link'>Home</Link>
+                        </li>
+                        <li className='nav-item-mobile' onClick={handleMenuClick}>
+                            <Link to='/' className='nav-link'>Press Release</Link>
                         </li>
                         {
                             jwtToken && 
