@@ -68,6 +68,8 @@ const BlogPage = lazy(() => import("../components/BlogPage"));
 const BlogDetails = lazy(() => import("../components/BlogDetails"));
 const AddBlogPage = lazy(() => import("../components/AddBlogPage"));
 const ViewForms = lazy(() => import("../components/ViewForms"));
+const PressReleasePage = lazy(() => import("../pages/PressReleasePage"));
+
 const EachRoute = ({ initialState }) => {
   return (
     <Switch>
@@ -448,6 +450,15 @@ const EachRoute = ({ initialState }) => {
         render={() => (
           <Suspense fallback={<Loader />}>
             <ControlTeamPage />
+          </Suspense>
+        )}
+      />
+      <Route
+        exact
+        path="/press-release"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <PressReleasePage />
           </Suspense>
         )}
       />
