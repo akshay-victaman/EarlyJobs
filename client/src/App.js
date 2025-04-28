@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import Cookies from "js-cookie";
@@ -57,13 +57,15 @@ import "./pages/HomePage/style.css";
 import "./pages/WhyEarlyjobs/style.css";
 import "./pages/OurServicesPages/style.css";
 import "./App.css";
+import InvestmentPopup from './components/InvestmentPopup';
+import { Link } from 'react-router-dom';
 
 const App = ({ initialState }) => {
-  console.log(initialState);
-
   const [showContactForm, setShowContactForm] = useState(false);
   const [showComplaintsForm, setShowComplaintsForm] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [showAnnouncement, setShowAnnouncement] = useState(true);
+  const [showInvestmentPopup, setShowInvestmentPopup] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
@@ -79,9 +81,23 @@ const App = ({ initialState }) => {
 
   return (
     isMounted && (
-      <>
+      <div className={`app-container ${!showAnnouncement ? 'no-announcement' : ''}`}>
+        {showInvestmentPopup && <InvestmentPopup onClose={() => setShowInvestmentPopup(false)} />}
         <NavBar handleShowComplaintsForm={handleShowComplaintsForm} />
-        {/* {Cookies.get('jwt_token') === undefined && <SubNavBar handleShowContactForm={handleShowContactForm} />} */}
+        {showAnnouncement && (
+          <div className="announcement-banner">
+            <div className="announcement-content">
+              <span>🎉 We're excited to announce our recent ₹12 million investment!</span>
+              <Link to="/press-release" className="read-more-btn">Read More</Link>
+              <button 
+                className="close-btn"
+                onClick={() => setShowAnnouncement(false)}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
         {showContactForm && (
           <ContactForm handleShowContactForm={handleShowContactForm} />
         )}
@@ -101,7 +117,7 @@ const App = ({ initialState }) => {
         {Cookies.get("jwt_token") === undefined && <FooterScroll />}
         <ScrollUp />
         <ToastContainer autoClose={4000} />
-      </>
+      </div>
     )
   );
 };
