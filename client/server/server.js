@@ -25,9 +25,9 @@ async function fetchJobData(jobId) {
   try {
     let url = "";
     if (jobId.length === 20) {
-      url = `https://api.earlyjobs.in/api/public/sub-jobs-details/${jobId}`;
+      url = `https://apis.earlyjobs.in/api/public/sub-jobs-details/${jobId}`;
     } else {
-      url = `https://api.earlyjobs.in/api/public/jobs/${jobId}`;
+      url = `https://apis.earlyjobs.in/api/public/jobs/${jobId}`;
     }
     const response = await axios.get(url);
     return response.data;

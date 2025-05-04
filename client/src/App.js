@@ -65,10 +65,16 @@ const App = ({ initialState }) => {
   const [showComplaintsForm, setShowComplaintsForm] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [showAnnouncement, setShowAnnouncement] = useState(true);
-  const [showInvestmentPopup, setShowInvestmentPopup] = useState(true);
+  const isInvestmentPopupShown = localStorage.getItem("investmentPopupShown");
+  const [showInvestmentPopup, setShowInvestmentPopup] = useState(!isInvestmentPopupShown);
 
   useEffect(() => {
     setIsMounted(true);
+    if (!isInvestmentPopupShown) {
+      setTimeout(() => {
+        localStorage.setItem("investmentPopupShown", true);
+      });
+    }
   }, []);
 
   const handleShowContactForm = () => {
@@ -83,7 +89,7 @@ const App = ({ initialState }) => {
     isMounted && (
       <div className={`app-container ${!showAnnouncement ? 'no-announcement' : ''}`}>
         {showInvestmentPopup && <InvestmentPopup onClose={() => setShowInvestmentPopup(false)} />}
-        <NavBar handleShowComplaintsForm={handleShowComplaintsForm} />
+        <NavBar handleShowComplaintsForm={handleShowComplaintsForm} showAnnouncement={showAnnouncement} />
         {showAnnouncement && (
           <div className="announcement-banner">
             <div className="announcement-content">
