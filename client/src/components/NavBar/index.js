@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import './style.css'
 
-const NavBar = ({handleShowComplaintsForm}) => {
+const NavBar = ({handleShowComplaintsForm, showAnnouncement}) => {
 
     const [menuOpen, setMenuOpen] = useState(false)
     const [servicesHover, setServicesHover] = useState(false)
@@ -35,7 +35,7 @@ const NavBar = ({handleShowComplaintsForm}) => {
 
     return (
         <>
-            <nav className="navbar">
+            <nav className="navbar" style={{marginTop: showAnnouncement ? "40px" : "0px"}}>
                 <Link to='/'>
                     <img src="/early-jobs-logo2.png" alt="website logo" className='nav-logo'/>
                 </Link>
