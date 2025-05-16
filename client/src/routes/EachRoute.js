@@ -4,6 +4,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Loader from "../components/Loader/index.js";
 import TopExecutiveServicePage from "../pages/OurServicesPages/TopExecutiveServicePage.jsx";
 import HrExecutiveServicePage from "../pages/OurServicesPages/HrExecutiveServicePage.jsx";
+import Franchise from "../pages/Franchise/index.js";
+
 
 const JobsPage = lazy(() => import("../components/JobsPage"));
 const BDEPage = lazy(() => import("../components/BDEPage"));
@@ -280,6 +282,17 @@ const EachRoute = ({ initialState }) => {
         render={() => (
           <Suspense fallback={<Loader />}>
             <FranchiseWithUs />
+          </Suspense>
+        )}
+      />
+
+       <Route
+        exact
+        path="/franchise"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            {/* <HomePage /> */}
+            <Franchise />
           </Suspense>
         )}
       />
