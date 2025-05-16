@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { ChevronDown } from 'lucide-react';
 import './faq.css';
 
 const FAQ = () => {
@@ -53,7 +52,7 @@ const FAQ = () => {
                   aria-expanded={isOpen}
                 >
                   <span>{faq.question}</span>
-                  <ChevronDown className={`chevron ${isOpen ? 'rotate' : ''}`} />
+                  <span className={`chevron ${isOpen ? 'rotate' : ''}`}>▼</span>
                 </button>
                 <div
                   ref={(el) => (refs.current[index] = el)}

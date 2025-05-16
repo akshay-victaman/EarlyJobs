@@ -1,6 +1,4 @@
-
 import React from 'react';
-import { Check } from 'lucide-react';
 import './EarningModel.css';
 
 const EarningModel = () => {
@@ -60,19 +58,19 @@ const EarningModel = () => {
               <div className="earnings-feature-list">
                 <div className="earnings-feature-item">
                   <div className="earnings-feature-icon-wrapper">
-                    <Check className="earnings-feature-icon" />
+                    <span className="earnings-feature-icon">✓</span>
                   </div>
                   <span>10-15 placements per month</span>
                 </div>
                 <div className="earnings-feature-item">
                   <div className="earnings-feature-icon-wrapper">
-                    <Check className="earnings-feature-icon" />
+                    <span className="earnings-feature-icon">✓</span>
                   </div>
                   <span>20+ assessments conducted</span>
                 </div>
                 <div className="earnings-feature-item">
                   <div className="earnings-feature-icon-wrapper">
-                    <Check className="earnings-feature-icon" />
+                    <span className="earnings-feature-icon">✓</span>
                   </div>
                   <span>5+ active client relationships</span>
                 </div>
