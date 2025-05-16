@@ -1,0 +1,108 @@
+
+.why-franchise {
+  background-color: var(--ejobs-gray-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.why-franchise::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, var(--ejobs-gray-light));
+  z-index: 1;
+}
+
+.reasons-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 3rem;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .reasons-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .reasons-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.reason-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-md);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid transparent;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.reason-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to right, var(--ejobs-orange), var(--ejobs-orange-dark));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+.reason-card:hover {
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  transform: translateY(-8px);
+}
+
+.reason-card:hover::before {
+  transform: scaleX(1);
+}
+
+.reason-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--ejobs-orange);
+  margin-bottom: 1rem;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: rgba(249, 115, 22, 0.1);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.reason-card:hover .reason-icon {
+  transform: scale(1.15) rotate(5deg);
+  background: rgba(249, 115, 22, 0.2);
+}
+
+.reason-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--ejobs-black);
+  transition: color 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.reason-card:hover .reason-title {
+  color: var(--ejobs-orange);
+}
+
+.reason-description {
+  color: var(--ejobs-black-light);
+  line-height: 1.6;
+}

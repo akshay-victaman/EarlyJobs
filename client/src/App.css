@@ -50,7 +50,7 @@
 
 /* Add this to adjust the navbar position */
 .navbar {
-  margin-top: 40px;  /* Adjust this value based on your announcement banner height */
+  /* margin-top: 40px;  Adjust this value based on your announcement banner height */
 }
 
 .announcement-content {
