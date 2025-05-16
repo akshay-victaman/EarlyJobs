@@ -29,7 +29,7 @@ const ManagementPage = () => {
       img: "/about_us_imgs/AKANKSHA_1.png",
     },
     {
-      name: "Dipanjana Basu",
+      name: "Dipanjana Das",
       designation: "VP Corparate Affairs",
       desc: "Dipanjana is an astute professional with an impressive business entrepreneurship acumen. She has over two decades of global experience in leading successful businesses and delivering several corporate responsibilities during which she has consistently demonstrated her leadership. She has notable successes in building high performance teams.She believes in Social Responsibility and inline to this belief, she has been performing the role of Treasurer at <strong>Medico Pastoral Association</strong>, a Non-Government Organization in Bangalore.",
       img: "/about_us_imgs/DIPANJANA.png",
