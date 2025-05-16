@@ -155,7 +155,7 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="hero-video">
+          {/* <div className="hero-video">
             <video
               ref={videoRef}
               src="/Dipanjana-mam-video-for-earlyjobs-Linked-Comp.mp4"
@@ -165,7 +165,7 @@ const Hero = () => {
               controls
               style={{height:"700px"}}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
