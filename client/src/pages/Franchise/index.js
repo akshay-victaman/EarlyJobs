@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from "../../components/Franchise/Navbar";
 import Hero from "../../components/Franchise/Hero";
 import ProblemSolution from "../../components/Franchise/ProblemSolution";
@@ -12,6 +12,9 @@ import LimitedOffer from "../../components/Franchise/LimitedOffer";
 import FAQ from "../../components/Franchise/FAQ";
 
 const Franchise = () => {
+  useEffect(() => {
+    window.location.href = "https://franchise.earlyjobs.ai";
+  }, []);
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
