@@ -1,0 +1,78 @@
+.clientele-cta {
+  width: 100%;
+  background-color: #FBE1DA;
+  padding: 40px 0 44px 0;
+  margin-top: 33px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1.5px solid #E46E4A;
+  position: relative;
+  animation: fadeinCta 0.35s;
+}
+
+@keyframes fadeinCta {
+  from {
+    opacity: 0;
+    transform: translateY(11px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.clientele-cta__content {
+  text-align: center;
+  padding: 0 28px;
+}
+
+.clientele-cta__heading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 13px;
+  color: #E46E4A;
+  animation: fadeinCta 0.2s;
+}
+
+.clientele-cta__text {
+  color: #354055;
+  margin-bottom: 27px;
+  font-size: 1.11rem;
+}
+
+.clientele-cta__button {
+  display: inline-block;
+  padding: 13px 29px;
+  background: #E46E4A;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 99em;
+  box-shadow: 0 6px 22px rgba(228, 110, 74, 0.09);
+  transition: background 0.16s, transform 0.16s;
+  font-size: 1.10rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.clientele-cta__button:hover {
+  transform: scale(1.04);
+  background: #e95a29;
+}
+
+.clientele-cta__dots {
+  position: absolute;
+  right: 13px;
+  bottom: 11px;
+  width: 117px;
+  height: 43px;
+  opacity: 0.22;
+  display: none;
+}
+
+@media (min-width: 700px) {
+  .clientele-cta__dots {
+    display: block;
+  }
+}
