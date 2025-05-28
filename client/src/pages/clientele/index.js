@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import CompanyFilterBar from "../../components/Clientele/CompanyFilterBar";
 import CompanyCard from "../../components/Clientele/CompanyCard";
 import ClienteleCTA from "../../components/Clientele/ClienteleCTA";
+import emailjs from "@emailjs/browser";
 import "./style.css";
 
 // Expanded mock data: 30 companies, more categories
@@ -750,6 +751,72 @@ const companies = [
 
 const Clientele = () => {
   const [active, setActive] = useState("All");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    message: "",
+    spocname: "",
+    mobile: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionStatus, setSubmissionStatus] = useState(null);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmissionStatus(null);
+
+    // Basic validation
+    if (!formData.name || !formData.email || !formData.message) {
+      setSubmissionStatus("error");
+      setIsSubmitting(false);
+      return;
+    }
+
+    emailjs
+      .send(
+        "service_ktesz0d",
+        "template_8rhggt6",
+        {
+          from_name: formData.name,
+          spoc: formData.spocname,
+          email: formData.email,
+          company: formData.company,
+          message: formData.message || "No message provided",
+          mobile: formData.mobile,
+        },
+        "kQToKIaSy6vQPRti5"
+      )
+      .then(
+        () => {
+          setSubmissionStatus("success");
+          setIsSubmitting(false);
+          setFormData({
+            name: "",
+            email: "",
+            company: "",
+            message: "",
+            spocname: "",
+            mobile: "",
+          });
+          setTimeout(() => {
+            setIsPopupOpen(false);
+            setSubmissionStatus(null);
+          }, 2000);
+        },
+        () => {
+          setSubmissionStatus("error");
+          setIsSubmitting(false);
+        }
+      );
+  };
 
   const filteredCompanies =
     active === "All" ? companies : companies.filter((c) => c.sector === active);
@@ -797,7 +864,108 @@ const Clientele = () => {
       </main>
 
       {/* CTA Banner */}
-      <ClienteleCTA />
+      <ClienteleCTA setIsPopupOpen={setIsPopupOpen} />
+      {isPopupOpen && (
+        <div className="clientele-cta__popup-overlay">
+          <div className="clientele-cta__popup">
+            <button
+              className="clientele-cta__popup-close"
+              onClick={() => setIsPopupOpen(false)}
+            >
+              &times;
+            </button>
+            <h3 className="clientele-cta__popup-heading">Work With Us</h3>
+            <form onSubmit={handleSubmit} className="clientele-cta__form">
+              <div className="clientele-cta__form-group">
+                <label htmlFor="name">Name *</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="clientele-cta__form-group">
+                <label htmlFor="email">Email *</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="clientele-cta__form-group">
+                <label htmlFor="company">Company</label>
+                <input
+                  type="text"
+                  id="company"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="clientele-cta__form-group">
+                <label htmlFor="spocname">SPOC (Contact Person)</label>
+                <input
+                  type="text"
+                  id="spocname"
+                  name="spocname"
+                  value={formData.spocname}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="clientele-cta__form-group">
+                <label htmlFor="mobile">Mobile</label>
+                <input
+                  type="tel"
+                  id="mobile"
+                  name="mobile"
+                  value={formData.mobile}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="clientele-cta__form-group">
+                <label htmlFor="message">Message *</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="clientele-cta__form-submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </button>
+
+              {submissionStatus === "success" && (
+                <p className="clientele-cta__form-success">
+                  Thank you! We'll get back to you soon.
+                </p>
+              )}
+              {submissionStatus === "error" && (
+                <p className="clientele-cta__form-error">
+                  Error submitting the form. Please try again.
+                </p>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
