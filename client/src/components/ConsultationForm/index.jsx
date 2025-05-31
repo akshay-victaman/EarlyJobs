@@ -87,7 +87,7 @@ const ConsultationForm = () => {
         name: "Earlyjobs Consultation Request",
         fromEmailId: "no-reply@earlyjobs.in",
         subject: `Consultation Request from ${formData.name}`,
-        recipients: `hr@earlyjobs.in,no-reply@earlyjobs.in`,
+        recipients: formData.lookingFor === "Candidate" ? "asish@earlyjobs.in" : "akanksha@earlyjobs.in",
         content: encodedContent,
         replyToEmailID: "no-reply@earlyjobs.in",
       };
