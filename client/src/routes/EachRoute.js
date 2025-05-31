@@ -6,7 +6,6 @@ import TopExecutiveServicePage from "../pages/OurServicesPages/TopExecutiveServi
 import HrExecutiveServicePage from "../pages/OurServicesPages/HrExecutiveServicePage.jsx";
 import Franchise from "../pages/Franchise/index.js";
 
-
 const JobsPage = lazy(() => import("../components/JobsPage"));
 const BDEPage = lazy(() => import("../components/BDEPage"));
 const AdminPage = lazy(() => import("../components/AdminPage"));
@@ -71,6 +70,7 @@ const BlogDetails = lazy(() => import("../components/BlogDetails"));
 const AddBlogPage = lazy(() => import("../components/AddBlogPage"));
 const ViewForms = lazy(() => import("../components/ViewForms"));
 const PressReleasePage = lazy(() => import("../pages/PressReleasePage"));
+const Clientele = lazy(() => import("../pages/clientele"));
 
 const EachRoute = ({ initialState }) => {
   return (
@@ -92,6 +92,16 @@ const EachRoute = ({ initialState }) => {
           <Suspense fallback={<Loader />}>
             {/* <HomePage /> */}
             <LoginPage />
+          </Suspense>
+        )}
+      />
+      <Route
+        exact
+        path="/clientele"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <Clientele />
+            {/* <LoginPage /> */}
           </Suspense>
         )}
       />
@@ -286,7 +296,7 @@ const EachRoute = ({ initialState }) => {
         )}
       />
 
-       <Route
+      <Route
         exact
         path="/franchise"
         render={() => (

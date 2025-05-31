@@ -1,0 +1,124 @@
+.company-filter-bar {
+  display: flex;
+  gap: 11px;
+  padding: 10px 0 15px 0;
+  justify-content: center;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1.5px solid #F2F2F2;
+}
+
+/* Apply to any scrollable element or globally via body */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  /* optional */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #999;
+  /* scrollbar color */
+  border-radius: 4px;
+  /* optional rounded effect */
+}
+
+.company-filter-btn {
+  padding: 7px 22px;
+  border-radius: 50px;
+  border: 2px solid #E46E4A;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #E46E4A;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.16s;
+  white-space: nowrap;
+  outline: none;
+  margin-bottom: 0;
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0);
+}
+
+.company-filter-btn:hover,
+.company-filter-btn:focus {
+  background: #FFF4EC;
+  color: #E46E4A;
+}
+
+.company-filter-btn.active,
+.company-filter-btn.dropdown-btn.active {
+  background: #E46E4A;
+  color: #fff;
+  border-color: #E46E4A;
+  box-shadow: 0 1px 7px rgba(194, 80, 17, 0.08);
+}
+
+.dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-btn {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 4px;
+}
+
+.filter-icon {
+  margin-left: 3px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  min-width: 140px;
+  top: 42px;
+  right: 0;
+  margin-right: -13px;
+  margin-top: 10px;
+  background: #fff;
+  border: 1.5px solid #E46E4A;
+  border-radius: 8px;
+  box-shadow: 0 5px 24px rgba(228, 110, 74, 0.13);
+  z-index: 70;
+}
+
+.dropdown-btn:focus .dropdown-content,
+.dropdown-btn:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 10px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  background: transparent;
+  color: #E46E4A;
+  transition: background 0.12s;
+}
+
+.dropdown-item:hover,
+.dropdown-item.selected {
+  background: #FFEAE1;
+  color: #E46E4A;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .company-filter-bar {
+    gap: 6px;
+    padding: 8px 0 10px 0;
+  }
+
+  .company-filter-btn {
+    padding: 6px 11px;
+    font-size: 0.97rem;
+  }
+}
