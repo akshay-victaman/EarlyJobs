@@ -1,0 +1,179 @@
+.company-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 9px 42px rgba(194, 80, 17, 0.07), 0 2px 8px rgba(228, 110, 74, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 26px 18px 26px 18px;
+  min-height: 225px;
+  border-top: 4px solid #E46E4A;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(.36, 1.22, .71, .98), box-shadow 0.18s;
+  animation: fadeinCard 0.3s;
+}
+
+@keyframes fadeinCard {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.company-card:hover, .company-card:focus {
+  transform: scale(1.045) translateY(-2px) rotateZ(-0.4deg);
+  box-shadow: 0 14px 50px rgba(194, 80, 17, 0.15), 0 2px 12px rgba(228, 110, 74, 0.09);
+  border-top: 4px solid #2C3D55;
+}
+
+.company-card__logo-wrap {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background: #ffeae1; */
+  border-radius: 50%;
+  /* border: 1.3px solid #E46E4A; */
+  margin-bottom: 14px;
+  transition: transform 0.16s;
+}
+
+.company-card:hover .company-card__logo-wrap {
+  transform: scale(1.095);
+}
+
+.company-card__logo {
+  object-fit: contain;
+  height: 40px;
+  width: 40px;
+}
+
+.company-card__brand {
+  font-weight: bold;
+  font-size: 1.16rem;
+  color: #E46E4A;
+  margin-bottom: 5px;
+  transition: color 0.2s;
+}
+
+.company-card:hover .company-card__brand {
+  color: #2c3d55;
+}
+
+.company-card__name {
+  font-weight: 500;
+  font-size: 0.97rem;
+  color: #545457;
+  text-align: center;
+  margin-bottom: 13px;
+}
+
+.company-card__sector {
+  padding: 5px 14px;
+  border-radius: 40px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-top: auto;
+}
+
+.sector-fintech {
+  background: #FFF4EC;
+  color: #E46E4A;
+}
+
+.sector-edtech {
+  background: #F2F6FC;
+  color: #2C3D55;
+}
+
+.sector-healthtech {
+  background: #F4FBF7;
+  color: #1E7B49;
+}
+
+.sector-saas {
+  background: #F4F6FC;
+  color: #2C3D55;
+}
+
+.sector-ecommerce {
+  background: #FFFBE7;
+  color: #BB632B;
+}
+
+.sector-logistics {
+  background: #FDF1EA;
+  color: #B0481A;
+}
+
+.sector-agritech {
+  background: #E9F4EC;
+  color: #23764E;
+}
+
+.sector-aiml {
+  background: #FAF5FE;
+  color: #8146A2;
+}
+
+.sector-hrtech {
+  background: #FDFADD;
+  color: #BCA205;
+}
+
+.sector-gaming {
+  background: #FCF2F8;
+  color: #972866;
+}
+
+.sector-cybersecurity {
+  background: #EDF7FA;
+  color: #1A515A;
+}
+
+.sector-insurtech {
+  background: #FFF7E6;
+  color: #E46E4A;
+}
+
+.sector-cleantech {
+  background: #EBFAF1;
+  color: #238761;
+}
+
+.sector-retail {
+  background: #FFFAF0;
+  color: #D26C04;
+}
+
+.sector-realestate {
+  background: #F4F4FE;
+  color: #4D4E96;
+}
+
+.sector-itsaas {
+  background: #F7F8FB;
+  color: #2C3D55;
+}
+
+.sector-services {
+  background: #F4F4F7;
+  color: #226196;
+}
+
+.sector-automotive {
+  background: #F2F7EC;
+  color: #0D8F4F;
+}
+
+.sector-default {
+  background: #eee;
+  color: #333;
+}

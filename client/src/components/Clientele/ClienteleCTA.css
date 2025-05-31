@@ -1,0 +1,197 @@
+.clientele-cta {
+  width: 100%;
+  background-color: #FBE1DA;
+  padding: 40px 0 44px 0;
+  margin-top: 33px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1.5px solid #E46E4A;
+  position: relative;
+  z-index: 20;
+  animation: fadeinCta 0.35s;
+}
+
+/* Popup Overlay */
+.clientele-cta__popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  overflow-y: scroll;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Popup Container */
+.clientele-cta__popup {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  margin-top: 40px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Close Button */
+.clientele-cta__popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Popup Heading */
+.clientele-cta__popup-heading {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Form Styles */
+.clientele-cta__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.clientele-cta__form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.clientele-cta__form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.clientele-cta__form-group input,
+.clientele-cta__form-group textarea {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.clientele-cta__form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Submit Button */
+.clientele-cta__form-submit {
+  padding: 0.75rem;
+  background: #E46E4A;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.clientele-cta__form-submit:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.clientele-cta__form-submit:hover:not(:disabled) {
+  background: #d65e3a;
+}
+
+/* Success/Error Messages */
+.clientele-cta__form-success,
+.clientele-cta__form-error {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.clientele-cta__form-success {
+  color: #28a745;
+}
+
+.clientele-cta__form-error {
+  color: #dc3545;
+}
+
+@keyframes fadeinCta {
+  from {
+    opacity: 0;
+    transform: translateY(11px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.clientele-cta__content {
+  text-align: center;
+  padding: 0 28px;
+}
+
+.clientele-cta__heading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 13px;
+  color: #E46E4A;
+  animation: fadeinCta 0.2s;
+}
+
+.clientele-cta__text {
+  color: #354055;
+  margin-bottom: 27px;
+  font-size: 1.11rem;
+}
+
+.clientele-cta__button {
+  display: inline-block;
+  padding: 13px 29px;
+  background: #E46E4A;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 99em;
+  box-shadow: 0 6px 22px rgba(228, 110, 74, 0.09);
+  transition: background 0.16s, transform 0.16s;
+  font-size: 1.10rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.clientele-cta__button:hover {
+  transform: scale(1.04);
+  background: #e95a29;
+}
+
+.clientele-cta__dots {
+  position: absolute;
+  right: 13px;
+  bottom: 11px;
+  width: 117px;
+  height: 43px;
+  opacity: 0.22;
+  display: none;
+}
+
+@media (min-width: 700px) {
+  .clientele-cta__dots {
+    display: block;
+  }
+}
