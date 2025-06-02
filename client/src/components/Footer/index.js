@@ -62,7 +62,8 @@ const Footer = ({handleShowContactForm}) => {
                     <Link to='/blogs' className="footer-link">Blogs</Link>
                     <Link to='/partner-with-us' className="footer-link">Partner With Us</Link>
                     {/* <Link to='/franchise-with-us' className="footer-link">Franchise With Us</Link> */}
-                    <a href="https://franchise.earlyjobs.ai" className="footer-link" rel="noreferrer" target="_blank">Franchise With Us</a>
+                    <Link to='/franchise' className="footer-link">Franchise With Us</Link>
+                    {/* <a href="https://franchise.earlyjobs.ai" className="footer-link" rel="noreferrer" target="_blank">Franchise With Us</a> */}
                     <Link to='/privacy-policy' className="footer-link">Privacy Policy</Link> 
                     <Link to='/terms-and-conditions' className="footer-link">Terms & Conditions</Link>
                     <p className="footer-link" rel="noreferrer" id="contact-link" onClick={handleShowContactForm}>Contact Us</p>
