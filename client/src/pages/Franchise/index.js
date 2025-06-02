@@ -12,9 +12,12 @@ import LimitedOffer from "../../components/Franchise/LimitedOffer";
 import FAQ from "../../components/Franchise/FAQ";
 
 const Franchise = () => {
+  // useEffect(() => {
+  //   window.location.href = "https://franchise.earlyjobs.ai";
+  // }, []);
   useEffect(() => {
-    window.location.href = "https://franchise.earlyjobs.ai";
-  }, []);
+    window.scrollTo(0, 0)
+  }, [])
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
