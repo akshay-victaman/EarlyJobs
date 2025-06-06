@@ -116,7 +116,6 @@ const LimitedOffer = () => {
 
                 <div className="benefits-list">
                   {[
-                    "50% risk sharing (₹1L deposit instead of ₹2L)",
                     "Marketing & branding support from HQ",
                     "Dedicated success manager for 6 months",
                     "Free access to CRM + hiring leads",

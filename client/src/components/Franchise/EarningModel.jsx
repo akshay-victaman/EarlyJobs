@@ -58,7 +58,7 @@ const EarningModel = () => {
                 <h3 className="earnings-dark-title">
                   Estimated Monthly Income
                 </h3>
-                <span className="earnings-dark-value">₹6–6.5 Lakhs</span>
+                <span className="earnings-dark-value">₹2–2.5 Lakhs</span>
               </div>
 
               <p className="earnings-dark-subtitle">
@@ -70,7 +70,7 @@ const EarningModel = () => {
                   <div className="earnings-feature-icon-wrapper">
                     <span className="earnings-feature-icon">✓</span>
                   </div>
-                  <span>10-15 placements per month</span>
+                  <span>15-20 placements per month*</span>
                 </div>
                 <div className="earnings-feature-item">
                   <div className="earnings-feature-icon-wrapper">

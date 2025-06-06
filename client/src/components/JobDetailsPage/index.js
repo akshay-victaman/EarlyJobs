@@ -930,7 +930,7 @@ const JobDetailsPage = () => {
               </p>
             )}
           <p className="job-detials-misc">
-            <span className="misc-head">Notice Periodddd:</span> {hiringNeed}
+            <span className="misc-head">Notice Period:</span> {hiringNeed}
           </p>
           <p className="job-detials-misc">
             <span className="misc-head">Shift Timings:</span> {shiftTimings}
