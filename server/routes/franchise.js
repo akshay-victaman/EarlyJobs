@@ -4,12 +4,14 @@ const multer = require('multer');
 const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
+const { env } = require('process');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' }); // files temporarily stored here
 
+
 const auth = new google.auth.GoogleAuth({
-  keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  credentials: JSON.parse(env.GOOGLE_APPLICATION_CREDENTIALS),
   scopes: ['https://www.googleapis.com/auth/drive'],
 });
 const drive = google.drive({ version: 'v3', auth });
@@ -81,5 +83,4 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-module.exports = router;  
-
+module.exports = router;

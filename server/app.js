@@ -23,7 +23,7 @@ app.use((req, res, next) => {
     }
     next();
 }); 
-
+9
 // app.use(logRequestResponse);
 
 // app.use('/', (req, res, next) => {
@@ -43,7 +43,7 @@ app.use('/api/recommendations', recommendationRoutes);
 app.use("/", blogRouter);
 
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 
  app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
