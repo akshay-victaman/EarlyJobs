@@ -48,7 +48,8 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
         url.searchParams.set('id', id);
         window.history.pushState({}, '', url);
     };
-
+    const email = Cookies.get('email');
+    const role = Cookies.get('role');
     const [companyDetails, setCompanyDetails] = useState({
         name: '',
         companyLogoUrl: '',
@@ -59,7 +60,9 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
         gstNo: '',
         spocName: '',
         spocEmail: '',
-        spocPhone: ''
+        spocPhone: '',
+        referredBy: email ? email : '',
+        role: role ? role : '',
     })
 
     useEffect(() => {
@@ -127,7 +130,9 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
                 gstNo: '',
                 spocName: '',
                 spocEmail: '',
-                spocPhone: ''
+                spocPhone: '',
+                referredBy: email ? email : '',
+                role: role ? role : '',
             })
             console.log('add')
         }
@@ -190,7 +195,7 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
     };
 
     const getCompanies = async () => {
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/companies?search=${searchInput}&page=${page}`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/companies?search=${searchInput}&page=${page}&role=${role}&email=${email}`
         const options = {
             method: 'GET',
             headers: {
@@ -234,7 +239,7 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
     }
 
     const getCompaniesForExcel = async () => {
-        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/companies/excel?search=${searchInput}`
+        const url = `${process.env.REACT_APP_BACKEND_API_URL}/api/companies/excel?search=${searchInput}&role=${role}&email=${email}`
         const options = {
             method: 'GET',
             headers: {
@@ -462,7 +467,9 @@ const ViewCompanies = ({ setShowCandidateForm, onShowCandidateDetails }) => {
                         gstNo: '',
                         spocName: '',
                         spocEmail: '',
-                        spocPhone: ''
+                        spocPhone: '',
+                        referredBy: email ? email : '',
+                        role: role ? role : '',
                     })
                     toast.success(data.message)
                     getCompanies()

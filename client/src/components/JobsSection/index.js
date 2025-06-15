@@ -25,6 +25,7 @@ import ViewCompanies from '../ViewCompanies';
 import { TenureApprovedCandidates } from '../ViewCandidates/TenureApprovedCandidates';
 import { RecommendedCandidates } from '../RecommendedCandidates';
 import CreateSubJob from '../CreateSubJob';
+import AssessmentsPopup from '../AssessmentsPopup';
 
 
 const apiStatusConstant = {
@@ -63,6 +64,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
     const [companyName, setCompanyName] = useState('');
     const [location, setLocation] = useState('');
     const [title, setTitle] = useState('');
+    const [showAssessmentsPopup, setShowAssessmentsPopup] = useState(false);
 
 
   useEffect(() => {
@@ -608,6 +610,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
               onChangecompanyName={onChangecompanyName}
               onChangelocation={onChangelocation}
               onChangetitle={onChangetitle}
+              setShowAssessmentsPopup={setShowAssessmentsPopup}
             />
             <button type='button' className='job-section-filter-close-button' onClick={onClickFilter}><MdKeyboardDoubleArrowLeft className='job-section-filter-close-icon' /></button>
         </div>
@@ -653,6 +656,9 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
             : showCandidateForm===19 ? <Applications setShowCandidateForm={setShowCandidateForm} showCandidateForm={showCandidateForm} />
             : renderAllSections()
           }
+          {showAssessmentsPopup && (
+            <AssessmentsPopup onClose={() => setShowAssessmentsPopup(false)} />
+          )}
         </div>
       </div>
     )
