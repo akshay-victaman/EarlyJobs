@@ -8,7 +8,7 @@ import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import ContactForm from "./components/ContactForm";
 import ComplaintsForm from "./components/ComplaintsForm";
-import SubNavBar from "./components/SubNavBar";
+
 import FooterScroll from "./components/Footer/FooterScroll";
 import "react-toastify/dist/ReactToastify.min.css";
 import "./components/AddJobsPage/style.css";
@@ -57,16 +57,16 @@ import "./pages/HomePage/style.css";
 import "./pages/WhyEarlyjobs/style.css";
 import "./pages/OurServicesPages/style.css";
 import "./App.css";
-import InvestmentPopup from './components/InvestmentPopup';
-import { Link } from 'react-router-dom';
+import InvestmentPopup from "./components/InvestmentPopup";
 
 const App = ({ initialState }) => {
   const [showContactForm, setShowContactForm] = useState(false);
   const [showComplaintsForm, setShowComplaintsForm] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [showAnnouncement, setShowAnnouncement] = useState(true);
   const isInvestmentPopupShown = localStorage.getItem("investmentPopupShown");
-  const [showInvestmentPopup, setShowInvestmentPopup] = useState(!isInvestmentPopupShown);
+  const [showInvestmentPopup, setShowInvestmentPopup] = useState(
+    !isInvestmentPopupShown
+  );
 
   useEffect(() => {
     setIsMounted(true);
@@ -87,23 +87,11 @@ const App = ({ initialState }) => {
 
   return (
     isMounted && (
-      <div className={`app-container ${!showAnnouncement ? 'no-announcement' : ''}`}>
-        {showInvestmentPopup && <InvestmentPopup onClose={() => setShowInvestmentPopup(false)} />}
-        <NavBar handleShowComplaintsForm={handleShowComplaintsForm} showAnnouncement={showAnnouncement} />
-        {showAnnouncement && (
-          <div className="announcement-banner">
-            <div className="announcement-content">
-              <span>🎉 We're excited to announce our recent ₹12 million investment!</span>
-              <Link to="/press-release" className="read-more-btn">Read More</Link>
-              <button 
-                className="close-btn"
-                onClick={() => setShowAnnouncement(false)}
-              >
-                ×
-              </button>
-            </div>
-          </div>
+      <div className="app-container">
+        {showInvestmentPopup && (
+          <InvestmentPopup onClose={() => setShowInvestmentPopup(false)} />
         )}
+        <NavBar handleShowComplaintsForm={handleShowComplaintsForm} />
         {showContactForm && (
           <ContactForm handleShowContactForm={handleShowContactForm} />
         )}

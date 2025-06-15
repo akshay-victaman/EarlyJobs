@@ -25,9 +25,9 @@ async function fetchJobData(jobId) {
   try {
     let url = "";
     if (jobId.length === 20) {
-      url = `https://apis.earlyjobs.in/api/public/sub-jobs-details/${jobId}`;
+      url = `${baseurl}/api/public/sub-jobs-details/${jobId}`;
     } else {
-      url = `https://apis.earlyjobs.in/api/public/jobs/${jobId}`;
+      url = `${baseurl}/api/public/jobs/${jobId}`;
     }
     const response = await axios.get(url);
     return response.data;
@@ -131,21 +131,22 @@ const renderWithSSR = async (req, res, jobData) => {
 };
 
 // Handle job details route
-app.get("/job-openings/:details", async (req, res) => {
-  try {
-    const { details } = req.params;
-    const jobId = details.split("_id=").pop();
+// app.get("/job-openings/:details", async (req, res) => {
+//   try {
+//     const { details } = req.params;
+//     const jobId = details.split("_id=").pop();
 
-    // Fetch job data before rendering
-    const jobData = await fetchJobData(jobId);
+//     // Fetch job data before rendering
+//     const jobData = await fetchJobData(jobId);
 
-    // Render the page with the fetched data
-    await renderWithSSR(req, res, jobData);
-  } catch (error) {
-    console.error("Error in job details route:", error);
-    res.status(500).send("Error loading job details");
-  }
-});
+//     // Render the page with the fetched data
+
+//     await renderWithSSR(req, res, jobData);
+//   } catch (error) {
+//     console.error("Error in job details route:", error);
+//     res.status(500).send("Error loading job details");
+//   }
+// });
 
 // Client-side routing fallback
 app.get("/*", (req, res) => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "react-toastify";
@@ -10,10 +10,14 @@ import {
   doc,
 } from "firebase/firestore";
 import app from "../../firebase";
+import { useLocation } from "react-router-dom";
 
-const ConsultationForm = () => {
+const ConsultationForm = ({ isFranchise }) => {
   const db = getFirestore(app); // Initialize Firestore
-
+  const location = useLocation();
+  useEffect(() => {
+    console.log("isFranchise", location);
+  }, []);
   const [captchaValue, setCaptchaValue] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -48,7 +52,7 @@ const ConsultationForm = () => {
         name: formData.name,
         email: formData.email,
         contact: formData.contact,
-        lookingFor: formData.lookingFor,
+        lookingFor: isFranchise ? "Franchise" : formData.lookingFor,
       };
 
       // Step 1: Add the document with the form data to Firestore
@@ -87,7 +91,10 @@ const ConsultationForm = () => {
         name: "Earlyjobs Consultation Request",
         fromEmailId: "no-reply@earlyjobs.in",
         subject: `Consultation Request from ${formData.name}`,
-        recipients: formData.lookingFor === "Candidate" ? "asish@earlyjobs.in" : "akanksha@earlyjobs.in",
+        recipients:
+          formData.lookingFor === "Candidate"
+            ? "asish@earlyjobs.in"
+            : "akanksha@earlyjobs.in",
         content: encodedContent,
         replyToEmailID: "no-reply@earlyjobs.in",
       };
@@ -113,10 +120,14 @@ const ConsultationForm = () => {
 
   return (
     <form className="landing-page-s7-consultation-form" onSubmit={handleSubmit}>
-      <h2 className="landing-page-s7-consultation-heading">
-        Free Consultation by Expert
-      </h2>
-      <hr className="landing-page-s7-consultation-hr" />
+      {location.pathname === "/franchise" ? null : (
+        <>
+          <h2 className="landing-page-s7-consultation-heading">
+            Free Consultation by Expert
+          </h2>
+          <hr className="landing-page-s7-consultation-hr" />
+        </>
+      )}
       <input
         type="text"
         required
@@ -144,40 +155,44 @@ const ConsultationForm = () => {
         value={formData.contact}
         onChange={handleInputChange}
       />
-      <div className="landing-page-s7-consultation-textarea-con">
-        <input
-          type="radio"
-          required
-          name="lookingFor"
-          id="Job"
-          className="landing-page-s7-consultation-radio"
-          value="Job"
-          onChange={handleInputChange}
-        />
-        <label
-          htmlFor="Job"
-          className="landing-page-s7-consultation-radio-label"
-        >
-          Looking For Job
-        </label>
-      </div>
-      <div className="landing-page-s7-consultation-textarea-con">
-        <input
-          type="radio"
-          required
-          name="lookingFor"
-          id="Candidate"
-          className="landing-page-s7-consultation-radio"
-          value="Candidate"
-          onChange={handleInputChange}
-        />
-        <label
-          htmlFor="Candidate"
-          className="landing-page-s7-consultation-radio-label"
-        >
-          Looking For Candidate
-        </label>
-      </div>
+      {location.pathname === "/franchise" ? null : (
+        <>
+          <div className="landing-page-s7-consultation-textarea-con">
+            <input
+              type="radio"
+              required
+              name="lookingFor"
+              id="Job"
+              className="landing-page-s7-consultation-radio"
+              value="Job"
+              onChange={handleInputChange}
+            />
+            <label
+              htmlFor="Job"
+              className="landing-page-s7-consultation-radio-label"
+            >
+              Looking For Job
+            </label>
+          </div>
+          <div className="landing-page-s7-consultation-textarea-con">
+            <input
+              type="radio"
+              required
+              name="lookingFor"
+              id="Candidate"
+              className="landing-page-s7-consultation-radio"
+              value="Candidate"
+              onChange={handleInputChange}
+            />
+            <label
+              htmlFor="Candidate"
+              className="landing-page-s7-consultation-radio-label"
+            >
+              Looking For Candidate
+            </label>
+          </div>
+        </>
+      )}
       <ReCAPTCHA
         sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
         onChange={onChange}

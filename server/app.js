@@ -8,6 +8,7 @@ const publicJobRoutes = require('./routes/publicJobRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const recommendationRoutes = require('./routes/recommendationRoutes');
 const blogRouter = require('./routes/blogRoutes.js');
+const franchiseRoutes = require('./routes/franchise.js');
 const logRequestResponse = require('./middleware/logRequestResponse.js');
 const { startCronJobs } = require('./scheduler/schedular.js');
 
@@ -22,7 +23,7 @@ app.use((req, res, next) => {
     }
     next();
 }); 
-
+9
 // app.use(logRequestResponse);
 
 // app.use('/', (req, res, next) => {
@@ -34,13 +35,16 @@ app.use((req, res, next) => {
 
 app.use('/api', userRoutes);
 app.use('/jobs', jobRoutes);
+app.use('/api/franchise', franchiseRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/public', publicJobRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use("/", blogRouter);
 
+
 const PORT = process.env.PORT || 5000;
+
  app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
   startCronJobs();
