@@ -1,7 +1,7 @@
 import React from 'react';
 import './styles.css';
 
-const Popup = ({ onClose }) => {
+const AssessmentsPopup = ({ onClose }) => {
   return (
     <div className="popup-overlay">
       <div className="popup-content">
@@ -21,4 +21,4 @@ const Popup = ({ onClose }) => {
   );
 };
 
-export default Popup;
+export default AssessmentsPopup;
