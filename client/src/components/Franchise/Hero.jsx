@@ -207,8 +207,8 @@ const Hero = () => {
     <section className="hero">
       <div className="hero-shape"></div>
       <div className="container">
-        <div className="hero-grid">
-          <div className="hero-content">
+        <div className="hero-grid" style={{ display: "flex", flexDirection: "row", alignItems: "start" , width: "100%" , justifyContent: "space-around"}}> 
+          <div className="hero-content" style={{width:"39vw"}}>
             <h1 className="hero-title">
               Build Your Own <span>Recruitment Business</span> with EarlyJobs
             </h1>
@@ -273,19 +273,20 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="hero-video">
+          {/* <div className="hero-video" style={{width:"24vw" , paddingRight:"57px"}}> */}
             <video
               ref={videoRef}
-              src="https://res.cloudinary.com/djocenrah/video/upload/v1747413275/Dipanjana_mam_video_for_earlyjobs_Linked_Comp_02_2_1_ykcdbe.mp4"
+              src="https://res.cloudinary.com/ddzdpsj6i/video/upload/v1750077777/IMG_1783_22_g0tifc.mp4"
               autoPlay
               muted
               loop
+              controls
               playsInline
               style={{
-                height: "750px",
+                height: "529px",
                 borderRadius: "16px",
                 objectFit: "cover",
-                width: "100%",
+                width: "29%",
                 boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                 marginTop: "20px",
               }}
@@ -297,7 +298,7 @@ const Hero = () => {
             />
           </div>
         </div>
-      </div>
+      {/* </div> */}
 
       {/* Pop-up Overlay and Form */}
       <PopupModal
