@@ -2,8 +2,8 @@ const CompanyService = require('../services/CompanyService');
 
 const getCompanies = async (req, res) => {
     try {
-        const { search, page, role, email } = req.query;
-        const companies = await CompanyService.getCompanies(search, page, role, email);
+        const { search, page } = req.query;
+        const companies = await CompanyService.getCompanies(search, page);
         res.status(200).json(companies);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -12,8 +12,8 @@ const getCompanies = async (req, res) => {
 
 const getCompaniesForExcel = async (req, res) => {
     try {
-        const { search, role, email } = req.query;
-        const companies = await CompanyService.getCompaniesForExcel(search, role, email);
+        const { search } = req.query;
+        const companies = await CompanyService.getCompaniesForExcel(search);
         res.status(200).json(companies);
     } catch (error) {
         res.status(500).json({ error: error.message });

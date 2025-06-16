@@ -27,52 +27,54 @@ import { HiringManagerDetailsForm } from "../HiringManagerDetailsForm";
 import MyHrRecruiters from "../MyHrRecruiters";
 import CollegeAgencyForm from "../CollegeAgencyForm";
 import app from "../../firebase";
-import OfferStatusCandidates from '../ViewCandidates/OfferStatusCandidates';
-import Applications from '../ViewCandidates/Applications';
-import ViewCompanies from '../ViewCompanies';
-import { TenureApprovedCandidates } from '../ViewCandidates/TenureApprovedCandidates';
-import { RecommendedCandidates } from '../RecommendedCandidates';
-import CreateSubJob from '../CreateSubJob';
-import AssessmentsPopup from '../AssessmentsPopup';
+import OfferStatusCandidates from "../ViewCandidates/OfferStatusCandidates";
+import Applications from "../ViewCandidates/Applications";
+import ViewCompanies from "../ViewCompanies";
+import { TenureApprovedCandidates } from "../ViewCandidates/TenureApprovedCandidates";
+import { RecommendedCandidates } from "../RecommendedCandidates";
+import CreateSubJob from "../CreateSubJob";
 
-
+import "./style.css";
 const apiStatusConstant = {
-  initial: 'INITIAL',
-  inProgress: 'IN_PROGRESS',
-  success: 'SUCCESS',
-  failure: 'FAILURE',
-}
+  initial: "INITIAL",
+  inProgress: "IN_PROGRESS",
+  success: "SUCCESS",
+  failure: "FAILURE",
+};
 
+const JobsSection = ({
+  onShowCandidateDetails,
+  onShowScheduleInterviewPopup,
+  onShowSelectedOrJoinedPopup,
+}) => {
+  const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
 
-const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onShowSelectedOrJoinedPopup}) => {
+  const initialPage =
+    parseInt(new URLSearchParams(window.location.search).get("page")) || 1;
+  const view =
+    parseInt(new URLSearchParams(window.location.search).get("view")) || 0;
 
-    const backendUrl = process.env.REACT_APP_BACKEND_API_URL
-
-    const initialPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
-    const view = parseInt(new URLSearchParams(window.location.search).get('view')) || 0;
-
-    const [jobsList, setJobsList] = useState([])
-    const [employmentTypeList, setEmploymentTypeList] = useState([])
-    const [minimumPackageList, setMinimumPackageList] = useState([])
-    const [industryTypeList, setIndustryTypeList] = useState([])
-    const [locationTypeList, setLocationTypeList] = useState([])
-    const [workPlaceType, setWorkPlaceType] = useState([])
-    const [searchInput, setSearchInput] = useState('')
-    const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
-    const [toggleFilter, setToggleFilter] = useState(false)
-    const [archieve, setArchieve] = useState(false)
-    const [showCandidateForm, setShowCandidateForm] = useState(view)
-    const [page, setPage] = useState(initialPage)
-    const [totalItems, setTotalItems] = useState(0);
-    const [showFilter, setShowFilter] = useState(false)
-    const [lastVisible, setLastVisible] = useState(null)
-    const [companyList, setCompanyList] = useState([]);
-    const [locationList, setLocationList] = useState([]);
-    const [titleList, setTitleList] = useState([]);
-    const [companyName, setCompanyName] = useState('');
-    const [location, setLocation] = useState('');
-    const [title, setTitle] = useState('');
-    const [showAssessmentsPopup, setShowAssessmentsPopup] = useState(false);
+  const [jobsList, setJobsList] = useState([]);
+  const [employmentTypeList, setEmploymentTypeList] = useState([]);
+  const [minimumPackageList, setMinimumPackageList] = useState([]);
+  const [industryTypeList, setIndustryTypeList] = useState([]);
+  const [locationTypeList, setLocationTypeList] = useState([]);
+  const [workPlaceType, setWorkPlaceType] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial);
+  const [toggleFilter, setToggleFilter] = useState(false);
+  const [archieve, setArchieve] = useState(false);
+  const [showCandidateForm, setShowCandidateForm] = useState(view);
+  const [page, setPage] = useState(initialPage);
+  const [totalItems, setTotalItems] = useState(0);
+  const [showFilter, setShowFilter] = useState(false);
+  const [lastVisible, setLastVisible] = useState(null);
+  const [companyList, setCompanyList] = useState([]);
+  const [locationList, setLocationList] = useState([]);
+  const [titleList, setTitleList] = useState([]);
+  const [companyName, setCompanyName] = useState("");
+  const [location, setLocation] = useState("");
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
     if (showCandidateForm === 18) {
@@ -642,37 +644,45 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
           )
         } */}
 
-        <div className={`jobs-section-filter-mobile-overlay ${showFilter===false ? "jobs-section-filter-mobile-hidden" : ""}`} onClick={onClickFilter}></div>
-        <div className={`jobs-section-profile-filter-con jobs-section-filter-mobile ${showFilter===false ? "jobs-section-filter-mobile-hidden" : ""}`}>
-              <FilterJobs
-              onSelectArchieve={onSelectArchieve}
-              archieve={archieve}
-              onSelectEmploymentType={onSelectEmploymentType}
-              onChangeSalaryRange={onChangeSalaryRange}
-              onSelectIndustryType={onSelectIndustryType}
-              onSelectLocataionType={onSelectLocataionType}
-              onSelectWorkPlaceType={onSelectWorkPlaceType}
-              onChangeInput={onChangeInput}
-              onKeyEnter={onKeyEnter}
-              onClickButton={onClickButton}
-              onShowCandidateForm={onShowCandidateForm}
-              onClickFilter={onClickFilter}
-              showCandidateForm={showCandidateForm}
-              pageType={'JOBS'}
-              companyList={companyList}
-              locationList={locationList}
-              titleList={titleList}
-              onChangecompanyName={onChangecompanyName}
-              onChangelocation={onChangelocation}
-              onChangetitle={onChangetitle}
-              setShowAssessmentsPopup={setShowAssessmentsPopup}
-            />
-            <button type='button' className='job-section-filter-close-button' onClick={onClickFilter}><MdKeyboardDoubleArrowLeft className='job-section-filter-close-icon' /></button>
-        </div>
-          
-        <button type='button' className='job-section-filter-button' onClick={onClickFilter}>
-          <IoFilter className='filter-icon' />
-          <span className='filter-text-btn'>Filter Jobs</span>
+      <div
+        className={`jobs-section-filter-mobile-overlay ${
+          showFilter === false ? "jobs-section-filter-mobile-hidden" : ""
+        }`}
+        onClick={onClickFilter}
+      ></div>
+      <div
+        className={`jobs-section-profile-filter-con jobs-section-filter-mobile ${
+          showFilter === false ? "jobs-section-filter-mobile-hidden" : ""
+        }`}
+      >
+        <FilterJobs
+          onSelectArchieve={onSelectArchieve}
+          archieve={archieve}
+          onSelectEmploymentType={onSelectEmploymentType}
+          onChangeSalaryRange={onChangeSalaryRange}
+          onSelectIndustryType={onSelectIndustryType}
+          onSelectLocataionType={onSelectLocataionType}
+          onSelectWorkPlaceType={onSelectWorkPlaceType}
+          onChangeInput={onChangeInput}
+          onKeyEnter={onKeyEnter}
+          onClickButton={onClickButton}
+          onShowCandidateForm={onShowCandidateForm}
+          onClickFilter={onClickFilter}
+          showCandidateForm={showCandidateForm}
+          pageType={"JOBS"}
+          companyList={companyList}
+          locationList={locationList}
+          titleList={titleList}
+          onChangecompanyName={onChangecompanyName}
+          onChangelocation={onChangelocation}
+          onChangetitle={onChangetitle}
+        />
+        <button
+          type="button"
+          className="job-section-filter-close-button"
+          onClick={onClickFilter}
+        >
+          <MdKeyboardDoubleArrowLeft className="job-section-filter-close-icon" />
         </button>
       </div>
 
@@ -710,27 +720,68 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
               <BsSearch className="search-icon" />
             </button>
           </div> */}
-          {
-            userDetailsId === 'TBF' ? <HiringManagerDetailsForm />
-            : (userDetailsId === 'CLG' || userDetailsId === 'AGY') ? <CollegeAgencyForm />
-            : showCandidateForm===1 ? <UploadCandidatePage setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} /> 
-            : showCandidateForm===2 ? <ViewCandidates onShowCandidateDetails={onShowCandidateDetails} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup} jobsList={jobsList} setShowCandidateForm={setShowCandidateForm}/> 
-            : showCandidateForm===3 ? <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
-            : showCandidateForm===4 ? renderAllSections()
-            : showCandidateForm >= 5 && showCandidateForm <= 12 ? <OfferStatusCandidates key={showCandidateForm} showCandidateForm={showCandidateForm} onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} jobsList={jobsList} onShowScheduleInterviewPopup={onShowScheduleInterviewPopup} />
-            : showCandidateForm===13 ? <Applications setShowCandidateForm={setShowCandidateForm} showCandidateForm={showCandidateForm} />
-            : showCandidateForm===14 ? <ViewCompanies onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} />
-            : showCandidateForm===15 ? <TenureApprovedCandidates onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm}/>
-            : showCandidateForm===16 ? <RecommendedCandidates onShowCandidateDetails={onShowCandidateDetails} setShowCandidateForm={setShowCandidateForm} />
-            : showCandidateForm===17 ? <CreateSubJob setShowCandidateForm={setShowCandidateForm} />
-            : showCandidateForm===18 ? renderAllSections()
-            : showCandidateForm===19 ? <Applications setShowCandidateForm={setShowCandidateForm} showCandidateForm={showCandidateForm} />
-            : renderAllSections()
-          }
-          {showAssessmentsPopup && (
-            <AssessmentsPopup onClose={() => setShowAssessmentsPopup(false)} />
-          )}
-        </div>
+        {userDetailsId === "TBF" ? (
+          <HiringManagerDetailsForm />
+        ) : userDetailsId === "CLG" || userDetailsId === "AGY" ? (
+          <CollegeAgencyForm />
+        ) : showCandidateForm === 1 ? (
+          <UploadCandidatePage
+            setShowCandidateForm={setShowCandidateForm}
+            jobsList={jobsList}
+          />
+        ) : showCandidateForm === 2 ? (
+          <ViewCandidates
+            onShowCandidateDetails={onShowCandidateDetails}
+            onShowScheduleInterviewPopup={onShowScheduleInterviewPopup}
+            onShowSelectedOrJoinedPopup={onShowSelectedOrJoinedPopup}
+            jobsList={jobsList}
+            setShowCandidateForm={setShowCandidateForm}
+          />
+        ) : showCandidateForm === 3 ? (
+          <MyHrRecruiters setShowCandidateForm={setShowCandidateForm} />
+        ) : showCandidateForm === 4 ? (
+          renderAllSections()
+        ) : showCandidateForm >= 5 && showCandidateForm <= 12 ? (
+          <OfferStatusCandidates
+            key={showCandidateForm}
+            showCandidateForm={showCandidateForm}
+            onShowCandidateDetails={onShowCandidateDetails}
+            setShowCandidateForm={setShowCandidateForm}
+            jobsList={jobsList}
+            onShowScheduleInterviewPopup={onShowScheduleInterviewPopup}
+          />
+        ) : showCandidateForm === 13 ? (
+          <Applications
+            setShowCandidateForm={setShowCandidateForm}
+            showCandidateForm={showCandidateForm}
+          />
+        ) : showCandidateForm === 14 ? (
+          <ViewCompanies
+            onShowCandidateDetails={onShowCandidateDetails}
+            setShowCandidateForm={setShowCandidateForm}
+          />
+        ) : showCandidateForm === 15 ? (
+          <TenureApprovedCandidates
+            onShowCandidateDetails={onShowCandidateDetails}
+            setShowCandidateForm={setShowCandidateForm}
+          />
+        ) : showCandidateForm === 16 ? (
+          <RecommendedCandidates
+            onShowCandidateDetails={onShowCandidateDetails}
+            setShowCandidateForm={setShowCandidateForm}
+          />
+        ) : showCandidateForm === 17 ? (
+          <CreateSubJob setShowCandidateForm={setShowCandidateForm} />
+        ) : showCandidateForm === 18 ? (
+          renderAllSections()
+        ) : showCandidateForm === 19 ? (
+          <Applications
+            setShowCandidateForm={setShowCandidateForm}
+            showCandidateForm={showCandidateForm}
+          />
+        ) : (
+          renderAllSections()
+        )}
       </div>
     </div>
   );

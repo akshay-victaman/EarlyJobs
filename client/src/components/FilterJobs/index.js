@@ -137,8 +137,7 @@ const FilterJobs = props => {
     title,
     onChangecompanyName,
     onChangelocation,
-    onChangetitle,
-    setShowAssessmentsPopup
+    onChangetitle
   } = props
 
   const handleCompanyChange = (value) => {
@@ -171,7 +170,7 @@ const FilterJobs = props => {
       {
         pageType === 'JOBS' && (
           <>
-            <Profile onShowCandidateForm={onShowCandidateForm} onClickFilter={onClickFilter} showCandidateForm={showCandidateForm} setShowAssessmentsPopup={setShowAssessmentsPopup} />
+            <Profile onShowCandidateForm={onShowCandidateForm} onClickFilter={onClickFilter} showCandidateForm={showCandidateForm} />
             <hr className="line" />
             <h1 className="filter-jobs-heading">Archieve</h1>
             <ul className="filter-jobs-employment-type-list">
