@@ -608,6 +608,7 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
   const role = Cookies.get("role");
   const userDetailsId = Cookies.get("user_details_id");
   return (
+    // <>
     <div className="jobs-section-container">
       {/* <div className='filter-button-con'>
           <button className='filter-button' onClick={onToggleFilter}>
@@ -674,16 +675,16 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
           <IoFilter className='filter-icon' />
           <span className='filter-text-btn'>Filter Jobs</span>
         </button>
-      </div>
+      {/* </div> */}
 
-      <button
+      {/* <button
         type="button"
         className="job-section-filter-button"
         onClick={onClickFilter}
       >
         <IoFilter className="filter-icon" />
         <span className="filter-text-btn">Filter Jobs</span>
-      </button>
+      </button> */}
 
       <div
         className={`job-section-search-card-con ${
@@ -731,8 +732,9 @@ const JobsSection = ({onShowCandidateDetails, onShowScheduleInterviewPopup, onSh
             <AssessmentsPopup onClose={() => setShowAssessmentsPopup(false)} />
           )}
         </div>
+        {/* </> */}
       </div>
-    </div>
+    // </div>
   );
 };
 
