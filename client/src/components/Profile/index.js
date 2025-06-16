@@ -12,7 +12,7 @@ const apiStatusConstant = {
     failure: 'FAILURE',
 }
 
-const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm, setShowAssessmentsPopup}) => {
+const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm}) => {
 
     const [profileData, setProfileData] = useState({})
     const [apiStatus, setApiStatus] = useState(apiStatusConstant.initial)
@@ -173,9 +173,6 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm, setShow
                         userRole !== 'ADMIN' && <button type="button" className={`profile-button ${showCandidateForm === 1 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(1)}>Add Candidate</button>
                     }
                     <button type="button" className={`profile-button ${showCandidateForm === 17 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(17)}>Create Sub Job</button>
-                    { userRole === 'SHM' &&
-                      <button type="button" className={`profile-button ${showCandidateForm === 14 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(14)}>View Companies</button>
-                    }
                     <button type="button" className={`profile-button ${showCandidateForm === 2 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(2)}>View Candidates</button>
                     <button type="button" className={`profile-button ${showCandidateForm === 5 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(5)}>Selected Candidates</button>
                     <button type="button" className={`profile-button ${showCandidateForm === 6 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(6)}>Joined Candidates</button>
@@ -185,9 +182,6 @@ const Profile = ({onShowCandidateForm, onClickFilter, showCandidateForm, setShow
                     <button type="button" className={`profile-button ${showCandidateForm === 10 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(10)}>Not-Attended Candidates</button>
                     <button type="button" className={`profile-button ${showCandidateForm === 11 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(11)}>Rejected Candidates</button>
                     {(userRole === 'AC' || userRole === "SHM" || profileData.hiringFor === 'Freelance HR Recruiter') && <button type="button" className={`profile-button ${showCandidateForm === 12 ? "active-profile-button" : ""}`} onClick={() => onClickButtons(12)}>View Tenure Status</button>}
-                    {userRole === 'SHM' &&
-                        <button type="button" className={`profile-button ${showCandidateForm === 20 ? "active-profile-button" : ""}`} onClick={() => setShowAssessmentsPopup(true)}>Assessments</button>
-                    }
                     {
                         (userRole === 'AC' || userRole === "SHM") && 
                         <>
