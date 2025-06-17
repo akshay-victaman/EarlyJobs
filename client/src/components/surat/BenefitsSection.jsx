@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Badge } from '../../components/ui/badge';
 import { CheckCircle, Users, Building, Target, ArrowRight } from 'lucide-react';
 
 const BenefitsSection = () => {
@@ -94,7 +94,7 @@ const BenefitsSection = () => {
             {benefits.map((benefit, index) => (
               <Card key={index} className="group hover-lift border-0 shadow-lg hover:shadow-2xl bg-white relative overflow-hidden transition-all">
                 {/* Top Gradient Bar */}
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${benefit.color}`} />
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r`} />
 
                 {/* Card Header */}
                 <CardHeader className="pb-4">

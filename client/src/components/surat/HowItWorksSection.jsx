@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '../../components/ui/card';
 import { UserPlus, Upload, CheckCircle } from 'lucide-react';
 
 const HowItWorksSection = () => {

@@ -1,7 +1,8 @@
 // src/components/HeroSection.jsx
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Button } from '@/components/ui/button';
+// import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
+import { Button } from '../../components/ui/button';
 import { MapPin, Users, Briefcase, ArrowRight, Star } from 'lucide-react';
 
 const HeroSection = () => {
@@ -72,7 +73,7 @@ const HeroSection = () => {
         </div>
 
         <div className="container mx-auto max-w-7xl px-4 py-12 md:py-16 lg:py-24 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-8 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 items-center" style={{marginTop:"47px"}}>
             {/* Left Column - Content */}
             <div className="space-y-6 text-center lg:text-left">
               {/* Trust Badge */}
@@ -121,16 +122,18 @@ const HeroSection = () => {
 
               {/* CTA Button */}
               <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                <Button
-                  size="lg"
-                  onClick={scrollToLeadForm}
-                  className="bg-white text-orange-600 hover:bg-white/90 text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 h-auto font-semibold shadow-lg hover:shadow-xl transition-all"
-                  aria-label="Get Started in Surat Today"
-                >
-                  Get Started in Surat Today
-                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-                </Button>
-              </div>
+  <Button
+    size="lg"
+    onClick={scrollToLeadForm}
+    className="group bg-white text-orange-600 hover:bg-orange-50 text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-5 h-auto font-semibold rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out flex items-center"
+    aria-label="Get Started in Surat Today"
+    style={{marginLeft:"7px"}}
+  >
+    Get Started in Surat Today
+    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300 ease-in-out" aria-hidden="true" />
+  </Button>
+</div>
+
             </div>
 
             {/* Right Column - Image */}

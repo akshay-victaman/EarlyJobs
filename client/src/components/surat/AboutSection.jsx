@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '../../components/ui/card';
 import { Building2, GraduationCap, Factory } from 'lucide-react';
 
 const AboutSection = () => {
@@ -53,12 +53,12 @@ const AboutSection = () => {
             {/* Cards - Improved card styling */}
             <div className="grid grid-cols-1 gap-4 sm:gap-6">
               {/* Card 1 */}
-              <Card className="border-l-4 border-l-primary hover:shadow-md transition-shadow">
+               <Card className="border-l-4 border-l-accent hover:shadow-md transition-shadow">
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-start gap-3 sm:gap-4">
                     <Factory className="w-6 h-6 sm:w-8 sm:h-8 text-primary mt-1" />
                     <div>
-                      <h4 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">
+                      <h4 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2 mt-1">
                         Textile & Manufacturing
                       </h4>
                       <p className="text-xs sm:text-sm text-muted-foreground">
@@ -70,12 +70,12 @@ const AboutSection = () => {
               </Card>
 
               {/* Card 2 - Apply same styling to other cards */}
-              <Card className="border-l-4 border-l-primary hover:shadow-md transition-shadow">
+              <Card className="border-l-4 border-l-accent hover:shadow-md transition-shadow">
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-start gap-3 sm:gap-4">
                     <GraduationCap className="w-6 h-6 sm:w-8 sm:h-8 text-primary mt-1" />
                     <div>
-                      <h4 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">
+                      <h4 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2 mt-1">
                         Educational Partnerships
                       </h4>
                       <p className="text-xs sm:text-sm text-muted-foreground">
@@ -92,7 +92,7 @@ const AboutSection = () => {
                   <div className="flex items-start gap-3 sm:gap-4">
                     <Building2 className="w-6 h-6 sm:w-8 sm:h-8 text-accent mt-1" />
                     <div>
-                      <h4 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">
+                      <h4 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2 mt-1">
                         SME Support
                       </h4>
                       <p className="text-xs sm:text-sm text-muted-foreground">

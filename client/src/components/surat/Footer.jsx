@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
+import { Separator } from '../../components/ui/separator';
+import { Badge } from '../../components/ui/badge';
 import { MapPin, Phone, Mail, Instagram, Facebook, ExternalLink, Linkedin } from 'lucide-react';
 
 const Footer = () => {
@@ -69,7 +69,7 @@ const Footer = () => {
 
       <footer className="bg-gray-900 text-white">
         <div className="container mx-auto px-4 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" style={{paddingTop:"41px"}}>
             {/* Company Info */}
             <div className="space-y-6">
               <div className="flex items-center space-x-2">

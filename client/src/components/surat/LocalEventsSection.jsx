@@ -1,8 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button';
 import { Calendar, MapPin, Users, Clock } from 'lucide-react';
 
 const LocalEventsSection = () => {
@@ -145,10 +145,15 @@ const LocalEventsSection = () => {
                     {event.description}
                   </p>
                   
-                  <Button size="sm" className="w-full" variant="outline">
-                    <Users className="w-4 h-4 mr-2" />
-                    Comming Soon
-                  </Button>
+                 <Button
+  size="sm"
+  className="w-full flex items-center justify-center gap-2 border border-gray-300 text-gray-700 hover:border-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg py-2 px-4 text-sm font-medium transition-all duration-300"
+  variant="outline"
+>
+  <Users className="w-4 h-4" />
+  Coming Soon
+</Button>
+
                 </CardContent>
               </Card>
             ))}
