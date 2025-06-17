@@ -58,11 +58,15 @@ import "./pages/WhyEarlyjobs/style.css";
 import "./pages/OurServicesPages/style.css";
 import "./App.css";
 import InvestmentPopup from "./components/InvestmentPopup";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
+
 
 const App = ({ initialState }) => {
   const [showContactForm, setShowContactForm] = useState(false);
   const [showComplaintsForm, setShowComplaintsForm] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const pathname = useLocation().pathname;
+  
   const isInvestmentPopupShown = localStorage.getItem("investmentPopupShown");
   const [showInvestmentPopup, setShowInvestmentPopup] = useState(
     !isInvestmentPopupShown
@@ -75,6 +79,7 @@ const App = ({ initialState }) => {
         localStorage.setItem("investmentPopupShown", true);
       });
     }
+    console.log(pathname);
   }, []);
 
   const handleShowContactForm = () => {
@@ -107,7 +112,10 @@ const App = ({ initialState }) => {
           <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} />
         )}
         <EachRoute initialState={initialState} />
-        <Footer handleShowContactForm={handleShowContactForm} />
+       {
+        pathname !== "/franchise/mohali"&&
+       <Footer handleShowContactForm={handleShowContactForm} />
+       } 
         {Cookies.get("jwt_token") === undefined && <FooterScroll />}
         <ScrollUp />
         <ToastContainer autoClose={4000} />
