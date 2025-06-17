@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  padding-top: 7rem;
+  /* padding-top: 7rem; */
   padding-bottom: 5rem;
   overflow: hidden;
 
@@ -9,7 +9,7 @@
 
 @media (min-width: 768px) {
   .hero {
-    padding-top: 8rem;
+    padding-top: 5rem;
     padding-bottom: 7rem;
   }
 }
@@ -28,7 +28,7 @@
   background-color: var(--ejobs-orange);
   opacity: 0.1;
   transform: rotate(-6deg) translateX(33.333%) translateY(-25%);
-  z-index: 0;
+  z-index: -1;
   transition: transform 0.8s ease-in-out;
 }
 

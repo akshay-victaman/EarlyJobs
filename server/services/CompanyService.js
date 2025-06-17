@@ -1,49 +1,121 @@
 const { v4: uuidv4 } = require('uuid');
 const db = require('../config/database');
 
-const getComapniesCount = async (search) => {
+// const getComapniesCount = async (search) => {
+//     try {
+//         const query = `SELECT COUNT(*) AS count FROM companies ${search ? `WHERE name LIKE '%${search}%'` : ''};`;
+//         const result = await db.query(query);
+//         return result[0][0].count;
+//     } catch (error) {
+//         console.log(error);
+//         throw error;
+//     }
+// }
+
+const getCompaniesCount = async (search, role, email) => {
     try {
-        const query = `SELECT COUNT(*) AS count FROM companies ${search ? `WHERE name LIKE '%${search}%'` : ''};`;
-        const result = await db.query(query);
+        const query = `
+            SELECT COUNT(*) AS count FROM companies 
+            ${role === 'SHM' ? `WHERE referred_by = ?` : ''}
+            ${search ? `${role === 'SHM' ? 'AND' : 'WHERE'} name LIKE ?` : ''}
+        `;
+        const params = role === 'SHM' ? [email, `%${search}%`] : [`%${search}%`];
+        const result = await db.query(query, params);
         return result[0][0].count;
     } catch (error) {
         console.log(error);
         throw error;
     }
-}
+};
 
-const getCompanies = async (search, page) => {
+// const getCompanies = async (search, page, role, email) => {
+//     try {
+//         const pageSize = 10;
+//         const startIndex = (page - 1) * pageSize;
+//         const query = `
+//             SELECT * FROM companies 
+//             ${role === 'SHM' ? `WHERE referred_by = ?` : ''}
+//             ${search ? `${role === 'SHM' ? 'AND' : 'WHERE'} name LIKE ?` : ''}
+//             ORDER BY name ASC, created_at DESC
+//             ${page ? "LIMIT ? OFFSET ?" : ""}
+//         `;
+//         const params = role === 'SHM' ? [email, `%${search}%`, pageSize, startIndex] : [`%${search}%`, pageSize, startIndex];
+//         const result = await db.query(query, params);
+//         let count = 0;
+//         if (search !== undefined) {
+//             count = await getCompaniesCount(search, role, email);
+//         }
+//         return { companies: result[0], count };
+//     } catch (error) {
+//         console.log(error);
+//         throw error;
+//     }
+// }
+
+// const getCompaniesForExcel = async (search) => {
+//     try {
+//         const query = `SELECT * FROM companies ${search ? `WHERE name LIKE '%${search}%'` : ''} ORDER BY name ASC, created_at DESC;`;
+//         const result = await db.query(query);
+//         return result[0];
+//     } catch (error) {
+//         console.log(error);
+//         throw error;
+//     }
+// }
+
+
+const getCompanies = async (search, page, role, email) => {
     try {
         const pageSize = 10;
         const startIndex = (page - 1) * pageSize;
-        const query = `
+        let query = `
             SELECT * FROM companies 
-            ${search ? `WHERE name LIKE '%${search}%'` : ''}
+            ${role === 'SHM' ? `WHERE referred_by = ?` : ''}
+            ${search ? `${role === 'SHM' ? 'AND' : 'WHERE'} name LIKE ?` : ''}
             ORDER BY name ASC, created_at DESC
-            ${page ? "LIMIT ? OFFSET ?" : ""}
         `;
-        const result = await db.query(query, [pageSize, startIndex]);
+        let params = [];
+
+        if (role === 'SHM') {
+            params.push(email);
+        }
+        if (search) {
+            params.push(`%${search}%`);
+        }
+        if (page) {
+            query += ` LIMIT ? OFFSET ?`;
+            params.push(pageSize, startIndex);
+        }
+
+        const result = await db.query(query, params);
         let count = 0;
         if (search !== undefined) {
-            count = await getComapniesCount(search);
+            count = await getCompaniesCount(search, role, email);
         }
         return { companies: result[0], count };
     } catch (error) {
         console.log(error);
         throw error;
     }
-}
+};
 
-const getCompaniesForExcel = async (search) => {
+
+const getCompaniesForExcel = async (search, role, email) => {
     try {
-        const query = `SELECT * FROM companies ${search ? `WHERE name LIKE '%${search}%'` : ''} ORDER BY name ASC, created_at DESC;`;
-        const result = await db.query(query);
+        const query = `
+            SELECT * FROM companies 
+            ${role === 'SHM' ? `WHERE referred_by = ?` : ''}
+            ${search ? `${role === 'SHM' ? 'AND' : 'WHERE'} name LIKE ?` : ''}
+            ORDER BY name ASC, created_at DESC
+        `;
+        const params = role === 'SHM' ? [email, `%${search}%`] : [`%${search}%`];
+        const result = await db.query(query, params);
         return result[0];
     } catch (error) {
         console.log(error);
         throw error;
     }
-}
+};
 
 const getCompanyById = async (id) => {
     try {
@@ -62,10 +134,39 @@ const getCompanyById = async (id) => {
     }
 }
 
+// const createCompany = async (company) => {
+//     try {
+//         const { name, companyLogoUrl, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone } = company;
+//         const companyExists = await getCompanies(name, 1);
+//         if (companyExists.companies.length) {
+//             const error = new Error('Company already exists');
+//             error.statusCode = 400;
+//             throw error;
+//         }
+
+//         const id = uuidv4();
+//         const query = 'INSERT INTO companies (id, name, logo_url, registered_address, address, phone, email, gst_no, spoc_name, spoc_email, spoc_phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+//         const result = await db.query(query, [id, name, companyLogoUrl, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone]);
+//         if (result[0].affectedRows) {
+//             return { message: 'Company created successfully', id };
+//         } else {
+//             const error = new Error('Failed to create company');
+//             error.statusCode = 500;
+//             throw error;
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         throw error;
+//     }
+// }
+
+
 const createCompany = async (company) => {
     try {
-        const { name, companyLogoUrl, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone } = company;
-        const companyExists = await getCompanies(name, 1);
+        console.log(company, "payload in createCompany");
+        const { name, companyLogoUrl, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone, referredBy, role } = company;
+        const companyExists = await getCompanies(name, 1, '', email);
+        console.log(companyExists, "companyExists in createCompany");
         if (companyExists.companies.length) {
             const error = new Error('Company already exists');
             error.statusCode = 400;
@@ -73,8 +174,27 @@ const createCompany = async (company) => {
         }
 
         const id = uuidv4();
-        const query = 'INSERT INTO companies (id, name, logo_url, registered_address, address, phone, email, gst_no, spoc_name, spoc_email, spoc_phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
-        const result = await db.query(query, [id, name, companyLogoUrl, registeredAddress, address, phone, email, gstNo, spocName, spocEmail, spocPhone]);
+        const shmEmail = role === 'SHM' ? referredBy : null; // Set referred_by to email if role is SHM, otherwise null
+        const query = `
+            INSERT INTO companies 
+            (id, name, logo_url, registered_address, address, phone, email, gst_no, spoc_name, spoc_email, spoc_phone, referred_by) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        `;
+        const result = await db.query(query, [
+            id,
+            name,
+            companyLogoUrl,
+            registeredAddress,
+            address,
+            phone,
+            email,
+            gstNo,
+            spocName,
+            spocEmail,
+            spocPhone,
+            shmEmail
+        ]);
+
         if (result[0].affectedRows) {
             return { message: 'Company created successfully', id };
         } else {
@@ -86,7 +206,8 @@ const createCompany = async (company) => {
         console.log(error);
         throw error;
     }
-}
+};
+
 
 const updateCompany = async (id, company) => {
     try {
