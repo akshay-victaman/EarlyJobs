@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+
 import './faq.css';
 
 const FAQSection = () => {
@@ -69,69 +69,7 @@ const FAQSection = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{metaContent.title}</title>
-        <meta name="description" content={metaContent.description} />
-        <meta name="keywords" content={metaContent.keywords} />
-        
-        {/* OpenGraph Tags */}
-        <meta property="og:title" content={metaContent.title} />
-        <meta property="og:description" content={metaContent.description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_IN" />
-        <meta property="og:site_name" content={`EarlyJobs ${city}`} />
-        <meta property="og:url" content={`https://earlyjobs.in/${city.toLowerCase()}/faq`} />
-        <meta property="og:image" content="https://earlyjobs.in/og-image.jpg" />
-        
-        {/* Twitter Card Tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={metaContent.title} />
-        <meta name="twitter:description" content={metaContent.description} />
-        <meta name="twitter:image" content="https://earlyjobs.in/twitter-card.jpg" />
-        
-        {/* Additional SEO Tags */}
-        <link rel="canonical" href={`https://earlyjobs.in/${city.toLowerCase()}/faq`} />
-        <meta name="robots" content="index, follow, max-image-preview:large" />
-        <meta name="author" content={`EarlyJobs ${city}`} />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="theme-color" content="#FF6B00" />
-        <meta name="application-name" content={`EarlyJobs ${city}`} />
-        
-        {/* Article Specific Meta Tags */}
-        <meta property="article:modified_time" content={new Date().toISOString()} />
-        <meta property="article:publisher" content="https://earlyjobs.in" />
-        
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": faqs.map(faq => ({
-              "@type": "Question",
-              "name": faq.question,
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": faq.answer
-              }
-            })),
-            "publisher": {
-              "@type": "Organization",
-              "name": `EarlyJobs ${city}`,
-              "url": "https://earlyjobs.in",
-              "logo": {
-                "@type": "ImageObject",
-                "url": "https://earlyjobs.in/logo.png"
-              }
-            },
-            "dateModified": new Date().toISOString(),
-            "isPartOf": {
-              "@type": "WebSite",
-              "name": `EarlyJobs ${city}`,
-              "url": "https://earlyjobs.in"
-            }
-          })}
-        </script>
-      </Helmet>
+    
 
       <section className="faq-section">
         <div className="faq-container">
@@ -147,12 +85,12 @@ const FAQSection = () => {
           <div className="faq-list">
             {faqs.map((faq, index) => (
               <div key={index} className="faq-card">
-                <div className="collapsible">
+                <div className="collapsible" style={{backgroundColor:"#fff", borderRadius:"16px"}}>
                   <button
                     className="collapsible-trigger"
                     onClick={() => toggleItem(index)}
                   >
-                    <div className="trigger-content">
+                    <div className="trigger-content" style={{borderRadius:"16px"}}>
                       <h3 className="faq-question">{faq.question}</h3>
                       <span
                         className={`chevron ${openItems.includes(index) ? 'rotate' : ''}`}

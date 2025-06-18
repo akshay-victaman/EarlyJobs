@@ -1,7 +1,7 @@
 // src/components/HeroSection.jsx
 import React from 'react';
 // import { Helmet } from 'react-helmet-async';
-import { Helmet } from 'react-helmet';
+
 import { Button } from '../../components/ui/button';
 import { MapPin, Users, Briefcase, ArrowRight, Star } from 'lucide-react';
 
@@ -12,54 +12,7 @@ const HeroSection = () => {
 
   return (
     <>
-      <Helmet>
-        <title>EarlyJobs Surat - Top Career Platform for Local Jobs & Hiring</title>
-        <meta 
-          name="description" 
-          content="Connect with Surat's leading employers. 10,000+ successful placements, 500+ employer partners. Local jobs in textile, manufacturing, and diamond sectors."
-        />
-        <meta 
-          name="keywords" 
-          content="jobs in Surat, Surat careers, local jobs, textile jobs Surat, manufacturing jobs, entry level jobs, fresher jobs Surat, career opportunities"
-        />
-
-        {/* Open Graph Tags */}
-        <meta property="og:title" content="EarlyJobs Surat - Your Local Career Platform" />
-        <meta 
-          property="og:description" 
-          content="Unlock career opportunities in Surat. 10,000+ placements with verified local employers."
-        />
-        <meta property="og:image" content="https://i.ibb.co/99B1J22v/Hiring-amico.png" />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_IN" />
-
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "JobPosting",
-            "description": "Multiple job opportunities in Surat's leading sectors",
-            "datePosted": new Date().toISOString(),
-            "hiringOrganization": {
-              "@type": "Organization",
-              "name": "EarlyJobs Surat",
-              "sameAs": "https://earlyjobs.in/surat"
-            },
-            "jobLocation": {
-              "@type": "Place",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Surat",
-                "addressRegion": "Gujarat",
-                "addressCountry": "IN"
-              }
-            },
-            "employmentType": ["FULL_TIME", "PART_TIME", "INTERN"],
-            "industry": ["Textile", "Manufacturing", "Diamond"],
-            "occupationalCategory": "Entry Level Positions"
-          })}
-        </script>
-      </Helmet>
+      
 
       <section className="relative min-h-[90vh] md:min-h-screen bg-gradient-to-br from-orange-600 via-orange-700 to-indigo-600 text-white overflow-hidden">
         {/* Background Pattern */}
