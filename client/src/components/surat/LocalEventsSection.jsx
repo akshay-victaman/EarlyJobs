@@ -1,9 +1,6 @@
-import React from 'react';
 
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Button } from '../../components/ui/button';
-import { Calendar, MapPin, Users, Clock } from 'lucide-react';
+import React from 'react';
+import './LocalEventsSection.css';
 
 const LocalEventsSection = () => {
   const events = [
@@ -34,72 +31,58 @@ const LocalEventsSection = () => {
   ];
 
   return (
-    <section id = "toevents">
-     
-
-      <section className="py-20 px-4 bg-muted/50">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Upcoming Events in Surat
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Join our local events, job fairs, and networking sessions
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event, index) => (
-              <Card key={index} className="h-full">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge variant={event.type === 'Special Event' ? 'default' : 'secondary'}>
-                      {event.type}
-                    </Badge>
-                    <Calendar className="w-5 h-5 text-muted-foreground" />
-                  </div>
-                  <CardTitle className="text-lg leading-tight">{event.title}</CardTitle>
-                </CardHeader>
-                
-                <CardContent className="space-y-3">
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-primary" />
-                      <span>{event.date}</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-primary" />
-                      <span>{event.time}</span>
-                    </div>
-                    
-                    <div className="flex items-start gap-2">
-                      <MapPin className="w-4 h-4 text-primary mt-0.5" />
-                      <span>{event.location}</span>
-                    </div>
-                  </div>
-                  
-                  <p className="text-sm text-muted-foreground">
-                    {event.description}
-                  </p>
-                  
-                 <Button
-  size="sm"
-  className="w-full flex items-center justify-center gap-2 border border-gray-300 text-gray-700 hover:border-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg py-2 px-4 text-sm font-medium transition-all duration-300"
-  variant="outline"
->
-  <Users className="w-4 h-4" />
-  Coming Soon
-</Button>
-
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-         
+    <section id="toevents" className="local-events-section">
+      <div className="container">
+        <div className="section-header">
+          <h2 className="section-title">
+            Upcoming Events in Surat
+          </h2>
+          <p className="section-subtitle">
+            Join our local events, job fairs, and networking sessions
+          </p>
         </div>
-      </section>
+        
+        <div className="events-grid">
+          {events.map((event, index) => (
+            <div key={index} className="event-card">
+              <div className="event-header">
+                <div className={`event-badge ${event.type === 'Special Event' ? 'special' : 'regular'}`}>
+                  {event.type}
+                </div>
+                <div className="calendar-icon">📅</div>
+              </div>
+              
+              <h3 className="event-title">{event.title}</h3>
+              
+              <div className="event-details">
+                <div className="event-detail">
+                  <span className="detail-icon">📅</span>
+                  <span>{event.date}</span>
+                </div>
+                
+                <div className="event-detail">
+                  <span className="detail-icon">🕒</span>
+                  <span>{event.time}</span>
+                </div>
+                
+                <div className="event-detail">
+                  <span className="detail-icon">📍</span>
+                  <span>{event.location}</span>
+                </div>
+              </div>
+              
+              <p className="event-description">
+                {event.description}
+              </p>
+              
+              <button className="event-button">
+                <span className="button-icon">👥</span>
+                Coming Soon
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };

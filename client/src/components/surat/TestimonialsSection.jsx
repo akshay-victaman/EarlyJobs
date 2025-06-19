@@ -1,7 +1,7 @@
 import React from 'react';
-
-import { Card, CardContent } from '../ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Helmet } from 'react-helmet';
+import { Card, CardContent } from '../../components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import { Star } from 'lucide-react';
 
 const TestimonialsSection = () => {
@@ -26,7 +26,64 @@ const TestimonialsSection = () => {
 
   return (
     <>
-    
+      <Helmet>
+        <title>Success Stories & Testimonials - EarlyJobs Surat Reviews</title>
+        <meta 
+          name="description" 
+          content="Read success stories from Surat's leading employers and placement officers. Discover how EarlyJobs transforms careers and hiring in Surat's textile and manufacturing sectors."
+        />
+        <meta 
+          name="keywords" 
+          content="EarlyJobs reviews, Surat job testimonials, placement success stories, employer feedback Surat, career testimonials, recruitment testimonials, job seeker reviews"
+        />
+
+        {/* Open Graph Tags */}
+        <meta property="og:title" content="Success Stories - EarlyJobs Surat Career Platform" />
+        <meta 
+          property="og:description" 
+          content="Real testimonials from Surat's employers and placement officers about their success with EarlyJobs."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="en_IN" />
+
+        {/* Additional SEO Tags */}
+        <link rel="canonical" href="https://yourwebsite.com/testimonials" />
+        <meta name="robots" content="index, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        {/* Review Schema Markup */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "EarlyJobs Surat",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "5",
+              "reviewCount": testimonials.length.toString(),
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": testimonials.map(testimonial => ({
+              "@type": "Review",
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": testimonial.rating.toString(),
+                "bestRating": "5"
+              },
+              "author": {
+                "@type": "Person",
+                "name": testimonial.name
+              },
+              "reviewBody": testimonial.content,
+              "publisher": {
+                "@type": "Organization",
+                "name": testimonial.role.split(",")[1].trim()
+              }
+            }))
+          })}
+        </script>
+      </Helmet>
 
       <section className="py-20 px-4 sm:px-6 bg-white">
         <div className="container mx-auto max-w-6xl">

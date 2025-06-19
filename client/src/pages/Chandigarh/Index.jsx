@@ -17,7 +17,7 @@ import TestimonialsSection from '../../components/chandigarh/TestimonialsSection
 import LeadCaptureForm from '../../components/chandigarh/LeadCaptureForm';
 import EventsSection from '../../components/chandigarh/EventsSection';
 import FAQSection from '../../components/chandigarh/FAQSection';
-import Footer from '../../components/chandigarh/Footer';
+// import Footer from '../../components/chandigarh/Footer';
 
 const ChandigarhFranchise = () => {
   return (
