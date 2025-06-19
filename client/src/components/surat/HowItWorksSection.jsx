@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+
 import { Card, CardContent } from '../../components/ui/card';
 import { UserPlus, Upload, CheckCircle } from 'lucide-react';
 
@@ -27,59 +27,7 @@ const HowItWorksSection = () => {
 
   return (
     <>
-      <Helmet>
-        <title>How It Works - EarlyJobs Surat Career Platform Process</title>
-        <meta 
-          name="description" 
-          content="Learn how EarlyJobs Surat works in 3 simple steps. Register, upload your profile, and get placed with top employers in Surat's textile and manufacturing sectors."
-        />
-        <meta 
-          name="keywords" 
-          content="how to get job in Surat, Surat job process, career guidance Surat, placement process, job application steps, recruitment process Surat"
-        />
-
-        {/* Open Graph Tags */}
-        <meta property="og:title" content="How EarlyJobs Surat Works - Simple 3-Step Process" />
-        <meta 
-          property="og:description" 
-          content="Simple 3-step process to connect with job opportunities in Surat. Register, match, and get placed with leading employers."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_IN" />
-
-        {/* Additional SEO Tags */}
-        <link rel="canonical" href="https://yourwebsite.com/how-it-works" />
-        <meta name="robots" content="index, follow" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-        {/* HowTo Schema Markup */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "HowTo",
-            "name": "How to Get Placed Through EarlyJobs Surat",
-            "description": "Step-by-step process to find job opportunities in Surat",
-            "step": [
-              {
-                "@type": "HowToStep",
-                "name": "Sign Up",
-                "text": "Register via Surat franchise portal with your details"
-              },
-              {
-                "@type": "HowToStep",
-                "name": "Upload & Match",
-                "text": "Upload your resume or job requirement to get matched locally"
-              },
-              {
-                "@type": "HowToStep",
-                "name": "Get Placed",
-                "text": "Get interviewed and placed with Surat talent or employers"
-              }
-            ]
-          })}
-        </script>
-      </Helmet>
-
+     
       <section className="py-20 px-4 bg-muted/50">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">

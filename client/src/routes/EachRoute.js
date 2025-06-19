@@ -73,6 +73,7 @@ const ViewForms = lazy(() => import("../components/ViewForms"));
 const PressReleasePage = lazy(() => import("../pages/PressReleasePage"));
 const Clientele = lazy(() => import("../pages/clientele"));
 const Mohali = lazy(() => import("../pages/Mohali/index.jsx"));
+const FranchiseHyd= lazy(() => import("../pages/FranchiseHyd/index.jsx"));
 
 const EachRoute = ({ initialState }) => {
   return (
@@ -113,6 +114,16 @@ const EachRoute = ({ initialState }) => {
         render={() => (
           <Suspense fallback={<Loader />}>
             <Mohali />
+            {/* <LoginPage /> */}
+          </Suspense>
+        )}
+      />
+       <Route
+        exact
+        path="/franchise/hyderabad"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <FranchiseHyd />
             {/* <LoginPage /> */}
           </Suspense>
         )}

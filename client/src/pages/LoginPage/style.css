@@ -54,6 +54,7 @@
     border-radius: 5px;
     border: 1px solid #EB6A4D;
     width: 100%;
+    color: #000;
     margin-bottom: 16px;
     padding-left: 12px;
     font-size: 14px;
@@ -149,13 +150,16 @@
     .homepage-img {
         display: none;
     }
+
     .homepage-quote {
         font-size: 20px;
         margin: 20px 15px;
     }
+
     .login-type-con {
         width: 90%;
     }
+
     .login-type-button {
         padding: 0px 10px;
         font-size: 12px;
@@ -168,6 +172,7 @@
         width: 35%;
         margin: 0px 60px;
     }
+
     .homepage-img {
         width: 40%;
     }

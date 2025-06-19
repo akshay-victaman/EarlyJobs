@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { CheckCircle, Users, Building, Target, ArrowRight } from 'lucide-react';
@@ -46,32 +46,6 @@ const BenefitsSection = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Benefits & Solutions - EarlyJobs Surat Career Platform</title>
-        <meta 
-          name="description" 
-          content="Discover tailored solutions for students, colleges, and employers in Surat. Get access to verified jobs, placement support, and local talent pool through EarlyJobs Surat." 
-        />
-        <meta 
-          name="keywords" 
-          content="career benefits Surat, job placement solutions, college placements Surat, employer hiring solutions, internships Surat, campus placements, recruitment solutions, talent acquisition Surat" 
-        />
-
-        {/* Open Graph Tags */}
-        <meta property="og:title" content="Benefits & Solutions - EarlyJobs Surat Career Platform" />
-        <meta 
-          property="og:description" 
-          content="Comprehensive career solutions for students, colleges, and employers in Surat's dynamic job market." 
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_IN" />
-        
-        {/* Additional SEO Tags */}
-        <link rel="canonical" href="https://yourwebsite.com/benefits" />
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="EarlyJobs Surat" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </Helmet>
 
       <section className="pb-24 px-4 sm:px-6 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto max-w-7xl">

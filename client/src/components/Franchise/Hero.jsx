@@ -278,9 +278,8 @@ const Hero = () => {
               ref={videoRef}
               src="https://res.cloudinary.com/ddzdpsj6i/video/upload/v1750077777/IMG_1783_22_g0tifc.mp4"
               autoPlay
-              muted
               loop
-              controls
+              unmuted
               playsInline
               style={{
                 height: "529px",
