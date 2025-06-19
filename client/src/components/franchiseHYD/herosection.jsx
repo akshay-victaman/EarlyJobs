@@ -1,6 +1,9 @@
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 const HeroSection = () => {
+  const scrollToLeadForm = () => {
+    document.getElementById('hyd-lead-capture')?.scrollIntoView({ behavior: 'smooth' });
+  };
     return (
         <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-900 via-blue-800 to-orange-600 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/30"></div>
@@ -25,12 +28,10 @@ const HeroSection = () => {
               EarlyJobs connects fresh talent with verified opportunities across Hyderabad's booming tech and business landscape. From HITEC City startups to established enterprises.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="bg-orange-500 rounded-xl hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105">
+              <Button onClick={scrollToLeadForm} size="lg" className="bg-orange-500 rounded-xl hover:bg-orange-600 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105">
                 Register for Job Support
               </Button>
-              <Button size="lg" variant="outline" className="border-white rounded-xl text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg font-semibold transition-all duration-300">
-                Partner with Us
-              </Button>
+             
             </div>
           </div>
         </div>

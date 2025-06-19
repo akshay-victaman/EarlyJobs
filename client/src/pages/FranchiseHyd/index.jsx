@@ -63,8 +63,8 @@ const handleInputChange = (field, value) => {
   
     // First email: to the user
     const sendToUser = emailjs.send(
-      'service_janwchj',          // Your service ID
-      'template_apw8avr',         // Template ID for user
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID,          // Your service ID
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID,         // Template ID for user
       {
         from_name: formData.name,
         email: formData.email,
@@ -72,13 +72,13 @@ const handleInputChange = (field, value) => {
         role: formData.role,
         branch:"Hyderabad"
       },
-      '2RjsnTyaAMM2p9XuO'          // Public key
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY          // Public key
     );
   
     // Second email: to internal team/franchise
     const sendToTeam = emailjs.send(
-      'service_34t30rm',          // Same service ID (or different if needed)
-      'template_nuf3iuz', // Template ID for team notification
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID_2,          // Same service ID (or different if needed)
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID_2, // Template ID for team notification
       {
         from_name: formData.name,
         email: formData.email,
@@ -88,7 +88,7 @@ const handleInputChange = (field, value) => {
         message: formData.message,
         tomail:"hyderabad@earlyjobs.in"
       },
-      'k0U3GoVuaDmIxqwmP'
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY_2
     );
   
     Promise.all([sendToUser, sendToTeam])
@@ -156,7 +156,7 @@ const handleInputChange = (field, value) => {
      
 
       {/* Lead Capture Form */}
-      <section className="py-20 bg-gradient-to-r from-blue-900 to-orange-600 text-white">
+      <section id="hyd-lead-capture" className="py-20 bg-gradient-to-r from-blue-900 to-orange-600 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-6">Join the EarlyJobs Hyderabad Network</h2>

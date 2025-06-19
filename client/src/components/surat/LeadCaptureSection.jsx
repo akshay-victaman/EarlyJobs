@@ -23,7 +23,7 @@ const LeadCaptureSection = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    emailjs.init('Kma5s8neZCz3p5D_M');
+    emailjs.init(process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_ACCOUNT_KEY);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -55,8 +55,8 @@ const LeadCaptureSection = () => {
     };
 
     try {
-      await emailjs.send('service_j199ycr', 'template_n2wafca', adminTemplateParams);
-      await emailjs.send('service_j199ycr', 'template_od85g0k', userTemplateParams);
+      await emailjs.send(process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_SERVICE_ID, process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_TEMPLATE_ID, adminTemplateParams);
+      await emailjs.send(process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_SERVICE_ID, process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_TEMPLATE_ID_2, userTemplateParams);
 
       toast({
         title: "Your form is submitted successfully",

@@ -53,8 +53,8 @@ const Index = () => {
   
     // First email: to the user
     const sendToUser = emailjs.send(
-      'service_janwchj',          // Your service ID
-      'template_apw8avr',         // Template ID for user
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID,          // Your service ID
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID,         // Template ID for user
       {
         from_name: formData.name,
         email: formData.email,
@@ -62,13 +62,13 @@ const Index = () => {
         role: formData.role,
         branch:"Mohali"
       },
-      '2RjsnTyaAMM2p9XuO'          // Public key
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY          // Public key
     );
   
     // Second email: to internal team/franchise
     const sendToTeam = emailjs.send(
-      'service_34t30rm',          // Same service ID (or different if needed)
-      'template_nuf3iuz', // Template ID for team notification
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID_2,          // Same service ID (or different if needed)
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID_2, // Template ID for team notification
       {
         from_name: formData.name,
         email: formData.email,
@@ -78,7 +78,7 @@ const Index = () => {
         message: "",
         tomail:"mohali@earlyjobs.in"
       },
-      'k0U3GoVuaDmIxqwmP'
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY_2
     );
   
     Promise.all([sendToUser, sendToTeam])

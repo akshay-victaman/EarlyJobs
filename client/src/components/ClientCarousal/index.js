@@ -7,7 +7,6 @@ const logos = [
     { src: '/client_logos/allsec.png', alt: 'Allsec Logo' },
     { src: '/client_logos/altrust.png', alt: 'Altrust Logo' },
     { src: '/client_logos/flipkart.png', alt: 'Flipkart Logo' },
-    { src: '/client_logos/bb.png', alt: 'Big Basket Logo' },
     { src: '/client_logos/hdfc.png', alt: 'HDFC Logo' },
     { src: '/client_logos/shaadi.png', alt: 'Shaadi Logo' },
     { src: '/client_logos/hgs.png', alt: 'HGS Logo' },

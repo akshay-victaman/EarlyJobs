@@ -14,7 +14,7 @@ const HeroSection = () => {
     <>
       
 
-      <section className="relative min-h-[90vh] md:min-h-screen bg-gradient-to-br from-orange-600 via-orange-700 to-indigo-600 text-white overflow-hidden">
+      <section className="flex items-center relative min-h-[100vh] md:min-h-screen bg-gradient-to-br from-orange-600 via-orange-700 to-indigo-600 text-white overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div
