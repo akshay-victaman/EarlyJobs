@@ -8,7 +8,7 @@ const BenefitsSection = () => {
   const benefits = [
     {
       icon: Users,
-      title: "Launch Your Career",
+      title: "Start Your Career",
       badge: "For Students",
       color: "from-primary to-accent",
       features: [
