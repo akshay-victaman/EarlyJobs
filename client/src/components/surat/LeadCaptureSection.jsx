@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -23,7 +23,7 @@ const LeadCaptureSection = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    emailjs.init('Kma5s8neZCz3p5D_M');
+    emailjs.init(process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_ACCOUNT_KEY);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -55,8 +55,8 @@ const LeadCaptureSection = () => {
     };
 
     try {
-      await emailjs.send('service_j199ycr', 'template_n2wafca', adminTemplateParams);
-      await emailjs.send('service_j199ycr', 'template_od85g0k', userTemplateParams);
+      await emailjs.send(process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_SERVICE_ID, process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_TEMPLATE_ID, adminTemplateParams);
+      await emailjs.send(process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_SERVICE_ID, process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_TEMPLATE_ID_2, userTemplateParams);
 
       toast({
         title: "Your form is submitted successfully",
@@ -103,65 +103,7 @@ const LeadCaptureSection = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Join EarlyJobs Surat - Register for Career Opportunities</title>
-        <meta
-          name="description"
-          content="Register with EarlyJobs Surat for exclusive job opportunities, internships, and placement services. Connect with top employers in textile, manufacturing, and SME sectors."
-        />
-        <meta
-          name="keywords"
-          content="register jobs Surat, career registration, job application Surat, placement registration, internship application, hiring Surat, recruitment form"
-        />
-        <meta property="og:title" content="Register - EarlyJobs Surat Career Network" />
-        <meta
-          property="og:description"
-          content="Join Surat's premier career network. Quick registration process for students, colleges, and employers."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_IN" />
-        <link rel="canonical" href="https://yourwebsite.com/register" />
-        <meta name="robots" content="index, follow" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ContactPage",
-            "name": "EarlyJobs Surat Registration",
-            "description": "Register for career opportunities in Surat",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+91-98765-43210",
-              "contactType": "customer service",
-              "email": "surat@earlyjobs.in",
-              "areaServed": "Surat",
-              "availableLanguage": ["English", "Gujarati", "Hindi"]
-            },
-            "address": {
-              "@type": "PostalAddress",
-              "addressLocality": "Athwa Lines",
-              "addressRegion": "Surat",
-              "addressCountry": "India"
-            },
-            "potentialAction": {
-              "@type": "RegisterAction",
-              "target": {
-                "@type": "EntryPoint",
-                "urlTemplate": "https://yourwebsite.com/register",
-                "inLanguage": "en-IN",
-                "actionPlatform": [
-                  "http://schema.org/DesktopWebPlatform",
-                  "http://schema.org/MobileWebPlatform"
-                ]
-              },
-              "result": {
-                "@type": "RegisterAction",
-                "name": "Registration Completion"
-              }
-            }
-          })}
-        </script>
-      </Helmet>
+   
 
       <section id="lead-capture" className="py-8 sm:py-12 md:py-16 lg:py-20 px-4 bg-gradient-to-r from-orange-500 to-orange-700 relative overflow-hidden">
         <div className="absolute inset-0 opacity-5 sm:opacity-10">

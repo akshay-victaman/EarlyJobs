@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
@@ -35,69 +35,7 @@ const LocalEventsSection = () => {
 
   return (
     <section id = "toevents">
-      <Helmet>
-        <title>Career Events in Surat - EarlyJobs Job Fairs & Recruitment Drives</title>
-        <meta 
-          name="description" 
-          content="Join EarlyJobs Surat's recruitment events, job fairs, and walk-in interviews. Regular hiring events for textile, manufacturing, and fresh graduate positions."
-        />
-        <meta 
-          name="keywords" 
-          content="job fairs Surat, recruitment events, walk-in interviews Surat, career events, placement drives, textile job fair, college recruitment"
-        />
-
-        {/* Open Graph Tags */}
-        <meta property="og:title" content="Career Events in Surat - EarlyJobs Recruitment Calendar" />
-        <meta 
-          property="og:description" 
-          content="Upcoming job fairs and recruitment events in Surat. Weekly walk-in interviews and industry-specific hiring drives."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_IN" />
-
-        {/* Additional SEO Tags */}
-        <link rel="canonical" href="https://yourwebsite.com/events" />
-        <meta name="robots" content="index, follow" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-        {/* Event Schema Markup */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "EventSeries",
-            "name": "EarlyJobs Surat Career Events",
-            "description": "Regular recruitment events and job fairs in Surat",
-            "location": {
-              "@type": "Place",
-              "name": "EarlyJobs Surat Office",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Athwa Lines",
-                "addressRegion": "Surat",
-                "addressCountry": "India"
-              }
-            },
-            "subEvents": events.map(event => ({
-              "@type": "CareerEvent",
-              "name": event.title,
-              "startDate": event.date,
-              "location": {
-                "@type": "Place",
-                "name": event.location,
-                "address": {
-                  "@type": "PostalAddress",
-                  "addressLocality": "Surat",
-                  "addressRegion": "Gujarat",
-                  "addressCountry": "India"
-                }
-              },
-              "description": event.description,
-              "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-              "eventStatus": "https://schema.org/EventScheduled"
-            }))
-          })}
-        </script>
-      </Helmet>
+     
 
       <section className="py-20 px-4 bg-muted/50">
         <div className="container mx-auto max-w-6xl">

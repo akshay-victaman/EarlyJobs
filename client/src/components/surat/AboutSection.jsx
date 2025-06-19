@@ -1,26 +1,12 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+
 import { Card, CardContent } from '../../components/ui/card';
 import { Building2, GraduationCap, Factory } from 'lucide-react';
 
 const AboutSection = () => {
   return (
     <>
-      <Helmet>
-        <title>About EarlyJobs Surat - Career Opportunities in Textile & Manufacturing</title>
-        <meta name="description" content="EarlyJobs Surat connects talent with leading textile, manufacturing, and SME sectors. Join Surat's premier recruitment platform for real career opportunities." />
-        <meta name="keywords" content="EarlyJobs Surat, jobs in Surat, textile jobs, manufacturing jobs, SME jobs, career opportunities Surat, recruitment Surat, job placement Surat, educational partnerships" />
-        
-        {/* Open Graph / Social Media Meta Tags */}
-        <meta property="og:title" content="About EarlyJobs Surat - Career Opportunities" />
-        <meta property="og:description" content="EarlyJobs Surat connects talent with leading textile, manufacturing, and SME sectors. Join Surat's premier recruitment platform." />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_IN" />
-        
-        {/* Additional SEO Meta Tags */}
-        <link rel="canonical" href="https://yourwebsite.com/about" />
-        <meta name="robots" content="index, follow" />
-      </Helmet>
+    
 
       <section className="py-8 sm:py-12 md:py-16 lg:py-20 px-4 bg-muted/50">
         <div className="container mx-auto max-w-6xl">

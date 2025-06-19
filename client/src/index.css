@@ -23,6 +23,10 @@ code {
   padding: 0;
 }
 
+select, input {
+  all: revert;
+}
+
 :root {
   --background: 0 0% 100%;
   --foreground: 20 14.3% 4.1%;
@@ -393,7 +397,7 @@ code {
 }
 
 @layer base {
- 
+
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -404,16 +408,14 @@ code {
   .brand-gradient {
     @apply bg-gradient-to-br from-primary via-primary/90 to-accent;
   }
-  
+
   .glass-effect {
     @apply bg-white/10 backdrop-blur-md border border-white/20;
   }
-  
+
   .premium-shadow {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
   }
-  
-  .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl;
-  }
+
+
 }

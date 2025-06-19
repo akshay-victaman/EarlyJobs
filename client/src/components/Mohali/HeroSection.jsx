@@ -2,7 +2,7 @@
 import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { ArrowRight, MapPin, Users } from 'lucide-react';
-import { Helmet } from 'react-helmet';
+
 import './HeroSection.css';
 
 const HeroSection = () => {
@@ -29,53 +29,7 @@ const HeroSection = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{seoData.title}</title>
-        <meta name="description" content={seoData.description} />
-        <meta name="keywords" content={seoData.keywords} />
-        <meta property="og:title" content={seoData.title} />
-        <meta property="og:description" content={seoData.description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://earlyjobs.in/mohali/hero-image.jpg" />
-        <meta property="og:url" content="https://earlyjobs.in/mohali" />
-        <meta property="og:site_name" content="EarlyJobs Mohali" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={seoData.title} />
-        <meta name="twitter:description" content={seoData.description} />
-        <meta name="twitter:image" content="https://earlyjobs.in/mohali/twitter-card.jpg" />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "EmploymentAgency",
-            "name": "EarlyJobs Mohali",
-            "description": seoData.description,
-            "url": "https://earlyjobs.in/mohali",
-            "logo": "https://earlyjobs.in/mohali/logo.png",
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "Sector 80",
-              "addressLocality": "Mohali",
-              "addressRegion": "Punjab",
-              "postalCode": "160080",
-              "addressCountry": "IN"
-            },
-            "geo": {
-              "@type": "GeoCoordinates",
-              "latitude": "30.704649",
-              "longitude": "76.717873"
-            },
-            "areaServed": {
-              "@type": "City",
-              "name": "Mohali"
-            },
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "4.8",
-              "reviewCount": "500"
-            }
-          })}
-        </script>
-      </Helmet>
+     
 
       <section className="hero-section">
         <div className="hero-background">

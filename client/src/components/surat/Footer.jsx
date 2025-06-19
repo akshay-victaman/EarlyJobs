@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+
 import { Separator } from '../../components/ui/separator';
 import { Badge } from '../../components/ui/badge';
 import { MapPin, Phone, Mail, Instagram, Facebook, ExternalLink, Linkedin } from 'lucide-react';
@@ -12,60 +12,7 @@ const Footer = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Contact EarlyJobs Surat - Location & Support Information</title>
-        <meta 
-          name="description" 
-          content="Get in touch with EarlyJobs Surat. Find our office location, contact details, and support information for career services in Surat's job market."
-        />
-        <meta 
-          name="keywords" 
-          content="EarlyJobs Surat contact, career support Surat, job placement office, recruitment contact, franchise location Surat, career guidance contact"
-        />
-
-        {/* Open Graph Tags */}
-        <meta property="og:title" content="Contact EarlyJobs Surat - Location & Support" />
-        <meta 
-          property="og:description" 
-          content="Connect with EarlyJobs Surat for career opportunities and recruitment services. Visit our office or reach out for support."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="en_IN" />
-
-        {/* Additional SEO Tags */}
-        <link rel="canonical" href="https://yourwebsite.com/contact" />
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="EarlyJobs Surat" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-        {/* Organization Schema Markup */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "EarlyJobs Surat",
-            "url": "https://yourwebsite.com",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+91-12345-67890",
-              "contactType": "customer service",
-              "email": "surat@earlyjobs.in",
-              "areaServed": "Surat"
-            },
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "Sector 34",
-              "addressLocality": "Surat",
-              "addressRegion": "Punjab",
-              "addressCountry": "India"
-            },
-            "sameAs": [
-              "https://www.facebook.com/earlyjobssurat",
-              "https://www.instagram.com/earlyjobssurat"
-            ]
-          })}
-        </script>
-      </Helmet>
+    
 
       <footer className="bg-gray-900 text-white">
         <div className="container mx-auto px-4 py-16">

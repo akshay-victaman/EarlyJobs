@@ -3,13 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { Input } from "../../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/selectMohali";
 import { Badge } from "../../components/ui/badge";
-import { Users, Briefcase, Laptop, MapPin, Phone, Mail, Calendar, ArrowRight, CheckCircle, Star, Building2 } from "lucide-react";
-import { useState } from "react";
-import { useToast } from "../../hooks/use-toast";
+import { Users, Briefcase, Laptop, MapPin, Phone, Mail, Calendar, ArrowRight, Loader2, CheckCircle, Star, Building2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import emailjs from '@emailjs/browser';
+import { toast } from "react-toastify";
 import FAQSection from "../../components/Mohali/faq";
-import Footer from "../../components/Mohali/footer"; 
 import HeroSection from "../../components/Mohali/HeroSection";
-import { Helmet } from 'react-helmet';
+
 import './Index.css';
 import { MdWidthFull } from "react-icons/md";
 
@@ -44,106 +44,66 @@ const Index = () => {
     mobile: "",
     role: ""
   });
-  const { toast } = useToast();
+
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    toast({
-      title: "Form Submitted Successfully!",
-      description: "We'll contact you within 24 hours.",
-    });
-    setFormData({ name: "", email: "", mobile: "", role: "" });
+    setLoading(true);
+  
+    // First email: to the user
+    const sendToUser = emailjs.send(
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID,          // Your service ID
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID,         // Template ID for user
+      {
+        from_name: formData.name,
+        email: formData.email,
+        mobile: formData.mobile,
+        role: formData.role,
+        branch:"Mohali"
+      },
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY          // Public key
+    );
+  
+    // Second email: to internal team/franchise
+    const sendToTeam = emailjs.send(
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID_2,          // Same service ID (or different if needed)
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID_2, // Template ID for team notification
+      {
+        from_name: formData.name,
+        email: formData.email,
+        mobile: formData.mobile,
+        role: formData.role,
+        Branch:"Mohali",
+        message: "",
+        tomail:"mohali@earlyjobs.in"
+      },
+      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY_2
+    );
+  
+    Promise.all([sendToUser, sendToTeam])
+      .then(() => {
+        toast.success(
+          'Form Submitted Successfully!'
+        );
+        setFormData({ name: '', email: '', mobile: '', role: '' });
+        setLoading(false);
+      })
+      .catch((error) => {
+        toast.error('Submission Failed'
+        );
+        setLoading(false);
+
+        console.error('EmailJS Error:', error);
+      });
   };
+
+  
+  
 
   return (
     <>
-      <Helmet>
-        <title>{seoData.title}</title>
-        <meta name="description" content={seoData.description} />
-        <meta name="keywords" content={seoData.keywords} />
-        
-        {/* Essential Meta Tags */}
-        <meta name="robots" content="index, follow, max-image-preview:large" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="author" content="EarlyJobs Mohali" />
-        <link rel="canonical" href={seoData.url} />
-
-        {/* OpenGraph Tags */}
-        <meta property="og:title" content={seoData.title} />
-        <meta property="og:description" content={seoData.description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={seoData.url} />
-        <meta property="og:image" content={seoData.imageUrl} />
-        <meta property="og:site_name" content="EarlyJobs Mohali" />
-        <meta property="og:locale" content="en_IN" />
-
-        {/* Twitter Card Tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={seoData.title} />
-        <meta name="twitter:description" content={seoData.description} />
-        <meta name="twitter:image" content={seoData.imageUrl} />
-
-        {/* Geo Tags */}
-        <meta name="geo.region" content="IN-PB" />
-        <meta name="geo.placename" content="Mohali" />
-        <meta name="geo.position" content="30.704649;76.717873" />
-        <meta name="ICBM" content="30.704649, 76.717873" />
-
-        {/* Organization Schema */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "EarlyJobs Mohali",
-            "url": seoData.url,
-            "logo": "https://earlyjobs.in/mohali/logo.png",
-            "description": seoData.description,
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "Sector 80",
-              "addressLocality": "Mohali",
-              "addressRegion": "Punjab",
-              "postalCode": "160080",
-              "addressCountry": "IN"
-            },
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+91-XXXXXXXXXX",
-              "contactType": "customer service",
-              "areaServed": "IN",
-              "availableLanguage": ["en", "hi", "pa"]
-            },
-            "sameAs": [
-              "https://facebook.com/earlyjobsmohali",
-              "https://instagram.com/earlyjobsmohali",
-              "https://linkedin.com/company/earlyjobs-mohali"
-            ]
-          })}
-        </script>
-
-        {/* Service Schema */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "EmploymentAgency",
-            "name": "EarlyJobs Mohali",
-            "serviceType": ["Job Placement", "Career Guidance", "Skill Development"],
-            "areaServed": {
-              "@type": "City",
-              "name": "Mohali"
-            },
-            "provider": {
-              "@type": "Organization",
-              "name": "EarlyJobs Mohali"
-            },
-            "audience": {
-              "@type": "Audience",
-              "audienceType": ["Job Seekers", "Students", "Employers"]
-            }
-          })}
-        </script>
-      </Helmet>
-
+    
       <div className="index-container">
         {/* Hero Section */}
         <HeroSection />
@@ -347,8 +307,8 @@ const Index = () => {
                   </Select>
                   <Input value="Mohali" disabled className="index-form-input index-form-input-disabled" />
                   <Button type="submit" className="index-form-button">
-                    <span className="index-form-button-text">EarlyJobs Mohali</span>
-                    <ArrowRight className="index-form-button-icon" />
+                    {loading ? <Loader2 className="index-form-button-loader" /> : <><span className="index-form-button-text">EarlyJobs Mohali</span>
+                    <ArrowRight className="index-form-button-icon" /></> }
                   </Button>
                 </form>
               </CardContent>
@@ -394,7 +354,6 @@ const Index = () => {
         <FAQSection/>
 
         {/* Footer */}
-        <Footer />
       </div>
     </>
   );

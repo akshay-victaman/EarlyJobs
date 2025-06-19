@@ -112,10 +112,7 @@ const App = ({ initialState }) => {
           <ComplaintsForm handleShowComplaintsForm={handleShowComplaintsForm} />
         )}
         <EachRoute initialState={initialState} />
-       {
-        pathname !== "/franchise/mohali"&&
        <Footer handleShowContactForm={handleShowContactForm} />
-       } 
         {Cookies.get("jwt_token") === undefined && <FooterScroll />}
         <ScrollUp />
         <ToastContainer autoClose={4000} />

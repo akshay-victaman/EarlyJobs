@@ -149,13 +149,16 @@
     .homepage-img {
         display: none;
     }
+
     .homepage-quote {
         font-size: 20px;
         margin: 20px 15px;
     }
+
     .login-type-con {
         width: 90%;
     }
+
     .login-type-button {
         padding: 0px 10px;
         font-size: 12px;
@@ -168,6 +171,7 @@
         width: 35%;
         margin: 0px 60px;
     }
+
     .homepage-img {
         width: 40%;
     }

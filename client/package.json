@@ -26,16 +26,13 @@
     "exceljs": "^4.4.0",
     "express": "^4.21.1",
     "firebase": "^10.7.2",
-    "html-webpack-plugin": "^5.6.3",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.511.0",
     "pdf-lib": "^1.17.1",
     "rc-pagination": "^4.0.4",
     "react": "^18.2.0",
-    "react-custom-flag-select": "^3.1.0",
     "react-dom": "^18.2.0",
     "react-google-recaptcha": "^3.1.0",
-    "react-helmet": "^6.1.0",
     "react-icons": "^4.12.0",
     "react-loader-spinner": "^5.4.5",
     "react-multi-carousel": "^2.8.5",
@@ -49,8 +46,7 @@
     "uuid": "^9.0.1",
     "web-vitals": "^2.1.4",
     "webpack": "^5.96.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-cli": "^5.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -79,15 +75,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
-    "@babel/plugin-proposal-class-properties": "^7.18.6",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/plugin-transform-runtime": "^7.25.9",
-    "@babel/preset-env": "^7.26.0",
-    "@babel/preset-react": "^7.25.9",
     "@babel/register": "^7.25.9",
-    "@tailwindcss/postcss": "^4.1.10",
-    "autoprefixer": "^10.4.21",
     "babel-loader": "^9.2.1",
+    "depcheck": "^1.4.7",
     "ignore-styles": "^5.0.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17"
