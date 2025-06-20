@@ -1,0 +1,121 @@
+.chandigarh-about-section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  background-color: #ffffff;
+}
+
+.chandigarh-about-container {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.chandigarh-about-content {
+  max-width: 896px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.chandigarh-about-badge {
+  background-color: #dbeafe;
+  color: #1e40af;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.chandigarh-about-badge:hover {
+  background-color: #dbeafe;
+}
+
+.chandigarh-about-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .chandigarh-about-title {
+    font-size: 2.25rem;
+  }
+}
+
+.chandigarh-about-description {
+  font-size: 1.125rem;
+  color: #4b5563;
+  margin-bottom: 2rem;
+  line-height: 1.75;
+}
+
+.chandigarh-about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .chandigarh-about-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.chandigarh-about-item {
+  text-align: center;
+}
+
+.chandigarh-about-icon-container {
+  width: 4rem;
+  height: 4rem;
+  background-color: #dbeafe;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
+}
+
+.chandigarh-about-icon-container:nth-child(2) {
+  background-color: #ede9fe;
+}
+
+.chandigarh-about-icon-container:nth-child(3) {
+  background-color: #d1fae5;
+}
+
+.chandigarh-about-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.chandigarh-about-icon:nth-child(1) {
+  color: #2563eb;
+}
+
+.chandigarh-about-icon:nth-child(2) {
+  color: #7c3aed;
+}
+
+.chandigarh-about-icon:nth-child(3) {
+  color: #059669;
+}
+
+.chandigarh-about-item-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.chandigarh-about-item-text {
+  color: #4b5563;
+}

@@ -744,8 +744,8 @@
 .info-subtitle {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
-
+  margin: 1rem 0rem;
+  color: #fff;
 }
 
 .info-item {
@@ -753,7 +753,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
-  color: #000 !important;
+  color: #fff !important;
 }
 
 
@@ -1057,7 +1057,7 @@
   width: 10px;
   height: 10px;
   border-radius: 9999px;
-  background-color: #f97316;
+  background-color: #FCBF48;
   position: relative;
   animation: pulse 1.5s infinite ease-in-out;
 }

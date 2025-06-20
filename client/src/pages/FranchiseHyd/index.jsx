@@ -5,7 +5,7 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2, Shield, Clock, Award, MapPin, Phone, Mail } from 'lucide-react';
 import { toast } from "react-toastify";
 import HeroSection from '../../components/franchiseHYD/herosection';
 import AboutSection from '../../components/franchiseHYD/AboutSection';
@@ -20,7 +20,7 @@ const Index = () => {
     name: '',
     phone: '',
     email: '',
-    role: '',
+    role: 'student',
     message: ''
   });
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,10 @@ const Index = () => {
   };
 
   const validatePhone = (phone) => {
-    const cleanPhone = phone.replace(/[^\d+]/g, '');
+    console.log("phone", phone);
+    const cleanPhone = phone.replace(/[^\d+]/g, '').replace('+91', '');
+    console.log("cleanPhone", cleanPhone);
+
     const phoneRegex = /^\+?\d{10,15}$/;
     
     if (!phone) {
@@ -39,62 +42,100 @@ const Index = () => {
     }
     
     if (!phoneRegex.test(cleanPhone)) {
-      return 'Enter a valid phone number';
+      return 'Enter a valid phone number with 10-digits';
     }
     
     return '';
   };
 
   const handlePhoneChange = (value) => {
-    handleInputChange('phone', value);
-    const error = validatePhone(value);
+    const raw = value.replace(/\D/g, "");
+    console.log("raw", raw);
+    let formatted = "+91 ";
+    
+    if (raw.length > 2) {
+      const number = raw.slice(2);
+      console.log("number", number);
+      if (number.length <= 4) {
+        formatted += number;
+      } else {
+        formatted += number.slice(0, 4) + " " + number.slice(4, 10);
+      }
+    }
+    
+    handleInputChange('phone', formatted);
+    const error = validatePhone(formatted);
     setPhoneError(error);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const phoneValidationError = validatePhone(formData.phone);
+    if (phoneValidationError) {
+      setPhoneError(phoneValidationError);
+      return;
+    }
+
     setLoading(true);
-  
-    const sendToUser = emailjs.send(
-      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID,
-      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID,
-      {
-        from_name: formData.name,
-        email: formData.email,
-        mobile: formData.phone,
-        role: formData.role,
-        branch: "Hyderabad"
-      },
-      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY
-    );
-  
-    const sendToTeam = emailjs.send(
-      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID_2,
-      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID_2,
-      {
-        from_name: formData.name,
-        email: formData.email,
-        mobile: formData.phone,
-        role: formData.role,
-        Branch: "Hyderabad",
-        message: formData.message,
-        tomail: "hyderabad@earlyjobs.in"
-      },
-      process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY_2
-    );
-  
-    Promise.all([sendToUser, sendToTeam])
-      .then(() => {
-        toast.success('Form Submitted Successfully!');
-        setFormData({ name: '', email: '', phone: '', message: '', role: '' });
-        setLoading(false);
-      })
-      .catch((error) => {
-        toast.error('Submission Failed');
-        setLoading(false);
-        console.error('EmailJS Error:', error);
-      });
+
+    try {
+      const sendToUser = emailjs.send(
+        process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID,
+        process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          email: formData.email,
+          mobile: formData.phone,
+          role: formData.role,
+          branch: "Hyderabad"
+        },
+        process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY
+      );
+
+      const sendToTeam = emailjs.send(
+        process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID_2,
+        process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_TEMPLATE_ID_2,
+        {
+          from_name: formData.name,
+          email: formData.email,
+          mobile: formData.phone,
+          role: formData.role,
+          Branch: "Hyderabad",
+          message: formData.message,
+          tomail: "hyderabad@earlyjobs.in"
+        },
+        process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY_2
+      );
+
+      await Promise.all([sendToUser, sendToTeam]);
+      toast.success('Form Submitted Successfully!');
+      setFormData({ name: '', email: '', phone: '', message: '', role: 'student' });
+    } catch (error) {
+      toast.error('Submission Failed');
+      console.error('EmailJS Error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const features = [
+    {
+      icon: Shield,
+      title: "Local Expertise",
+      description: "Deep understanding of Hyderabad's job market and business landscape"
+    },
+    {
+      icon: Clock,
+      title: "Quick Response",
+      description: "24-48 hours response time for all inquiries"
+    },
+    {
+      icon: Award,
+      title: "Proven Success",
+      description: "95% placement rate with verified local employers"
+    }
+  ];
 
   return (
     <div className="page-container">
@@ -104,43 +145,27 @@ const Index = () => {
       <section className="how-it-works-section">
         <div className="container">
           <div className="text-center">
-            <h2 className="section-title">
-              How It Works
-            </h2>
-            <p className="section-description">
-              Simple 3-step process to get started
-            </p>
+            <h2 className="section-title">How It Works</h2>
+            <p className="section-description">Simple 3-step process to get started</p>
           </div>
           <div className="steps-grid">
             <div className="step">
-              <div className="step-number step-number-blue">
-                1
-              </div>
-              <h3 className="step-title">
-                Register
-              </h3>
+              <div className="step-number step-number-blue">1</div>
+              <h3 className="step-title">Register</h3>
               <p className="step-description">
                 Sign up with your details and specify whether you're a student, college, or employer
               </p>
             </div>
             <div className="step">
-              <div className="step-number step-number-orange">
-                2
-              </div>
-              <h3 className="step-title">
-                Get Matched
-              </h3>
+              <div className="step-number step-number-orange">2</div>
+              <h3 className="step-title">Get Matched</h3>
               <p className="step-description">
                 Our AI algorithm matches candidates with suitable roles or employers with qualified talent
               </p>
             </div>
             <div className="step">
-              <div className="step-number step-number-green">
-                3
-              </div>
-              <h3 className="step-title">
-                Interview & Start
-              </h3>
+              <div className="step-number step-number-green">3</div>
+              <h3 className="step-title">Interview & Start</h3>
               <p className="step-description">
                 Participate in interviews with our support and begin your career journey
               </p>
@@ -148,116 +173,156 @@ const Index = () => {
           </div>
         </div>
       </section>
-      <section id="hyd-lead-capture" className="lead-capture-section">
-        <div className="container">
-          <div className="text-center">
-            <h2 className="section-title" style={{ color: 'white' }}>
-              Join the EarlyJobs Hyderabad Network
-            </h2>
-            <p className="section-description" style={{ color: '#D2D2D2' }}>
+      <section 
+        id="lead-capture" 
+        style={{ 
+          backgroundColor: "#B03B0F",
+          padding: "2rem 1rem",
+          width: "100%",
+          minHeight: "100vh"
+        }}
+      >
+        <div className="lead-capture-container">
+          <div className="features-container">
+            <h3 className="features-title">Join the EarlyJobs Hyderabad Network</h3>
+            <p style={{ color: "#fff" }}>
               Get started today and unlock opportunities in Hyderabad's thriving job market
             </p>
+            <div className="features-list">
+              {features.map((feature, index) => (
+                <div key={index} className="feature-item">
+                  <div className="feature-icon-container">
+                    <feature.icon className="feature-icon" />
+                  </div>
+                  <div>
+                    <h4 className="feature-title">{feature.title}</h4>
+                    <p className="feature-description">{feature.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="contact-info">
+              <h4 className="contact-title">Get in Touch</h4>
+              <div className="contact-items">
+                <div className="contact-item">
+                  <Phone className="contact-icon" />
+                  <span>+91 84318 30032</span>
+                </div>
+                <div className="contact-item">
+                  <Mail className="contact-icon" />
+                  <a href="mailto:hyderabad@earlyjobs.in" style={{ textDecoration: "none", color: "inherit" }}>
+                    hyderabad@earlyjobs.in
+                  </a>
+                </div>
+                <div className="contact-item">
+                  <MapPin className="contact-icon" />
+                  <span>Hyderabad, SaS Nagar, 5.2, Cabin, Fifth floor, E 260 BA, phase 8B industrial Area</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <Card className="form-card">
-            <CardContent className="form-content">
-              <form onSubmit={handleSubmit} className="form">
-                <div className="form-grid">
-                  <div className="form-group">
-                    <Label htmlFor="name" className="form-label">Full Name *</Label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      placeholder="Enter your full name"
-                      required
-                      className="form-input"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <Label htmlFor="phone" className="form-label">Phone Number *</Label>
-                    <Input
-                      id="phone"
-                      inputMode="numeric"
-                      value={formData.phone}
-                      onChange={(e) => {
-                        const raw = e.target.value.replace(/\D/g, ""); // remove non-digits
-                        let formatted = "+91 ";
-                  
-                        if (raw.length > 2) {
-                          const number = raw.slice(2); // skip the '91' if user typed manually
-                          if (number.length <= 4) {
-                            formatted += number;
-                          } else {
-                            formatted += number.slice(0, 4) + " " + number.slice(4, 10);
-                          }
-                        }
-                  
-                        handlePhoneChange(formatted)
-                      }}
-                      
-                      onBlur={(e) => handlePhoneChange(e.target.value)}
-                      placeholder="+91 XXXXX XXXXX"
-                      required
-                      className={`form-input ${phoneError ? 'input-error' : ''}`}
-                      aria-invalid={phoneError ? 'true' : 'false'}
-                      aria-describedby={phoneError ? 'phone-error' : undefined}
-                    />
-                    {phoneError && (
-                      <span id="phone-error" className="error-message" role="alert">
-                        {phoneError}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <Label htmlFor="email" className="form-label">Email Address *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      placeholder="your.email@example.com"
-                      required
-                      className="form-input"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <Label htmlFor="role" className="form-label">I am a *</Label>
-                    <Select value={formData.role} onValueChange={(value) => handleInputChange('role', value)}>
-                      <SelectTrigger className="form-select">
-                        <SelectValue placeholder="Select your role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="student">Student/Graduate</SelectItem>
-                        <SelectItem value="college">College/Institution</SelectItem>
-                        <SelectItem value="employer">Employer/Company</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="form-group">
-                  <Label htmlFor="message" className="form-label">Tell us about your requirements (Optional)</Label>
-                  <Textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={(e) => handleInputChange('message', e.target.value)}
-                    placeholder="Share your specific needs, preferred job roles, or hiring requirements..."
-                    className="form-textarea"
-                    rows={4}
-                  />
-                </div>
-                <Button type="submit" className="submit-button">
-                  {loading ? <Loader2 className="button-loader" /> : (
-                    <div className="button-content">
-                      <span className="button-text" style={{ color: 'white' }}>Join EarlyJobs Hyderabad</span>
-                      <ArrowRight className="button-icon" />
-                    </div>
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+
+          <div className="form-container">
+            <h2 style={{ marginBottom: "0px" }}>Get Started Today</h2>
+            <p style={{ margin: "0px" }}>Join thousands of successful candidates and employers</p>
+            <form onSubmit={handleSubmit} className="form" Validate>
+              <div className="form-group">
+                <Label htmlFor="name" className="form-label">Full Name *</Label>
+                <Input
+                  id="name"
+                  placeholder="Enter your full name"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  required
+                  className="form-input"
+                  aria-required="true"
+                />
+              </div>
+              <div className="form-group">
+                <Label htmlFor="phone" className="form-label">Phone Number *</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+91 XXXX XXXXXX"
+                  value={formData.phone}
+                  onChange={(e) => handlePhoneChange(e.target.value)}
+                  required
+                  className="form-input"
+                  aria-required="true"
+                  aria-invalid={!!phoneError}
+                  aria-describedby={phoneError ? "phone-error" : undefined}
+                />
+                {phoneError && (
+                  <p id="phone-error" className="error-message" style={{ color: 'red', fontSize: '0.8rem' }}>
+                    {phoneError}
+                  </p>
+                )}
+              </div>
+              <div className="form-group">
+                <Label htmlFor="email" className="form-label">Email Address *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="your.email@example.com"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  required
+                  className="form-input"
+                  aria-required="true"
+                />
+              </div>
+              <div className="form-group">
+                <Label htmlFor="message" className="form-label">Description *</Label>
+                <Textarea
+                  id="message"
+                  placeholder="Tell us about your goals or requirements"
+                  value={formData.message}
+                  onChange={(e) => handleInputChange('message', e.target.value)}
+                  required
+                  className="form-input"
+                  aria-required="true"
+                />
+              </div>
+              <div className="form-group">
+                <Label htmlFor="role" className="form-label">I am a *</Label>
+                <Select 
+                  value={formData.role} 
+                  onValueChange={(value) => handleInputChange('role', value)}
+                >
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Select your role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="student">Student / Job Seeker</SelectItem>
+                    <SelectItem value="employer">Employer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="form-group">
+                <Label htmlFor="city" className="form-label">City</Label>
+                <Input
+                  id="city"
+                  value="Hyderabad"
+                  disabled
+                  className="form-input"
+                  aria-disabled="true"
+                />
+              </div>
+              <Button 
+                type="submit" 
+                className="form-button" 
+                disabled={loading || !!phoneError}
+                aria-label={loading ? "Submitting form" : "Join EarlyJobs Hyderabad"}
+              >
+                {loading ? <Loader2 className="button-loader" /> : 'Join EarlyJobs Hyderabad'}
+              </Button>
+              <p className="form-note">
+                By submitting this form, you agree to our{' '}
+                <a className="form-note" href='/terms-and-conditions'>Terms of Service</a> and{' '}
+                <a className="form-note" href='/privacy-policy'>Privacy Policy</a>
+              </p>
+            </form>
+          </div>
         </div>
       </section>
       <LocalEvents />

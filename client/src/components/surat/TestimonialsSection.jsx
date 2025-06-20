@@ -1,7 +1,6 @@
 import React from 'react';
-
-import { Card, CardContent } from '../ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Card, CardContent } from '../../components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import { Star } from 'lucide-react';
 
 const TestimonialsSection = () => {
@@ -26,7 +25,7 @@ const TestimonialsSection = () => {
 
   return (
     <>
-    
+     
 
       <section className="py-20 px-4 sm:px-6 bg-white">
         <div className="container mx-auto max-w-6xl">

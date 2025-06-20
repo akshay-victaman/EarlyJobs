@@ -6,6 +6,7 @@ import TopExecutiveServicePage from "../pages/OurServicesPages/TopExecutiveServi
 import HrExecutiveServicePage from "../pages/OurServicesPages/HrExecutiveServicePage.jsx";
 import Franchise from "../pages/Franchise/index.js";
 import SuratFranchise from "../pages/Surat";
+import ChandigarhFranchise from "../pages/Chandigarh/Index.jsx";
 
 const JobsPage = lazy(() => import("../components/JobsPage"));
 const BDEPage = lazy(() => import("../components/BDEPage"));
@@ -139,6 +140,16 @@ const EachRoute = ({ initialState }) => {
           </Suspense>
         )}
       />
+
+      <Route
+        exact
+        path="/franchise/chandigarh"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <ChandigarhFranchise />  
+          </Suspense> 
+        )}
+       />
 
       <Route
         exact

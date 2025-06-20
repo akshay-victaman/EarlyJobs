@@ -4,7 +4,7 @@ import './BenefitsSection.css';
 
 const BenefitsSection = () => {
     return (
-        <section className="benefits-section">
+        <section className="benefits-section" style={{backgroundColor:"#fff",background:"#fff",padding:"0px"}}>
             <div className="container">
                 <div className="text-center">
                     <h2 className="section-title">
@@ -18,8 +18,8 @@ const BenefitsSection = () => {
                     {/* Students */}
                     <Card className="card">
                         <CardHeader className="card-header card-header-blue">
-                            <CardTitle className="card-title">
-                                <Users className="icon" />
+                            <CardTitle className="card-title" style={{color:"#fff"}}>
+                                <Users className="icon" style={{color:"#fff"}}/>
                                 For Students
                             </CardTitle>
                         </CardHeader>
@@ -27,23 +27,23 @@ const BenefitsSection = () => {
                             <div className="benefit-list">
                                 <div className="benefit-item">
                                     <div className="bullet bullet-blue"></div>
-                                    <p>Verified job opportunities across Hyderabad</p>
+                                    <p style={{color:"#000"}}>Verified job opportunities across Hyderabad</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-blue"></div>
-                                    <p>Walk-in interview support and guidance</p>
+                                    <p style={{color:"#000"}}>Walk-in interview support and guidance</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-blue"></div>
-                                    <p>AI-powered skill assessment tests</p>
+                                    <p style={{color:"#000"}}>AI-powered skill assessment tests</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-blue"></div>
-                                    <p>Resume building and interview preparation</p>
+                                    <p style={{color:"#000"}}>Resume building and interview preparation</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-blue"></div>
-                                    <p>Direct connection with HR teams</p>
+                                    <p style={{color:"#000"}}>Direct connection with HR teams</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -51,8 +51,8 @@ const BenefitsSection = () => {
                     {/* Colleges */}
                     <Card className="card">
                         <CardHeader className="card-header card-header-orange">
-                            <CardTitle className="card-title">
-                                <FileText className="icon" />
+                            <CardTitle  className="card-title" style={{color:"#fff"}}>
+                                <FileText className="icon" style={{color:"#fff"}}/>
                                 For Colleges
                             </CardTitle>
                         </CardHeader>
@@ -60,23 +60,23 @@ const BenefitsSection = () => {
                             <div className="benefit-list">
                                 <div className="benefit-item">
                                     <div className="bullet bullet-orange"></div>
-                                    <p>MoU partnerships for placement drives</p>
+                                    <p style={{color:"#000"}}>MoU partnerships for placement drives</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-orange"></div>
-                                    <p>Dedicated placement coordination</p>
+                                    <p style={{color:"#000"}}>Dedicated placement coordination</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-orange"></div>
-                                    <p>Industry connect programs</p>
+                                    <p style={{color:"#000"}}>Industry connect programs</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-orange"></div>
-                                    <p>Campus recruitment events</p>
+                                    <p style={{color:"#000"}}>Campus recruitment events</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-orange"></div>
-                                    <p>Student progress tracking</p>
+                                    <p style={{color:"#000"}}>Student progress tracking</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -84,8 +84,8 @@ const BenefitsSection = () => {
                     {/* Employers */}
                     <Card className="card">
                         <CardHeader className="card-header card-header-green">
-                            <CardTitle className="card-title">
-                                <Briefcase className="icon" />
+                            <CardTitle className="card-title" style={{color:"#fff"}}>
+                                <Briefcase className="icon" style={{color:"#fff"}}/>
                                 For Employers
                             </CardTitle>
                         </CardHeader>
@@ -93,23 +93,23 @@ const BenefitsSection = () => {
                             <div className="benefit-list">
                                 <div className="benefit-item">
                                     <div className="bullet bullet-green"></div>
-                                    <p>Local hiring with curated candidates</p>
+                                    <p style={{color:"#000"}}>Local hiring with curated candidates</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-green"></div>
-                                    <p>Pre-screened talent pool</p>
+                                    <p style={{color:"#000"}}>Pre-screened talent pool</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-green"></div>
-                                    <p>CRM tools for recruitment</p>
+                                    <p style={{color:"#000"}}>CRM tools for recruitment</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-green"></div>
-                                    <p>Reduced hiring time and costs</p>
+                                    <p style={{color:"#000"}}>Reduced hiring time and costs</p>
                                 </div>
                                 <div className="benefit-item">
                                     <div className="bullet bullet-green"></div>
-                                    <p>Quality assurance on hires</p>
+                                    <p style={{color:"#000"}}>Quality assurance on hires</p>
                                 </div>
                             </div>
                         </CardContent>

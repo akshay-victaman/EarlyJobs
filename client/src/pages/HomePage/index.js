@@ -56,11 +56,12 @@ const HomePage = () => {
     ];
 
     const successMetrics = [
-        { count: '1K+', desc: 'Successful Recruitment' },
-        { count: '30+', desc: 'Clients' },
+     { count: '1K+', desc: 'Successful Recruitment' },
+        { count: '50+', desc: 'Clients' },
         { count: '3K+', desc: 'Open Positions' },
         { count: '7+', desc: 'Years in Business' },
-        { count: '150+', desc: 'HR Recruiters' },
+        { count: '250+', desc: 'HR Recruiters' },
+        { count: '5+', desc: 'Franchise Locations' },
     ];
 
     const reviewCards = [
@@ -278,7 +279,7 @@ const HomePage = () => {
                         </div>
                     ))}
                 </div>
-            </div>
+            </div>  
             <div className="landing-page-screen-3-container">
                 <div className="landing-page-s3-content">
                     <h1 className="landing-page-s3-heading">OUR SUCCESS</h1>
