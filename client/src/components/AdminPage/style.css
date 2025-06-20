@@ -74,8 +74,10 @@
 }
 
 .create-user-modal::-webkit-scrollbar-track {
-    background: #EB6A4D30; /* color of the tracking area */
-    padding: 4px 0; /* padding makes the track "thinner" */
+    background: #EB6A4D30;
+    /* color of the tracking area */
+    padding: 4px 0;
+    /* padding makes the track "thinner" */
 }
 
 .create-user-modal::-webkit-scrollbar-thumb:hover {
@@ -83,7 +85,7 @@
 }
 
 .create-user-btn-con {
-    margin-top: 0px!important;
+    margin-top: 0px !important;
 }
 
 .admin-icon {
@@ -96,7 +98,6 @@
     /* color: #ff9d00; */
     color: #EB6A4D;
     font-weight: 600;
-    margin-top: 10px;
 }
 
 .admin-btn:hover {
@@ -140,12 +141,12 @@
     .admin-icon {
         font-size: 70px;
     }
-    
+
 }
 
 @media screen and (min-width: 1100px) {
     .create-user-modal {
-        width: 30%!important;
+        width: 30% !important;
     }
-    
+
 }

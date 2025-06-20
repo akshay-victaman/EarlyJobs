@@ -114,7 +114,7 @@ const Index = () => {
             <div className="index-section-header">
               <Badge variant="outline" className="index-badge">About EarlyJobs Mohali</Badge>
               <h2 className="index-section-title">
-                AI-Powered, <span className="text-gradient">Human-Backed</span> Recruitment
+                AI-Powered, <span className="text-gradient" style={{color: '#FB7B0E'}}>Human-Backed</span> Recruitment
               </h2>
               <p className="index-section-description">
                 EarlyJobs is an innovative recruitment platform that supports the industrial and educational strengths of Mohali, including IT, biotech, and manufacturing sectors. Our local franchise provides personalized support and deep understanding of the regional job market.
@@ -128,7 +128,7 @@ const Index = () => {
                 { icon: CheckCircle, title: "Proven Results", desc: "500+ successful placements this year" }
               ].map((item, i) => (
                 <Card key={i} className="index-feature-card">
-                  <item.icon className="index-feature-icon" />
+                  <item.icon className="index-feature-icon" style={{color: '#FB7B0E'}} />
                   <h3 className="index-feature-title">{item.title}</h3>
                   <p className="index-feature-desc">{item.desc}</p>
                 </Card>
@@ -153,7 +153,7 @@ const Index = () => {
                 <CardHeader className="index-benefit-header index-benefit-header-primary">
                   <Users className="index-benefit-icon" />
                   <CardTitle className="index-benefit-title">For Students</CardTitle>
-                  <CardDescription className="index-benefit-subtitle">Launch your career in Mohali</CardDescription>
+                  <CardDescription className="index-benefit-subtitle">Start Your Career in Mohali</CardDescription>
                 </CardHeader>
                 <CardContent className="index-benefit-content">
                   <ul className="index-benefit-list">
@@ -235,12 +235,12 @@ const Index = () => {
             
             <div className="index-steps-grid">
               {[
-                { num: "1", title: "Register", desc: "Register on the EarlyJobs Mohali portal with your details", color: "index-step-primary" },
-                { num: "2", title: "Upload", desc: "Upload your job requirements or resume to our platform", color: "index-step-secondary" },
-                { num: "3", title: "Get Matched", desc: "Get matched, interviewed, and placed through our AI-powered platform", color: "index-step-gradient" }
+                { num: "1", title: "Register", desc: "Register on the EarlyJobs Mohali portal with your details", color: "index-step-primary",inline:"#F97415" },
+                { num: "2", title: "Upload", desc: "Upload your job requirements or resume to our platform", color: "index-step-secondary",inline:"#000" },
+                { num: "3", title: "Get Matched", desc: "Get matched, interviewed, and placed through our AI-powered platform", color: "index-step-gradient",inline:"#F97415" }
               ].map((step, i) => (
                 <div key={i} className="index-step">
-                  <div className={`index-step-number ${step.color}`}>
+                  <div className={`index-step-number ${step.color}`} style={{backgroundColor: `${step.inline}`}}>
                     {step.num}
                   </div>
                   <h3 className="index-step-title">{step.title}</h3>
@@ -255,66 +255,138 @@ const Index = () => {
         </section>
 
         {/* Lead Capture Form */}
-        <section id="lead-capture" className="index-section index-form-section">
-          <div className="index-form-container">
-            <Card className="index-form-card">
-              <CardHeader className="index-form-header" style={{ display: "flex", flexDirection: "column",alignItems: "center",justifyContent: "center", padding: "1rem 2rem"  }}>
-                <div >
-                <CardTitle className="index-form-title">
-                  Connect with <span className="text-gradient">EarlyJobs Mohali</span>
-                </CardTitle>
-                </div>
-                <div>
-                <CardDescription className="index-form-description">
-                  Ready to start your journey? Fill out the form below and we'll get in touch with you within 24 hours.
-                </CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className="index-form-content">
-                <form onSubmit={handleSubmit} className="index-form">
-                  <Input
-                    placeholder="Full Name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    required
-                    className="index-form-input"
-                  />
-                  <Input
-                    type="email"
-                    placeholder="Email Address"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    required
-                    className="index-form-input"
-                  />
-                  <Input
-                    type="tel"
-                    placeholder="Mobile Number"
-                    value={formData.mobile}
-                    onChange={(e) => setFormData({...formData, mobile: e.target.value})}
-                    required
-                    className="index-form-input"
-                  />
-                  <Select onValueChange={(value) => setFormData({...formData, role: value})}>
-                    <SelectTrigger className="index-form-input">
-                      <SelectValue placeholder="Choose Your Role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="student">Student</SelectItem>
-                      <SelectItem value="college">College Representative</SelectItem>
-                      <SelectItem value="employer">Employer</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Input value="Mohali" disabled className="index-form-input index-form-input-disabled" />
-                  <Button type="submit" className="index-form-button">
-                    {loading ? <Loader2 className="index-form-button-loader" /> : <><span className="index-form-button-text">EarlyJobs Mohali</span>
-                    <ArrowRight className="index-form-button-icon" /></> }
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+        <section id="lead-capture" className="lead-capture-section">
+      <div className="lead-capture-container">
+        {/* Left Info Section */}
+        <div className="info-section">
+          <h1 className="info-title">Join the<span className="hero-title-gradient"> Earlyjobs Mohali</span> Network</h1>
+          <p className="info-subtitle">
+            Take the next step towards fulfilling your career goals and connect with others.
+          </p>
+          <div className="info-content">
+            <h3 className="info-subtitle">Why Choose EarlyJobs Mohali?</h3>
+            <div className="info-item">
+  <span className="signal-dot"></span>
+  Local Expertise: Deep understanding of Mohali's job market and business landscape
+</div>
+<div className="info-item">
+  <span className="signal-dot"></span>
+  Quick Response: 24-48 hours response time for all inquiries
+</div>
+<div className="info-item">
+  <span className="signal-dot"></span>
+  Proven Success: 95% placement rate with verified local employers
+</div>
+
           </div>
-        </section>
+          <div className="info-contact">
+            <h3 className="info-subtitle">Get in Touch</h3>
+            <p style={{color: "#6b7280"}}><strong style={{color: "#EA580C"}}>Phone:</strong> +91 84318 30032</p>
+            <p><strong  style={{color: "#EA580C"}}>Email:</strong> <a href="mailto:mohali@earlyjobs.in" style={{color: "#6b7280"}}>mohali@earlyjobs.in</a></p>
+            <p style={{color: "#6b7280"}}><strong  style={{color: "#EA580C"}}>Address:</strong> Mohali, SaS Nagar 5.2, Cabin, Fifth floor, E 260 BA, phase 8B industrial Area Mohali, Sector-74A, pin-160055
+            </p>
+          </div>
+        </div>
+
+        {/* Right Form Section */}
+        <div className="form-container">
+          <h2>Get Started Today</h2>
+          <p>Join thousands of successful candidates and employers</p>
+          <form onSubmit={handleSubmit} className="form">
+        <div className="form-group">
+          <label htmlFor="name" className="form-label">Full Name *</label>
+          <Input
+            id="name"
+            placeholder="Enter your full name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+  <label htmlFor="phone" className="form-label">Phone Number *</label>
+  <Input
+    id="phone"
+    type="tel"
+    placeholder="+91 XXXX XXXXXX"
+    value={formData.mobile}
+    onChange={(e) => {
+      const raw = e.target.value.replace(/\D/g, ""); // remove non-digits
+      let formatted = "+91 ";
+
+      if (raw.length > 2) {
+        const number = raw.slice(2); // skip the '91' if user typed manually
+        if (number.length <= 4) {
+          formatted += number;
+        } else {
+          formatted += number.slice(0, 4) + " " + number.slice(4, 10);
+        }
+      }
+
+      setFormData({ ...formData, mobile: formatted });
+    }}
+    required
+    className="form-input"
+  />
+</div>
+
+        <div className="form-group">
+          <label htmlFor="email" className="form-label">Email Address *</label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="your.email@example.com"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            required
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="description" className="form-label">Description *</label>
+          <Input
+            id="description"
+            placeholder="Tell us about your goals or requirements"
+            value={formData.description || ''}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            required
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="role" className="form-label">I am a *</label>
+          <Select onValueChange={(value) => setFormData({ ...formData, role: value })}>
+            <SelectTrigger className="form-input">
+              <SelectValue placeholder="Student / Job Seeker" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="student">Student / Job Seeker</SelectItem>
+              <SelectItem value="employer">Employer</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="city" className="form-label">City</label>
+          <Input
+            id="city"
+            value="Mohali"
+            disabled
+            className="form-input"
+          />
+        </div>
+        <Button type="submit" className="form-button">
+          {loading ? <Loader2 className="button-loader" /> : 'Join EarlyJobs Mohali'}
+        </Button>
+        <p className="form-note">
+          By submitting this form, you agree to our<a className="form-note" href='/terms-and-conditions'>Terms of Service </a>and<a className="form-note" href='/privacy-policy'> Privacy Policy</a>
+
+          </p>
+      </form>
+        </div>
+      </div>
+    </section>
+
 
         {/* Events Section */}
         <section className="events-section">
