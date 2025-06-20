@@ -2,6 +2,8 @@ import React from 'react';
 import './BenefitsSection.css';
 
 
+import './BenefitsSection.css';
+
 const BenefitsSection = () => {
   const benefits = [
     {
