@@ -5,7 +5,7 @@
 }
 
 .container {
-  max-width: 800px;
+  
   margin: 0 auto;
 }
 
@@ -23,7 +23,7 @@
 
 .section-subtitle {
   font-size: 1.125rem;
-  color: #666;
+
   line-height: 1.6;
 }
 

@@ -37,7 +37,7 @@ const FAQSection = () => {
   };
 
   return (
-    <section className="faq-section">
+    <section className="faq-section" style={{marginBottom: '71px'}}>
       <div className="container">
         <div className="section-header">
           <h2 className="section-title">

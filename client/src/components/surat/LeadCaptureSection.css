@@ -46,7 +46,7 @@
 
 .section-subtitle {
   font-size: 1rem;
-  color: var(--white);
+  color: white;
   opacity: 0.9;
   max-width: 40rem;
 }

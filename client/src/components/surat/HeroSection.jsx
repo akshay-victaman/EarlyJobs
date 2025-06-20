@@ -31,19 +31,18 @@ const HeroSection = () => {
                 Bridging Surat's skilled youth with top employers – job-ready talent, verified openings, local impact.
               </p>
             </div>
-
-            <div className="cta-container">
+               
+               <div className="surat-hero-actions">
               <Button 
-                size="lg"
+                size="lg" 
+                className="surat-hero-cta-button"
                 onClick={scrollToLeadForm}
-                className="cta-button"
-                aria-label="Get Started in Surat Today"
               >
                 Get Started in Surat Today
-                <ArrowRight className="arrow-icon" aria-hidden="true" />
               </Button>
             </div>
-          </div>
+
+           </div>
 
           {/* <div className="image-container"> */}
             <img

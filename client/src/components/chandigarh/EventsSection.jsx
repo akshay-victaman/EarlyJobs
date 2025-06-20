@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { Calendar, Clock, MapPin, Users, ArrowRight } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
 import './EventsSection.css';
 
 const EventsSection = () => {
@@ -40,85 +39,71 @@ const EventsSection = () => {
   ];
 
   return (
-    <>
-      <Helmet>
-        <title>Upcoming Events & Job Drives in Chandigarh | EarlyJobs Calendar</title>
-        <meta 
-          name="description" 
-          content="Join upcoming job drives, workshops, and networking events in Chandigarh. Connect with employers, enhance your skills, and advance your career with EarlyJobs events."
-        />
-        <meta 
-          name="keywords" 
-          content="Chandigarh job drives, career workshops, networking events, placement drives, skill development, resume workshops, tech jobs Chandigarh, career events"
-        />
-      </Helmet>
-
-      <section className="events-section">
-        <div className="events-container">
-          <div className="events-header">
-            <Badge className="events-badge">
-              <Calendar className="events-badge-icon" />
-              <span>Local Events</span>
-            </Badge>
-            <h2 className="events-title">
-              Upcoming Events & Job Drives
-            </h2>
-            <p className="events-subtitle">
-              Join our local events in Chandigarh to network, learn, and discover new career opportunities.
-            </p>
-          </div>
-
-          <div className="events-grid">
-            {events.map((event, index) => (
-              <Card key={index} className={`event-card ${event.status === 'completed' ? 'event-card-completed' : 'event-card-upcoming'}`}>
-                <CardHeader className="event-card-header">
-                  <div className="event-meta">
-                    <Badge className={`event-type-badge event-type-${event.type.toLowerCase().replace(' ', '-')}`}>
-                      {event.type}
-                    </Badge>
-                    <Badge className={`event-status-badge event-status-${event.status}`}>
-                      {event.status === 'upcoming' ? 'Upcoming' : 'Completed'}
-                    </Badge>
-                  </div>
-                  <CardTitle className="event-card-title">{event.title}</CardTitle>
-                </CardHeader>
-                
-                <CardContent className="event-card-content">
-                  <p className="event-description">{event.description}</p>
-                  <div className="event-details">
-                    <div className="event-detail">
-                      <Calendar className="event-detail-icon" />
-                      <span>{event.date}</span>
-                    </div>
-                    <div className="event-detail">
-                      <Clock className="event-detail-icon" />
-                      <span>{event.time}</span>
-                    </div>
-                    <div className="event-detail">
-                      <MapPin className="event-detail-icon" />
-                      <span>{event.location}</span>
-                    </div>
-                    <div className="event-detail">
-                      <Users className="event-detail-icon" />
-                      <span>{event.attendees}</span>
-                    </div>
-                  </div>
-
-                  {event.status === 'upcoming' && (
-                    <div className="event-action">
-                      <Button className="event-register-button">
-                        Register Now
-                        <ArrowRight className="event-register-icon" />
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+    <section className="events-section">
+      <div className="events-container">
+        <div className="events-header">
+          <Badge className="events-badge">
+            <Calendar className="events-badge-icon" />
+            <span>Local Events</span>
+          </Badge>
+          <h2 className="events-title">
+            Upcoming Events & Job Drives
+          </h2>
+          <p className="events-subtitle">
+            Join our local events in Chandigarh to network, learn, and discover new career opportunities.
+          </p>
         </div>
-      </section>
-    </>
+
+        <div className="events-grid">
+          {events.map((event, index) => (
+            <Card key={index} className={`event-card ${event.status === 'completed' ? 'event-card-completed' : 'event-card-upcoming'}`}>
+              <CardHeader className="event-card-header">
+                <div className="event-meta">
+                  <Badge className={`event-type-badge event-type-${event.type.toLowerCase().replace(' ', '-')}`}>
+                    {event.type}
+                  </Badge>
+                  <Badge className={`event-status-badge event-status-${event.status}`}>
+                    {event.status === 'upcoming' ? 'Upcoming' : 'Completed'}
+                  </Badge>
+                </div>
+                <CardTitle className="event-card-title">{event.title}</CardTitle>
+              </CardHeader>
+              
+              <CardContent className="event-card-content">
+                <p className="event-description">{event.description}</p>
+                <div className="event-details">
+                  <div className="event-detail">
+                    <Calendar className="event-detail-icon" />
+                    <span>{event.date}</span>
+                  </div>
+                  <div className="event-detail">
+                    <Clock className="event-detail-icon" />
+                    <span>{event.time}</span>
+                  </div>
+                  <div className="event-detail">
+                    <MapPin className="event-detail-icon" />
+                    <span>{event.location}</span>
+                  </div>
+                  <div className="event-detail">
+                    <Users className="event-detail-icon" />
+                    <span>{event.attendees}</span>
+                  </div>
+                </div>
+
+                {event.status === 'upcoming' && (
+                  <div className="event-action">
+                    <Button className="event-register-button">
+                      Register Now
+                      <ArrowRight className="event-register-icon" />
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 

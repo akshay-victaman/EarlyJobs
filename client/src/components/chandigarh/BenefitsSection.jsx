@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Users, Building2, GraduationCap, CheckCircle, Star, Briefcase } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
+
 import './BenefitsSection.css';
 
 const BenefitsSection = () => {
@@ -45,60 +45,46 @@ const BenefitsSection = () => {
   ];
 
   return (
-    <>
-      <Helmet>
-        <title>Benefits for Students, Colleges & Employers | EarlyJobs Chandigarh</title>
-        <meta 
-          name="description" 
-          content="Discover tailored benefits for students, colleges, and employers in Chandigarh. From verified internships to campus recruitment drives and cost-effective hiring solutions."
-        />
-        <meta 
-          name="keywords" 
-          content="student benefits Chandigarh, college placement support, employer hiring solutions, internships, campus recruitment, talent acquisition Chandigarh"
-        />
-      </Helmet>
-
-      <section className="chandigarh-section">
-        <div className="chandigarh-container">
-          <div className="chandigarh-header">
-            <Badge className="chandigarh-badge">
-              <Star className="chandigarh-badge-icon" />
-              Why Choose Us
-            </Badge>
-            <h2 className="chandigarh-title">
-              Tailored Solutions for Every Stakeholder
-            </h2>
-            <p className="chandigarh-subtitle">
-              Whether you're a student seeking opportunities, a college looking for placement support, 
-              or an employer searching for talent, we have the right solution for you.
-            </p>
-          </div>
-
-          <div className="chandigarh-grid">
-            {benefits.map((benefit, index) => (
-              <Card key={index} className={`chandigarh-card chandigarh-card-${benefit.color}` }  style={{padding:"10px"}}>
-                <CardHeader className="chandigarh-card-header">
-                  <div className={`chandigarh-icon chandigarh-icon-${benefit.color}`}>
-                    <benefit.icon className="chandigarh-icon-svg" />
-                  </div>
-                  <CardTitle className="chandigarh-card-title">{benefit.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="chandigarh-card-content">
-                  <ul className="chandigarh-list">
-                    {benefit.items.map((item, itemIndex) => (
-                      <li key={itemIndex} className="chandigarh-item">
-                        <CheckCircle className="chandigarh-check-icon" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+    <section className="chandigarh-section">
+      <div className="chandigarh-container">
+        <div className="chandigarh-header">
+          <Badge className="chandigarh-badge">
+            <Star className="chandigarh-badge-icon" />
+            Why Choose Us
+          </Badge>
+          <h2 className="chandigarh-title">
+            Tailored Solutions for Every Stakeholder
+          </h2>
+          <p className="chandigarh-subtitle">
+            Whether you're a student seeking opportunities, a college looking for placement support, 
+            or an employer searching for talent, we have the right solution for you.
+          </p>
         </div>
-      </section>
-    </>
+
+        <div className="chandigarh-grid">
+          {benefits.map((benefit, index) => (
+            <Card key={index} className={`chandigarh-card chandigarh-card-${benefit.color}`} style={{padding:"10px"}}>
+              <CardHeader className="chandigarh-card-header">
+                <div className={`chandigarh-icon chandigarh-icon-${benefit.color}`}>
+                  <benefit.icon className="chandigarh-icon-svg" />
+                </div>
+                <CardTitle className="chandigarh-card-title">{benefit.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="chandigarh-card-content">
+                <ul className="chandigarh-list">
+                  {benefit.items.map((item, itemIndex) => (
+                    <li key={itemIndex} className="chandigarh-item">
+                      <CheckCircle className="chandigarh-check-icon" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 

@@ -1,8 +1,6 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { UserPlus, FileText, Users, ArrowRight } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
 import './HowItWorksSection.css';
 
 const HowItWorksSection = () => {
@@ -31,62 +29,48 @@ const HowItWorksSection = () => {
   ];
 
   return (
-    <>
-      <Helmet>
-        <title>How It Works - Chandigarh Career Hub Process | 3 Simple Steps</title>
-        <meta 
-          name="description" 
-          content="Learn our simple 3-step process for connecting with opportunities in Chandigarh. Sign up, submit your profile, and get matched with leading employers. Quick and effective career connections." 
-        />
-        <meta 
-          name="keywords" 
-          content="career process Chandigarh, job application steps, how to find jobs Chandigarh, recruitment process, career guidance, job matching, employment process, Chandigarh jobs" 
-        />
-      </Helmet>
-
-      <section className="how-it-works-section">
-        <div className="how-it-works-container">
-          <div className="how-it-works-header">
-            <Badge className="how-it-works-badge">
-              How It Works
-            </Badge>
-            <h2 className="how-it-works-title">
-              Localized 3-Step Process
-            </h2>
-            <p className="how-it-works-subtitle">
-              Our streamlined process ensures quick and effective connections between talent and opportunities in Chandigarh.
-            </p>
-          </div>
-
-          <div className="steps-grid">
-            {steps.map((step, index) => (
-              <div key={index} className="step-container">
-                <Card className={`step-card step-card-${step.color}`}>
-                  <CardHeader className="step-card-header">
-                    <div className={`step-icon step-icon-${step.color}`}>
-                      <step.icon className="step-icon-svg" />
-                    </div>
-                    <div className={`step-number step-number-${step.color}`}>
-                      Step {step.step}
-                    </div>
-                    <CardTitle className="step-card-title">{step.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="step-card-content">
-                    <p className="step-description">{step.description}</p>
-                  </CardContent>
-                </Card>
-                
-                {index < steps.length - 1 && (
-                  <div className="step-arrow">
-                    <ArrowRight className="step-arrow-icon" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+    <section className="how-it-works-section">
+      <div className="how-it-works-container">
+        <div className="how-it-works-header">
+          <Badge className="how-it-works-badge">
+            How It Works
+          </Badge>
+          <h2 className="how-it-works-title">
+            Localized 3-Step Process
+          </h2>
+          <p className="how-it-works-subtitle">
+            Our streamlined process ensures quick and effective connections between talent and opportunities in Chandigarh.
+          </p>
         </div>
-      </section>
-    </>
+
+        <div className="steps-grid">
+          {steps.map((step, index) => (
+            <div key={index} className="step-container">
+              <Card className={`step-card step-card-${step.color}`}>
+                <CardHeader className="step-card-header">
+                  <div className={`step-icon step-icon-${step.color}`}>
+                    <step.icon className="step-icon-svg" />
+                  </div>
+                  <div className={`step-number step-number-${step.color}`}>
+                    Step {step.step}
+                  </div>
+                  <CardTitle className="step-card-title">{step.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="step-card-content">
+                  <p className="step-description">{step.description}</p>
+                </CardContent>
+              </Card>
+              
+              {index < steps.length - 1 && (
+                <div className="step-arrow">
+                  <ArrowRight className="step-arrow-icon" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 

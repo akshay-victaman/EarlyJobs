@@ -1,8 +1,6 @@
-
 import { Card, CardContent } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Star, Quote } from 'lucide-react';
-import { Helmet } from 'react-helmet-async';
 import './TestimonialsSection.css';
 
 const TestimonialsSection = () => {
@@ -34,71 +32,57 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <>
-      <Helmet>
-        <title>Success Stories & Testimonials | EarlyJobs Chandigarh Reviews</title>
-        <meta 
-          name="description" 
-          content="Read success stories from students, colleges, and employers in Chandigarh who found opportunities through EarlyJobs. Real testimonials from our community."
-        />
-        <meta 
-          name="keywords" 
-          content="EarlyJobs reviews, student testimonials Chandigarh, placement success stories, employer feedback, college testimonials, job search success"
-        />
-      </Helmet>
-
-      <section className="testimonials-section">
-        <div className="testimonials-container">
-          <div className="testimonials-header">
-            <Badge className="testimonials-badge">
-              <Star className="testimonials-badge-icon" />
-              Success Stories
-            </Badge>
-            <h2 className="testimonials-title">
-              What Our Chandigarh Community Says
-            </h2>
-            <p className="testimonials-subtitle">
-              Real stories from students, colleges, and employers who have found success through our platform.
-            </p>
-          </div>
-
-          <div className="testimonials-grid">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="testimonial-card">
-                <CardContent className="testimonial-content">
-                  <div className="testimonial-quote">
-                    <Quote className="quote-icon" />
-                  </div>
-                  
-                  <div className="testimonial-rating">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="rating-star" />
-                    ))}
-                  </div>
-                  
-                  <p className="testimonial-text">
-                    "{testimonial.content}"
-                  </p>
-                  
-                  <div className="testimonial-author">
-                    <img 
-                      src={testimonial.image} 
-                      alt={testimonial.name}
-                      className="author-image"
-                    />
-                    <div className="author-info">
-                      <h4 className="author-name">{testimonial.name}</h4>
-                      <p className="author-role">{testimonial.role}</p>
-                      <p className="author-college">{testimonial.college}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+    <section className="testimonials-section">
+      <div className="testimonials-container">
+        <div className="testimonials-header">
+          <Badge className="testimonials-badge">
+            <Star className="testimonials-badge-icon" />
+            Success Stories
+          </Badge>
+          <h2 className="testimonials-title">
+            What Our Chandigarh Community Says
+          </h2>
+          <p className="testimonials-subtitle">
+            Real stories from students, colleges, and employers who have found success through our platform.
+          </p>
         </div>
-      </section>
-    </>
+
+        <div className="testimonials-grid">
+          {testimonials.map((testimonial, index) => (
+            <Card key={index} className="testimonial-card">
+              <CardContent className="testimonial-content">
+                <div className="testimonial-quote">
+                  <Quote className="quote-icon" />
+                </div>
+                
+                <div className="testimonial-rating">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="rating-star" />
+                  ))}
+                </div>
+                
+                <p className="testimonial-text">
+                  "{testimonial.content}"
+                </p>
+                
+                <div className="testimonial-author">
+                  <img 
+                    src={testimonial.image} 
+                    alt={testimonial.name}
+                    className="author-image"
+                  />
+                  <div className="author-info">
+                    <h4 className="author-name">{testimonial.name}</h4>
+                    <p className="author-role">{testimonial.role}</p>
+                    <p className="author-college">{testimonial.college}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 
