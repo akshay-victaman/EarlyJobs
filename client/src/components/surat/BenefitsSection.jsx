@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { Badge } from '../../components/ui/badge';
 import { CheckCircle, Users, Building, Target, ArrowRight } from 'lucide-react';
 
+import './BenefitsSection.css';
+
 const BenefitsSection = () => {
   const benefits = [
     {

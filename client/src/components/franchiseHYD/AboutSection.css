@@ -1,0 +1,95 @@
+.about-section {
+    padding: 80px 0;
+    background-color: #ffffff;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.text-center {
+    text-align: center;
+    margin-bottom: 64px;
+}
+
+.section-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #111827;
+    margin-bottom: 24px;
+}
+
+.section-description {
+    font-size: 20px;
+    color: #4b5563;
+    max-width: 896px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+}
+
+.card {
+    transition: box-shadow 0.3s ease;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.card:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.icon-container {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.icon-container-blue {
+    background-color: #dbeafe;
+}
+
+.icon-container-orange {
+    background-color: #ffedd5;
+}
+
+.icon-container-green {
+    background-color: #d1fae5;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+}
+
+.icon-blue {
+    color: #2563eb;
+}
+
+.icon-orange {
+    color: #ea580c;
+}
+
+.icon-green {
+    color: #16a34a;
+}
+
+.card-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.card-description {
+    color: #6b7280;
+}

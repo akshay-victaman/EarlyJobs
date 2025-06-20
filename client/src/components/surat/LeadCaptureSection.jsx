@@ -271,7 +271,8 @@ const LeadCaptureSection = () => {
                   </Button>
 
                   <p className="text-[10px] sm:text-xs text-center text-muted-foreground mt-2">
-                    By submitting this form, you agree to our Terms of Service and Privacy Policy
+          By submitting this form, you agree to our<a className="form-note" href='/terms-and-conditions'>Terms of Service </a>and<a className="form-note" href='/privacy-policy'> Privacy Policy</a>
+                  
                   </p>
                 </form>
               </CardContent>
