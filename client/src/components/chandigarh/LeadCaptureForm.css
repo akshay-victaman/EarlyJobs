@@ -249,24 +249,31 @@
   .lead-capture-section {
     padding: 3rem 1.5rem;
   }
+
   .section-title {
     font-size: 2rem;
   }
+
   .section-subtitle {
     font-size: 1.125rem;
   }
+
   .features-title {
     font-size: 1.75rem;
   }
+
   .feature-title {
     font-size: 1.25rem;
   }
+
   .feature-description {
     font-size: 1rem;
   }
+
   .form-title {
     font-size: 1.5rem;
   }
+
   .form-card {
     max-width: 700px;
   }
@@ -277,10 +284,12 @@
     flex-direction: row;
     gap: 3rem;
   }
+
   .features-container,
   .form-card {
     flex: 1;
   }
+
   .section-title {
     font-size: 2.5rem;
   }
@@ -290,15 +299,19 @@
   .lead-capture-section {
     padding: 4rem 2rem;
   }
+
   .section-title {
     font-size: 3rem;
   }
+
   .section-subtitle {
     font-size: 1.25rem;
   }
+
   .form-container {
     padding: 1.5rem;
   }
+
   .form-card {
     max-width: 800px;
   }

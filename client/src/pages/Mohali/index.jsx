@@ -9,6 +9,8 @@ import emailjs from '@emailjs/browser';
 import { toast } from "react-toastify";
 import FAQSection from "../../components/Mohali/faq";
 import HeroSection from "../../components/Mohali/HeroSection";
+import {    Shield, Clock, Award } from 'lucide-react';
+
 
 import './Index.css';
 import { MdWidthFull } from "react-icons/md";
@@ -46,6 +48,23 @@ const Index = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const features = [
+    {
+      icon: Shield,
+      title: "Local Expertise",
+      description: "Deep understanding of Mohali's job market and business landscape"
+    },
+    {
+      icon: Clock,
+      title: "Quick Response",
+      description: "24-48 hours response time for all inquiries"
+    },
+    {
+      icon: Award,
+      title: "Proven Success",
+      description: "95% placement rate with verified local employers"
+    }
+  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -255,43 +274,50 @@ const Index = () => {
         </section>
 
         {/* Lead Capture Form */}
-        <section id="lead-capture" className="lead-capture-section">
+        <section id="lead-capture" style={{ backgroundColor: "#B03B0F" ,padding:" 2rem 1rem",
+  width: "100%",
+  minHeight: "100vh"}}>
       <div className="lead-capture-container">
         {/* Left Info Section */}
-        <div className="info-section">
-          <h1 className="info-title">Join the<span className="hero-title-gradient"> Earlyjobs Mohali</span> Network</h1>
-          <p className="info-subtitle">
-            Take the next step towards fulfilling your career goals and connect with others.
-          </p>
-          <div className="info-content">
-            <h3 className="info-subtitle">Why Choose EarlyJobs Mohali?</h3>
-            <div className="info-item">
-  <span className="signal-dot"></span>
-  Local Expertise: Deep understanding of Mohali's job market and business landscape
-</div>
-<div className="info-item">
-  <span className="signal-dot"></span>
-  Quick Response: 24-48 hours response time for all inquiries
-</div>
-<div className="info-item">
-  <span className="signal-dot"></span>
-  Proven Success: 95% placement rate with verified local employers
-</div>
-
-          </div>
-          <div className="info-contact">
-            <h3 className="info-subtitle">Get in Touch</h3>
-            <p style={{color: "#6b7280"}}><strong style={{color: "#EA580C"}}>Phone:</strong> +91 84318 30032</p>
-            <p><strong  style={{color: "#EA580C"}}>Email:</strong> <a href="mailto:mohali@earlyjobs.in" style={{color: "#6b7280"}}>mohali@earlyjobs.in</a></p>
-            <p style={{color: "#6b7280"}}><strong  style={{color: "#EA580C"}}>Address:</strong> Mohali, SaS Nagar 5.2, Cabin, Fifth floor, E 260 BA, phase 8B industrial Area Mohali, Sector-74A, pin-160055
-            </p>
-          </div>
-        </div>
+        <div className="features-container">
+                   <h3 className="features-title">Why Choose EarlyJobs Mohali?</h3>
+                   <div className="features-list">
+                     {features.map((feature, index) => (
+                       <div key={index} className="feature-item">
+                         <div className="feature-icon-container">
+                           <feature.icon className="feature-icon" />
+                         </div>
+                         <div>
+                           <h4 className="feature-title">{feature.title}</h4>
+                           <p className="feature-description">{feature.description}</p>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+       
+                   <div className="contact-info">
+                     <h4 className="contact-title">Get in Touch</h4>
+                     <div className="contact-items">
+                       <div className="contact-item">
+                         <Phone className="contact-icon" />
+                         <span>+91 84318 30032</span>
+                       </div>
+                       <div className="contact-item">
+                         <Mail className="contact-icon" />
+                         <a href="mailto:mohali@earlyjobs.in" style={{ textDecoration: "none", color: "inherit" }}>mohali@earlyjobs.in</a>
+                       </div>
+                       <div className="contact-item">
+                         <MapPin className="contact-icon" />
+                         <span>Mohali, SaS Nagar, 5.2, Cabin, Fifth floor, E 260 BA, phase 8B industrial Area</span>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
 
         {/* Right Form Section */}
         <div className="form-container">
-          <h2>Get Started Today</h2>
-          <p>Join thousands of successful candidates and employers</p>
+          <h2 style={{marginBottom:"0px",}}>Get Started Today</h2>
+          <p style={{margin:"0px",}}>Join thousands of successful candidates and employers</p>
           <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
           <label htmlFor="name" className="form-label">Full Name *</label>

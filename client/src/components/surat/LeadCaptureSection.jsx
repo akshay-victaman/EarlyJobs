@@ -183,7 +183,22 @@ const LeadCaptureSection = () => {
                     name="phone"
                     type="tel"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/\D/g, ""); // remove non-digits
+                      let formatted = "+91 ";
+                
+                      if (raw.length > 2) {
+                        const number = raw.slice(2); // skip the '91' if user typed manually
+                        if (number.length <= 4) {
+                          formatted += number;
+                        } else {
+                          formatted += number.slice(0, 4) + " " + number.slice(4, 10);
+                        }
+                      }
+                
+                        setFormData({ ...formData, phone: formatted })
+                      
+                    }}
                     placeholder="+91 XXXXX XXXXX"
                     required
                     className="form-input"
@@ -244,7 +259,7 @@ const LeadCaptureSection = () => {
                   />
                 </div>
 
-                <Button type="submit" className="submit-button">
+                <Button type="submit" className="submit-button" style={{ border: "0px" }}>
                   Join EarlyJobs Surat
                 </Button>
 
