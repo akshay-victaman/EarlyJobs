@@ -6,7 +6,6 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { useToast } from '../../hooks/use-toast';
 import { MapPin, Phone, Mail, Shield, Clock, Award } from 'lucide-react';
 import emailjs from '@emailjs/browser';
@@ -24,10 +23,9 @@ const LeadCaptureSection = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-     console.log('EmailJS initialized with account key:', process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_ACCOUNT_KEY);
-
+    console.log('EmailJS initialized with account key:', process.env.REACT_APP_FRANCHISE_Chandigarh_EMAILJS_ACCOUNT_KEY);
     emailjs.init(`${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_ACCOUNT_KEY}`);
-     }, []);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,10 +55,17 @@ const LeadCaptureSection = () => {
       city: formData.city
     };
 
-    console.log(process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_TEMPLATE_ID, process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_TEMPLATE_ID, adminTemplateParams);
     try {
-    await emailjs.send(`${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_SERVICE_ID}`, `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_TEMPLATE_ID}`, adminTemplateParams);
-    await emailjs.send(`${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_SERVICE_ID}`, `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_TEMPLATE_ID_2}`, userTemplateParams);
+      await emailjs.send(
+        `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_SERVICE_ID}`,
+        `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_TEMPLATE_ID}`,
+        adminTemplateParams
+      );
+      await emailjs.send(
+        `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_SERVICE_ID}`,
+        `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_TEMPLATE_ID_2}`,
+        userTemplateParams
+      );
 
       toast({
         title: "Your form is submitted successfully",
@@ -106,183 +111,154 @@ const LeadCaptureSection = () => {
   ];
 
   return (
-    <>
-      <section id="lead-capture" className="lead-capture-section">
-        <div className="background-overlay">
+    <section id="lead-capture" className="lead-capture-section">
+      <div className="container">
+        <div className="section-header">
+          <h2 className="section-title">Join the EarlyJobs Chandigarh Network</h2>
+          <p className="section-subtitle">
+            Take the first step towards your career goals or hiring needs with Chandigarh's most trusted recruitment partner
+          </p>
         </div>
 
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title" style={{color:"white"}}>
-              Join the EarlyJobs Chandigarh Network
-            </h2>
-            <p className="section-subtitle">
-              Take the first step towards your career goals or hiring needs with Chandigarh's most trusted recruitment partner
-            </p>
-          </div>
-
-          <div className="grid-container">
-            <div className="features-container">
-              <h3 className="features-title">
-                Why Choose EarlyJobs Chandigarh?
-              </h3>
-
-              <div className="features-list">
-                {features.map((feature, index) => (
-                  <div key={index} className="feature-item">
-                    <div className="feature-icon-container">
-                      <feature.icon className="feature-icon" />
-                    </div>
-                    <div>
-                      <h4 className="feature-title">{feature.title}</h4>
-                      <p className="feature-description">{feature.description}</p>
-                    </div>
+        <div className="grid-container">
+          <div className="features-container">
+            <h3 className="features-title">Why Choose EarlyJobs Chandigarh?</h3>
+            <div className="features-list">
+              {features.map((feature, index) => (
+                <div key={index} className="feature-item">
+                  <div className="feature-icon-container">
+                    <feature.icon className="feature-icon" />
                   </div>
-                ))}
-              </div>
+                  <div>
+                    <h4 className="feature-title">{feature.title}</h4>
+                    <p className="feature-description">{feature.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-              <div className="contact-info">
-                <h4 className="contact-title">Get in Touch</h4>
-                <div className="contact-items">
-                  <div className="contact-item">
-                    <Phone className="contact-icon" />
-                    <span>+91 9872874150
+            <div className="contact-info">
+              <h4 className="contact-title">Get in Touch</h4>
+              <div className="contact-items">
+                <div className="contact-item">
+                  <Phone className="contact-icon" />
+                  <span>+91 9872874150
 </span>
-                  </div>
-                  <div className="contact-item">
-                    <Mail className="contact-icon" />
-                    <span>Chandigarh@earlyjobs.in</span>
-                  </div>
-                  <div className="contact-item">
-                    <MapPin className="contact-icon" />
-                    <span>Flat Number 204, GH 84 The KVSE Co-op, Peer Muchalla Road, Sector 20, Panchkula, Haryana 134117</span>
-                  </div>
+                </div>
+                <div className="contact-item">
+                  <Mail className="contact-icon" />
+                  <span>Chandigarh@earlyjobs.in</span>
+                </div>
+                <div className="contact-item">
+                  <MapPin className="contact-icon" />
+                  <span> Flat Number 204, GH 84 The KVSE Co-op, Peer Muchalla Road, Sector 20, Panchkula, Haryana 134117
+</span>
                 </div>
               </div>
             </div>
-
-            <Card className="form-card">
-              <CardHeader className="form-header">
-                <CardTitle className="form-title">Get Started Today</CardTitle>
-                <p className="form-subtitle">
-                  Join thousands of successful candidates and employers
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div style={{marginRight:"9px"}}>
-                <form onSubmit={handleSubmit} className="form-container">
-                  <div className="form-group">
-                    <Label htmlFor="name" className="form-label">Full Name *</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      placeholder="Enter your full name"
-                      required
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <Label htmlFor="phone" className="form-label">Phone Number *</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      placeholder="+91 XXXXX XXXXX"
-                      required
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <Label htmlFor="email" className="form-label">Email Address *</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      placeholder="your.email@example.com"
-                      required
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <Label htmlFor="description" className="form-label">Description *</Label>
-                    <Textarea
-                      id="description"
-                      name="description"
-                      value={formData.description}
-                      onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      placeholder="Tell us about your goals or requirements"
-                      required
-                      className="form-textarea"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <Label className="form-label">I am a: *</Label>
-                    <RadioGroup
-                      value={formData.type}
-                      onValueChange={(value) => setFormData({ ...formData, type: value })}
-                      className="radio-group"
-                    >
-                      <div className="radio-item">
-                        <RadioGroupItem value="student" id="student" />
-                        <Label htmlFor="student" className="radio-label">
-                          Student / Job Seeker
-                        </Label>
-                      </div>
-                      <div className="radio-item">
-                        <RadioGroupItem value="college" id="college" />
-                        <Label htmlFor="college" className="radio-label">
-                          College Representative
-                        </Label>
-                      </div>
-                      <div className="radio-item">
-                        <RadioGroupItem value="employer" id="employer" />
-                        <Label htmlFor="employer" className="radio-label">
-                          Employer / HR
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-
-                  <div className="form-group">
-                    <Label htmlFor="city" className="form-label">City</Label>
-                    <Input
-                      id="city"
-                      name="city"
-                      value={formData.city}
-                      readOnly
-                      className="form-input readonly"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    className="submit-button"
-                    style={{backgroundColor: "#FF6F00", color: "#FFFFFF"}}
-                  >
-                    Join EarlyJobs Chandigarh
-                  </Button>
-
-                  <p className="form-footer">
-                    By submitting this form, you agree to our Terms of Service and Privacy Policy
-                  </p>
-                </form>
-                </div>
-              </CardContent>
-            </Card>
           </div>
+
+          <Card className="form-card">
+            <CardHeader className="form-header">
+              <CardTitle className="form-title">Get Started Today</CardTitle>
+              <p className="form-subtitle">Join thousands of successful candidates and employers</p>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="form-container">
+                <div className="form-group">
+                  <Label htmlFor="name" className="form-label">Full Name *</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Enter your full name"
+                    required
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <Label htmlFor="phone" className="form-label">Phone Number *</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="+91 XXXXX XXXXX"
+                    required
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <Label htmlFor="email" className="form-label">Email Address *</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="your.email@example.com"
+                    required
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <Label htmlFor="description" className="form-label">Description *</Label>
+                  <Textarea
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Tell us about your goals or requirements"
+                    required
+                    className="form-textarea"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <Label htmlFor="type" className="form-label">I am a: *</Label>
+                  <select
+                    id="type"
+                    name="type"
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    required
+                    className="form-select"
+                  >
+                    <option value="student">Student / Job Seeker</option>
+                    <option value="college">College Representative</option>
+                    <option value="employer">Employer / HR</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <Label htmlFor="city" className="form-label">City</Label>
+                  <Input
+                    id="city"
+                    name="city"
+                    value={formData.city}
+                    readOnly
+                    className="form-input readonly"
+                  />
+                </div>
+
+                <Button type="submit" className="submit-button">
+                  Join EarlyJobs Chandigarh
+                </Button>
+
+                <p className="form-footer">
+                  By submitting this form, you agree to our Terms of Service and Privacy Policy
+                </p>
+              </form>
+            </CardContent>
+          </Card>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

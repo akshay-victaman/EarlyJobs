@@ -76,7 +76,7 @@ const BenefitsSection = () => {
 
           <div className="chandigarh-grid">
             {benefits.map((benefit, index) => (
-              <Card key={index} className={`chandigarh-card chandigarh-card-${benefit.color}`}>
+              <Card key={index} className={`chandigarh-card chandigarh-card-${benefit.color}` }  style={{padding:"10px"}}>
                 <CardHeader className="chandigarh-card-header">
                   <div className={`chandigarh-icon chandigarh-icon-${benefit.color}`}>
                     <benefit.icon className="chandigarh-icon-svg" />

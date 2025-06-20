@@ -18,6 +18,7 @@ import LeadCaptureForm from '../../components/chandigarh/LeadCaptureForm';
 import EventsSection from '../../components/chandigarh/EventsSection';
 import FAQSection from '../../components/chandigarh/FAQSection';
 // import Footer from '../../components/chandigarh/Footer';
+import './ChandigarhFranchise.css';
 
 const ChandigarhFranchise = () => {
   return (
@@ -94,46 +95,46 @@ const ChandigarhFranchise = () => {
         <HeroSection />
 
         {/* About Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <Badge className="mb-6 bg-blue-100 text-blue-800 hover:bg-blue-100">
-                About EarlyJobs Chandigarh
-              </Badge>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                India's Hybrid AI + Human Recruiter Platform
-              </h2>
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                EarlyJobs is revolutionizing recruitment with cutting-edge AI technology combined with human expertise, 
-                delivering exceptional placement results across India.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Trophy className="w-8 h-8 text-blue-600" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Proven Track Record</h3>
-                  <p className="text-gray-600">Strong placement success across multiple industries</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-8 h-8 text-purple-600" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Local Support</h3>
-                  <p className="text-gray-600">Dedicated Chandigarh team with walk-in facilities</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Building2 className="w-8 h-8 text-green-600" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Industry Connect</h3>
-                  <p className="text-gray-600">Strong network with leading employers</p>
-                </div>
+        <section className="chandigarh-about-section">
+      <div className="chandigarh-about-container">
+        <div className="chandigarh-about-content">
+          <Badge className="chandigarh-about-badge">
+            About EarlyJobs Chandigarh
+          </Badge>
+          <h2 className="chandigarh-about-title">
+            India's Hybrid AI + Human Recruiter Platform
+          </h2>
+          <p className="chandigarh-about-description">
+            EarlyJobs is revolutionizing recruitment with cutting-edge AI technology combined with human expertise, 
+            delivering exceptional placement results across India.
+          </p>
+          
+          <div className="chandigarh-about-grid">
+            <div className="chandigarh-about-item">
+              <div className="chandigarh-about-icon-container">
+                <Trophy className="chandigarh-about-icon" />
               </div>
+              <h3 className="chandigarh-about-item-title">Proven Track Record</h3>
+              <p className="chandigarh-about-item-text">Strong placement success across multiple industries</p>
+            </div>
+            <div className="chandigarh-about-item">
+              <div className="chandigarh-about-icon-container">
+                <Users className="chandigarh-about-icon" />
+              </div>
+              <h3 className="chandigarh-about-item-title">Local Support</h3>
+              <p className="chandigarh-about-item-text">Dedicated Chandigarh team with walk-in facilities</p>
+            </div>
+            <div className="chandigarh-about-item">
+              <div className="chandigarh-about-icon-container">
+                <Building2 className="chandigarh-about-icon" />
+              </div>
+              <h3 className="chandigarh-about-item-title">Industry Connect</h3>
+              <p className="chandigarh-about-item-text">Strong network with leading employers</p>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
 
         {/* Benefits Section */}
         <BenefitsSection />

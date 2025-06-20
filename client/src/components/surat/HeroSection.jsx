@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../ui/button';
-import { MapPin, Users, Briefcase, ArrowRight, Star } from 'lucide-react';
+import { Star, ArrowRight } from 'lucide-react';
 import './HeroSection.css';
 
 const HeroSection = () => {
@@ -32,8 +32,6 @@ const HeroSection = () => {
               </p>
             </div>
 
-         
-
             <div className="cta-container">
               <Button 
                 size="lg"
@@ -47,15 +45,14 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <div className="image-container">
+          {/* <div className="image-container"> */}
             <img
               src="https://i.ibb.co/99B1J22v/Hiring-amico.png"
               alt="Hiring Illustration"
               className="hero-image"
               loading="lazy"
             />
-            {/* <div className="image-overlay"></div> */}
-          </div>
+          {/* </div> */}
         </div>
       </div>
     </section>
