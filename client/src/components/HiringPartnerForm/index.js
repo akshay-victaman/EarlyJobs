@@ -683,14 +683,14 @@ const HiringPartnerForm = () => {
     const onSubmitAbout = (e) => {
         e.preventDefault()
         console.log(about)
-        if(about.aboutYou.split(/\s+/).length < 100) {
-            setError("*Please enter 'about yourself' in minimum of 100 words")
+        if(about.aboutYou.split(/\s+/).length < 50) {
+            setError("*Please enter 'about yourself' in minimum of 50 words")
             return
-        } else if(about.WhyJoinUs.split(/\s+/).length < 100) {
-            setError("*Please enter 'why you want to join us' in minimum of 100 words")
+        } else if(about.WhyJoinUs.split(/\s+/).length < 50) {
+            setError("*Please enter 'why you want to join us' in minimum of 50 words")
             return
-        } else if(about.YourContribution.split(/\s+/).length < 100) {
-            setError("*Please enter 'how you can contribute to society' in minimum of 100 words")
+        } else if(about.YourContribution.split(/\s+/).length < 50) {
+            setError("*Please enter 'how you can contribute to society' in minimum of 50 words")
             return
         } else if(about.hours.trim().length === 0) {
             setError("*Please enter how many hours you can contribute daily")
