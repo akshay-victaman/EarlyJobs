@@ -151,7 +151,8 @@ const LeadCaptureSection = () => {
                 </div>
                 <div className="contact-item">
                   <MapPin className="contact-icon" />
-                  <span> Flat Number 204, GH 84 The KVSE Co-op, Peer Muchalla Road, Sector 20, Panchkula, Haryana 134117
+                  <span> Cabin 411, SCO 107/08/09, Sector 34A, Chandigarh.
+
 </span>
                 </div>
               </div>
