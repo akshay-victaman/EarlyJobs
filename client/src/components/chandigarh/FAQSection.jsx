@@ -7,8 +7,8 @@ const FAQSection = () => {
 
   const faqs = [
     {
-      question: "What makes EarlyJobs Surat different from other recruitment agencies?",
-      answer: "We specialize in Surat's key industries - textile, diamond, and manufacturing. Our local expertise, AI-powered matching system, and 95% success rate set us apart. We provide end-to-end career support, not just job placement."
+      question: "What makes EarlyJobs Chandigarh different from other recruitment agencies?",
+      answer: "We specialize in Chandigarh's key industries - textile, diamond, and manufacturing. Our local expertise, AI-powered matching system, and 95% success rate set us apart. We provide end-to-end career support, not just job placement."
     },
     {
       question: "Is there any fee for job seekers?",
@@ -24,7 +24,7 @@ const FAQSection = () => {
     },
     {
       question: "What types of positions do you fill?",
-      answer: "We cover all levels from entry-level to senior management across textile, diamond, manufacturing, IT, finance, sales, and other key sectors in Surat. Both permanent and contract positions are available."
+      answer: "We cover all levels from entry-level to senior management across textile, diamond, manufacturing, IT, finance, sales, and other key sectors in Chandigarh. Both permanent and contract positions are available."
     },
     {
       question: "Can I register if I'm currently employed?",

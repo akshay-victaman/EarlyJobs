@@ -1,0 +1,135 @@
+.how-it-works-section {
+  padding: 5rem 1rem;
+  background-color: #F9FAFB;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1280px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 2.25rem;
+  }
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: #6B7280;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .steps-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.step-wrapper {
+  position: relative;
+}
+
+.step-card {
+  text-align: center;
+  padding: 1.5rem;
+  height: 100%;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.icon-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  background-color: #F3F4F6;
+}
+
+.icon-blue {
+  color: #3B82F6;
+}
+
+.icon-green {
+  color: #10B981;
+}
+
+.icon-purple {
+  color: #8B5CF6;
+}
+
+.icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.step-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.step-description {
+  color: #6B7280;
+}
+
+.connector {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: -1rem;
+  width: 2rem;
+  height: 0.125rem;
+  background-color: #E5E7EB;
+}
+
+@media (min-width: 768px) {
+  .connector {
+    display: block;
+  }
+}
+
+.footer {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.footer-text {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #2563EB;
+}

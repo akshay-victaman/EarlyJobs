@@ -1,0 +1,172 @@
+.chandigarh-hero-section {
+  padding-top: 2.5rem;
+  padding-bottom: 4rem;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 50%, #ea580c 100%);
+}
+
+.chandigarh-hero-background {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpolygon points='50 0 60 40 100 50 60 60 50 100 40 60 0 50 40 40'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.chandigarh-hero-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 10;
+}
+
+.chandigarh-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .chandigarh-hero-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.chandigarh-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 67px;
+}
+
+.chandigarh-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chandigarh-hero-badge {
+  background-color: rgba(255, 237, 213, 1);
+  color: #9a3412;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.chandigarh-hero-badge:hover {
+  background-color: rgba(255, 237, 213, 1);
+}
+
+.chandigarh-hero-badge-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.chandigarh-hero-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.1;
+}
+
+@media (min-width: 768px) {
+  .chandigarh-hero-title {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chandigarh-hero-title {
+    font-size: 3.75rem;
+  }
+}
+
+.chandigarh-hero-title-highlight {
+  background: linear-gradient(to right, #ffffff, #f59e0b);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.chandigarh-hero-subtitle {
+  font-size: 1.25rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.chandigarh-hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .chandigarh-hero-actions {
+    flex-direction: row;
+  }
+}
+
+.chandigarh-hero-cta-button {
+  background: linear-gradient(to right, #ea580c, #f59e0b);
+  color: white;
+  padding: 1.5rem 2rem;
+  font-size: 1.125rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.chandigarh-hero-cta-button:hover {
+  background: linear-gradient(to right, #c2410c, #d97706);
+}
+
+.chandigarh-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding-top: 2rem;
+}
+
+.chandigarh-stat-item {
+  text-align: center;
+}
+
+.chandigarh-stat-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.chandigarh-stat-label {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.chandigarh-hero-image {
+  position: relative;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .chandigarh-hero-image {
+    display: block;
+  }
+}
+
+.chandigarh-hero-image-container {
+  position: relative;
+  z-index: 10;
+}
+
+.chandigarh-hero-image img {
+  width: 100%;
+  height: auto;
+}

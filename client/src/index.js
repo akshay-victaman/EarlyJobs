@@ -13,6 +13,7 @@ hydrateRoot(
     <BrowserRouter>
       <App />
     </BrowserRouter>
+
   </React.StrictMode>
 );
 

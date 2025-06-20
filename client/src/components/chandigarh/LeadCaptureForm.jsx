@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './LeadCaptureSection.css';
+import './LeadCaptureForm.css';
 
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -17,14 +17,14 @@ const LeadCaptureSection = () => {
     email: '',
     description: '',
     type: 'student',
-    city: 'Surat'
+    city: 'Chandigarh'
   });
 
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log('EmailJS initialized with account key:', process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_ACCOUNT_KEY);
-    emailjs.init(`${process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_ACCOUNT_KEY}`);
+    console.log('EmailJS initialized with account key:', process.env.REACT_APP_FRANCHISE_Chandigarh_EMAILJS_ACCOUNT_KEY);
+    emailjs.init(`${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_ACCOUNT_KEY}`);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -57,19 +57,19 @@ const LeadCaptureSection = () => {
 
     try {
       await emailjs.send(
-        `${process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_SERVICE_ID}`,
-        `${process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_TEMPLATE_ID}`,
+        `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_SERVICE_ID}`,
+        `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_TEMPLATE_ID}`,
         adminTemplateParams
       );
       await emailjs.send(
-        `${process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_SERVICE_ID}`,
-        `${process.env.REACT_APP_FRANCHISE_SURAT_EMAILJS_TEMPLATE_ID_2}`,
+        `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_SERVICE_ID}`,
+        `${process.env.REACT_APP_FRANCHISE_CHANDIGHAR_EMAILJS_TEMPLATE_ID_2}`,
         userTemplateParams
       );
 
       toast({
         title: "Your form is submitted successfully",
-        description: "We'll contact you within 24 hours to discuss opportunities in Surat."
+        description: "We'll contact you within 24 hours to discuss opportunities in Chandigarh."
       });
       alert("Your form is submitted successfully! We'll contact you within 24 hours.");
 
@@ -79,7 +79,7 @@ const LeadCaptureSection = () => {
         email: '',
         description: '',
         type: 'student',
-        city: 'Surat'
+        city: 'Chandigarh'
       });
     } catch (error) {
       console.error('Email sending failed:', error);
@@ -96,7 +96,7 @@ const LeadCaptureSection = () => {
     {
       icon: Shield,
       title: "Local Expertise",
-      description: "Deep understanding of Surat's job market and business landscape"
+      description: "Deep understanding of Chandigarh's job market and business landscape"
     },
     {
       icon: Clock,
@@ -114,15 +114,15 @@ const LeadCaptureSection = () => {
     <section id="lead-capture" className="lead-capture-section">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">Join the EarlyJobs Surat Network</h2>
+          <h2 className="section-title">Join the EarlyJobs Chandigarh Network</h2>
           <p className="section-subtitle">
-            Take the first step towards your career goals or hiring needs with Surat's most trusted recruitment partner
+            Take the first step towards your career goals or hiring needs with Chandigarh's most trusted recruitment partner
           </p>
         </div>
 
         <div className="grid-container">
           <div className="features-container">
-            <h3 className="features-title">Why Choose EarlyJobs Surat?</h3>
+            <h3 className="features-title">Why Choose EarlyJobs Chandigarh?</h3>
             <div className="features-list">
               {features.map((feature, index) => (
                 <div key={index} className="feature-item">
@@ -142,15 +142,17 @@ const LeadCaptureSection = () => {
               <div className="contact-items">
                 <div className="contact-item">
                   <Phone className="contact-icon" />
-                  <span>+91 9377337833</span>
+                  <span>+91 9872874150
+</span>
                 </div>
                 <div className="contact-item">
                   <Mail className="contact-icon" />
-                  <span>surat@earlyjobs.in</span>
+                  <span>Chandigarh@earlyjobs.in</span>
                 </div>
                 <div className="contact-item">
                   <MapPin className="contact-icon" />
-                  <span>228, Magnus Shopping Mall, Nr. Althan Shopping Mall, Althan, Surat-395017</span>
+                  <span> Flat Number 204, GH 84 The KVSE Co-op, Peer Muchalla Road, Sector 20, Panchkula, Haryana 134117
+</span>
                 </div>
               </div>
             </div>
@@ -259,8 +261,8 @@ const LeadCaptureSection = () => {
                   />
                 </div>
 
-                <Button type="submit" className="submit-button" style={{ border: "0px" }}>
-                  Join EarlyJobs Surat
+                <Button type="submit" className="submit-button" style={{ border: '0px' }}>
+                  Join EarlyJobs Chandigarh
                 </Button>
 
                 <p className="form-footer">
