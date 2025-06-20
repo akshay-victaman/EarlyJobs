@@ -1,4 +1,3 @@
-
 .testimonials-section {
   padding: 5rem 0;
   background-color: white;
@@ -208,6 +207,7 @@
     transform: scale(1);
     opacity: 0.8;
   }
+
   100% {
     transform: scale(1.15);
     opacity: 1;
@@ -248,7 +248,7 @@
   align-items: center;
   padding: 1rem 1.5rem;
   background-color: #f9fafb;
-  border-top: 1px solid #e5e7eb;
+  border-top: 2px solid #e5e7eb;
   transition: background-color 0.3s ease;
 }
 
@@ -332,15 +332,15 @@
   .testimonials-layout {
     flex-direction: row;
   }
-  
+
   .testimonials-avatar-container {
     width: 25%;
   }
-  
+
   .testimonials-quote-container {
     width: 75%;
   }
-  
+
   .testimonials-quote {
     font-size: 1.5rem;
   }

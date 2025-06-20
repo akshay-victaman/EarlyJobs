@@ -408,3 +408,9 @@ select, input {
 
 
 } */
+
+:root {
+  --primary: #your-primary-color;
+  --accent: #your-accent-color;
+  --muted-foreground: #6b7280;
+}
