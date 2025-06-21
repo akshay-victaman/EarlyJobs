@@ -77,6 +77,7 @@ const Index = () => {
       return;
     }
 
+console.log(formData)
     setLoading(true);
 
     try {
@@ -206,7 +207,7 @@ const Index = () => {
               <div className="contact-items">
                 <div className="contact-item">
                   <Phone className="contact-icon" />
-                  <span>+91 84318 30032</span>
+                  <span>Comming Soon</span>
                 </div>
                 <div className="contact-item">
                   <Mail className="contact-icon" />
@@ -216,7 +217,7 @@ const Index = () => {
                 </div>
                 <div className="contact-item">
                   <MapPin className="contact-icon" />
-                  <span>Hyderabad, SaS Nagar, 5.2, Cabin, Fifth floor, E 260 BA, phase 8B industrial Area</span>
+                  <span>Comming Soon</span>
                 </div>
               </div>
             </div>
@@ -293,8 +294,10 @@ const Index = () => {
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="student">Student / Job Seeker</SelectItem>
+                    <SelectItem value="Student / Job Seeker">Student / Job Seeker</SelectItem>
                     <SelectItem value="employer">Employer</SelectItem>
+                    <SelectItem value="College / Placements">College / Placements</SelectItem>
+
                   </SelectContent>
                 </Select>
               </div>
