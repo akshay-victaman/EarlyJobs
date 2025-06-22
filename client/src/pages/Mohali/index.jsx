@@ -342,10 +342,8 @@ const Index = () => {
                      <div className="contact-items">
                        <div className="contact-item">
                          <Phone className="contact-icon" />
-                         <span>+91 9056 283266, </span>
-                         <span>+91 1724 561836</span>
+                         <span>+91 9056283266 , +91- 172-4561836</span>
 
-                         
                        </div>
                        <div className="contact-item">
                          <Mail className="contact-icon" />
