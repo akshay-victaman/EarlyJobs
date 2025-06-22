@@ -46,6 +46,8 @@ const Index = () => {
     mobile: "",
     role: ""
   });
+  const [phoneError, setPhoneError] = useState('');
+
 
   const [loading, setLoading] = useState(false);
   const features = [
@@ -65,11 +67,51 @@ const Index = () => {
       description: "95% placement rate with verified local employers"
     }
   ];
+  const validatePhone = (phone) => {
+    console.log("phone", phone);
+    const cleanPhone = phone.replace(/[^\d+]/g, '').replace('+91', '');
+    console.log("cleanPhone", cleanPhone);
+
+    const phoneRegex = /^\+?\d{10,15}$/;
+    
+    if (!phone) {
+      return 'Phone number is required';
+    }
+    
+    if (!phoneRegex.test(cleanPhone)) {
+      return 'Enter a valid phone number with 10-digits';
+    }
+    
+    return '';
+  };
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handlePhoneChange = (value) => {
+    const raw = value.replace(/\D/g, "");
+    console.log("raw", raw);
+    let formatted = "+91 ";
+    
+    if (raw.length > 2) {
+      const number = raw.slice(2);
+      console.log("number", number);
+      if (number.length <= 4) {
+        formatted += number;
+      } else {
+        formatted += number.slice(0, 4) + " " + number.slice(4, 10);
+      }
+    }
+    
+    handleInputChange('phone', formatted);
+    const error = validatePhone(formatted);
+    setPhoneError(error);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-  
+  console.log(formData)
     // First email: to the user
     const sendToUser = emailjs.send(
       process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_SERVICE_ID,          // Your service ID
@@ -301,6 +343,7 @@ const Index = () => {
                        <div className="contact-item">
                          <Phone className="contact-icon" />
                          <span>+91 9056283266 , +91- 172-4561836</span>
+
                        </div>
                        <div className="contact-item">
                          <Mail className="contact-icon" />
@@ -308,7 +351,8 @@ const Index = () => {
                        </div>
                        <div className="contact-item">
                          <MapPin className="contact-icon" />
-                         <span>Mohali, SaS Nagar, 5.2, Cabin, Fifth floor, E 260 BA, phase 8B industrial Area</span>
+                         <span>5.2 Cabin, 5th floor, 
+                         E 260 BA, phase 8B industrial Area Mohali, Sector-74A, Pin-160055</span>
                        </div>
                      </div>
                    </div>
@@ -331,31 +375,25 @@ const Index = () => {
           />
         </div>
         <div className="form-group">
-  <label htmlFor="phone" className="form-label">Phone Number *</label>
-  <Input
-    id="phone"
-    type="tel"
-    placeholder="+91 XXXX XXXXXX"
-    value={formData.mobile}
-    onChange={(e) => {
-      const raw = e.target.value.replace(/\D/g, ""); // remove non-digits
-      let formatted = "+91 ";
-
-      if (raw.length > 2) {
-        const number = raw.slice(2); // skip the '91' if user typed manually
-        if (number.length <= 4) {
-          formatted += number;
-        } else {
-          formatted += number.slice(0, 4) + " " + number.slice(4, 10);
-        }
-      }
-
-      setFormData({ ...formData, mobile: formatted });
-    }}
-    required
-    className="form-input"
-  />
-</div>
+        <label htmlFor="phone" className="form-label">Phone Number *</label>
+          <Input
+                   id="phone"
+                   type="tel"
+                   placeholder="+91 XXXX XXXXXX"
+                   value={formData.phone}
+                   onChange={(e) => handlePhoneChange(e.target.value)}
+                   required
+                   className="form-input"
+                   aria-required="true"
+                   aria-invalid={!!phoneError}
+                   aria-describedby={phoneError ? "phone-error" : undefined}
+                 />
+                 {phoneError && (
+                   <p id="phone-error" className="error-message" style={{ color: 'red', fontSize: '0.8rem' }}>
+                     {phoneError}
+                   </p>
+                 )}
+        </div>
 
         <div className="form-group">
           <label htmlFor="email" className="form-label">Email Address *</label>
@@ -387,8 +425,9 @@ const Index = () => {
               <SelectValue placeholder="Student / Job Seeker" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="student">Student / Job Seeker</SelectItem>
+              <SelectItem value="Student / Job Seeker">Student / Job Seeker</SelectItem>
               <SelectItem value="employer">Employer</SelectItem>
+              <SelectItem value="College / Placements">College / Placements</SelectItem>
             </SelectContent>
           </Select>
         </div>
