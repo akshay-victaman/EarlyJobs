@@ -63,7 +63,7 @@ const EventsSection = () => {
                     {event.type}
                   </Badge>
                   <Badge className={`event-status-badge event-status-${event.status}`}>
-                    {event.status === 'upcoming' ? 'Upcoming' : 'Completed'}
+                    {event.status === 'upcoming' ? 'Coming Soon' : 'Completed'}
                   </Badge>
                 </div>
                 <CardTitle className="event-card-title">{event.title}</CardTitle>
@@ -72,11 +72,11 @@ const EventsSection = () => {
               <CardContent className="event-card-content">
                 <p className="event-description">{event.description}</p>
                 <div className="event-details">
-                  <div className="event-detail">
+                  {/* <div className="event-detail">
                     <Calendar className="event-detail-icon" />
                     <span>{event.date}</span>
-                  </div>
-                  <div className="event-detail">
+                  </div> */}
+                  {/* <div className="event-detail">
                     <Clock className="event-detail-icon" />
                     <span>{event.time}</span>
                   </div>
@@ -87,14 +87,14 @@ const EventsSection = () => {
                   <div className="event-detail">
                     <Users className="event-detail-icon" />
                     <span>{event.attendees}</span>
-                  </div>
+                  </div> */}
                 </div>
 
                 {event.status === 'upcoming' && (
                   <div className="event-action">
                     <Button className="event-register-button">
-                      Register Now
-                      <ArrowRight className="event-register-icon" />
+                      Coming Soon
+                      {/* <ArrowRight className="event-register-icon" /> */}
                     </Button>
                   </div>
                 )}
