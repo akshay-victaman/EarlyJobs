@@ -35,7 +35,7 @@ const HeroSection = () => {
                 size="lg" 
                 className="chandigarh-hero-cta-button"
                 onClick={scrollToLeadForm}
-              >
+              >              
                 Get Started in Chandigarh Today
               </Button>
             </div>
@@ -56,9 +56,10 @@ const HeroSection = () => {
             </div>
           </div>
 
+    
           <div className="chandigarh-hero-image">
             <div className="chandigarh-hero-image-container">
-              <img src="https://i.ibb.co/Gvg9yJ2R/Connecting-teams-pana.png" alt="New employee" />
+              <img src="https://i.ibb.co/Gvg9yJ2R/Connecting-teams-pana.png" alt="New employee" /> 
             </div>
           </div>
         </div>
