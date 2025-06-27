@@ -228,52 +228,60 @@ const Hero = () => {
             )}
             <div className="hero-social">
               <p className="social-label">AS SEEN IN</p>
-              <div className="social-logos">
-                <img
-                  src="https://i.ibb.co/7JXD3fRn/download.jpg"
-                  alt="Business Standard"
-                  className="social-logo"
-                />
-                <img
-                  src="https://i.ibb.co/QvQXMT3w/india.png"
-                  alt="Franchise India"
-                  className="social-logo"
-                />
-                <img
-                  src="https://i.ibb.co/qYHG6R96/download.png"
-                  alt="YourStory"
-                  className="social-logo"
-                />
+              <div className="social-logos-row">
+                <div className="social-logos">
+                  <img
+                    src="https://i.ibb.co/7JXD3fRn/download.jpg"
+                    alt="Business Standard"
+                    className="social-logo"
+                  />
+                  <img
+                    src="https://i.ibb.co/QvQXMT3w/india.png"
+                    alt="Franchise India"
+                    className="social-logo"
+                  />
+                </div>
+                <div className="social-logos">
+                  <img
+                    src="https://i.ibb.co/qYHG6R96/download.png"
+                    alt="YourStory"
+                    className="social-logo"
+                  />
+                  {/* Add more if needed */}
+                </div>
               </div>
               <p className="trusted-label">TRUSTED BY</p>
-              <div className="trusted-logos">
-                <img
-                  src="https://i.ibb.co/LD2ywnR3/download-1.jpg"
-                  alt="Flipkart"
-                  className="trusted-logo"
-                />
-                <span className="logo-divider">|</span>
-                <img
-                  src="https://i.ibb.co/hJbMqRN1/download-2.jpg"
-                  alt="Star Health"
-                  className="trusted-logo"
-                />
-                <span className="logo-divider">|</span>
-                <img
-                  src="https://i.ibb.co/99YW8pkg/download-1.png"
-                  alt="Frankfinn"
-                  className="trusted-logo"
-                />
-                <span className="logo-divider">|</span>
-                <img
-                  src="https://i.ibb.co/991N1K1j/download-2.png"
-                  alt="HDFC"
-                  className="trusted-logo"
-                />
+              <div className="trusted-logos-row">
+                <div className="trusted-logos">
+                  <img
+                    src="https://i.ibb.co/LD2ywnR3/download-1.jpg"
+                    alt="Flipkart"
+                    className="trusted-logo"
+                  />
+                  <span className="logo-divider">|</span>
+                  <img
+                    src="https://i.ibb.co/hJbMqRN1/download-2.jpg"
+                    alt="Star Health"
+                    className="trusted-logo"
+                  />
+                </div>
+                <div className="trusted-logos">
+                  <img
+                    src="https://i.ibb.co/99YW8pkg/download-1.png"
+                    alt="Frankfinn"
+                    className="trusted-logo"
+                  />
+                  <span className="logo-divider">|</span>
+                  <img
+                    src="https://i.ibb.co/991N1K1j/download-2.png"
+                    alt="HDFC"
+                    className="trusted-logo"
+                  />
+                </div>
               </div>
             </div>
           </div>
-          {/* <div className="hero-video" style={{width:"24vw" , paddingRight:"57px"}}> */}
+          <div className="hero-video" style={{width:"50vw" , paddingRight:"57px"}}>
             <video
               ref={videoRef}
               src="https://res.cloudinary.com/ddzdpsj6i/video/upload/v1750077777/IMG_1783_22_g0tifc.mp4"
@@ -283,9 +291,10 @@ const Hero = () => {
               playsInline
               style={{
                 height: "529px",
+                width:"59%",
                 borderRadius: "16px",
+                marginLeft: "37px",
                 objectFit: "cover",
-                width: "29%",
                 boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                 marginTop: "20px",
               }}
@@ -297,7 +306,7 @@ const Hero = () => {
             />
           </div>
         </div>
-      {/* </div> */}
+      </div>
 
       {/* Pop-up Overlay and Form */}
       <PopupModal
