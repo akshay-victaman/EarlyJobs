@@ -54,7 +54,7 @@ const sendInterviewDayReminder = async () => {
       } = row;
 
       const interviewDate = new Date(interview_date);
-      const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const readableTime = interviewDate.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true });
 
       const msg = `https://media.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AHope+you%27re+doing+great%21+Just+a+quick+reminder+about+your+interview+for+the+${roleName}+role+at+${company_name}+today.%0A%0A%E2%8F%B3+Time%3A+${readableTime}%0A%F0%9F%93%8D+Location%3A+${location}%0A%0AWishing+you+all+the+best%21+See+you+soon.+%F0%9F%98%8A%0A%0A%F0%9F%93%9E+Contact%3A+${hr_phone}%0A%F0%9F%93%A7+Email%3A+${hr_email}&isTemplate=true&header=Interview+Today&footer=EarlyJobs+Recruitment+Team`;
 
@@ -121,7 +121,7 @@ const sendNotJoinedWhatsAppMessages = async () => {
       } = row;
 
       const interviewDate = new Date(interview_date);
-      const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const readableTime = interviewDate.toLocaleTimeString('en-IN', {timeZone: 'Asia/Kolkata',  hour: '2-digit', minute: '2-digit', hour12: true });
       const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AWe+noticed+that+your+joining+date+for+the+${roleName}+role+at+${company_name}+has+passed%2C+and+we+haven%27t+heard+from+you+yet.+We+are+still+excited+to+have+you+on+board%21%0A%0APlease+update+us+about+your+decision.+If+you+need+any+assistance+or+have+concerns%2C+feel+free+to+reach+out.%0A%0ALooking+forward+to+your+response%21+%F0%9F%98%8A%0A%0A%F0%9F%93%9E+Contact%3A+${hr_phone}%0A%F0%9F%93%A7+Email%3A+${hr_email}&isTemplate=true&header=Joining+Reminder&footer=EarlyJobs+HR+Team`;
 
       const res = await fetch(msg);
