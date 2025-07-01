@@ -844,8 +844,8 @@ const sendRescheduledWhatsappMessage = async (candidate) => {
             } = candidateDetails;
 
             const interviewDate = new Date(interview_date);
-            const readableDate = interviewDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-            const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const readableDate = interviewDate.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric' });
+            const readableTime = interviewDate.toLocaleTimeString('en-IN', {  timeZone: 'Asia/Kolkata',hour: '2-digit', minute: '2-digit', hour12: true });
             const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0A%0AAs+per+your+request%2C+we%E2%80%99ve+rescheduled+your+interview+for+the+${roleName}+role+at+${company_name}.%0A%0AHere+are+the+updated+details%3A%0A%0ADate%3A+${readableDate}%0ATime%3A+${readableTime}%0ALocation%3A+${location}%0A%0AThanks+for+keeping+us+informed%2C+and+we+appreciate+your+continued+interest.+If+you+have+any+further+questions++feel+free+to+reach+out.%0A%0AContact%3A+${hr_phone}%0AEmail%3A+${hr_email}&isTemplate=true&header=Interview+Rescheduled&footer=EarlyJobs+Recruitment+Team`;
             const res = await fetch(msg);
             const data = await res.json();
@@ -1296,7 +1296,7 @@ const sendSelectedWhatsappMessage = async (candidate) => {
             } = candidateDetails;
 
             const interviewDate = new Date(interview_date);
-            const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const readableTime = interviewDate.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true });
             const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AWe+are+thrilled+to+inform+you+that+you+have+been+selected+for+the+${roleName}+role+at+${company_name}%21%0A%0APlease+confirm+your+acceptance+and+expected+joining+date%0A%0AContact%3A+${hr_phone}%0AEmail%3A+${hr_email}&isTemplate=true&header=Congratulations%21+You%E2%80%99re+Selected&footer=EarlyJobs+HR+Team`;
 
             const res = await fetch(msg);
@@ -1354,7 +1354,7 @@ const sendJoinedWhatsappMessage = async (candidate) => {
             } = candidateDetails;
 
             const interviewDate = new Date(interview_date);
-            const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const readableTime = interviewDate.toLocaleTimeString('en-IN', {timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true });
             const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C++%0A%0ACongratulations+on+your+new+role+at+${company_name}%21++We%E2%80%99re+thrilled+to+have+been+part+of+your+journey.++%0A%0AWe%E2%80%99d+love+to+hear+about+your+experience+with+Earlyjobs%21+Your+feedback+helps+us+grow+and+continue+connecting+great+talent+with+amazing+opportunities.++%0A%0AIf+you+had+a+smooth+and+positive+hiring+experience%2C+please+take+a+moment+to+leave+us+a+review%3A++%0A%0A${hr_email}%0A%0AYour+kind+words+will+help+others+find+great+opportunities+too%21+%0A%0AThank+you+for+choosing+EarlyJobs.+Wishing+you+all+the+best+in+your+new+role%21&isTemplate=true&header=Share+Your+Experience+%E2%80%93+EarlyJobs&footer=EarlyJobs+Team&buttonUrlParam=https%3A%2F%2Fshorturl.at%2FiQZl9`;
 
             const res = await fetch(msg);
