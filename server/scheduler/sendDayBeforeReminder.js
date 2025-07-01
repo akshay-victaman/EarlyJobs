@@ -57,8 +57,8 @@ const sendInterviewNoAttendedWhatsAppMessage = async () => {
       } = row;
 
       const interviewDate = new Date(interview_date);
-      const readableDate = interviewDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-      const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const readableDate = interviewDate.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric' });
+      const readableTime = interviewDate.toLocaleTimeString('en-IN', {timeZone: 'Asia/Kolkata',  hour: '2-digit', minute: '2-digit', hour12: true });
 
       const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AWe+noticed+that+you+were+unable+to+attend+the+interview+for+the+${roleName}+role+at+${company_name}.%0A%0AWould+you+like+to+reschedule%3F+Let+us+know+if+you%E2%80%99re+still+interested+so+we+can+arrange+a+new+slot+for+you.+Looking+forward+to+your+response%21%0A%0AContact%3A+${hr_phone}%0AEmail%3A+${hr_email}&isTemplate=true&header=Missed+Interview&footer=EarlyJobs+HR+Team`;
       const res = await axios.get(msg);
@@ -128,8 +128,8 @@ const sendDayBeforeInterviewReminder = async () => {
       } = row;
 
       const interviewDate = new Date(interview_date);
-      const readableDate = interviewDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-      const readableTime = interviewDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+      const readableDate = interviewDate.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata',day: '2-digit', month: 'short', year: 'numeric' });
+      const readableTime = interviewDate.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata',hour: '2-digit', minute: '2-digit', hour12: true });
 
       const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0A%0AWe%E2%80%99re+excited+to+remind+you+that+your+interview+for+the+${roleName}+role+at+${company_name}+is+scheduled+for+tomorrow%21%0A%0AHere+are+the+details%3A%0ADate%3A+${readableDate}%0ATime%3A+${readableTime}%0ALocation%3A+${location}%0A%0AIf+you+have+any+questions+or+need+any+assistance+before+the+interview%2C+feel+free+to+reach+out+to+us.%0A%0AContact%3A+${hr_phone}%0AEmail%3A+${hr_email}&isTemplate=true&header=Reminder%3A+Your+Interview+is+Scheduled+for+Tomorrow&footer=Team+EarlyJobs`;
 
