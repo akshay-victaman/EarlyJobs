@@ -1,0 +1,140 @@
+/* Base styles for all screen sizes */
+.consultation-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.consultation-heading {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1a202c;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.consultation-hr {
+  border-top: 2px solid #e2e8f0;
+  margin-bottom: 30px;
+}
+
+.consultation-input,
+.consultation-textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.consultation-input:focus,
+.consultation-textarea:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+}
+
+.consultation-textarea {
+  height: 120px;
+  resize: none;
+}
+
+.consultation-radio-con {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.consultation-radio {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+}
+
+.consultation-radio-label {
+  font-size: 16px;
+  color: #4a5568;
+}
+
+.consultation-consent-con {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.consultation-consent {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+}
+
+.consultation-consent-label {
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.consultation-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #3182ce;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.consultation-btn:hover {
+  background-color: #2b6cb0;
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .consultation-form {
+    padding: 15px;
+    margin: 0 10px;
+  }
+
+  .consultation-heading {
+    font-size: 20px;
+  }
+
+  .consultation-input,
+  .consultation-textarea,
+  .consultation-btn {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .consultation-radio-label,
+  .consultation-consent-label {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .consultation-form {
+    padding: 25px;
+  }
+
+  .consultation-heading {
+    font-size: 22px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .consultation-form {
+    padding: 30px;
+  }
+
+  .consultation-heading {
+    font-size: 24px;
+  }
+}

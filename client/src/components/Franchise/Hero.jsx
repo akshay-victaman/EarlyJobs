@@ -207,8 +207,8 @@ const Hero = () => {
     <section className="hero">
       <div className="hero-shape"></div>
       <div className="container">
-        <div className="hero-grid" style={{ display: "flex", flexDirection: "row", alignItems: "start" , width: "100%" , justifyContent: "space-around"}}> 
-          <div className="hero-content" style={{width:"39vw"}}>
+        <div className="hero-grid">
+          <div className="hero-content">
             <h1 className="hero-title">
               Build Your Own <span>Recruitment Business</span> with EarlyJobs
             </h1>

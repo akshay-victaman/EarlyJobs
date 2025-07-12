@@ -45,7 +45,7 @@ const EarningModel = () => {
               <div className="earnings-item">
                 <div>
                   <p className="earnings-item-label">Candidate Assessment</p>
-                  <p className="earnings-item-sublabel">Pre-hiring testing</p>
+                  <p className="earnings-item-sublabel">After deduction of the platform fee</p>
                 </div>
                 <span className="earnings-item-value">70% (net)</span>
               </div>

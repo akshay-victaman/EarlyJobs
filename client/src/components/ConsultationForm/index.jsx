@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import app from "../../firebase";
 import { useLocation } from "react-router-dom";
+import "./style.css"; // Import the updated CSS file
 
 const ConsultationForm = ({ isFranchise }) => {
   const db = getFirestore(app); // Initialize Firestore
@@ -24,12 +25,21 @@ const ConsultationForm = ({ isFranchise }) => {
     email: "",
     contact: "",
     lookingFor: "",
+    cityDistrict: isFranchise ? "" : undefined,
+    occupation: isFranchise ? "" : undefined,
+    investmentBudget: isFranchise ? "" : undefined,
+    startTimeline: isFranchise ? "" : undefined,
+    businessIntent: isFranchise ? "" : undefined,
+    timeCommitment: isFranchise ? "" : undefined,
+    referralSource: isFranchise ? "" : undefined,
+    consent: isFranchise ? false : undefined,
   });
 
   const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -47,12 +57,22 @@ const ConsultationForm = ({ isFranchise }) => {
     }
 
     try {
-      // Add the new document and get the document reference
+      // Prepare form data based on isFranchise
       const newConsultForm = {
         name: formData.name,
         email: formData.email,
         contact: formData.contact,
         lookingFor: isFranchise ? "Franchise" : formData.lookingFor,
+        ...(isFranchise && {
+          cityDistrict: formData.cityDistrict,
+          occupation: formData.occupation,
+          investmentBudget: formData.investmentBudget,
+          startTimeline: formData.startTimeline,
+          businessIntent: formData.businessIntent,
+          timeCommitment: formData.timeCommitment,
+          referralSource: formData.referralSource,
+          consent: formData.consent,
+        }),
       };
 
       // Step 1: Add the document with the form data to Firestore
@@ -74,7 +94,19 @@ const ConsultationForm = ({ isFranchise }) => {
                 Hi Earlyjobs Team,
                 <br><br>
                 We have received a request for free consultation from <strong>${formData.name}</strong> with email id <strong>${formData.email}</strong> and contact number <strong>${formData.contact}</strong>. 
-                They are looking for <strong>${formData.lookingFor}</strong>.
+                They are looking for <strong>${isFranchise ? "Franchise" : formData.lookingFor}</strong>.
+                ${isFranchise
+                  ? `<br><br>Additional Details:<br>
+                     City & District: <strong>${formData.cityDistrict}</strong><br>
+                     Occupation: <strong>${formData.occupation}</strong><br>
+                     Investment Budget: <strong>${formData.investmentBudget}</strong><br>
+                     Start Timeline: <strong>${formData.startTimeline}</strong><br>
+                     Business Intent: <strong>${formData.businessIntent}</strong><br>
+                     Time Commitment: <strong>${formData.timeCommitment}</strong><br>
+                     Referral Source: <strong>${formData.referralSource}</strong><br>
+                     Consent: <strong>${formData.consent ? "Yes" : "No"}</strong>`
+                  : ""
+                }
                 <br><br>
                 Regards,<br> 
                 earlyjobs.in team
@@ -92,7 +124,9 @@ const ConsultationForm = ({ isFranchise }) => {
         fromEmailId: "no-reply@earlyjobs.in",
         subject: `Consultation Request from ${formData.name}`,
         recipients:
-          formData.lookingFor === "Candidate"
+          isFranchise
+            ? "akanksha@earlyjobs.in"
+            : formData.lookingFor === "Candidate"
             ? "asish@earlyjobs.in"
             : "akanksha@earlyjobs.in",
         content: encodedContent,
@@ -109,6 +143,14 @@ const ConsultationForm = ({ isFranchise }) => {
         email: "",
         contact: "",
         lookingFor: "",
+        cityDistrict: isFranchise ? "" : undefined,
+        occupation: isFranchise ? "" : undefined,
+        investmentBudget: isFranchise ? "" : undefined,
+        startTimeline: isFranchise ? "" : undefined,
+        businessIntent: isFranchise ? "" : undefined,
+        timeCommitment: isFranchise ? "" : undefined,
+        referralSource: isFranchise ? "" : undefined,
+        consent: isFranchise ? false : undefined,
       });
     } catch (error) {
       console.error("Error submitting consultation request: ", error);
@@ -119,87 +161,210 @@ const ConsultationForm = ({ isFranchise }) => {
   };
 
   return (
-    <form className="landing-page-s7-consultation-form" onSubmit={handleSubmit}>
+    <form className="consultation-form" onSubmit={handleSubmit}>
       {location.pathname === "/franchise" ? null : (
         <>
-          <h2 className="landing-page-s7-consultation-heading">
+          <h2 className="consultation-heading">
             Free Consultation by Expert
           </h2>
-          <hr className="landing-page-s7-consultation-hr" />
+          <hr className="consultation-hr" />
         </>
       )}
-      <input
-        type="text"
-        required
-        placeholder="Enter Your Name"
-        className="landing-page-s7-consultation-input"
-        name="name"
-        value={formData.name}
-        onChange={handleInputChange}
-      />
-      <input
-        type="email"
-        required
-        placeholder="Enter Email Id"
-        className="landing-page-s7-consultation-input"
-        name="email"
-        value={formData.email}
-        onChange={handleInputChange}
-      />
-      <input
-        type="tel"
-        required
-        placeholder="Contact Number"
-        className="landing-page-s7-consultation-input"
-        name="contact"
-        value={formData.contact}
-        onChange={handleInputChange}
-      />
-      {location.pathname === "/franchise" ? null : (
-        <>
-          <div className="landing-page-s7-consultation-textarea-con">
+      <div className="space-y-6">
+        <input
+          type="text"
+          required
+          placeholder="Enter Your Name"
+          className="consultation-input"
+          name="name"
+          value={formData.name}
+          onChange={handleInputChange}
+        />
+        <input
+          type="email"
+          required
+          placeholder="Enter Email Id"
+          className="consultation-input"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+        />
+        <input
+          type="tel"
+          required
+          placeholder="Contact Number"
+          className="consultation-input"
+          name="contact"
+          value={formData.contact}
+          onChange={handleInputChange}
+        />
+        {isFranchise ? (
+          <>
             <input
-              type="radio"
+              type="text"
               required
-              name="lookingFor"
-              id="Job"
-              className="landing-page-s7-consultation-radio"
-              value="Job"
+              placeholder="Where do you plan to open your franchise?"
+              className="consultation-input"
+              name="cityDistrict"
+              value={formData.cityDistrict || ""}
               onChange={handleInputChange}
             />
-            <label
-              htmlFor="Job"
-              className="landing-page-s7-consultation-radio-label"
-            >
-              Looking For Job
-            </label>
-          </div>
-          <div className="landing-page-s7-consultation-textarea-con">
-            <input
-              type="radio"
+            <select
               required
-              name="lookingFor"
-              id="Candidate"
-              className="landing-page-s7-consultation-radio"
-              value="Candidate"
+              className="consultation-input consultation-select"
+              name="occupation"
+              value={formData.occupation || ""}
+              onChange={handleInputChange}
+            >
+              <option value="" disabled>
+                What do you currently do?
+              </option>
+              <option value="Working Professional">Working Professional</option>
+              <option value="Business Owner">Business Owner</option>
+              <option value="Consultant">Consultant</option>
+              <option value="HR Recruiter">HR Recruiter</option>
+              <option value="Freelancer">Freelancer</option>
+              <option value="Other">Other</option>
+            </select>
+            <select
+              required
+              className="consultation-input consultation-select"
+              name="investmentBudget"
+              value={formData.investmentBudget || ""}
+              onChange={handleInputChange}
+            >
+              <option value="" disabled>
+                How much are you willing to invest in setting up the franchise?
+              </option>
+              <option value="₹1–2 Lakhs">₹1–2 Lakhs</option>
+              <option value="₹2–3 Lakhs">₹2–3 Lakhs</option>
+              <option value="₹3–5 Lakhs">₹3–5 Lakhs</option>
+              <option value="₹5 Lakhs+">₹5 Lakhs+</option>
+            </select>
+            <select
+              required
+              className="consultation-input consultation-select"
+              name="startTimeline"
+              value={formData.startTimeline || ""}
+              onChange={handleInputChange}
+            >
+              <option value="" disabled>
+                When do you plan to start your franchise journey?
+              </option>
+              <option value="Immediately">Immediately</option>
+              <option value="Within 15 Days">Within 15 Days</option>
+              <option value="Within 30 Days">Within 30 Days</option>
+              <option value="Just Exploring">Just Exploring</option>
+            </select>
+            <textarea
+              required
+              placeholder="Why do you want to start a recruitment franchise with EarlyJobs?"
+              className="consultation-textarea"
+              name="businessIntent"
+              value={formData.businessIntent || ""}
               onChange={handleInputChange}
             />
-            <label
-              htmlFor="Candidate"
-              className="landing-page-s7-consultation-radio-label"
+            <select
+              required
+              className="consultation-input consultation-select"
+              name="timeCommitment"
+              value={formData.timeCommitment || ""}
+              onChange={handleInputChange}
             >
-              Looking For Candidate
-            </label>
-          </div>
-        </>
-      )}
-      <ReCAPTCHA
-        sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-        onChange={onChange}
-      />
-      <button type="submit" className="landing-page-s7-consultation-btn">
-        Send
-      </button>
+              <option value="" disabled>
+                How do you plan to manage your franchise?
+              </option>
+              <option value="Full-Time">Full-Time</option>
+              <option value="Part-Time">Part-Time</option>
+              <option value="Not Sure Yet">Not Sure Yet</option>
+            </select>
+            <select
+              required
+              className="consultation-input consultation-select"
+              name="referralSource"
+              value={formData.referralSource || ""}
+              onChange={handleInputChange}
+            >
+              <option value="" disabled>
+                How did you hear about us?
+              </option>
+              <option value="Instagram">Instagram</option>
+              <option value="Facebook">Facebook</option>
+              <option value="LinkedIn">LinkedIn</option>
+              <option value="WhatsApp">WhatsApp</option>
+              <option value="Referral">Referral</option>
+              <option value="Other">Other</option>
+            </select>
+            <div className="consultation-consent-con">
+              <input
+                type="checkbox"
+                required
+                name="consent"
+                id="consent"
+                className="consultation-consent"
+                checked={formData.consent || false}
+                onChange={handleInputChange}
+              />
+              <label
+                htmlFor="consent"
+                className="consultation-consent-label"
+              >
+                I consent to EarlyJobs contacting me via WhatsApp, phone, or email
+                with relevant franchise information.
+              </label>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="consultation-radio-con">
+              <input
+                type="radio"
+                required
+                name="lookingFor"
+                id="Job"
+                className="consultation-radio"
+                value="Job"
+                onChange={handleInputChange}
+              />
+              <label
+                htmlFor="Job"
+                className="consultation-radio-label"
+              >
+                Looking For Job
+              </label>
+            </div>
+            <div className="consultation-radio-con">
+              <input
+                type="radio"
+                required
+                name="lookingFor"
+                id="Candidate"
+                className="consultation-radio"
+                value="Candidate"
+                onChange={handleInputChange}
+              />
+              <label
+                htmlFor="Candidate"
+                className="consultation-radio-label"
+              >
+                Looking For Candidate
+              </label>
+            </div>
+          </>
+        )}
+        <div className="g-recaptcha">
+          <ReCAPTCHA
+            sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+            onChange={onChange}
+          />
+        </div>
+        <button
+          type="submit"
+          className="consultation-btn"
+        >
+          {isFranchise ? "Submit & Get Franchise Proposal" : "Send"}
+        </button>
+      </div>
     </form>
   );
 };

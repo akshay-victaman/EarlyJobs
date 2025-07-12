@@ -18,7 +18,7 @@ const WhyFranchise = () => {
     {
       icon: <DollarSign className="reason-icon" />,
       title: "Low Setup, High ROI",
-      description: "Start with just ₹1L deposit + minimal infra"
+      description: "Start with just ₹2L deposit + minimal infra"
     },
     {
       icon: <TrendingUp className="reason-icon" />,

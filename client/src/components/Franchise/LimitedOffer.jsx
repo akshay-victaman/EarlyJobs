@@ -129,9 +129,7 @@ const LimitedOffer = () => {
                   ))}
                 </div>
 
-                <p className="offer-deadline">
-                  Act fast — Offer valid till June 20, 2025 ⏳
-                </p>
+               
               </div>
 
               <div className="offer-cta">
