@@ -37,12 +37,7 @@ const Footer = ({handleShowContactForm}) => {
                         <a href="https://www.linkedin.com/company/earlyjobs/" className="footer-social-media-link" rel="noreferrer" target="_blank">
                             <FaLinkedin className="footer-social-media-icon" />
                         </a>
-                        // <a href="https://www.goformeet.co/earlyjobs" className="footer-social-media-link" rel="noreferrer" target="_blank">
-                        //     <img src="/goformeet_logo.png" alt="goformeet" className="footer-social-media-image" />
-                        // </a>
-                        // <a href="https://www.t.me/earlyjobsoffice/" className="footer-social-media-link" rel="noreferrer" target="_blank">
-                        //     <FaTelegram className="footer-social-media-icon" />
-                        // </a>
+               
                     </div>
                     <h3 className="footer-heading">ALSO AVAILABLE IN</h3>
                     <div className="footer-sub-con">
