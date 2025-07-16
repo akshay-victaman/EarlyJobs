@@ -1,58 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
-import { ArrowRight, Loader2, Shield, Clock, Award, MapPin, Phone, Mail } from 'lucide-react';
+import {
+  ArrowRight,
+  Loader2,
+  Shield,
+  Clock,
+  Award,
+  MapPin,
+  Phone,
+  Mail,
+} from "lucide-react";
 import { toast } from "react-toastify";
-import HeroSection from '../../components/franchiseHYD/herosection';
-import AboutSection from '../../components/franchiseHYD/AboutSection';
-import emailjs from '@emailjs/browser';
-import BenefitsSection from '../../components/franchiseHYD/BenefitsSection';
-import LocalEvents from '../../components/franchiseHYD/LocalEvents';
-import Faq from '../../components/franchiseHYD/faq';
-import './Index.css';
+import HeroSection from "../../components/franchiseHYD/herosection";
+import AboutSection from "../../components/franchiseHYD/AboutSection";
+import emailjs from "@emailjs/browser";
+import BenefitsSection from "../../components/franchiseHYD/BenefitsSection";
+import LocalEvents from "../../components/franchiseHYD/LocalEvents";
+import Faq from "../../components/franchiseHYD/faq";
+import "./Index.css";
 
 const Index = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    role: 'student',
-    message: ''
+    name: "",
+    phone: "",
+    email: "",
+    role: "student",
+    message: "",
   });
   const [loading, setLoading] = useState(false);
-  const [phoneError, setPhoneError] = useState('');
+  const [phoneError, setPhoneError] = useState("");
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const validatePhone = (phone) => {
     console.log("phone", phone);
-    const cleanPhone = phone.replace(/[^\d+]/g, '').replace('+91', '');
+    const cleanPhone = phone.replace(/[^\d+]/g, "").replace("+91", "");
     console.log("cleanPhone", cleanPhone);
 
     const phoneRegex = /^\+?\d{10,15}$/;
-    
+
     if (!phone) {
-      return 'Phone number is required';
+      return "Phone number is required";
     }
-    
+
     if (!phoneRegex.test(cleanPhone)) {
-      return 'Enter a valid phone number with 10-digits';
+      return "Enter a valid phone number with 10-digits";
     }
-    
-    return '';
+
+    return "";
   };
 
   const handlePhoneChange = (value) => {
     const raw = value.replace(/\D/g, "");
     console.log("raw", raw);
     let formatted = "+91 ";
-    
+
     if (raw.length > 2) {
       const number = raw.slice(2);
       console.log("number", number);
@@ -62,22 +77,22 @@ const Index = () => {
         formatted += number.slice(0, 4) + " " + number.slice(4, 10);
       }
     }
-    
-    handleInputChange('phone', formatted);
+
+    handleInputChange("phone", formatted);
     const error = validatePhone(formatted);
     setPhoneError(error);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const phoneValidationError = validatePhone(formData.phone);
     if (phoneValidationError) {
       setPhoneError(phoneValidationError);
       return;
     }
 
-console.log(formData)
+    console.log(formData);
     setLoading(true);
 
     try {
@@ -89,7 +104,7 @@ console.log(formData)
           email: formData.email,
           mobile: formData.phone,
           role: formData.role,
-          branch: "Hyderabad"
+          branch: "Hyderabad",
         },
         process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY
       );
@@ -104,17 +119,23 @@ console.log(formData)
           role: formData.role,
           Branch: "Hyderabad",
           message: formData.message,
-          tomail: "hyderabad@earlyjobs.in"
+          tomail: "hyderabad@earlyjobs.in",
         },
         process.env.REACT_APP_FRANCHISE_HYD_MOH_EMAILJS_ACCOUNT_KEY_2
       );
 
       await Promise.all([sendToUser, sendToTeam]);
-      toast.success('Form Submitted Successfully!');
-      setFormData({ name: '', email: '', phone: '', message: '', role: 'student' });
+      toast.success("Form Submitted Successfully!");
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+        role: "student",
+      });
     } catch (error) {
-      toast.error('Submission Failed');
-      console.error('EmailJS Error:', error);
+      toast.error("Submission Failed");
+      console.error("EmailJS Error:", error);
     } finally {
       setLoading(false);
     }
@@ -124,18 +145,19 @@ console.log(formData)
     {
       icon: Shield,
       title: "Local Expertise",
-      description: "Deep understanding of Hyderabad's job market and business landscape"
+      description:
+        "Deep understanding of Hyderabad's job market and business landscape",
     },
     {
       icon: Clock,
       title: "Quick Response",
-      description: "24-48 hours response time for all inquiries"
+      description: "24-48 hours response time for all inquiries",
     },
     {
       icon: Award,
       title: "Proven Success",
-      description: "95% placement rate with verified local employers"
-    }
+      description: "95% placement rate with verified local employers",
+    },
   ];
 
   return (
@@ -147,47 +169,55 @@ console.log(formData)
         <div className="container">
           <div className="text-center">
             <h2 className="section-title">How It Works</h2>
-            <p className="section-description">Simple 3-step process to get started</p>
+            <p className="section-description">
+              Simple 3-step process to get started
+            </p>
           </div>
           <div className="steps-grid">
             <div className="step">
               <div className="step-number step-number-blue">1</div>
               <h3 className="step-title">Register</h3>
               <p className="step-description">
-                Sign up with your details and specify whether you're a student, college, or employer
+                Sign up with your details and specify whether you're a student,
+                college, or employer
               </p>
             </div>
             <div className="step">
               <div className="step-number step-number-orange">2</div>
               <h3 className="step-title">Get Matched</h3>
               <p className="step-description">
-                Our AI algorithm matches candidates with suitable roles or employers with qualified talent
+                Our AI algorithm matches candidates with suitable roles or
+                employers with qualified talent
               </p>
             </div>
             <div className="step">
               <div className="step-number step-number-green">3</div>
               <h3 className="step-title">Interview & Start</h3>
               <p className="step-description">
-                Participate in interviews with our support and begin your career journey
+                Participate in interviews with our support and begin your career
+                journey
               </p>
             </div>
           </div>
         </div>
       </section>
-      <section 
-        id="lead-capture" 
-        style={{ 
+      <section
+        id="lead-capture"
+        style={{
           backgroundColor: "#B03B0F",
           padding: "2rem 1rem",
           width: "100%",
-          minHeight: "100vh"
+          minHeight: "100vh",
         }}
       >
         <div className="lead-capture-container">
           <div className="features-container">
-            <h3 className="features-title">Join the EarlyJobs Hyderabad Network</h3>
+            <h3 className="features-title">
+              Join the EarlyJobs Hyderabad Network
+            </h3>
             <p style={{ color: "#fff" }}>
-              Get started today and unlock opportunities in Hyderabad's thriving job market
+              Get started today and unlock opportunities in Hyderabad's thriving
+              job market
             </p>
             <div className="features-list">
               {features.map((feature, index) => (
@@ -207,17 +237,24 @@ console.log(formData)
               <div className="contact-items">
                 <div className="contact-item">
                   <Phone className="contact-icon" />
-                  <span>Comming Soon</span>
+                  <span>+91 9949 702299</span>
                 </div>
                 <div className="contact-item">
                   <Mail className="contact-icon" />
-                  <a href="mailto:hyderabad@earlyjobs.in" style={{ textDecoration: "none", color: "inherit" }}>
+                  <a
+                    href="mailto:hyderabad@earlyjobs.in"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
                     hyderabad@earlyjobs.in
                   </a>
                 </div>
                 <div className="contact-item">
                   <MapPin className="contact-icon" />
-                  <span>Comming Soon</span>
+                  <span>
+                    Near Metro Pillar No: C1197, Cabin No.1, 1-84, 9, W
+                    Marredpally Rd, Regimental Bazaar, East Marredpally,
+                    Secunderabad, Telangana 500026
+                  </span>
                 </div>
               </div>
             </div>
@@ -225,22 +262,28 @@ console.log(formData)
 
           <div className="form-container">
             <h2 style={{ marginBottom: "0px" }}>Get Started Today</h2>
-            <p style={{ margin: "0px" }}>Join thousands of successful candidates and employers</p>
+            <p style={{ margin: "0px" }}>
+              Join thousands of successful candidates and employers
+            </p>
             <form onSubmit={handleSubmit} className="form" Validate>
               <div className="form-group">
-                <Label htmlFor="name" className="form-label">Full Name *</Label>
+                <Label htmlFor="name" className="form-label">
+                  Full Name *
+                </Label>
                 <Input
                   id="name"
                   placeholder="Enter your full name"
                   value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
                   required
                   className="form-input"
                   aria-required="true"
                 />
               </div>
               <div className="form-group">
-                <Label htmlFor="phone" className="form-label">Phone Number *</Label>
+                <Label htmlFor="phone" className="form-label">
+                  Phone Number *
+                </Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -254,55 +297,70 @@ console.log(formData)
                   aria-describedby={phoneError ? "phone-error" : undefined}
                 />
                 {phoneError && (
-                  <p id="phone-error" className="error-message" style={{ color: 'red', fontSize: '0.8rem' }}>
+                  <p
+                    id="phone-error"
+                    className="error-message"
+                    style={{ color: "red", fontSize: "0.8rem" }}
+                  >
                     {phoneError}
                   </p>
                 )}
               </div>
               <div className="form-group">
-                <Label htmlFor="email" className="form-label">Email Address *</Label>
+                <Label htmlFor="email" className="form-label">
+                  Email Address *
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="your.email@example.com"
                   value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
                   required
                   className="form-input"
                   aria-required="true"
                 />
               </div>
               <div className="form-group">
-                <Label htmlFor="message" className="form-label">Description *</Label>
+                <Label htmlFor="message" className="form-label">
+                  Description *
+                </Label>
                 <Textarea
                   id="message"
                   placeholder="Tell us about your goals or requirements"
                   value={formData.message}
-                  onChange={(e) => handleInputChange('message', e.target.value)}
+                  onChange={(e) => handleInputChange("message", e.target.value)}
                   required
                   className="form-input"
                   aria-required="true"
                 />
               </div>
               <div className="form-group">
-                <Label htmlFor="role" className="form-label">I am a *</Label>
-                <Select 
-                  value={formData.role} 
-                  onValueChange={(value) => handleInputChange('role', value)}
+                <Label htmlFor="role" className="form-label">
+                  I am a *
+                </Label>
+                <Select
+                  value={formData.role}
+                  onValueChange={(value) => handleInputChange("role", value)}
                 >
                   <SelectTrigger className="form-input">
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Student / Job Seeker">Student / Job Seeker</SelectItem>
+                    <SelectItem value="Student / Job Seeker">
+                      Student / Job Seeker
+                    </SelectItem>
                     <SelectItem value="employer">Employer</SelectItem>
-                    <SelectItem value="College / Placements">College / Placements</SelectItem>
-
+                    <SelectItem value="College / Placements">
+                      College / Placements
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="form-group">
-                <Label htmlFor="city" className="form-label">City</Label>
+                <Label htmlFor="city" className="form-label">
+                  City
+                </Label>
                 <Input
                   id="city"
                   value="Hyderabad"
@@ -311,18 +369,29 @@ console.log(formData)
                   aria-disabled="true"
                 />
               </div>
-              <Button 
-                type="submit" 
-                className="form-button" 
+              <Button
+                type="submit"
+                className="form-button"
                 disabled={loading || !!phoneError}
-                aria-label={loading ? "Submitting form" : "Join EarlyJobs Hyderabad"}
+                aria-label={
+                  loading ? "Submitting form" : "Join EarlyJobs Hyderabad"
+                }
               >
-                {loading ? <Loader2 className="button-loader" /> : 'Join EarlyJobs Hyderabad'}
+                {loading ? (
+                  <Loader2 className="button-loader" />
+                ) : (
+                  "Join EarlyJobs Hyderabad"
+                )}
               </Button>
               <p className="form-note">
-                By submitting this form, you agree to our{' '}
-                <a className="form-note" href='/terms-and-conditions'>Terms of Service</a> and{' '}
-                <a className="form-note" href='/privacy-policy'>Privacy Policy</a>
+                By submitting this form, you agree to our{" "}
+                <a className="form-note" href="/terms-and-conditions">
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a className="form-note" href="/privacy-policy">
+                  Privacy Policy
+                </a>
               </p>
             </form>
           </div>
