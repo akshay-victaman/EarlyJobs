@@ -132,7 +132,7 @@ const EachRoute = ({ initialState }) => {
 
       <Route
         exact 
-        path="/franchise/surat"
+        path="/franchise/ss"
         render={() => ( 
           <Suspense fallback={<Loader />}>
             <SuratFranchise />
