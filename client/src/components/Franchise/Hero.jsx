@@ -281,7 +281,7 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="hero-video" style={{width:"50vw" , paddingRight:"57px"}}>
+          {/* <div className="hero-video" style={{width:"50vw" , paddingRight:"57px"}}>
             <video
               ref={videoRef}
               src="https://res.cloudinary.com/ddzdpsj6i/video/upload/v1750077777/IMG_1783_22_g0tifc.mp4"
@@ -304,7 +304,7 @@ const Hero = () => {
                   .catch((err) => console.log("Autoplay failed:", err));
               }}
             />
-          </div>
+          </div> */}
         </div>
       </div>
 
