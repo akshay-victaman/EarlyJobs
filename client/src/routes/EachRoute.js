@@ -74,7 +74,8 @@ const ViewForms = lazy(() => import("../components/ViewForms"));
 const PressReleasePage = lazy(() => import("../pages/PressReleasePage"));
 const Clientele = lazy(() => import("../pages/clientele"));
 const Mohali = lazy(() => import("../pages/Mohali/index.jsx"));
-const FranchiseHyd= lazy(() => import("../pages/FranchiseHyd/index.jsx"));
+const FranchiseHyd = lazy(() => import("../pages/FranchiseHyd/index.jsx"));
+const EarlyJobsLanding = lazy(() => import("../pages/Eventspage.js/index.jsx"));
 
 const EachRoute = ({ initialState }) => {
   return (
@@ -109,7 +110,7 @@ const EachRoute = ({ initialState }) => {
           </Suspense>
         )}
       />
-       <Route
+      <Route
         exact
         path="/franchise/mohali"
         render={() => (
@@ -119,7 +120,17 @@ const EachRoute = ({ initialState }) => {
           </Suspense>
         )}
       />
-       <Route
+      <Route
+        exact
+        path="/events"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <EarlyJobsLanding />
+            {/* <LoginPage /> */}
+          </Suspense>
+        )}
+      />
+      <Route
         exact
         path="/franchise/hyderabad"
         render={() => (
@@ -131,9 +142,9 @@ const EachRoute = ({ initialState }) => {
       />
 
       <Route
-        exact 
+        exact
         path="/franchise/surat"
-        render={() => ( 
+        render={() => (
           <Suspense fallback={<Loader />}>
             <SuratFranchise />
             {/* <LoginPage /> */}
@@ -146,10 +157,10 @@ const EachRoute = ({ initialState }) => {
         path="/franchise/chandigarh"
         render={() => (
           <Suspense fallback={<Loader />}>
-            <ChandigarhFranchise />  
-          </Suspense> 
+            <ChandigarhFranchise />
+          </Suspense>
         )}
-       />
+      />
 
       <Route
         exact

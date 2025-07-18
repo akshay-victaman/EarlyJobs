@@ -67,11 +67,11 @@
   animation: fadeIn 0.6s ease-out;
 }
 
-@media (min-width: 992px) {
+/* @media (min-width: 992px) {
   .hero-content {
     width: 45%;
   }
-}
+} */
 
 @keyframes fadeIn {
   from {
