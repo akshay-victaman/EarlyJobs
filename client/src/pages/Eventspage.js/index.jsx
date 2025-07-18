@@ -295,32 +295,46 @@ const Separator = ({ className = "", ...props }) => (
 );
 
 // Hero Section
+const slides = [
+  {
+    id: 1,
+    image: franchiseExpoHero,
+    title: "Franchise India Pavilion",
+    subtitle: "Lucknow - July 30-31, 2025",
+    description: "Government-backed entrepreneurship expo",
+  },
+  {
+    id: 2,
+    image: webinarHero,
+    title: "Weekly Franchise Webinars",
+    subtitle: "Every Saturday at 11 AM",
+    description: "Learn from industry experts",
+  },
+  {
+    id: 3,
+    image: officeLaunchHero,
+    title: "New Office Launches",
+    subtitle: "Faridabad & Hyderabad",
+    description: "Grand opening ceremonies coming soon",
+  },
+];
 const HeroSection = () => {
-  const slides = [
-    {
-      id: 1,
-      image: franchiseExpoHero,
-      title: "Franchise India Pavilion",
-      subtitle: "Lucknow - July 30-31, 2025",
-      description: "Government-backed entrepreneurship expo",
-    },
-    {
-      id: 2,
-      image: webinarHero,
-      title: "Weekly Franchise Webinars",
-      subtitle: "Every Saturday at 11 AM",
-      description: "Learn from industry experts",
-    },
-    {
-      id: 3,
-      image: officeLaunchHero,
-      title: "New Office Launches",
-      subtitle: "Faridabad & Hyderabad",
-      description: "Grand opening ceremonies coming soon",
-    },
-  ];
-
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [submissionStatus, setSubmissionStatus] = useState(null);
+
+  const [formData, setFormData] = useState({
+    fullName: "",
+    mobileNumber: "",
+    email: "",
+    city: "",
+    profession: "Working professional",
+    investmentReadiness: "Ready to invest immediately",
+    referralSource: "Instagram / Facebook",
+    otherProfession: "",
+    otherReferral: "",
+  });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -332,6 +346,102 @@ const HeroSection = () => {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
   const prevSlide = () =>
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+    setSubmissionStatus(null);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
+    if (!formData.mobileNumber.trim())
+      newErrors.mobileNumber = "Mobile Number is required";
+    if (!formData.city.trim()) newErrors.city = "City is required";
+    console.log("formData.profession", formData.profession);
+    if (!formData.profession) newErrors.profession = "Profession is required";
+    if (!formData.investmentReadiness.trim())
+      newErrors.investmentReadiness = "Investment Readiness is required";
+    if (!formData.referralSource.trim())
+      newErrors.referralSource = "Referral Source is required";
+    if (formData.profession === "Other" && !formData.otherProfession.trim())
+      newErrors.otherProfession = "Please specify your profession";
+    if (formData.referralSource === "Other" && !formData.otherReferral.trim())
+      newErrors.otherReferral = "Please specify how you heard about us";
+    return newErrors;
+  };
+  const sendToSheetDB = async (data) => {
+    try {
+      const response = await fetch("https://sheetdb.io/api/v1/gav2bbgw2rc80", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: [
+            {
+              fullName: data.fullName,
+              mobileNumber: data.mobileNumber,
+              email: data.email || "N/A",
+              city: data.city,
+              profession:
+                data.profession === "Other"
+                  ? data.otherProfession
+                  : data.profession,
+              investmentReadiness: data.investmentReadiness,
+              referralSource:
+                data.referralSource === "Other"
+                  ? data.otherReferral
+                  : data.referralSource,
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return { success: true, data: result };
+    } catch (error) {
+      console.error("Error sending data to SheetDB:", error);
+      return { success: false, error: error.message };
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length === 0) {
+      setSubmissionStatus("submitting");
+      const result = await sendToSheetDB(formData);
+      if (result.success) {
+        setSubmissionStatus("success");
+        setFormData({
+          fullName: "",
+          mobileNumber: "",
+          email: "",
+          city: "",
+          profession: "Working professional",
+          investmentReadiness: "Ready to invest immediately",
+          referralSource: "Instagram / Facebook",
+          otherProfession: "",
+          otherReferral: "",
+        });
+        setTimeout(() => {
+          setIsPopupOpen(false);
+          setSubmissionStatus(null);
+        }, 1500);
+      } else {
+        setSubmissionStatus("error");
+      }
+    } else {
+      setErrors(newErrors);
+    }
+  };
 
   return (
     <section className="hero-section">
@@ -381,6 +491,7 @@ const HeroSection = () => {
                 boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
                 transition: "all 0.3s ease",
               }}
+              onClick={() => setIsPopupOpen(true)}
             >
               <Calendar
                 style={{
@@ -462,6 +573,468 @@ const HeroSection = () => {
           ))}
         </div>
       </div>
+      {isPopupOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0, 0, 0, 0.7)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+          }}
+        >
+          <div
+            style={{
+              background: "#ffffff",
+              borderRadius: "16px",
+              padding: "32px",
+              maxWidth: "500px",
+              width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "24px",
+                fontWeight: 700,
+                color: "#1a3c6d",
+                marginBottom: "24px",
+                fontFamily: "'Poppins', sans-serif",
+                textAlign: "center",
+              }}
+            >
+              Register for Webinar
+            </h2>
+            <form onSubmit={handleSubmit}>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    fontSize: "14px",
+                    color: "#4b5e7a",
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                    display: "block",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: `1px solid ${
+                      errors.fullName ? "#e53e3e" : "#e2e8f0"
+                    }`,
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                />
+                {errors.fullName && (
+                  <p
+                    style={{
+                      color: "#e53e3e",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {errors.fullName}
+                  </p>
+                )}
+              </div>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    fontSize: "14px",
+                    color: "#4b5e7a",
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                    display: "block",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Mobile Number *
+                </label>
+                <input
+                  type="tel"
+                  name="mobileNumber"
+                  value={formData.mobileNumber}
+                  onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: `1px solid ${
+                      errors.mobileNumber ? "#e53e3e" : "#e2e8f0"
+                    }`,
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                />
+                {errors.mobileNumber && (
+                  <p
+                    style={{
+                      color: "#e53e3e",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {errors.mobileNumber}
+                  </p>
+                )}
+              </div>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    fontSize: "14px",
+                    color: "#4b5e7a",
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                    display: "block",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                />
+              </div>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    fontSize: "14px",
+                    color: "#4b5e7a",
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                    display: "block",
+                    marginBottom: "8px",
+                  }}
+                >
+                  City *
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: `1px solid ${errors.city ? "#e53e3e" : "#e2e8f0"}`,
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                />
+                {errors.city && (
+                  <p
+                    style={{
+                      color: "#e53e3e",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {errors.city}
+                  </p>
+                )}
+              </div>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    fontSize: "14px",
+                    color: "#4b5e7a",
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                    display: "block",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Profession / Business Status *
+                </label>
+                <select
+                  name="profession"
+                  value={formData.profession}
+                  onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontFamily: "'Inter', sans-serif",
+                    background: "#ffffff",
+                  }}
+                >
+                  <option value="Working professional">
+                    Working professional
+                  </option>
+                  <option value="Existing business owner">
+                    Existing business owner
+                  </option>
+                  <option value="Job seeker">Job seeker</option>
+                  <option value="HR consultant">HR consultant</option>
+                  <option value="Other">Other</option>
+                </select>
+                {errors.profession && (
+                  <p
+                    style={{
+                      color: "#e53e3e",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {errors.profession}
+                  </p>
+                )}
+                {formData.profession === "Other" && (
+                  <div style={{ marginTop: "12px" }}>
+                    <input
+                      type="text"
+                      name="otherProfession"
+                      value={formData.otherProfession}
+                      onChange={handleInputChange}
+                      placeholder="Please specify"
+                      style={{
+                        width: "100%",
+                        padding: "12px",
+                        border: `1px solid ${
+                          errors.otherProfession ? "#e53e3e" : "#e2e8f0"
+                        }`,
+                        borderRadius: "8px",
+                        fontSize: "16px",
+                        fontFamily: "'Inter', sans-serif",
+                      }}
+                    />
+                    {errors.otherProfession && (
+                      <p
+                        style={{
+                          color: "#e53e3e",
+                          fontSize: "12px",
+                          marginTop: "4px",
+                        }}
+                      >
+                        {errors.otherProfession}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    fontSize: "14px",
+                    color: "#4b5e7a",
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                    display: "block",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Investment Readiness *
+                </label>
+                <select
+                  name="investmentReadiness"
+                  value={formData.investmentReadiness}
+                  onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontFamily: "'Inter', sans-serif",
+                    background: "#ffffff",
+                  }}
+                >
+                  <option value="Ready to invest immediately">
+                    Ready to invest immediately
+                  </option>
+                  <option value="Exploring in next 30 days">
+                    Exploring in next 30 days
+                  </option>
+                  <option value="Just curious / not sure yet">
+                    Just curious / not sure yet
+                  </option>
+                </select>
+              </div>
+              <div style={{ marginBottom: "24px" }}>
+                <label
+                  style={{
+                    fontSize: "14px",
+                    color: "#4b5e7a",
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                    display: "block",
+                    marginBottom: "8px",
+                  }}
+                >
+                  How did you hear about us?
+                </label>
+                <select
+                  name="referralSource"
+                  value={formData.referralSource}
+                  onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontFamily: "'Inter', sans-serif",
+                    background: "#ffffff",
+                  }}
+                >
+                  <option value="Instagram / Facebook">
+                    Instagram / Facebook
+                  </option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Website">Website</option>
+                  <option value="Event / Expo">Event / Expo</option>
+                  <option value="Friend / Referral">Friend / Referral</option>
+                  <option value="Other">Other</option>
+                </select>
+                {formData.referralSource === "Other" && (
+                  <div style={{ marginTop: "12px" }}>
+                    <input
+                      type="text"
+                      name="otherReferral"
+                      value={formData.otherReferral}
+                      onChange={handleInputChange}
+                      placeholder="Please specify"
+                      style={{
+                        width: "100%",
+                        padding: "12px",
+                        border: `1px solid ${
+                          errors.otherReferral ? "#e53e3e" : "#e2e8f0"
+                        }`,
+                        borderRadius: "8px",
+                        fontSize: "16px",
+                        fontFamily: "'Inter', sans-serif",
+                      }}
+                    />
+                    {errors.otherReferral && (
+                      <p
+                        style={{
+                          color: "#e53e3e",
+                          fontSize: "12px",
+                          marginTop: "4px",
+                        }}
+                      >
+                        {errors.otherReferral}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "16px",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setIsPopupOpen(false)}
+                  style={{
+                    padding: "12px 24px",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: "#4b5e7a",
+                    background: "transparent",
+                    cursor: "pointer",
+                    fontFamily: "'Poppins', sans-serif",
+                    transition: "all 0.3s ease",
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.background = "rgba(0, 0, 0, 0.05)")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.background = "transparent")
+                  }
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    padding: "12px 24px",
+                    background: "linear-gradient(135deg, #EB6A4D, #d44a2f)",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: "#ffffff",
+                    cursor: "pointer",
+                    fontFamily: "'Poppins', sans-serif",
+                    transition: "all 0.3s ease",
+                  }}
+                  disabled={submissionStatus === "submitting"}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.background =
+                      "linear-gradient(135deg, #d44a2f, #EB6A4D)")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.background =
+                      "linear-gradient(135deg, #EB6A4D, #d44a2f)")
+                  }
+                >
+                  Reserve My Spot Now
+                </button>
+              </div>
+              {submissionStatus === "error" && (
+                <p
+                  style={{
+                    color: "#e53e3e",
+                    fontSize: "12px",
+                    marginTop: "8px",
+                  }}
+                >
+                  Error submitting form. Please try again.
+                </p>
+              )}
+              {submissionStatus === "success" && (
+                <p
+                  style={{
+                    color: "#4b5e7a",
+                    fontSize: "12px",
+                    marginTop: "8px",
+                  }}
+                >
+                  Form submitted successfully!
+                </p>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
@@ -770,7 +1343,10 @@ const FeaturedEvent = () => {
                   size="lg"
                   className="bg-accent hover:bg-accent/90 text-white font-poppins font-semibold px-8 py-4 text-lg shadow-accent"
                 >
-                  <Calendar className="mr-2 h-5 w-5" />
+                  <Calendar
+                    className="mr-2 h-5 w-5"
+                    style={{ marginRight: "0.5rem" }}
+                  />
                   Attend Franchise Expo
                 </Button>
               </div>
@@ -957,7 +1533,10 @@ const FranchiseLaunches = () => {
                 className="flex-1"
               />
               <Button className="bg-primary hover:bg-primary/90 font-poppins font-semibold">
-                <Mail className="mr-2 h-4 w-4" />
+                <Mail
+                  className="mr-2 h-4 w-4"
+                  style={{ marginRight: "0.5rem" }}
+                />
                 Notify Me
               </Button>
             </div>
@@ -1419,7 +1998,10 @@ const RegistrationForm = () => {
                   size="lg"
                   className="w-full bg-primary hover:bg-primary/90 text-white font-poppins font-semibold text-lg py-4"
                 >
-                  <Bell className="mr-2 h-5 w-5" />
+                  <Bell
+                    className="mr-2 h-5 w-5"
+                    style={{ marginRight: "0.5rem" }}
+                  />
                   Notify Me About Events
                 </Button>
 
