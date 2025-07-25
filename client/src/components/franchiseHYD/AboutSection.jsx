@@ -1,64 +1,76 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
-import { Users, Briefcase, FileText, AlignCenter } from 'lucide-react';
-import './AboutSection.css';
-
-
+import { Badge } from "../../components/ui/badge";
+import {
+  Users,
+  Briefcase,
+  Laptop,
+  MapPin,
+  Phone,
+  Mail,
+  Calendar,
+  ArrowRight,
+  Loader2,
+  CheckCircle,
+  Star,
+  Building2,
+} from "lucide-react";
+import "./AboutSection.css";
+import { Card } from "../ui/card";
+import "../../pages/Mohali/Index.css";
 const AboutSection = () => {
-    return (
-        <section className="about-section">
-            <div className="container">
-                <div className="text-center">
-                    <h2 className="section-title">
-                        Why EarlyJobs Chose Hyderabad
-                    </h2>
-                    <p className="section-description">
-                        Hyderabad stands as India's technology powerhouse, home to global tech giants, innovative startups, and world-class educational institutions. Our franchise brings EarlyJobs' proven recruitment methodology to this dynamic ecosystem, connecting the city's abundant fresh talent with its thriving job market.
-                    </p>
-                </div>
-                <div className="card-grid">
-                    <Card className="card">
-                        <CardHeader style={{ alignItems: 'center',textAlign:"center" }}>
-                            <div className="icon-container icon-container-blue">
-                                <Users className="icon icon-blue" style={{marginRight: '0px'}} />
-                            </div>
-                            <h3 >
-                                50,000+
-                            </h3>
-                            <CardDescription className="card-description">
-                                Students & Graduates Connected
-                            </CardDescription>
-                        </CardHeader>
-                    </Card>
-                    <Card className="card">
-                        <CardHeader style={{ alignItems: 'center',textAlign:"center" }}>
-                            <div className="icon-container icon-container-orange">
-                                <Briefcase className="icon icon-orange" style={{marginRight: '0px'}}/>
-                            </div>
-                            <h3 >
-                                500+
-                            </h3>
-                            <CardDescription className="card-description">
-                                Partner Companies in Hyderabad
-                            </CardDescription>
-                        </CardHeader>
-                    </Card>
-                    <Card className="card">
-                        <CardHeader style={{ alignItems: 'center',textAlign:"center" }}>
-                            <div className="icon-container icon-container-green">
-                                <FileText className="icon icon-green" style={{marginRight: '0px'}}/>
-                            </div>
-                            <h3 >
-                                95%
-                            </h3>
-                            <CardDescription className="card-description">
-                                Placement Success Rate
-                            </CardDescription>
-                        </CardHeader>
-                    </Card>
-                </div>
-            </div>
-        </section>
-    )
-}
+  return (
+    <section className="index-section">
+      <div className="index-content-container">
+        <div className="index-section-header">
+          <Badge variant="outline" className="index-badge">
+            About EarlyJobs Mohali
+          </Badge>
+          <h2 className="index-section-title">
+            AI-Powered,{" "}
+            <span className="text-gradient" style={{ color: "#FB7B0E" }}>
+              Human-Backed
+            </span>{" "}
+            Recruitment
+          </h2>
+          <p className="index-section-description">
+            EarlyJobs is an innovative recruitment platform that supports the
+            industrial and educational strengths of Mohali, including IT,
+            biotech, and manufacturing sectors. Our local franchise provides
+            personalized support and deep understanding of the regional job
+            market.
+          </p>
+        </div>
 
-export default AboutSection
+        <div className="index-features-grid">
+          {[
+            {
+              icon: Building2,
+              title: "Local Expertise",
+              desc: "Deep understanding of Mohali's business ecosystem",
+            },
+            {
+              icon: Users,
+              title: "Community Focus",
+              desc: "Supporting local talent and businesses",
+            },
+            {
+              icon: CheckCircle,
+              title: "Proven Results",
+              desc: "500+ successful placements this year",
+            },
+          ].map((item, i) => (
+            <Card key={i} className="index-feature-card">
+              <item.icon
+                className="index-feature-icon"
+                style={{ color: "#FB7B0E" }}
+              />
+              <h3 className="index-feature-title">{item.title}</h3>
+              <p className="index-feature-desc">{item.desc}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default AboutSection;
