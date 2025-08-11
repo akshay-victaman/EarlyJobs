@@ -8,6 +8,7 @@ import Franchise from "../pages/Franchise/index.js";
 import SuratFranchise from "../pages/Surat";
 import ChandigarhFranchise from "../pages/Chandigarh/Index.jsx";
 
+
 const JobsPage = lazy(() => import("../components/JobsPage"));
 const BDEPage = lazy(() => import("../components/BDEPage"));
 const AdminPage = lazy(() => import("../components/AdminPage"));
@@ -75,6 +76,7 @@ const PressReleasePage = lazy(() => import("../pages/PressReleasePage"));
 const Clientele = lazy(() => import("../pages/clientele"));
 const Mohali = lazy(() => import("../pages/Mohali/index.jsx"));
 const FranchiseHyd = lazy(() => import("../pages/FranchiseHyd/index.jsx"));
+const FranchiseVizag= lazy(()=>import("../pages/FranchiseVizag/Index.jsx"))
 const EarlyJobsLanding = lazy(() => import("../pages/Eventspage.js/index.jsx"));
 
 const EachRoute = ({ initialState }) => {
@@ -136,6 +138,17 @@ const EachRoute = ({ initialState }) => {
         render={() => (
           <Suspense fallback={<Loader />}>
             <FranchiseHyd />
+            {/* <LoginPage /> */}
+          </Suspense>
+        )}
+      />
+
+      <Route
+        exact
+        path="/franchise/visakapatnam"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <FranchiseVizag />
             {/* <LoginPage /> */}
           </Suspense>
         )}

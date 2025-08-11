@@ -251,9 +251,7 @@ const Index = () => {
                 <div className="contact-item">
                   <MapPin className="contact-icon" />
                   <span>
-                    Near Metro Pillar No: C1197, Cabin No.1, 1-84, 9, W
-                    Marredpally Rd, Regimental Bazaar, East Marredpally,
-                    Secunderabad, Telangana 500026
+                    Cabin No: 2, Shreeji Towers, 1st Floor 1-10-74/71, Sardar Patel Road, Begumpet, Hyderabad – 500016, Telangana, India
                   </span>
                 </div>
               </div>
