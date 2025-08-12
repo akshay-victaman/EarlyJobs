@@ -7,6 +7,9 @@ import HrExecutiveServicePage from "../pages/OurServicesPages/HrExecutiveService
 import Franchise from "../pages/Franchise/index.js";
 import SuratFranchise from "../pages/Surat";
 import ChandigarhFranchise from "../pages/Chandigarh/Index.jsx";
+import Index from "../pages/FranchiseVizag/Index.jsx";
+import FranchiseChennai from "../pages/FranchiseChennai/Index.jsx";
+
 
 
 const JobsPage = lazy(() => import("../components/JobsPage"));
@@ -76,8 +79,8 @@ const PressReleasePage = lazy(() => import("../pages/PressReleasePage"));
 const Clientele = lazy(() => import("../pages/clientele"));
 const Mohali = lazy(() => import("../pages/Mohali/index.jsx"));
 const FranchiseHyd = lazy(() => import("../pages/FranchiseHyd/index.jsx"));
-const FranchiseVizag= lazy(()=>import("../pages/FranchiseVizag/Index.jsx"));
-const FranchiseChennai= lazy(()=> import("../pages/FranchiseChennai/Index.jsx"))
+// const FranchiseVizag= lazy(()=>import("../pages/FranchiseVizag/Index.jsx"));
+//const FranchiseChennai= lazy(()=> import("../pages/FranchiseChennai/Index.jsx"))
 const EarlyJobsLanding = lazy(() => import("../pages/Eventspage.js/index.jsx"));
 
 const EachRoute = ({ initialState }) => {
@@ -149,7 +152,7 @@ const EachRoute = ({ initialState }) => {
         path="/franchise/visakhapatnam"
         render={() => (
           <Suspense fallback={<Loader />}>
-            <FranchiseVizag />
+            <Index/>
             {/* <LoginPage /> */}
           </Suspense>
         )}

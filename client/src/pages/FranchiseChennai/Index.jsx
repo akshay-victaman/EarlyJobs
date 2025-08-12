@@ -15,7 +15,7 @@ import {
 import chennaiHero from '../assets/chennai-hero.jpg';
 import "./styles.css"
 
-const Index = () => {
+const FranchiseChennai= () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -552,4 +552,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default FranchiseChennai;
