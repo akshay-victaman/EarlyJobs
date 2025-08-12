@@ -510,7 +510,7 @@ const FranchiseChennai= () => {
                 Register Now
               </button>
             </div>
-            <div className="bg-[#F97316]/10  p-8 ">
+            <div className="hidden md:block bg-[#F97316]/10  p-8 ">
               <h3 className="text-2xl font-bold text-foreground mb-6">Office Hours</h3>
               <div className="space-y-4 text-muted-foreground">
                 <p><span className="font-semibold">Monday - Friday:</span> 9:00 AM - 6:00 PM</p>
