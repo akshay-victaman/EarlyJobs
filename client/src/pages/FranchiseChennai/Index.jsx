@@ -113,7 +113,7 @@ const FranchiseChennai= () => {
     {
       number: "02", 
       title: "Get Matched",
-      description: "Our AI matches you with perfect opportunities in Chennai"
+      description: "Our AI matches you with perfect opportunities available in portal"
     },
     {
       number: "03",
@@ -210,21 +210,21 @@ const FranchiseChennai= () => {
                   <div className="w-16 h-16 bg-[#F97316]/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Target className="w-8 h-8 text-[#F97316]" />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">5000+</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">1500+</h3>
                   <p className="text-muted-foreground">Jobs Placed</p>
                 </div>
                 <div className="text-center shadow-lg rounded-lg bg-[#F97316]/10 p-4">
                   <div className="w-16 h-16 bg-[#F97316]/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Building2 className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">200+</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">50+</h3>
                   <p className="text-muted-foreground">Partner Companies</p>
                 </div>
                 <div className="text-center shadow-lg rounded-lg bg-[#F97316]/10 p-4">
                   <div className="w-16 h-16 bg-[#F97316]/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <GraduationCap className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">50+</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">10+</h3>
                   <p className="text-muted-foreground">College Partners</p>
                 </div>
               </div>
@@ -486,8 +486,8 @@ const FranchiseChennai= () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-[#F97316]/10 rounded-2xl p-8 shadow-sm">
+          <div className="flex bg-[#F97316]/10  justify-between rounded-lg shadow-lg">
+            <div className="bg-[#F97316]/10  p-8 shadow-sm">
               <h3 className="text-2xl font-bold text-foreground mb-6">Get in Touch</h3>
               <div className="space-y-4 text-muted-foreground">
                 <div className="flex items-center">
@@ -510,7 +510,7 @@ const FranchiseChennai= () => {
                 Register Now
               </button>
             </div>
-            <div className="bg-[#F97316]/10 rounded-2xl p-8 shadow-sm">
+            <div className="bg-[#F97316]/10  p-8 ">
               <h3 className="text-2xl font-bold text-foreground mb-6">Office Hours</h3>
               <div className="space-y-4 text-muted-foreground">
                 <p><span className="font-semibold">Monday - Friday:</span> 9:00 AM - 6:00 PM</p>
@@ -521,10 +521,7 @@ const FranchiseChennai= () => {
                 <p className="text-muted-foreground mb-4">
                   Have a question? Drop by our office or give us a call!
                 </p>
-                <button className="w-full py-3 bg-white border-2 border-[#F97316] text-[#F97316] text-lg font-semibold rounded-lg hover:bg-[#F97316] hover:text-white transition-smooth">
-                  <Phone className="mr-2 w-5 h-5 inline" />
-                  Schedule a Call
-                </button>
+                
               </div>
             </div>
           </div>
