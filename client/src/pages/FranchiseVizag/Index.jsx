@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { Phone, MapPin, Star, Building2, Users, Award, UserPlus, Search, Briefcase, ArrowRight, Calendar, Clock, ChevronRight, GraduationCap, CheckCircle, ChevronDown, ChevronUp, Mail } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Phone, MapPin, Star, Building2, Users, Award, UserPlus, Search, Briefcase, ArrowRight, Calendar, Clock, ChevronRight, GraduationCap, CheckCircle, ChevronDown, ChevronUp, Mail, X } from "lucide-react";
+
+// Mock image imports (replace with actual paths in your project)
 import heroImage from "../assets/vizag-hero.jpg";
 import successIcon from "../assets/success-icon.png";
 
@@ -26,6 +28,44 @@ const Label = ({ className, children, ...props }) => (
   </label>
 );
 
+// Popup Component for success/error messages
+const Popup = ({ message, type, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+      <Card className={`relative max-w-md w-full mx-4 ${type === 'success' ? 'border-2 border-orange-500' : 'border-2 border-red-500'}`}>
+        <button 
+          onClick={onClose}
+          className="absolute top-2 right-2 text-orange-700 hover:text-orange-900"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        <div className="flex flex-col items-center p-4">
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${type === 'success' ? 'bg-orange-100' : 'bg-red-100'}`}>
+            {type === 'success' ? (
+              <img src={successIcon} alt="Success" className="w-8 h-8" />
+            ) : (
+              <X className="w-8 h-8 text-red-600" />
+            )}
+          </div>
+          <h3 className={`text-xl font-bold mb-2 ${type === 'success' ? 'text-orange-700' : 'text-red-700'}`}>
+            {type === 'success' ? 'Registration Successful!' : 'Registration Failed'}
+          </h3>
+          <p className={`text-center ${type === 'success' ? 'text-orange-800' : 'text-red-800'}`}>
+            {message}
+          </p>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
 const Index = () => {
   // Registration Form State
   const [formData, setFormData] = useState({
@@ -36,10 +76,13 @@ const Index = () => {
     experience: '',
     skills: '',
     industry: '',
-    city: 'Visakhapatnam'
+    city: 'Visakhapatnam',
+    resume: null
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showPopup, setShowPopup] = useState(null);
 
   // FAQ State
   const [openIndex, setOpenIndex] = useState(0);
@@ -48,18 +91,58 @@ const Index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setSubmitted(true);
-    setLoading(false);
+    setError(null);
+
+    try {
+      const response = await fetch('https://sheetdb.io/api/v1/5pmlt0qjp7zhz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([{
+          Timestamp: new Date().toISOString(),
+          Name: formData.name,
+          Email: formData.email,
+          Phone: formData.phone,
+          Role: formData.role,
+          Experience: formData.experience,
+          Skills: formData.skills,
+          Industry: formData.industry,
+          City: formData.city,
+          Resume: formData.resume ? 'Yes' : 'No'
+        }]),
+      });
+
+      const result = await response.json();
+      if (response.ok && result.created === 1) {
+        setSubmitted(true);
+        setShowPopup({
+          type: 'success',
+          message: 'Welcome to the EarlyJobs Visakhapatnam network! Our team will contact you within 24 hours to discuss your career goals and upcoming opportunities.'
+        });
+      } else {
+        setError('Failed to submit form. Please try again.');
+        setShowPopup({
+          type: 'error',
+          message: 'Failed to submit form. Please try again.'
+        });
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again later.');
+      setShowPopup({
+        type: 'error',
+        message: 'An error occurred. Please try again later.'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (e) => {
+    const { name, value, files } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: files ? files[0] : value
     });
   };
 
@@ -67,7 +150,24 @@ const Index = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  // Data
+  const closePopup = () => {
+    setShowPopup(null);
+    if (!error) {
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        role: '',
+        experience: '',
+        skills: '',
+        industry: '',
+        city: 'Visakhapatnam',
+        resume: null
+      });
+    }
+  };
+
+  // Data (unchanged from original)
   const steps = [
     {
       icon: UserPlus,
@@ -179,9 +279,17 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white text-orange-900">
+      {/* Popup */}
+      {showPopup && (
+        <Popup 
+          message={showPopup.message}
+          type={showPopup.type}
+          onClose={closePopup}
+        />
+      )}
+
       {/* Hero Section */}
       <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image with Overlay */}
         <div className="absolute inset-0">
           <img 
             src={heroImage}
@@ -191,17 +299,14 @@ const Index = () => {
           <div className="absolute inset-0 bg-blue-800/70"></div>
         </div>
         
-        {/* Content */}
         <div className="relative z-10 container mx-auto px-4 py-20 md:py-32">
           <div className="text-center">
             <div className="text-white space-y-8">
-              {/* Location Badge */}
               <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium">
                 <MapPin className="w-4 h-4" />
                 Visakhapatnam, Andhra Pradesh
               </div>
               
-              {/* Main Headline */}
               <div className="space-y-4">
                 <h1 className="text-4xl md:text-6xl font-bold">
                   Empowering Visakhapatnam's
@@ -212,15 +317,14 @@ const Index = () => {
                 </p>
               </div>
               
-              <div className="text-center ">
-                <p className="text-lg md:text-xl ">
+              <div className="text-center">
+                <p className="text-lg md:text-xl">
                   Connecting Vizag's brightest talent with top employers across IT-SEZ,
                   Port Industries, Hospitality & Education sectors. Build skills, find opportunities,
                   and grow your <em className="text-orange-200">udyogam</em> (career) with EarlyJobs Visakhapatnam.
                 </p>
               </div>
               
-              {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Button 
                   className="bg-orange-600 hover:bg-orange-700 text-white rounded-lg shadow-lg"
@@ -229,15 +333,13 @@ const Index = () => {
                   Register Now
                 </Button>
                 <Button 
-                  
-                  className="bg-white hover:bg-orange-100 flex  "
+                  className="hover:bg-orange-100 flex justify-center"
                 >
-                  <Phone className="w-5 h-5 mr-2 " />
+                  <Phone className="w-5 h-5 mr-2" />
                   Call Us Today
                 </Button>
               </div>
               
-              {/* Quick Stats */}
               <div className="flex flex-wrap gap-6 pt-4 justify-center text-white">
                 <div className="flex items-center gap-2">
                   <Star className="w-5 h-5 text-yellow-400 fill-current" />
@@ -277,8 +379,7 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Key Stats */}
-          <div className="grid md:grid-cols-4 gap-8 mb-16">
+          <div className="grid md:grid-cols-4 gap-8 mb- px-4">
             <Card className="hover:bg-orange-100 transition-all duration-300">
               <Building2 className="w-12 h-12 text-orange-600 mx-auto mb-4" />
               <div className="text-3xl font-bold text-orange-700 mb-2">50+</div>
@@ -320,7 +421,6 @@ const Index = () => {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* For Students */}
             <Card className="border-l-4 border-orange-500 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -340,7 +440,6 @@ const Index = () => {
               </ul>
             </Card>
 
-            {/* For Colleges */}
             <Card className="border-l-4 border-orange-400 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-orange-50 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -360,7 +459,6 @@ const Index = () => {
               </ul>
             </Card>
 
-            {/* For Companies */}
             <Card className="border-l-4 border-orange-500 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -381,7 +479,6 @@ const Index = () => {
             </Card>
           </div>
 
-          {/* Call to Action */}
           <div className="text-center mt-16">
             <div className="bg-orange-100 rounded-2xl p-8 md:p-12 shadow-lg">
               <h3 className="text-2xl md:text-3xl font-bold text-orange-700 mb-4">
@@ -425,19 +522,16 @@ const Index = () => {
               {steps.map((step, index) => (
                 <div key={index} className="relative">
                   <Card className="hover:bg-orange-100 transition-all duration-300">
-                    {/* Step Number */}
                     <div className="absolute -top-4 left-6">
                       <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                         {index + 1}
                       </div>
                     </div>
                     
-                    {/* Icon */}
                     <div className={`w-16 h-16 ${step.color} rounded-xl flex items-center justify-center mb-6`}>
                       <step.icon className="w-8 h-8 text-white" />
                     </div>
                     
-                    {/* Content */}
                     <h3 className="text-xl font-bold text-orange-700 mb-4">
                       {step.title}
                     </h3>
@@ -446,7 +540,6 @@ const Index = () => {
                     </p>
                   </Card>
 
-                  {/* Arrow between steps */}
                   {index < steps.length - 1 && (
                     <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
                       <ArrowRight className="w-8 h-8 text-orange-500" />
@@ -463,7 +556,7 @@ const Index = () => {
       <section id="register" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
-            {submitted ? (
+            {submitted && !showPopup ? (
               <Card className="text-center">
                 <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <img src={successIcon} alt="Success" className="w-10 h-10" />
@@ -490,6 +583,12 @@ const Index = () => {
                     Start your career journey with Vizag's most trusted recruitment partner
                   </p>
                 </div>
+                
+                {error && !showPopup && (
+                  <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
+                    {error}
+                  </div>
+                )}
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
@@ -628,9 +727,22 @@ const Index = () => {
                       </svg>
                       Upload Resume (Optional)
                     </div>
-                    <p className="text-sm text-orange-600">PDF, DOC, DOCX up to 5MB</p>
-                    <input type="file" className="hidden" accept=".pdf,.doc,.docx" />
-                    <Button type="button" variant="outline" className="mt-2 text-orange-600 border border-orange-500 hover:bg-orange-100">
+                    <p className="text-sm text-orange-600 mb-2">
+                      PDF, DOC, DOCX up to 5MB {formData.resume ? `- ${formData.resume.name}` : ''}
+                    </p>
+                    <input 
+                      type="file" 
+                      name="resume"
+                      id="resume"
+                      onChange={handleInputChange}
+                      accept=".pdf,.doc,.docx" 
+                      className="mt-2 text-orange-600 hidden"
+                    />
+                    <Button 
+                      type="button" 
+                      className="mt-2 text-orange-600 border border-orange-500 hover:bg-orange-100"
+                      onClick={() => document.getElementById('resume')?.click()}
+                    >
                       Choose File
                     </Button>
                   </div>
@@ -676,15 +788,12 @@ const Index = () => {
                   </div>
                 )}
                 
-                {/* Category Badge */}
                 <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 ${getCategoryColor(event.category)}`}>
                   {event.category}
                 </div>
                 
-                {/* Event Title */}
                 <h3 className="text-xl font-bold text-orange-700 mb-3">{event.title}</h3>
                 
-                {/* Event Details */}
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center gap-2 text-orange-700">
                     <Calendar className="w-4 h-4" />
@@ -700,7 +809,6 @@ const Index = () => {
                   </div>
                 </div>
                 
-                {/* Quick Stats */}
                 <div className="flex gap-4 mb-4">
                   <div className="flex items-center gap-1 text-sm text-orange-700">
                     <Users className="w-4 h-4 text-orange-600" />
@@ -712,12 +820,10 @@ const Index = () => {
                   </div>
                 </div>
                 
-                {/* Description */}
                 <p className="text-orange-800 text-sm leading-relaxed mb-6">
                   {event.description}
                 </p>
                 
-                {/* Action Button */}
                 <Button 
                   className={`w-full ${event.featured ? 'bg-orange-600 hover:bg-orange-700' : 'bg-orange-500 hover:bg-orange-600'} text-white`}
                 >
@@ -727,7 +833,6 @@ const Index = () => {
             ))}
           </div>
 
-          {/* Call to Action */}
           <div className="mt-16 text-center">
             <Card className="bg-orange-100 shadow-lg">
               <h3 className="text-2xl md:text-3xl font-bold text-orange-700 mb-4">
@@ -796,7 +901,6 @@ const Index = () => {
               ))}
             </div>
             
-            {/* Contact Information */}
             <div className="mt-16 bg-orange-100 rounded-2xl p-8 text-center shadow-lg">
               <h3 className="text-2xl font-bold text-orange-700 mb-4">Still Have Questions?</h3>
               <p className="text-lg text-orange-800 mb-6">
@@ -807,19 +911,19 @@ const Index = () => {
                 <div className="flex flex-col items-center">
                   <Phone className="w-8 h-8 text-orange-600 mb-2" />
                   <p className="font-semibold text-orange-700">Call Us</p>
-                  <p className="text-orange-800">+91 99999 88888</p>
+                  <p className="text-orange-800">+91 83284 61662</p>
                 </div>
                 
                 <div className="flex flex-col items-center">
                   <Mail className="w-8 h-8 text-orange-600 mb-2" />
                   <p className="font-semibold text-orange-700">Email Us</p>
-                  <p className="text-orange-800">vizag@earlyjobs.in</p>
+                  <p className="text-orange-800">visakhapatnam@earlyjobs.in</p>
                 </div>
                 
                 <div className="flex flex-col items-center">
                   <MapPin className="w-8 h-8 text-orange-600 mb-2" />
                   <p className="font-semibold text-orange-700">Visit Us</p>
-                  <p className="text-orange-800">MVP Colony, Vizag</p>
+                  <p className="text-orange-800">3RD FLOOR, Building No./Flat No.: 30-15-35, Main Road, Saraswati Park, Daba Gardens, Visakhapatnam, Andhra Pradesh, 530020</p>
                 </div>
               </div>
             </div>
