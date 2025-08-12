@@ -63,6 +63,26 @@ const sendInterviewNoAttendedWhatsAppMessage = async () => {
       const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0AWe+noticed+that+you+were+unable+to+attend+the+interview+for+the+${roleName}+role+at+${company_name}.%0A%0AWould+you+like+to+reschedule%3F+Let+us+know+if+you%E2%80%99re+still+interested+so+we+can+arrange+a+new+slot+for+you.+Looking+forward+to+your+response%21%0A%0AContact%3A+${hr_phone}%0AEmail%3A+${hr_email}&isTemplate=true&header=Missed+Interview&footer=EarlyJobs+HR+Team`;
       const res = await axios.get(msg);
       console.log(`✅ Message sent to ${candidate_phone}:`, res.data);
+
+      if (res && res.data) {
+        try {
+          const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
+            phoneNumber: candidate_phone,
+            message: `Hi ${candidate_name},
+We noticed that you were unable to attend the interview for the ${roleName} role at ${company_name}.
+
+Would you like to reschedule? Let us know if you’re still interested so we can arrange a new slot for you. Looking forward to your response!
+
+Contact: ${hr_phone}
+Email: ${hr_email}`,
+            senderName: candidate_name
+          });
+          console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
+        } catch (postErr) {
+          console.error(`❌ Failed to call notification API for ${candidate_phone}:`, postErr.message);
+        }
+      }
+
     }
 
     return { statusCode: 200, body: 'All messages sent' };
@@ -135,6 +155,31 @@ const sendDayBeforeInterviewReminder = async () => {
 
       const res = await axios.get(msg);
       console.log(`✅ Message sent to ${candidate_phone}:`, res.data);
+      if (res && res.data) {
+        try {
+          const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
+            phoneNumber: candidate_phone, 
+            message: `Hi ${candidate_name},
+
+We’re excited to remind you that your interview for the ${roleName} role at ${company_name} is scheduled for tomorrow!
+
+Here are the details:
+Date: ${readableDate}
+Time: ${readableTime}
+Location: ${location}
+
+If you have any questions or need any assistance before the interview, feel free to reach out to us.
+
+Contact: ${hr_phone}
+Email: ${hr_email}`,
+            senderName: candidate_name
+          });
+          console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
+        } catch (postErr) {
+          console.error(`❌ Failed to call notification API for ${candidate_phone}:`, postErr.message);
+        }
+      }
+    
     }
 
     return { statusCode: 200, body: 'All messages sent' };
