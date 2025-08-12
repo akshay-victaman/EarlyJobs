@@ -4,6 +4,7 @@ import { Phone, MapPin, Star, Building2, Users, Award, UserPlus, Search, Briefca
 // Mock image imports (replace with actual paths in your project)
 import heroImage from "../assets/vizag-hero.jpg";
 import successIcon from "../assets/success-icon.png";
+import "./styles.css"
 
 // Define components with Tailwind CSS styling using orange and white palette
 const Card = ({ className, children, ...props }) => (
