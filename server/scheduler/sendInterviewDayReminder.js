@@ -61,6 +61,29 @@ const sendInterviewDayReminder = async () => {
       const res = await fetch(msg);
       const data = await res.json();
       console.log(`✅ Message sent to ${candidate_phone}:`, data);
+    if (res && res.data) {
+        try {
+          const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
+            phoneNumber: candidate_phone, 
+            message: `Hi ${candidate_name},
+Hope you're doing great! Just a quick reminder about your interview for the ${roleName} role at ${company_name} today.
+
+⏳ Time: ${readableTime}
+📍 Location: ${location}
+
+Wishing you all the best! See you soon. 😊
+
+📞 Contact: ${hr_phone}
+📧 Email: ${hr_email}
+
+`,
+            senderName: "Customer Portal"
+          });
+          console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
+        } catch (postErr) {
+          console.error(`❌ Failed to call notification API for ${candidate_phone}:`, postErr.message);
+        }
+      }
     }
 
     return { statusCode: 200, body: 'All messages sent' };
@@ -128,6 +151,26 @@ const sendNotJoinedWhatsAppMessages = async () => {
       const data = await res.json();
       await db.query('UPDATE applications SET reminder_count = reminder_count + 1 WHERE id = ?', [row.application_id]);
       console.log(`✅ Message sent to ${candidate_phone}:`, data);
+      if (res && res.data) {
+        try {
+          const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
+            phoneNumber: candidate_phone,
+            message: `Hi ${candidate_name},
+We noticed that your joining date for the ${roleName} role at ${company_name} has passed, and we haven't heard from you yet. We are still excited to have you on board!
+
+Please update us about your decision. If you need any assistance or have concerns, feel free to reach out.
+
+Looking forward to your response! 😊
+
+📞 Contact: ${hr_phone}
+📧 Email: ${hr_email}`,
+            senderName: "Customer Portal"
+          });
+          console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
+        } catch (postErr) {
+          console.error(`❌ Failed to call notification API for ${candidate_phone}:`, postErr.message);
+        }
+      }
     }
 
     return { statusCode: 200, body: 'All messages sent' };

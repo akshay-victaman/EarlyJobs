@@ -245,10 +245,10 @@ const LoginPage = () => {
             <p className="error-message">{error}</p>
           </form>
           <h1 className="homepage-quote">
-            <span className="quote-span">4000+</span> Openings | Across{" "}
+            <span className="quote-span">5000+</span> Openings | Across{" "}
             <span className="quote-span">India</span>
             <br />
-            <span className="quote-span">60+</span> Companies
+            <span className="quote-span">70+</span> Companies
             <br />
             Across All <span className="quote-span">Sectors</span>
           </h1>

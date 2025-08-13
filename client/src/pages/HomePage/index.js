@@ -57,11 +57,11 @@ const HomePage = () => {
 
     const successMetrics = [
      { count: '1K+', desc: 'Successful Recruitment' },
-        { count: '50+', desc: 'Clients' },
-        { count: '3K+', desc: 'Open Positions' },
+        { count: '70+', desc: 'Clients' },
+        { count: '5K+', desc: 'Open Positions' },
         { count: '7+', desc: 'Years in Business' },
         { count: '250+', desc: 'HR Recruiters' },
-        { count: '5+', desc: 'Franchise Locations' },
+        { count: '15+', desc: 'Franchise Locations' },
     ];
 
     const reviewCards = [

@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const db = require('../config/database');
-const {format, parseISO, differenceInDays, sub} = require('date-fns');
+const { format, parseISO, differenceInDays, sub } = require('date-fns');
 const qs = require('qs');
 
 const assignJobToHMByBDE = async (jobId, assignedTo, bdeAssignedTo) => {
@@ -10,7 +10,7 @@ const assignJobToHMByBDE = async (jobId, assignedTo, bdeAssignedTo) => {
         multiAssingmentQuery += `('${jobId}', '${assignedTo[i]}'),`;
     }
     const query = assingmentQuery + multiAssingmentQuery.slice(0, -1);
-    if(bdeAssignedTo.length > 0) {
+    if (bdeAssignedTo.length > 0) {
         const bdeAssignmentQuery = 'INSERT INTO job_assigned_by_bde (job_id, bde_email) VALUES ';
         let multiBDEAssingmentQuery = '';
         for (let i = 0; i < bdeAssignedTo.length; i++) {
@@ -21,21 +21,21 @@ const assignJobToHMByBDE = async (jobId, assignedTo, bdeAssignedTo) => {
     }
     const result = await db.query(query);
     if (result[0].affectedRows > 0) {
-        return {success: 'Job assigned successfully to HM'};
+        return { success: 'Job assigned successfully to HM' };
     } else {
-        return {error: 'Job assignment failed'};
+        return { error: 'Job assignment failed' };
     }
 }
 
 const addJobDetials = async (job) => {
     const {
-        companyName, 
+        companyName,
         companyLogoUrl,
         companyId,
-        title, 
-        category, 
+        title,
+        category,
         shiftTimings,
-        description, 
+        description,
         streetAddress,
         city,
         area,
@@ -43,19 +43,19 @@ const addJobDetials = async (job) => {
         locationLink,
         currency,
         salaryMode,
-        minSalary, 
-        maxSalary, 
-        skills, 
+        minSalary,
+        maxSalary,
+        skills,
         language,
-        employmentType, 
-        workType, 
+        employmentType,
+        workType,
         commissionFee,
         commissionType,
         tenureInDays,
-        noOfOpenings, 
-        status, 
-        hiringNeed, 
-        postedBy, 
+        noOfOpenings,
+        status,
+        hiringNeed,
+        postedBy,
         assignedTo,
         bdeAssignedTo,
         qualification,
@@ -104,18 +104,18 @@ const addJobDetials = async (job) => {
         max_age,
         keywords
         ) VALUES (?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    
+
     try {
         const result = await db.query(query, [id, companyName, companyLogoUrl, companyId, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, currency, salaryMode, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, postedBy, qualification, minExperience, maxExperience, minAge, maxAge, keywords]);
 
         if (result[0].affectedRows > 0) {
             return assignJobToHMByBDE(id, assignedTo, bdeAssignedTo);
         } else {
-            return {error: 'Job creation failed'};
+            return { error: 'Job creation failed' };
         }
     } catch (error) {
         console.log(error)
-        return {error: error.message};
+        return { error: error.message };
     }
 }
 
@@ -125,7 +125,7 @@ const updateJobAssignmentByBde = async (jobId, assignedTo, bdeAssignedTo) => {
     if (deleteResult[0].affectedRows > 0) {
         return assignJobToHMByBDE(jobId, assignedTo, bdeAssignedTo);
     } else {
-        return {error: 'Job updation failed'};
+        return { error: 'Job updation failed' };
     }
 }
 
@@ -208,13 +208,13 @@ const editJobDetials = async (job) => {
         const result = await db.query(query, [companyName, companyId, companyLogoUrl, title, category, shiftTimings, description, streetAddress, city, area, pincode, (`${streetAddress}, ${area}, ${city}, ${pincode}`), locationLink, currency, salaryMode, minSalary, maxSalary, skills, language, employmentType, workType, commissionFee, commissionType, tenureInDays, noOfOpenings, status, hiringNeed, qualification, minExperience, maxExperience, minAge, maxAge, keywords, jobId]);
         if (result[0].affectedRows > 0) {
             await updateJobAssignmentByBde(jobId, assignedTo, bdeAssignedTo);
-            return {success: 'Job updated successfully'};
+            return { success: 'Job updated successfully' };
         } else {
-            return {error: 'Job updation failed'};
+            return { error: 'Job updation failed' };
         }
     } catch (error) {
         console.log(error)
-        return {error: error.message};
+        return { error: error.message };
     }
 }
 
@@ -236,12 +236,12 @@ const getJobDetails = async (jobId) => {
     if (result[0].length > 0) {
         return result[0][0];
     } else {
-        return {error: 'Job not found'};
+        return { error: 'Job not found' };
     }
 }
 
 const assignJobToHmByShm = async (jobAssignment) => {
-    const {jobId, assignedTo, assignedBy} = jobAssignment;
+    const { jobId, assignedTo, assignedBy } = jobAssignment;
     const assignmentQuery = 'INSERT INTO jobassignments (id, job_id, assigned_to, assigned_by, role) VALUES ';
     let multiAssingmentQuery = '';
     for (let i = 0; i < assignedTo.length; i++) {
@@ -251,14 +251,14 @@ const assignJobToHmByShm = async (jobAssignment) => {
     const query = assignmentQuery + multiAssingmentQuery.slice(0, -1);
     const result = await db.query(query);
     if (result[0].affectedRows > 0) {
-        return {success: 'Job assigned successfully to HM'};
+        return { success: 'Job assigned successfully to HM' };
     } else {
-        return {error: 'Job assignment failed'};
+        return { error: 'Job assignment failed' };
     }
 }
 
 const assignJobToHrByAccountManager = async (jobAssignment) => {
-    const {jobId, assignedTo, assignedBy} = jobAssignment;
+    const { jobId, assignedTo, assignedBy } = jobAssignment;
     const assignmentQuery = 'INSERT INTO jobassignments (id, job_id, assigned_to, assigned_by, role) VALUES ';
     let multiAssingmentQuery = '';
     for (let i = 0; i < assignedTo.length; i++) {
@@ -268,9 +268,9 @@ const assignJobToHrByAccountManager = async (jobAssignment) => {
     const query = assignmentQuery + multiAssingmentQuery.slice(0, -1);
     const result = await db.query(query);
     if (result[0].affectedRows > 0) {
-        return {success: 'Job assigned successfully to HR'};
+        return { success: 'Job assigned successfully to HR' };
     } else {
-        return {error: 'Job assignment failed'};
+        return { error: 'Job assignment failed' };
     }
 }
 
@@ -288,32 +288,32 @@ const getAssignedHRsForJob = async (jobId, email) => {
 }
 
 const updateJobAssignmentBySHM = async (jobAssignment) => {
-    const {jobId, assignedTo, assignedBy} = jobAssignment;
+    const { jobId, assignedTo, assignedBy } = jobAssignment;
     const deleteQuery = 'DELETE FROM jobassignments WHERE job_id = ? AND assigned_by = ? AND role = "HM"';
     const deleteResult = await db.query(deleteQuery, [jobId, assignedBy]);
     if (deleteResult[0].affectedRows >= 0) {
-        if(assignedTo.length > 0) {
-            return assignJobToHmByShm({jobId, assignedTo, assignedBy});
+        if (assignedTo.length > 0) {
+            return assignJobToHmByShm({ jobId, assignedTo, assignedBy });
         } else {
-            return {success: 'Job assigned successfully to HM'};
+            return { success: 'Job assigned successfully to HM' };
         }
     } else {
-        return {error: 'Job updation failed'};
+        return { error: 'Job updation failed' };
     }
 }
 
 const updateJobAssignmentByHM = async (jobAssignment) => {
-    const {jobId, assignedTo, assignedBy} = jobAssignment;
+    const { jobId, assignedTo, assignedBy } = jobAssignment;
     const deleteQuery = 'DELETE FROM jobassignments WHERE job_id = ? AND assigned_by = ? AND role = "HR"';
     const deleteResult = await db.query(deleteQuery, [jobId, assignedBy]);
     if (deleteResult[0].affectedRows >= 0) {
-        if(assignedTo.length > 0) {
-            return assignJobToHrByAccountManager({jobId, assignedTo, assignedBy});
+        if (assignedTo.length > 0) {
+            return assignJobToHrByAccountManager({ jobId, assignedTo, assignedBy });
         } else {
-            return {success: 'Job assigned successfully to HR'};
+            return { success: 'Job assigned successfully to HR' };
         }
     } else {
-        return {error: 'Job updation failed'};
+        return { error: 'Job updation failed' };
     }
 }
 
@@ -352,7 +352,7 @@ const getJobsForMasterBDE = async (company, location, title, page) => {
     if (location) countParams.push(location);
     if (title) countParams.push(title);
     const countResult = await db.query(countQuery, countParams);
-    return {jobs: result[0], count: countResult[0][0].count};
+    return { jobs: result[0], count: countResult[0][0].count };
 }
 
 const getAllJobsForMasterBDE = async () => {
@@ -405,13 +405,13 @@ const getJobsForBDE = async (email, company, location, title, page) => {
     if (location) countParams.push(location);
     if (title) countParams.push(title);
     const countResult = await db.query(countQuery, countParams);
-    return {jobs: result[0], count: countResult[0][0].count};
+    return { jobs: result[0], count: countResult[0][0].count };
 }
 
 const getAllJobsForBDE = async (email) => {
     // let bdeEmails = await getAllBDEEmails()
     // bdeEmails.push(email)
-    
+
     const query = `
     SELECT 
         id,
@@ -430,7 +430,7 @@ const getAllJobsForBDE = async (email) => {
     return result[0];
 }
 
-const getSeniorHMJobs = async (email,company, location, title, page) => {
+const getSeniorHMJobs = async (email, company, location, title, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const query = `
@@ -463,7 +463,7 @@ const getSeniorHMJobs = async (email,company, location, title, page) => {
     if (location) countParams.push(location);
     if (title) countParams.push(title);
     const countResult = await db.query(countQuery, countParams);
-    return {jobs: result[0], count: countResult[0][0].count};
+    return { jobs: result[0], count: countResult[0][0].count };
 }
 
 const getAllSeniorHMJobs = async (email) => {
@@ -483,7 +483,7 @@ const getAllSeniorHMJobs = async (email) => {
     return result[0];
 }
 
-const getHmJobs = async (email,company, location, title, page) => {
+const getHmJobs = async (email, company, location, title, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const query = `
@@ -515,7 +515,7 @@ const getHmJobs = async (email,company, location, title, page) => {
     if (location) countParams.push(location);
     if (title) countParams.push(title);
     const countResult = await db.query(countQuery, countParams);
-    return {jobs: result[0], count: countResult[0][0].count};
+    return { jobs: result[0], count: countResult[0][0].count };
 }
 
 const getAllHmJobs = async (email) => {
@@ -537,7 +537,7 @@ const getAllHmJobs = async (email) => {
     return result[0];
 }
 
-const getHRJobs = async (email,company, location, title, page) => {
+const getHRJobs = async (email, company, location, title, page) => {
     const pageSize = 10;
     const startIndex = (page - 1) * pageSize;
     const query = `
@@ -590,7 +590,7 @@ const getHRJobs = async (email,company, location, title, page) => {
     if (location) countParams.push(location);
     if (title) countParams.push(title);
     const countResult = await db.query(countQuery, countParams);
-    return {jobs: result[0], count: countResult[0][0].count};
+    return { jobs: result[0], count: countResult[0][0].count };
 }
 
 const getAllHRJobs = async (email) => {
@@ -616,7 +616,7 @@ const addApplication = async (jobId, cId, hrEmail, offerStatus, interviewDate, j
     const applicationQuery = 'SELECT * FROM applications WHERE job_id = ? AND candidate_id = ? AND applied_by = ?';
     const applicationResult = await db.query(applicationQuery, [jobId, cId, hrEmail]);
     if (applicationResult[0].length > 0) {
-        return {error: 'Application already exists for this candidate'};
+        return { error: 'Application already exists for this candidate' };
     }
     const id = uuidv4();
     const query = `
@@ -629,9 +629,9 @@ const addApplication = async (jobId, cId, hrEmail, offerStatus, interviewDate, j
     }
     const result = await db.query(query, params);
     if (result[0].affectedRows > 0) {
-        return {success: 'Candidate added successfully'};
-    } else {         
-        return {error: 'Candidate addition failed'};
+        return { success: 'Candidate added successfully' };
+    } else {
+        return { error: 'Candidate addition failed' };
     }
 }
 
@@ -643,7 +643,7 @@ const addCandidateDetailsForJob = async (candidate) => {
         phone,
         dateOfBirth,
         gender,
-        aadharNumber,     
+        aadharNumber,
         highestQualification,
         currentLocation,
         spokenLanguages,
@@ -664,7 +664,7 @@ const addCandidateDetailsForJob = async (candidate) => {
     const candidateResult = await db.query(candidateQuery, [email, phone]);
     if (candidateResult[0].length === 0) {
         const cId = uuidv4();
-        const query =  `
+        const query = `
         INSERT INTO candidates (
             id, 
             name, 
@@ -688,11 +688,11 @@ const addCandidateDetailsForJob = async (candidate) => {
         if (result[0].affectedRows > 0) {
             return addApplication(jobId, cId, hrEmail, offerStatus, interviewDate, joinedDate, isPublicApplication);
         } else {
-            return {error: 'Candidate addition failed'};
+            return { error: 'Candidate addition failed' };
         }
     } else {
-        if(candidateResult[0][0].is_joined === 1) {
-            return {error: 'Candidate already joined in another company'};
+        if (candidateResult[0][0].is_joined === 1) {
+            return { error: 'Candidate already joined in another company' };
         }
         return addApplication(jobId, candidateResult[0][0].id, hrEmail, offerStatus, interviewDate, joinedDate, isPublicApplication);
     }
@@ -708,11 +708,11 @@ const getApplicationWithCandidateDetails = async (candidateId, applicationId) =>
         if (result[0].length > 0) {
             return result[0][0];
         } else {
-            return {error: 'Application not found'};
+            return { error: 'Application not found' };
         }
     } catch (error) {
         console.log(error)
-        return {error: error.message};
+        return { error: error.message };
     }
 }
 
@@ -725,7 +725,7 @@ const updateApplication = async (applicationId, jobId, offerStatus) => {
     params.push(applicationId);
     const result = await db.query(query, params);
     if (result[0].affectedRows > 0) {
-        return {success: 'Candidate updated successfully'};
+        return { success: 'Candidate updated successfully' };
     }
 };
 
@@ -775,16 +775,16 @@ const editCandidateDetailsForJob = async (candidate, applicationId) => {
         if (result[0].affectedRows > 0) {
             return updateApplication(applicationId, jobId, offerStatus);
         } else {
-            return {error: 'Candidate updation failed'};
+            return { error: 'Candidate updation failed' };
         }
     } catch (error) {
         console.log(error)
-        return {error: error.message};
+        return { error: error.message };
     }
 }
 
 const updateInterviewDate = async (candidate) => {
-    const {candidateId, jobId, interviewDate, hrEmail, offerStatus} = candidate;
+    const { candidateId, jobId, interviewDate, hrEmail, offerStatus } = candidate;
     const applicationQuery = 'SELECT * FROM applications WHERE job_id = ? AND candidate_id = ?';
     const applicationResult = await db.query(applicationQuery, [jobId, candidateId]);
     if (applicationResult[0].length === 0) {
@@ -794,17 +794,17 @@ const updateInterviewDate = async (candidate) => {
     const result = await db.query(query, [interviewDate, jobId, candidateId]);
     if (result[0].affectedRows > 0) {
         await sendRescheduledWhatsappMessage(candidate);
-        return {success: 'Candidate interview date updated successfully'};
-    } else {         
-        return {error: 'Candidate interview date updation failed'};
+        return { success: 'Candidate interview date updated successfully' };
+    } else {
+        return { error: 'Candidate interview date updation failed' };
     }
 }
 
 const sendRescheduledWhatsappMessage = async (candidate) => {
     try {
         const userid = process.env.GUPSHUP_USER_ID;
-        const password = process.env.GUPSHUP_PASSWORD;      
-        const {candidateId, jobId, interviewDate, hrEmail, offerStatus} = candidate;
+        const password = process.env.GUPSHUP_PASSWORD;
+        const { candidateId, jobId, interviewDate, hrEmail, offerStatus } = candidate;
         const query = `
             SELECT 
                 jobs.title AS roleName,
@@ -840,21 +840,47 @@ const sendRescheduledWhatsappMessage = async (candidate) => {
                 location,
                 hr_name,
                 hr_phone,
-                hr_email                
+                hr_email
             } = candidateDetails;
 
             const interviewDate = new Date(interview_date);
             const readableDate = interviewDate.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric' });
-            const readableTime = interviewDate.toLocaleTimeString('en-IN', {  timeZone: 'Asia/Kolkata',hour: '2-digit', minute: '2-digit', hour12: true });
+            const readableTime = interviewDate.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true });
             const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C%0A%0AAs+per+your+request%2C+we%E2%80%99ve+rescheduled+your+interview+for+the+${roleName}+role+at+${company_name}.%0A%0AHere+are+the+updated+details%3A%0A%0ADate%3A+${readableDate}%0ATime%3A+${readableTime}%0ALocation%3A+${location}%0A%0AThanks+for+keeping+us+informed%2C+and+we+appreciate+your+continued+interest.+If+you+have+any+further+questions++feel+free+to+reach+out.%0A%0AContact%3A+${hr_phone}%0AEmail%3A+${hr_email}&isTemplate=true&header=Interview+Rescheduled&footer=EarlyJobs+Recruitment+Team`;
             const res = await fetch(msg);
             const data = await res.json();
             console.log(`✅ Message sent to ${candidate_phone}:`, data);
-            return {success: 'WhatsApp message sent successfully'};
+
+            if (res && res.data) {
+                try {
+                    const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
+                        phoneNumber: candidate_phone,
+                        message: `Hi ${candidate_name},
+
+As per your request, we’ve rescheduled your interview for the ${roleName} role at ${company_name}.
+
+Here are the updated details:
+
+Date: ${readableDate}
+Time: ${readableTime}
+Location: ${location}
+
+Thanks for keeping us informed, and we appreciate your continued interest. If you have any further questions feel free to reach out.
+
+Contact: ${hr_phone}
+Email: ${hr_email}`,
+                        senderName: "Customer Portal"
+                    });
+                    console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
+                } catch (postErr) {
+                    console.error(`❌ Failed to call notification API for ${candidate_phone}:`, postErr.message);
+                }
+            }
+            return { success: 'WhatsApp message sent successfully' };
         }
     } catch (error) {
         console.log(error)
-        return {error: 'Failed to send WhatsApp message'};
+        return { error: 'Failed to send WhatsApp message' };
     }
 }
 
@@ -899,9 +925,9 @@ const getJobCandidatesCount = async (jobId, email, role, offerStatus, fromDate, 
     applications.applied_by = hrassignedhm.hr_email` : ''} 
     WHERE applications.job_id = ? 
     ${search === "" ?
-    `AND DATE(applications.interview_date) >= ?
+            `AND DATE(applications.interview_date) >= ?
     AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""}
     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""} 
@@ -1008,9 +1034,9 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
         applications.applied_by = hrassignedhm.hr_email` : ''} 
         WHERE applications.job_id = ? 
         ${search === "" ?
-        `AND DATE(applications.interview_date) >= ?
+                `AND DATE(applications.interview_date) >= ?
         AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-        : ""}
+                : ""}
         ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by IN (?) " : ""} 
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""} 
@@ -1040,7 +1066,7 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
         const result = await db.query(query, params);
         hrEmails = await getjobHREmailAndUsername(jobId);
         const count = await getJobCandidatesCount(jobId, email, role, offerStatus, fromDate, toDate, search);
-        return {candidates: result[0], hrList: hrEmails, count};
+        return { candidates: result[0], hrList: hrEmails, count };
     } catch (error) {
         console.log(error)
     }
@@ -1104,7 +1130,7 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
 //             pageSize,
 //             startIndex
 //         ];
-        
+
 //     return getJobCandidatesBase(query, params, jobId, email, role, offerStatus, fromDate, toDate, search, pageSize, startIndex);
 // };
 
@@ -1149,7 +1175,7 @@ const getJobCandidates = async (jobId, email, role, offerStatus, fromDate, toDat
 //             pageSize,
 //             startIndex
 //         ];
-        
+
 //     return getJobCandidatesBase(query, params, jobId, email, role, offerStatus, fromDate, toDate, search, pageSize, startIndex);
 // };
 
@@ -1190,9 +1216,9 @@ const getJobCandidatesForExcel = async (jobId, email, role, offerStatus, fromDat
     applications.applied_by = hrassignedhm.hr_email` : ''} 
     WHERE applications.job_id = ?
     ${search === "" ?
-    `AND DATE(applications.interview_date) >= ?
+            `AND DATE(applications.interview_date) >= ?
     AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${(email !== 'undefined' && email !== "") ? "AND applications.applied_by = ? " : ""}
     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
@@ -1202,11 +1228,11 @@ const getJobCandidatesForExcel = async (jobId, email, role, offerStatus, fromDat
     // const params = ((email !== 'undefined' && email !== "") && (offerStatus !== 'undefined' && offerStatus !== "")) ? [jobId, fromDate, toDate, email, offerStatus] : (email !== 'undefined' && email !== "") ? [jobId, fromDate, toDate, email] : (offerStatus !== 'undefined' && offerStatus !== "") ? [jobId, fromDate, toDate, offerStatus] : [jobId, fromDate, toDate]
     let params;
     if (email !== 'undefined' && email !== "" && offerStatus !== 'undefined' && offerStatus !== "") {
-        params = [jobId,  email, offerStatus];
+        params = [jobId, email, offerStatus];
     } else if (email !== 'undefined' && email !== "") {
-        params = [jobId,  email];
+        params = [jobId, email];
     } else if (offerStatus !== 'undefined' && offerStatus !== "") {
-        params = [jobId,  offerStatus];
+        params = [jobId, offerStatus];
     } else {
         params = [jobId]
     }
@@ -1222,8 +1248,8 @@ const updateCandidateJoinedStatus = async (candidateId) => {
     try {
         const result = await db.query(query, [candidateId]);
         if (result[0].affectedRows > 0) {
-            return {success: 'Candidate joined status updated successfully'};
-        } else {         
+            return { success: 'Candidate joined status updated successfully' };
+        } else {
             const error = new Error('Candidate joined status updation failed');
             error.statusCode = 500;
             throw error;
@@ -1235,7 +1261,7 @@ const updateCandidateJoinedStatus = async (candidateId) => {
 }
 
 const updateCandidateOfferStatus = async (candidate) => {
-    const {candidateId, jobId, email, offerStatus, offeredDate} = candidate;
+    const { candidateId, jobId, email, offerStatus, offeredDate } = candidate;
     const query = 'UPDATE applications SET offer_status = ?, offered_date = ? WHERE job_id = ? AND candidate_id = ? AND applied_by = ?';
     const result = await db.query(query, [offerStatus, offeredDate, jobId, candidateId, email]);
     if (result[0].affectedRows > 0) {
@@ -1246,17 +1272,17 @@ const updateCandidateOfferStatus = async (candidate) => {
         if (offerStatus === 'Selected') {
             await sendSelectedWhatsappMessage(candidate);
         }
-        return {success: 'Candidate offer status updated successfully'};
-    } else {         
-        return {error: 'Candidate offer status updation failed'};
+        return { success: 'Candidate offer status updated successfully' };
+    } else {
+        return { error: 'Candidate offer status updation failed' };
     }
 }
 
 const sendSelectedWhatsappMessage = async (candidate) => {
     try {
         const userid = process.env.GUPSHUP_USER_ID;
-        const password = process.env.GUPSHUP_PASSWORD;      
-        const {candidateId, jobId, email, offerStatus, offeredDate} = candidate;
+        const password = process.env.GUPSHUP_PASSWORD;
+        const { candidateId, jobId, email, offerStatus, offeredDate } = candidate;
         const query = `
             SELECT 
                 jobs.title AS roleName,
@@ -1302,19 +1328,37 @@ const sendSelectedWhatsappMessage = async (candidate) => {
             const res = await fetch(msg);
             const data = await res.json();
             console.log(`✅ Message sent to ${candidate_phone}:`, data);
-            return {success: 'WhatsApp message sent successfully'};
+            if (res && res.data) {
+                try {
+                    const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
+                        phoneNumber: candidate_phone,
+                        message: `Hi ${candidate_name},
+We are thrilled to inform you that you have been selected for the ${roleName} role at ${company_name}!
+
+Please confirm your acceptance and expected joining date.
+
+Contact: ${hr_phone}
+Email: ${hr_email}`,
+                        senderName: "Customer Portal"
+                    });
+                    console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
+                } catch (postErr) {
+                    console.error(`❌ Failed to call notification API for ${candidate_phone}:`, postErr.message);
+                }
+            }
+            return { success: 'WhatsApp message sent successfully' };
         }
     } catch (error) {
         console.log(error)
-        return {error: 'Failed to send WhatsApp message'};
+        return { error: 'Failed to send WhatsApp message' };
     }
 }
 
 const sendJoinedWhatsappMessage = async (candidate) => {
     try {
         const userid = process.env.GUPSHUP_USER_ID;
-        const password = process.env.GUPSHUP_PASSWORD;      
-        const {candidateId, jobId, email, offerStatus, offeredDate} = candidate;
+        const password = process.env.GUPSHUP_PASSWORD;
+        const { candidateId, jobId, email, offerStatus, offeredDate } = candidate;
         const query = `
             SELECT 
                 jobs.title AS roleName,
@@ -1354,17 +1398,41 @@ const sendJoinedWhatsappMessage = async (candidate) => {
             } = candidateDetails;
 
             const interviewDate = new Date(interview_date);
-            const readableTime = interviewDate.toLocaleTimeString('en-IN', {timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true });
+            const readableTime = interviewDate.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true });
             const msg = `https://mediaapi.smsgupshup.com/GatewayAPI/rest?userid=${userid}&password=${password}&send_to=${candidate_phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=Hi+${candidate_name}%2C++%0A%0ACongratulations+on+your+new+role+at+${company_name}%21++We%E2%80%99re+thrilled+to+have+been+part+of+your+journey.++%0A%0AWe%E2%80%99d+love+to+hear+about+your+experience+with+Earlyjobs%21+Your+feedback+helps+us+grow+and+continue+connecting+great+talent+with+amazing+opportunities.++%0A%0AIf+you+had+a+smooth+and+positive+hiring+experience%2C+please+take+a+moment+to+leave+us+a+review%3A++%0A%0A${hr_email}%0A%0AYour+kind+words+will+help+others+find+great+opportunities+too%21+%0A%0AThank+you+for+choosing+EarlyJobs.+Wishing+you+all+the+best+in+your+new+role%21&isTemplate=true&header=Share+Your+Experience+%E2%80%93+EarlyJobs&footer=EarlyJobs+Team&buttonUrlParam=https%3A%2F%2Fshorturl.at%2FiQZl9`;
 
             const res = await fetch(msg);
             const data = await res.json();
             console.log(`✅ Message sent to ${candidate_phone}:`, data);
-            return {success: 'WhatsApp message sent successfully'};
+            if (res && res.data) {
+                try {
+                    const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
+                        phoneNumber: candidate_phone,
+                        message: `Hi ${candidate_name},
+
+Congratulations on your new role at ${company_name}! We’re thrilled to have been part of your journey.
+
+We’d love to hear about your experience with EarlyJobs! Your feedback helps us grow and continue connecting great talent with amazing opportunities.
+
+If you had a smooth and positive hiring experience, please take a moment to leave us a review:
+
+${hr_email}
+
+Your kind words will help others find great opportunities too!
+
+Thank you for choosing EarlyJobs. Wishing you all the best in your new role!`,
+                        senderName: "Customer Portal"
+                    });
+                    console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
+                } catch (postErr) {
+                    console.error(`❌ Failed to call notification API for ${candidate_phone}:`, postErr.message);
+                }
+            }
+            return { success: 'WhatsApp message sent successfully' };
         }
     } catch (error) {
         console.log(error)
-        return {error: 'Failed to send WhatsApp message'};
+        return { error: 'Failed to send WhatsApp message' };
     }
 }
 
@@ -1477,27 +1545,27 @@ const getIntitalCandidateCount = async (hrEmailsArr, role, offerStatus, fromDate
         ` : ''} 
         WHERE applications.applied_by IN (?)
         ${search === "" ?
-        `AND DATE(applications.interview_date) >= ? 
+                `AND DATE(applications.interview_date) >= ? 
         AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-        : ""}
+                : ""}
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
 
  
-        ${(role === 'SHM') ? 
-            ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
+        ${(role === 'SHM') ?
+                ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
                     OR hm_assigned_shm.assigned_date IS NULL)
                 AND (applications.created_at <= hm_assigned_shm.unassigned_date 
-                    OR hm_assigned_shm.unassigned_date IS NULL)` 
-        : ''}
+                    OR hm_assigned_shm.unassigned_date IS NULL)`
+                : ''}
 
        `;
 
         let params = [];
-        
+
         if (role === 'AC' || role === 'SHM' || role === 'BDE' || role === 'FBDE') {
             if (offerStatus !== 'undefined' && offerStatus !== "") {
-                params = role === 'SHM' 
+                params = role === 'SHM'
                     ? [[...hrEmailsArr], hrEmailsArr[0], hrEmailsArr[0], offerStatus]
                     : [[...hrEmailsArr], offerStatus];
             } else {
@@ -1681,18 +1749,18 @@ const getInitialCandidates = async (email, offerStatus, fromDate, toDate, role, 
         ` : ''} 
         WHERE applications.applied_by IN (?)
         ${search === "" ?
-        `AND DATE(applications.interview_date) >= ? 
+                `AND DATE(applications.interview_date) >= ? 
         AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-        : ""}
+                : ""}
         ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""} 
         ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
         
-        ${(role === 'SHM') ? 
-            ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
+        ${(role === 'SHM') ?
+                ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
                     OR hm_assigned_shm.assigned_date IS NULL)
                 AND (applications.created_at <= hm_assigned_shm.unassigned_date 
-                    OR hm_assigned_shm.unassigned_date IS NULL)` 
-        : ''}
+                    OR hm_assigned_shm.unassigned_date IS NULL)`
+                : ''}
         order by applications.interview_date desc 
         LIMIT ? OFFSET ?`;
 
@@ -1721,10 +1789,10 @@ const getInitialCandidates = async (email, offerStatus, fromDate, toDate, role, 
         }
         const hrEmailsArr = hrEmails.map(hr => hr.email);
         let params = [];
-        
+
         if (role === 'AC' || role === 'SHM' || role === 'BDE' || role === 'FBDE') {
             if (offerStatus !== 'undefined' && offerStatus !== "") {
-                params = role === 'SHM' 
+                params = role === 'SHM'
                     ? [[email, ...hrEmailsArr], offerStatus, pageSize, startIndex]
                     : [[email, ...hrEmailsArr], offerStatus, pageSize, startIndex];
             } else {
@@ -1748,7 +1816,7 @@ const getInitialCandidates = async (email, offerStatus, fromDate, toDate, role, 
 
         const result = await db.query(query, params);
         const count = await getIntitalCandidateCount([email, ...hrEmailsArr], role, offerStatus, fromDate, toDate, search);
-        return {candidates: result[0], hrList: hrEmails, count};
+        return { candidates: result[0], hrList: hrEmails, count };
     } catch (error) {
         console.log(error)
     }
@@ -1785,17 +1853,17 @@ const getInitialCandidatesForExcel = async (email, offerStatus, fromDate, toDate
         ` : ''} 
     WHERE applications.applied_by IN (?)
     ${search === "" ?
-    `AND DATE(applications.interview_date) >= ?
+            `AND DATE(applications.interview_date) >= ?
     AND DATE(applications.interview_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${(offerStatus !== 'undefined' && offerStatus !== "") ? "AND applications.offer_status = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
-    ${(role === 'SHM') ? 
-        ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
+    ${(role === 'SHM') ?
+            ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
                 OR hm_assigned_shm.assigned_date IS NULL)
             AND (applications.created_at <= hm_assigned_shm.unassigned_date 
-                OR hm_assigned_shm.unassigned_date IS NULL)` 
-    : ''}
+                OR hm_assigned_shm.unassigned_date IS NULL)`
+            : ''}
     order by applications.interview_date desc`;
     let hrEmails = []
     if (role === 'BDE' || role === 'FBDE') {
@@ -1821,16 +1889,16 @@ const getInitialCandidatesForExcel = async (email, offerStatus, fromDate, toDate
     }
     const hrEmailsArr = hrEmails.map(hr => hr.email);
     let params = [];
-        
+
     if (role === 'AC' || role === 'SHM' || role === 'BDE' || role === 'FBDE') {
         if (offerStatus !== 'undefined' && offerStatus !== "") {
-            params = role === 'SHM' 
+            params = role === 'SHM'
                 ? [[email, ...hrEmailsArr], offerStatus]
-                : [[email, ...hrEmailsArr], offerStatus ];
+                : [[email, ...hrEmailsArr], offerStatus];
         } else {
             params = role === 'SHM'
-                ? [[email, ...hrEmailsArr] ]
-                : [[email, ...hrEmailsArr] ];
+                ? [[email, ...hrEmailsArr]]
+                : [[email, ...hrEmailsArr]];
         }
     } else {
         if (offerStatus !== 'undefined' && offerStatus !== "") {
@@ -1853,7 +1921,7 @@ const getCandidateDetails = async (candidateId) => {
     if (result[0].length > 0) {
         return result[0][0];
     } else {
-        return {error: 'Candidate not found'};
+        return { error: 'Candidate not found' };
     }
 }
 
@@ -1869,7 +1937,7 @@ const getOfferStatusCandidatesVerificationCount = async (
     fromDate,
     toDate,
     jobId
-  ) => {
+) => {
     const appliedBy = Array.isArray(email) ? email : [email, ...hmEmail];
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
     const query = `
@@ -1893,37 +1961,37 @@ const getOfferStatusCandidatesVerificationCount = async (
       LEFT JOIN tenure_approved ON applications.id = tenure_approved.application_id
       WHERE applications.offer_status = ?
         AND applications.applied_by IN (?) 
-        ${ search === "" ?
-        `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+        ${search === "" ?
+            `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
         AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)`
-        : ""}
+            : ""}
         ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
         ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
         ${claimStatus !== 'undefined' && claimStatus !== "" && claimStatus !== 'null' ? `AND tenure_approved.is_claimed = ${claimStatus}` : ""}
         ${jobId !== 'undefined' && jobId !== "" ? "AND applications.job_id = ?" : ""}
         ${search !== 'undefined' && search !== ""
-        ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')`
-        : ""}
-        ${(role === 'SHM') ? 
+            ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')`
+            : ""}
+        ${(role === 'SHM') ?
             ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
                     OR hm_assigned_shm.assigned_date IS NULL)
                 AND (applications.created_at <= hm_assigned_shm.unassigned_date 
-                    OR hm_assigned_shm.unassigned_date IS NULL)` 
-        : ''}
+                    OR hm_assigned_shm.unassigned_date IS NULL)`
+            : ''}
     `;
-     
-      const params = [offerStatus, appliedBy];
-        if (search === "") {
-            params.push(fromDate, toDate);
-        }
-      if (jobId !== 'undefined' && jobId !== "") params.push(jobId); 
-  
+
+    const params = [offerStatus, appliedBy];
+    if (search === "") {
+        params.push(fromDate, toDate);
+    }
+    if (jobId !== 'undefined' && jobId !== "") params.push(jobId);
+
     try {
-      const result = await db.query(query, params);
-      return result[0][0];
+        const result = await db.query(query, params);
+        return result[0][0];
     } catch (error) {
-      console.log(error);
-      return 0;
+        console.log(error);
+        return 0;
     }
 };
 
@@ -1939,7 +2007,7 @@ const getOfferStatusCandidatesCount = async (
     fromDate,
     toDate,
     jobId
-  ) => {
+) => {
     console.log(role)
     const appliedBy = Array.isArray(email) ? email : [email, ...hmEmail];
     const offeredOrInterviewDate = (offerStatus === 'Selected' || offerStatus === "Joined") ? 'offered_date' : 'interview_date';
@@ -1956,37 +2024,37 @@ const getOfferStatusCandidatesCount = async (
       LEFT JOIN tenure_approved ON applications.id = tenure_approved.application_id
       WHERE applications.offer_status = ?
         AND applications.applied_by IN (?) 
-        ${ search === "" ?
-        `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+        ${search === "" ?
+            `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
         AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)`
-        : ""}
+            : ""}
         ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
         ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
         ${claimStatus !== 'undefined' && claimStatus !== "" && claimStatus !== 'null' ? `AND tenure_approved.is_claimed = ${claimStatus}` : ""}
         ${jobId !== 'undefined' && jobId !== "" ? "AND applications.job_id = ?" : ""}
         ${search !== 'undefined' && search !== ""
-        ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')`
-        : ""}
-        ${(role === 'SHM') ? 
+            ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')`
+            : ""}
+        ${(role === 'SHM') ?
             ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
                     OR hm_assigned_shm.assigned_date IS NULL)
                 AND (applications.created_at <= hm_assigned_shm.unassigned_date 
-                    OR hm_assigned_shm.unassigned_date IS NULL)` 
-        : ''}
+                    OR hm_assigned_shm.unassigned_date IS NULL)`
+            : ''}
     `;
-     
+
     const params = [offerStatus, appliedBy];
     if (search === "") {
         params.push(fromDate, toDate);
     }
-    if (jobId !== 'undefined' && jobId !== "") params.push(jobId); 
-  
+    if (jobId !== 'undefined' && jobId !== "") params.push(jobId);
+
     try {
-      const result = await db.query(query, params);
-      return result[0][0].count;
+        const result = await db.query(query, params);
+        return result[0][0].count;
     } catch (error) {
-      console.log(error);
-      return 0;
+        console.log(error);
+        return 0;
     }
 };
 
@@ -2032,26 +2100,26 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, tenureStatu
     applications.id = tenure_approved.application_id
     WHERE applications.offer_status = ?
     AND applications.applied_by IN (?)
-    ${ search === "" ?
-    `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+    ${search === "" ?
+            `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
     ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${claimStatus !== 'undefined' && claimStatus !== "" && claimStatus !== 'null' ? `AND tenure_approved.is_claimed = ${claimStatus} ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
-    ${(role === 'SHM') ? 
-        ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
+    ${(role === 'SHM') ?
+            ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
                 OR hm_assigned_shm.assigned_date IS NULL)
             AND (applications.created_at <= hm_assigned_shm.unassigned_date 
-                OR hm_assigned_shm.unassigned_date IS NULL)` 
-    : ''}
+                OR hm_assigned_shm.unassigned_date IS NULL)`
+            : ''}
     order by applications.${offeredOrInterviewDate} desc
     Limit ? offset ?`;
     let hrEmails = []
     let hmEmails = []
-    if(role === 'SHM') {
+    if (role === 'SHM') {
         hmEmails = await getSeniorHmHMEmails(hmEmail);
         for (const hm of hmEmails) {
             const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
@@ -2070,9 +2138,9 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, tenureStatu
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
                 params = [offerStatus, [email], jobId, pageSize, startIndex];
-            } else if(jobId !== 'undefined' && jobId !== "") {
+            } else if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, [email, ...hrEmailsArr], jobId, pageSize, startIndex];
-            } else if(hmEmail !== email) {
+            } else if (hmEmail !== email) {
                 params = [offerStatus, [email], pageSize, startIndex];
             } else {
                 params = [offerStatus, [email, ...hrEmailsArr], pageSize, startIndex];
@@ -2085,13 +2153,13 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, tenureStatu
             if (offerStatus === 'Joined') {
                 verificationCount = await getOfferStatusCandidatesVerificationCount(email, hrEmailsArr, role, offerStatus, tenureStatus, approveStatus, claimStatus, search, fromDate, toDate, jobId);
             }
-        } else if(role === 'AC') {
+        } else if (role === 'AC') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
                 params = [offerStatus, [email], jobId, pageSize, startIndex];
-            } else if(jobId !== 'undefined' && jobId !== "") {
+            } else if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, [email, ...hrEmailsArr], jobId, pageSize, startIndex];
-            } else if(hmEmail !== email) {
+            } else if (hmEmail !== email) {
                 params = [offerStatus, [email], pageSize, startIndex];
             } else {
                 params = [offerStatus, [email, ...hrEmailsArr], pageSize, startIndex];
@@ -2105,7 +2173,7 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, tenureStatu
                 verificationCount = await getOfferStatusCandidatesVerificationCount(email, hrEmailsArr, role, offerStatus, tenureStatus, approveStatus, claimStatus, search, fromDate, toDate, jobId);
             }
         } else {
-            if(jobId !== 'undefined' && jobId !== "") {
+            if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, email, jobId, pageSize, startIndex];
             } else {
                 params = [offerStatus, email, pageSize, startIndex];
@@ -2122,7 +2190,7 @@ const getOfferStatusCandidates = async (email, hmEmail, offerStatus, tenureStatu
     } catch (error) {
         console.log(error)
     }
-    return {candidates: result[0], hrEmails, count, verificationCount};
+    return { candidates: result[0], hrEmails, count, verificationCount };
 }
 
 const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, tenureStatus, approveStatus, claimStatus, role, search, jobId, fromDate, toDate,) => {
@@ -2164,25 +2232,25 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, ten
     applications.id = tenure_approved.application_id
     WHERE applications.offer_status = ?
     AND applications.applied_by IN (?)
-    ${ search === "" ?
-    `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+    ${search === "" ?
+            `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
     ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${claimStatus !== 'undefined' && claimStatus !== "" && claimStatus !== 'null' ? `AND tenure_approved.is_claimed = ${claimStatus} ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}
-    ${(role === 'SHM') ? 
-        ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
+    ${(role === 'SHM') ?
+            ` AND (applications.created_at >= hm_assigned_shm.assigned_date 
                 OR hm_assigned_shm.assigned_date IS NULL)
             AND (applications.created_at <= hm_assigned_shm.unassigned_date 
-                OR hm_assigned_shm.unassigned_date IS NULL)` 
-    : ''}
+                OR hm_assigned_shm.unassigned_date IS NULL)`
+            : ''}
     order by applications.${offeredOrInterviewDate} desc`;
     let hrEmails = []
     let hmEmails = []
-    if(role === 'SHM') {
+    if (role === 'SHM') {
         hmEmails = await getSeniorHmHMEmails(hmEmail);
         for (const hm of hmEmails) {
             const hrEmailsArr = await getHirignManagerHrEmails(hm.email);
@@ -2199,9 +2267,9 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, ten
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
                 params = [offerStatus, [email], jobId];
-            } else if(jobId !== 'undefined' && jobId !== "") {
+            } else if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, [email, ...hrEmailsArr], jobId];
-            } else if(hmEmail !== email) {
+            } else if (hmEmail !== email) {
                 params = [offerStatus, [email]];
             } else {
                 params = [offerStatus, [email, ...hrEmailsArr]];
@@ -2210,13 +2278,13 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, ten
                 params.splice(2, 0, fromDate, toDate);
             }
             result = await db.query(query, params);
-        } else if(role === 'AC') {
+        } else if (role === 'AC') {
             const hrEmailsArr = hrEmails.map(hr => hr.email);
             if ((jobId !== 'undefined' && jobId !== "") && (hmEmail !== email)) {
                 params = [offerStatus, [email], jobId];
-            } else if(jobId !== 'undefined' && jobId !== "") {
+            } else if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, [email, ...hrEmailsArr], jobId];
-            } else if(hmEmail !== email) {
+            } else if (hmEmail !== email) {
                 params = [offerStatus, [email]];
             } else {
                 params = [offerStatus, [email, ...hrEmailsArr]];
@@ -2226,7 +2294,7 @@ const getOfferStatusCandidatesForExcel = async (email, hmEmail, offerStatus, ten
             }
             result = await db.query(query, params);
         } else {
-            if(jobId !== 'undefined' && jobId !== "") {
+            if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, email, jobId];
             } else {
                 params = [offerStatus, email];
@@ -2260,17 +2328,17 @@ const getOfferStatusCandidatesForBDEVerificationCount = async (email, offerStatu
     WHERE applications.offer_status = ?
     ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
     ${search === "" ?
-    `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+            `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
     ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}`;
     let hrEmails = []
     const shmEmails = await getBdeShmEmails();
-    if(email !== 'null') {
-        
+    if (email !== 'null') {
+
         let hmEmails = []
         const hmEmailsArr = await getSeniorHmHMEmails(email);
         hmEmails = [...hmEmails, ...hmEmailsArr];
@@ -2296,7 +2364,7 @@ const getOfferStatusCandidatesForBDEVerificationCount = async (email, offerStatu
             }
             result = await db.query(query, params);
         } else {
-            if(jobId !== 'undefined' && jobId !== "") {
+            if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, jobId];
             } else {
                 params = [offerStatus];
@@ -2309,7 +2377,7 @@ const getOfferStatusCandidatesForBDEVerificationCount = async (email, offerStatu
         return result[0][0];
     } catch (error) {
         console.log(error)
-    }        
+    }
 }
 
 const getOfferStatusCandidatesForBDECount = async (email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate, verificationStatus) => {
@@ -2327,9 +2395,9 @@ const getOfferStatusCandidatesForBDECount = async (email, offerStatus, tenureSta
     WHERE applications.offer_status = ?
     ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
     ${search === "" ?
-    `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+            `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
     ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
@@ -2338,8 +2406,8 @@ const getOfferStatusCandidatesForBDECount = async (email, offerStatus, tenureSta
     ${(search !== 'undefined' && search !== "") ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%')` : ""}`;
     let hrEmails = []
     const shmEmails = await getBdeShmEmails();
-    if(email !== 'null') {
-        
+    if (email !== 'null') {
+
         let hmEmails = []
         const hmEmailsArr = await getSeniorHmHMEmails(email);
         hmEmails = [...hmEmails, ...hmEmailsArr];
@@ -2365,7 +2433,7 @@ const getOfferStatusCandidatesForBDECount = async (email, offerStatus, tenureSta
             }
             result = await db.query(query, params);
         } else {
-            if(jobId !== 'undefined' && jobId !== "") {
+            if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, jobId];
             } else {
                 params = [offerStatus];
@@ -2378,7 +2446,7 @@ const getOfferStatusCandidatesForBDECount = async (email, offerStatus, tenureSta
         return result[0][0].count;
     } catch (error) {
         console.log(error)
-    }        
+    }
 }
 
 const getOfferStatusCandidatesForBDE = async (email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate, verificationStatus, page) => {
@@ -2415,9 +2483,9 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, tenureStatus, 
     WHERE applications.offer_status = ?
     ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
     ${search === "" ?
-    `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+            `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
     ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
@@ -2428,8 +2496,8 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, tenureStatus, 
     Limit ? offset ?`;
     let hrEmails = []
     const shmEmails = await getBdeShmEmails();
-    if(email !== 'null') {
-        
+    if (email !== 'null') {
+
         let hmEmails = []
         const hmEmailsArr = await getSeniorHmHMEmails(email);
         hmEmails = [...hmEmails, ...hmEmailsArr];
@@ -2460,7 +2528,7 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, tenureStatus, 
             verificationCount = await getOfferStatusCandidatesForBDEVerificationCount(email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate);
 
         } else {
-            if(jobId !== 'undefined' && jobId !== "") {
+            if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, jobId, pageSize, startIndex];
             } else {
                 params = [offerStatus, pageSize, startIndex];
@@ -2475,7 +2543,7 @@ const getOfferStatusCandidatesForBDE = async (email, offerStatus, tenureStatus, 
     } catch (error) {
         console.log(error)
     }
-    return {candidates: result[0], hrEmails: shmEmails, count, verificationCount};
+    return { candidates: result[0], hrEmails: shmEmails, count, verificationCount };
 }
 
 const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureStatus, approveStatus, search, jobId, fromDate, toDate, verificationStatus) => {
@@ -2513,9 +2581,9 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureSta
     WHERE applications.offer_status = ?
     ${(email !== 'null' && email !== "") ? "AND applications.applied_by IN (?) " : ""}
     ${search === "" ?
-    `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
+            `AND DATE(applications.${offeredOrInterviewDate}) >= ? 
     AND DATE(applications.${offeredOrInterviewDate}) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${tenureStatus !== 'undefined' && tenureStatus !== "" && tenureStatus !== 'null' ? `AND applications.tenure_status = '${tenureStatus}' ` : tenureStatus === 'null' ? `AND applications.tenure_status IS NULL ` : ""}
     ${approveStatus !== 'undefined' && approveStatus !== "" && approveStatus !== 'null' ? `AND applications.is_tenure_approved = '${approveStatus}' ` : approveStatus === 'null' ? `AND applications.is_tenure_approved IS NULL ` : ""}
     ${(jobId !== 'undefined' && jobId !== "") ? "AND applications.job_id = ? " : ""}
@@ -2525,8 +2593,8 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureSta
     order by applications.${offeredOrInterviewDate} desc`;
     let hrEmails = []
     const shmEmails = await getBdeShmEmails();
-    if(email !== 'null') {
-        
+    if (email !== 'null') {
+
         let hmEmails = []
         const hmEmailsArr = await getSeniorHmHMEmails(email);
         hmEmails = [...hmEmails, ...hmEmailsArr];
@@ -2552,7 +2620,7 @@ const getOfferStatusCandidatesForBDEExcel = async (email, offerStatus, tenureSta
             }
             result = await db.query(query, params);
         } else {
-            if(jobId !== 'undefined' && jobId !== "") {
+            if (jobId !== 'undefined' && jobId !== "") {
                 params = [offerStatus, jobId];
             } else {
                 params = [offerStatus];
@@ -2586,13 +2654,13 @@ const getTenureApprovedCandidatesTotalReceivedPaidClaimedNotClaimedCount = async
     INNER JOIN jobs ON 
     jobs.id = applications.job_id 
     WHERE applications.is_tenure_approved = 'Approved'
-    ${ search === "" ?
-    `AND DATE(applications.offered_date) >= ? 
+    ${search === "" ?
+            `AND DATE(applications.offered_date) >= ? 
     AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${search !== 'undefined' && search !== ""
-    ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
-    : ""}`;
+            ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
+            : ""}`;
     const params = [];
     if (search === "") {
         params.push(fromDate, toDate);
@@ -2619,13 +2687,13 @@ const getTenureApprovedCandidatesCount = async (claimStatus, search, fromDate, t
     INNER JOIN jobs ON 
     jobs.id = applications.job_id 
     WHERE applications.is_tenure_approved = 'Approved'
-    ${ search === "" ?
-    `AND DATE(applications.offered_date) >= ? 
+    ${search === "" ?
+            `AND DATE(applications.offered_date) >= ? 
     AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${search !== 'undefined' && search !== ""
-    ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
-    : ""}
+            ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
+            : ""}
     ${claimStatus !== -1 ? `AND tenure_approved.is_claimed = '${claimStatus}' ` : ""}
     `;
     const params = [];
@@ -2673,13 +2741,13 @@ const getTenureApprovedCandidates = async (claimStatus, search, fromDate, toDate
     INNER JOIN jobs ON 
     jobs.id = applications.job_id 
     WHERE applications.is_tenure_approved = 'Approved'
-    ${ search === "" ?
-    `AND DATE(applications.offered_date) >= ? 
+    ${search === "" ?
+            `AND DATE(applications.offered_date) >= ? 
     AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${search !== 'undefined' && search !== ""
-    ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
-    : ""}
+            ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
+            : ""}
     ${claimStatus !== -1 ? `AND tenure_approved.is_claimed = '${claimStatus}' ` : ""}
     order by applications.offered_date desc
     Limit ? offset ?`;
@@ -2690,8 +2758,8 @@ const getTenureApprovedCandidates = async (claimStatus, search, fromDate, toDate
     try {
         const result = await db.query(query, params);
         const count = await getTenureApprovedCandidatesCount(claimStatus, search, fromDate, toDate);
-        const {total_received, total_paid, total_claimed, claimed_count, not_claimed_count} = await getTenureApprovedCandidatesTotalReceivedPaidClaimedNotClaimedCount(search, fromDate, toDate);
-        return {candidates: result[0], count, total_received, total_paid, total_claimed, claimed_count, not_claimed_count};
+        const { total_received, total_paid, total_claimed, claimed_count, not_claimed_count } = await getTenureApprovedCandidatesTotalReceivedPaidClaimedNotClaimedCount(search, fromDate, toDate);
+        return { candidates: result[0], count, total_received, total_paid, total_claimed, claimed_count, not_claimed_count };
     } catch (error) {
         console.log(error)
         throw error;
@@ -2728,13 +2796,13 @@ const getTenureApprovedCandidatesForExcel = async (claimStatus, search, fromDate
     INNER JOIN jobs ON 
     jobs.id = applications.job_id 
     WHERE applications.is_tenure_approved = 'Approved'
-    ${ search === "" ?
-    `AND DATE(applications.offered_date) >= ? 
+    ${search === "" ?
+            `AND DATE(applications.offered_date) >= ? 
     AND DATE(applications.offered_date) < DATE_ADD(?, INTERVAL 1 DAY)`
-    : ""}
+            : ""}
     ${search !== 'undefined' && search !== ""
-    ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
-    : ""}
+            ? `AND (candidates.name LIKE '%${search}%' OR candidates.email LIKE '%${search}%' OR candidates.phone LIKE '%${search}%' OR jobs.company_name LIKE '%${search}%' OR tenure_approved.employee_id LIKE '%${search}%')`
+            : ""}
     ${claimStatus !== -1 ? `AND tenure_approved.is_claimed = '${claimStatus}' ` : ""}
     order by applications.offered_date desc`;
     const params = [];
@@ -2755,9 +2823,9 @@ const updateClaimStatus = async (tenureId, claimStatus) => {
     try {
         const result = await db.query(query, [claimStatus, tenureId]);
         if (result[0].affectedRows > 0) {
-            return {success: 'Claim status updated successfully'};
+            return { success: 'Claim status updated successfully' };
         } else {
-            return {error: 'Claim status updation failed'};
+            return { error: 'Claim status updation failed' };
         }
     } catch (error) {
         console.log(error)
@@ -2766,14 +2834,14 @@ const updateClaimStatus = async (tenureId, claimStatus) => {
 }
 
 const updateTenureStatus = async (candidate) => {
-    const {applicationId, tenureStatus} = candidate;
+    const { applicationId, tenureStatus } = candidate;
     const query = 'UPDATE applications SET tenure_status = ? WHERE id = ?';
     try {
         const result = await db.query(query, [tenureStatus, applicationId]);
         if (result[0].affectedRows > 0) {
-            return {success: 'Candidate tenure approval status updated successfully'};
-        } else {         
-            return {error: 'Candidate tenure approval status updation failed'};
+            return { success: 'Candidate tenure approval status updated successfully' };
+        } else {
+            return { error: 'Candidate tenure approval status updation failed' };
         }
     } catch (error) {
         console.log(error)
@@ -2781,14 +2849,14 @@ const updateTenureStatus = async (candidate) => {
 }
 
 const updateTenureApprovalStatus = async (candidate) => {
-    const {applicationId, approvalStatus} = candidate;
+    const { applicationId, approvalStatus } = candidate;
     const query = 'UPDATE applications SET is_tenure_approved = ? WHERE id = ?';
     try {
         const result = await db.query(query, [approvalStatus, applicationId]);
         if (result[0].affectedRows > 0) {
-            return {success: 'Candidate tenure approval status updated successfully'};
+            return { success: 'Candidate tenure approval status updated successfully' };
         } else {
-            return {error: 'Candidate tenure approval status updation failed'};
+            return { error: 'Candidate tenure approval status updation failed' };
         }
     } catch (error) {
         console.log(error)
@@ -2811,7 +2879,7 @@ const addEmploymentDetails = async (employmentDetails) => {
     const query = 'INSERT INTO tenure_approved (id, application_id, employee_id, position_name, salary, commission_received, commission_paid) VALUES (?, ?, ?, ?, ?, ?, ?)';
     try {
         const employmentDetails = await getEmploymentDetails(applicationId);
-        if(employmentDetails.length > 0) {
+        if (employmentDetails.length > 0) {
             const error = new Error('Employment details already added for this candidate');
             error.statusCode = 409;
             throw error;
@@ -2819,9 +2887,9 @@ const addEmploymentDetails = async (employmentDetails) => {
         const id = uuidv4();
         const result = await db.query(query, [id, applicationId, employeeId, positionName, salary, commissionReceived, commissionPaid]);
         if (result[0].affectedRows > 0) {
-            return {success: 'Candidate employment details updated successfully'};
+            return { success: 'Candidate employment details updated successfully' };
         } else {
-            return {error: 'Candidate employment details updation failed'};
+            return { error: 'Candidate employment details updation failed' };
         }
     } catch (error) {
         console.log(error)
@@ -2835,9 +2903,9 @@ const editEmploymentDetails = async (employmentDetails) => {
     try {
         const result = await db.query(query, [employeeId, positionName, salary, commissionReceived, commissionPaid, tenureId]);
         if (result[0].affectedRows > 0) {
-            return {success: 'Candidate employment details updated successfully'};
+            return { success: 'Candidate employment details updated successfully' };
         } else {
-            return {error: 'Candidate employment details updation failed'};
+            return { error: 'Candidate employment details updation failed' };
         }
     } catch (error) {
         console.log(error)
@@ -2850,9 +2918,9 @@ const deleteEmploymentDetails = async (applicationId) => {
     try {
         const result = await db.query(query, [applicationId]);
         if (result[0].affectedRows > 0) {
-            return {success: 'Candidate employment details deleted successfully'};
+            return { success: 'Candidate employment details deleted successfully' };
         } else {
-            return {error: 'Candidate employment details deletion failed'};
+            return { error: 'Candidate employment details deletion failed' };
         }
     } catch (error) {
         console.log(error)
@@ -2861,14 +2929,14 @@ const deleteEmploymentDetails = async (applicationId) => {
 }
 
 const updateVerificationStatus = async (candidate) => {
-    const {applicationId, verificationStatus} = candidate;
+    const { applicationId, verificationStatus } = candidate;
     const query = 'UPDATE applications SET verification_status = ? WHERE id = ?';
     try {
         const result = await db.query(query, [verificationStatus, applicationId]);
         if (result[0].affectedRows > 0) {
-            return {success: 'Candidate verification status updated successfully'};
-        } else {         
-            return {error: 'Candidate verification status updation failed'};
+            return { success: 'Candidate verification status updated successfully' };
+        } else {
+            return { error: 'Candidate verification status updation failed' };
         }
     } catch (error) {
         console.log(error)
@@ -2893,7 +2961,7 @@ const getJoinedCandidateCompanyDetails = async (candidateId) => {
         if (result[0].length > 0) {
             return result[0][0];
         } else {
-            return {error: 'Candidate not found'};
+            return { error: 'Candidate not found' };
         }
     } catch (error) {
         console.log(error)
@@ -2945,8 +3013,8 @@ const sendInterviewWhatsAppMessages = async (candidateDetails, jobsList, hmHrDat
     const contactPerson = role === "SHM"
         ? `${username}, at ${hmHrData.shm[0].phone}`
         : role === "AC"
-        ? `${username}, at ${hmHrData.hm[0].phone}, or ${hmHrData.shm[0].username} at ${hmHrData.shm[0].phone}`
-        : `${username}, at ${hmHrData.hr[0].phone}, or ${hmHrData.hm[0].username} at ${hmHrData.hm[0].phone}`;
+            ? `${username}, at ${hmHrData.hm[0].phone}, or ${hmHrData.shm[0].username} at ${hmHrData.shm[0].phone}`
+            : `${username}, at ${hmHrData.hr[0].phone}, or ${hmHrData.hm[0].username} at ${hmHrData.hm[0].phone}`;
     let phone = null;
     let email = null;
     if (role === "SHM") {
@@ -2960,7 +3028,7 @@ const sendInterviewWhatsAppMessages = async (candidateDetails, jobsList, hmHrDat
         email = hmHrData.hr[0].email;
     }
 
-    
+
     const formattedInterviewDate = format(new Date(candidateDetails.interviewDate), 'EEE, dd MMM yyyy')
 
     const [hours, minutes] = candidateDetails.interviewTime.split(':')
@@ -2981,7 +3049,7 @@ const sendInterviewWhatsAppMessages = async (candidateDetails, jobsList, hmHrDat
     sendWhatsAppMessage(templateurl);
     return { message: "Interview scheduled successfully" };
 };
-  
+
 
 module.exports = {
     addJobDetials,
