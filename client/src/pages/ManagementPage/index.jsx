@@ -11,11 +11,17 @@ const ManagementPage = () => {
       img: "/about_us_imgs/RAVI.png",
     },
     {
-      name: "Asish Chakraborty",
-      designation: "Co-Founder & CEO",
-      desc: "Asish Chakraborty is the Co-Founder & CEO of <strong>Earlyjobs</strong>, a company dedicated to transforming the recruitment process by fostering meaningful connections that fuel growth for both employers and jobseekers. He holds an MBA from the <strong>Sikkim Manipal Institute of Technology</strong> and brings with him 20 years of extensive experience in the pharmaceutical industry. Asish is passionate about introducing changes to the employment sector by promoting freelancers and empowering women to work from home. His expertise and leadership skills serve as a guiding force in propelling <strong>Earlyjobs</strong> to greater heights.",
-      img: "/about_us_imgs/ASHISH.png",
+      name: "Saurav Kumar",
+      designation: "Founder & CEO",
+      desc: "Saurav Kumar is a dynamic business strategist and entrepreneur with over 10 years+ of experience in driving business growth, innovation, and operational excellence. He holds a Master's degree from SRM University, Chennai, and has founded multiple successful ventures, including Victaman Services Pvt Ltd, Goformeet, and English Wizard. He currently serves as the CEO of Earlyjobs, where he leads the company with a vision to revolutionize communication, collaboration, and employment opportunities through innovative solutions. Leveraging his expertise in IT solutions, business development, and strategic leadership, Saurav envisions transforming the job market in the country by providing employment opportunities to the masses, reflecting his commitment to impactful and scalable solutions.",
+      img: "/about_us_imgs/SAURAV.png",
     },
+    // {
+    //   name: "Asish Chakraborty",
+    //   designation: "Co-Founder & CEO",
+    //   desc: "Asish Chakraborty is the Co-Founder & CEO of <strong>Earlyjobs</strong>, a company dedicated to transforming the recruitment process by fostering meaningful connections that fuel growth for both employers and jobseekers. He holds an MBA from the <strong>Sikkim Manipal Institute of Technology</strong> and brings with him 20 years of extensive experience in the pharmaceutical industry. Asish is passionate about introducing changes to the employment sector by promoting freelancers and empowering women to work from home. His expertise and leadership skills serve as a guiding force in propelling <strong>Earlyjobs</strong> to greater heights.",
+    //   img: "/about_us_imgs/ASHISH.png",
+    // },
     {
       name: "Surbhi Rani",
       designation: "Co-Founder & Director",
@@ -42,16 +48,11 @@ const ManagementPage = () => {
     },
     {
       name: "Prashob P",
-      designation: "Chief Technology Advisor",
-      desc: "Prashob P is the Chief Technology Officer at <strong>MeetXO.AI</strong> and serves as the Chief Technology Advisor at <strong>Earlyjobs</strong>. With a strong background in IT, innovation, and technology leadership, Prashob specializes in web and mobile app development. He has been instrumental in driving <strong>Earlyjobs</strong>' technological advancements, ensuring seamless integration of cutting-edge solutions to enhance user experience. Prashob's expertise in technology strategy, coupled with his passion for innovation, plays a pivotal role in shaping <strong>Earlyjobs</strong>' digital platforms, enabling scalable and impactful solutions for job seekers and employers alike.",
+      designation: "Chief Technology Officer",
+      desc: "Prashob P is the Chief Technology Officer at Earlyjobs. With a strong background in IT, innovation, and technology leadership, Prashob specializes in web and mobile app development. He has been instrumental in driving Earlyjobs' technological advancements, ensuring seamless integration of cutting-edge solutions to enhance user experience. Prashob's expertise in technology strategy, coupled with his passion for innovation, plays a pivotal role in shaping Earlyjobs' digital platforms, enabling scalable and impactful solutions for job seekers and employers alike.",
       img: "/about_us_imgs/PRASHOB.png",
     },
-    {
-      name: "Saurav Kumar",
-      designation: "Co-Founder & Strategic Advisor",
-      desc: "Saurav Kumar is a dynamic business strategist and entrepreneur with over 10 years+ of experience in driving business growth, innovation, and operational excellence. He holds a Master's degree from <strong>SRM University</strong>, Chennai, and has founded multiple successful ventures, including <strong>Victaman Services Pvt Ltd</strong>, <strong>Goformeet</strong>, <strong>English Wizard</strong>, and <strong>Meet XO</strong>. He also serves as the CEO of <strong>MeetXO</strong>, where he leads the company with a vision to revolutionize communication and collaboration through innovative solutions. Currently, Saurav plays a key role in planning and providing strategic advice at <strong>Earlyjobs</strong>, leveraging his expertise in IT solutions, business development, and strategic leadership. He envisions transforming the job market in the country by providing employment opportunities to the masses, reflecting his commitment to impactful and scalable solutions.",
-      img: "/about_us_imgs/SAURAV.png",
-    },
+    
   ];
 
   useEffect(() => {
