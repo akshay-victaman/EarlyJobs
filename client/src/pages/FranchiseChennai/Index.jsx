@@ -13,7 +13,7 @@ import {
   Mail
 } from 'lucide-react';
 import chennaiHero from '../assets/chennai-hero.jpg';
-import "./styles.css"
+
 
 const FranchiseChennai= () => {
   const [formData, setFormData] = useState({
