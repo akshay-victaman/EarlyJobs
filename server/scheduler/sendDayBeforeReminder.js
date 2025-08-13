@@ -75,7 +75,7 @@ Would you like to reschedule? Let us know if you’re still interested so we can
 
 Contact: ${hr_phone}
 Email: ${hr_email}`,
-            senderName: candidate_name
+            senderName:"Customer Portal"
           });
           console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
         } catch (postErr) {
@@ -172,7 +172,7 @@ If you have any questions or need any assistance before the interview, feel free
 
 Contact: ${hr_phone}
 Email: ${hr_email}`,
-            senderName: candidate_name
+            senderName: "Customer Portal"
           });
           console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
         } catch (postErr) {

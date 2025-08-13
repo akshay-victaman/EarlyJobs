@@ -1328,6 +1328,24 @@ const sendSelectedWhatsappMessage = async (candidate) => {
             const res = await fetch(msg);
             const data = await res.json();
             console.log(`✅ Message sent to ${candidate_phone}:`, data);
+            if (res && res.data) {
+                try {
+                    const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
+                        phoneNumber: candidate_phone,
+                        message: `Hi ${candidate_name},
+We are thrilled to inform you that you have been selected for the ${roleName} role at ${company_name}!
+
+Please confirm your acceptance and expected joining date.
+
+Contact: ${hr_phone}
+Email: ${hr_email}`,
+                        senderName: "Customer Portal"
+                    });
+                    console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
+                } catch (postErr) {
+                    console.error(`❌ Failed to call notification API for ${candidate_phone}:`, postErr.message);
+                }
+            }
             return { success: 'WhatsApp message sent successfully' };
         }
     } catch (error) {
@@ -1386,6 +1404,30 @@ const sendJoinedWhatsappMessage = async (candidate) => {
             const res = await fetch(msg);
             const data = await res.json();
             console.log(`✅ Message sent to ${candidate_phone}:`, data);
+            if (res && res.data) {
+                try {
+                    const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
+                        phoneNumber: candidate_phone,
+                        message: `Hi ${candidate_name},
+
+Congratulations on your new role at ${company_name}! We’re thrilled to have been part of your journey.
+
+We’d love to hear about your experience with EarlyJobs! Your feedback helps us grow and continue connecting great talent with amazing opportunities.
+
+If you had a smooth and positive hiring experience, please take a moment to leave us a review:
+
+${hr_email}
+
+Your kind words will help others find great opportunities too!
+
+Thank you for choosing EarlyJobs. Wishing you all the best in your new role!`,
+                        senderName: "Customer Portal"
+                    });
+                    console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
+                } catch (postErr) {
+                    console.error(`❌ Failed to call notification API for ${candidate_phone}:`, postErr.message);
+                }
+            }
             return { success: 'WhatsApp message sent successfully' };
         }
     } catch (error) {
