@@ -1,0 +1,209 @@
+/* client-styles.css */
+
+/* Page container */
+.clientele-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px 20px; 
+}
+
+/* Section title */
+.clientele-section-title {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.clientele-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  
+}
+
+.clientele-title-bar {
+  width: 100px;
+  height: 4px;
+  background: #ff8800;
+  margin: 10px auto;
+}
+
+.clientele-desc {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Grid layout for company cards */
+.clientele-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Company card styling */
+.company-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  border-top: 3px solid #F54927;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.company-card:hover {
+  transform: translateY(-8px);
+  border-top: 4px solid #110050;
+}
+
+.company-category {
+  display: inline-block;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  background-color: #f49c20c0;
+  color: #fff;
+  border-radius: 12px;
+  margin: auto auto 10px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.company-card__logo {
+  max-width: 100%;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.company-card__no-logo {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.company-card__name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.company-card__location {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Loading and error states */
+.clientele-loading,
+.clientele-error,
+.clientele-empty {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  padding: 20px;
+}
+
+.clientele-error {
+  color: #d9534f;
+}
+
+/* CTA Popup */
+.clientele-cta__popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.clientele-cta__popup {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+}
+
+.clientele-cta__popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.clientele-cta__popup-heading {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.clientele-cta__form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.clientele-cta__form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.clientele-cta__form-group label {
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.clientele-cta__form-group input,
+.clientele-cta__form-group textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.clientele-cta__form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.clientele-cta__form-submit {
+  padding: 10px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.clientele-cta__form-submit:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.clientele-cta__form-success {
+  color: #28a745;
+  text-align: center;
+}
+
+.clientele-cta__form-error {
+  color: #d9534f;
+  text-align: center;
+}
