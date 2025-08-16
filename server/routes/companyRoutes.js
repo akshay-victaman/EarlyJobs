@@ -5,6 +5,8 @@ const authenticateToken = require('../middleware/authenticationMiddleware');
 const router = express.Router();
 
 router.get('/', authenticateToken, CompanyController.getCompanies);
+router.get('/companies', CompanyController.getCompanies);
+
 router.get('/excel', authenticateToken, CompanyController.getCompaniesForExcel);
 router.get('/:id', authenticateToken, CompanyController.getCompanyById);
 router.post('/', authenticateToken, CompanyController.createCompany);
