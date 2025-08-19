@@ -138,6 +138,7 @@ import { ArrowRight } from "lucide-react";
 // Assuming this is the path to the form component
 import "./Hero.css";
 import ConsultationForm from "../ConsultationForm";
+import HeroCarousel from "./franchisecarousel";
 
 export const PopupModal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
@@ -281,30 +282,7 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="hero-video" style={{width:"50vw" , }}>
-            <video
-              ref={videoRef}
-              src="https://res.cloudinary.com/ddzdpsj6i/video/upload/v1750077777/IMG_1783_22_g0tifc.mp4"
-              autoPlay
-              loop
-              unmuted
-              playsInline
-              style={{
-                height: "529px",
-                width:"59%",
-                borderRadius: "16px",
-                marginLeft: "47px",
-                objectFit: "cover",
-                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                marginTop: "20px",
-              }}
-              onLoadedData={(e) => {
-                e.target
-                  .play()
-                  .catch((err) => console.log("Autoplay failed:", err));
-              }}
-            />
-          </div>
+          <HeroCarousel />
         </div>
       </div>
 
