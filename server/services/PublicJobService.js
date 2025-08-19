@@ -3,8 +3,10 @@ const { nanoid } = require('nanoid');
 
 const db = require('../config/database');
 
-const getAllJobs = async (company, location, title, search, page) => {
-    const pageSize = 20;
+const getAllJobs = async (company, location, title, search, page, pageSize) => {
+    pageSize = parseInt(pageSize, 10) || 20;
+
+
     const startIndex = (page - 1) * pageSize;
     const query = `
         SELECT * FROM jobs 
