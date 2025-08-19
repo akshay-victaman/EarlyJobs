@@ -134,7 +134,7 @@
 // components/PopupModal.tsx
 
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+
 // Assuming this is the path to the form component
 import "./Hero.css";
 import ConsultationForm from "../ConsultationForm";
