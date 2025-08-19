@@ -24,19 +24,19 @@ const ProblemSolution = () => {
           
           <div className="stat-card" style={{ animationDelay: "100ms" }}>
             <Building className="stat-icon" />
-            <h3 className="stat-number">1,300+</h3>
-            <p className="stat-label">Hires Done in 12 Months</p>
+            <h3 className="stat-number">1,700+</h3>
+            <p className="stat-label">Hires Done in 18 Months</p>
           </div>
           
           <div className="stat-card" style={{ animationDelay: "200ms" }}>
             <Users className="stat-icon" />
-            <h3 className="stat-number">80%</h3>
+            <h3 className="stat-number">90%</h3>
             <p className="stat-label">of Recruiters are Women</p>
           </div>
           
           <div className="stat-card" style={{ animationDelay: "300ms" }}>
             <Briefcase className="stat-icon" />
-            <h3 className="stat-number">50+</h3>
+            <h3 className="stat-number">75+</h3>
             <p className="stat-label">Top Companies Served</p>
           </div>
         </div>

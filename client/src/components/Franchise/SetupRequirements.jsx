@@ -21,8 +21,8 @@ const SetupRequirements = () => {
     },
     {
       icon: <Check className="setup-icon" />,
-      title: "Franchise Deposit",
-      description: "₹1L (limited-time 50% risk-sharing offer)",
+      title: "Franchise Fee",
+      description: "₹2Lakh + GST",
     },
   ];
 
@@ -56,12 +56,12 @@ const SetupRequirements = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td>Franchise Deposit</td>
-                  <td>₹1,00,000*</td>
+                  <td>Franchise Fee</td>
+                  <td>₹2,00,000*</td>
                 </tr>
                 <tr>
                   <td>Office Setup & Equipment</td>
-                  <td>₹1,00,000 - ₹1,50,000</td>
+                  <td>₹2,00,000 - ₹3,00,000</td>
                 </tr>
 
                 <tr>
@@ -70,11 +70,11 @@ const SetupRequirements = () => {
                 </tr>
                 <tr>
                   <td>Total Setup Investment</td>
-                  <td>₹3,00,000 - ₹5,00,000</td>
+                  <td>₹4,00,000 - ₹6,00,000</td>
                 </tr>
               </tbody>
             </table>
-            <h4 style={{ color: "#EE7D63" }}>* Excluding GST</h4>
+            {/* <h4 style={{ color: "#EE7D63" }}>* Excluding GST</h4> */}
           </div>
         </div>
       </div>

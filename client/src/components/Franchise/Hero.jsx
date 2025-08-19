@@ -221,11 +221,11 @@ const Hero = () => {
                 Apply Now
               </button>
             </div>
-            {playFailed && (
+            {/* {playFailed && (
               <p className="play-error">
                 Click "Apply Now" or the video to enable sound.
               </p>
-            )}
+            )} */}
             <div className="hero-social">
               <p className="social-label">AS SEEN IN</p>
               <div className="social-logos-row">
@@ -281,7 +281,7 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="hero-video" style={{width:"50vw" , paddingRight:"57px"}}>
+          <div className="hero-video" style={{width:"50vw" , }}>
             <video
               ref={videoRef}
               src="https://res.cloudinary.com/ddzdpsj6i/video/upload/v1750077777/IMG_1783_22_g0tifc.mp4"

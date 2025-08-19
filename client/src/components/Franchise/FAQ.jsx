@@ -16,7 +16,7 @@ const FAQ = () => {
     {
       question: "What is the franchise fee?",
       answer:
-        "The standard franchise deposit is ₹2 lakhs. However, under our current limited-time offer, we're offering a 50% risk-sharing model with a reduced deposit of just ₹1 lakh for the first 10 sign-ups.",
+        "The standard franchise fee is ₹2 lakhs + GST. However, under our current limited-time offer, we're offering a 50% off with a reduced fee of just ₹1 lakh for the first 20 sign-ups.",
     },
     {
       question: "Do I need an office?",
