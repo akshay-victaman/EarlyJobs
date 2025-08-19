@@ -6,8 +6,10 @@ const getAllJobs = async (req, res) => {
     const title = req.query.title;
     const search = req.query.search;
     const page = req.query.page || 1;
+    const pageSize = req.query.pageSize || 20;
+    console.log('pagesize:', pageSize);
     try {
-        const result = await publicJobService.getAllJobs(company, location, title, search, page);
+        const result = await publicJobService.getAllJobs(company, location, title, search, page, pageSize);
         res.json(result);
     } catch (error) {
     res.status(500).json({ error: error.message });
