@@ -8,7 +8,7 @@ const WhyFranchise = () => {
     {
       icon: <Briefcase className="reason-icon" />,
       title: "Proven Model",
-      description: "Built-in success — 200+ recruiters onboarded, 50+ clients"
+      description: "Built-in success — 200+ recruiters onboarded, 75+ clients"
     },
     {
       icon: <Brain className="reason-icon" />,
@@ -18,7 +18,7 @@ const WhyFranchise = () => {
     {
       icon: <DollarSign className="reason-icon" />,
       title: "Low Setup, High ROI",
-      description: "Start with just ₹1L deposit + minimal infra"
+      description: "Start with just ₹2L Fee + minimal infra"
     },
     {
       icon: <TrendingUp className="reason-icon" />,

@@ -1,30 +1,23 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "react-toastify";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  setDoc,
-  doc,
-} from "firebase/firestore";
-import app from "../../firebase";
-import { useLocation } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 
-const ConsultationForm = ({ isFranchise }) => {
-  const db = getFirestore(app); // Initialize Firestore
+const RequestForm = ({ isFranchise }) => {
   const location = useLocation();
-  useEffect(() => {
-    console.log("isFranchise", location);
-  }, []);
   const [captchaValue, setCaptchaValue] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     contact: "",
+    district: "",
     lookingFor: "",
   });
+
+  useEffect(() => {
+    console.log("isFranchise", location);
+  }, []);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -41,80 +34,84 @@ const ConsultationForm = ({ isFranchise }) => {
     e.preventDefault();
 
     // Captcha validation
-    if (captchaValue === null) {
+    if (!captchaValue) {
       toast.error("Please verify the captcha");
       return;
     }
 
     try {
-      // Add the new document and get the document reference
-      const newConsultForm = {
+      
+      const sheetData = {
         name: formData.name,
         email: formData.email,
         contact: formData.contact,
+        district: formData.district,
         lookingFor: isFranchise ? "Franchise" : formData.lookingFor,
+        postDateTime: new Date().toISOString(),
       };
 
-      // Step 1: Add the document with the form data to Firestore
-      const docRef = await addDoc(collection(db, "ConsultationRequests"), {
-        ...newConsultForm,
-      });
-      const docId = docRef.id;
-      const postDateTime = new Date();
+      // Send data to SheetDB
+      const sheetResponse = await fetch("https://sheetdb.io/api/v1/cw5ryaik6yrl1",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ data: [sheetData] }),
+        }
+      );
 
-      // Step 2: Update the document with the generated docId and postDateTime
-      await setDoc(doc(db, "ConsultationRequests", docId), {
-        docId,
-        postDateTime,
-        ...newConsultForm,
-      });
+      if (!sheetResponse.ok) {
+        throw new Error("Failed to save data to SheetDB");
+      }
 
-      // Send an email (if required) using your email logic
-      let emailContent = `
-                Hi Earlyjobs Team,
-                <br><br>
-                We have received a request for free consultation from <strong>${formData.name}</strong> with email id <strong>${formData.email}</strong> and contact number <strong>${formData.contact}</strong>. 
-                They are looking for <strong>${formData.lookingFor}</strong>.
-                <br><br>
-                Regards,<br> 
-                earlyjobs.in team
-                <br> 
-                Victaman Enterprises
-            `;
-      const encodedContent = encodeURIComponent(emailContent);
-      const queryParameters = {
-        method: "EMS_POST_CAMPAIGN",
-        userid: "2000702445",
-        password: "LEP9yt",
-        v: "1.1",
-        contentType: "text/html",
-        name: "Earlyjobs Consultation Request",
-        fromEmailId: "no-reply@earlyjobs.in",
-        subject: `Consultation Request from ${formData.name}`,
-        recipients:
+      
+      const emailParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        contact: formData.contact,
+        district: formData.district,
+        looking_for: isFranchise ? "Franchise" : formData.lookingFor,
+        to_email:
           formData.lookingFor === "Candidate"
-            ? "asish@earlyjobs.in"
+            ? "franchise@earlyjobs.in"
             : "akanksha@earlyjobs.in",
-        content: encodedContent,
-        replyToEmailID: "no-reply@earlyjobs.in",
+        cc_email: "prajwal@earlyjobs.in",
+        subject: `Consultation Request from ${formData.name}`,
+        message: `
+          <html>
+            <body>
+              <p>Hi Earlyjobs Team,</p>
+              <p>We have received a request for free consultation from <strong>${formData.name}</strong> with email id <strong>${formData.email}</strong> and contact number <strong>${formData.contact}</strong>.</p>
+              <p>They are looking for <strong>${isFranchise ? "Franchise" : formData.lookingFor}</strong>.</p>
+              <p>District: <strong>${formData.district}</strong></p>
+              <p>Regards,<br>earlyjobs.in team<br>Victaman Enterprises</p>
+            </body>
+          </html>
+        `,
       };
-      const url = `https://enterprise.webaroo.com/GatewayAPI/rest?method=${queryParameters.method}&userid=${queryParameters.userid}&password=${queryParameters.password}&v=${queryParameters.v}&content_type=${queryParameters.contentType}&name=${queryParameters.name}&fromEmailId=${queryParameters.fromEmailId}&subject=${queryParameters.subject}&recipients=${queryParameters.recipients}&content=${queryParameters.content}&replyToEmailID=${queryParameters.replyToEmailID}`;
-      await fetch(url, { method: "GET", mode: "no-cors" });
+
+      // Send email using EmailJS
+      await emailjs.send(
+        "service_ovaxj17",
+        "template_v0jj42o",
+        emailParams,
+        "Qz7wBRaW9bttj7rra"
+      );
 
       toast.success("Your request has been submitted successfully");
 
-      // Reset form data
+     
       setFormData({
         name: "",
         email: "",
         contact: "",
+        district: "",
         lookingFor: "",
       });
     } catch (error) {
       console.error("Error submitting consultation request: ", error);
-      toast.error(
-        "There was an issue submitting your request. Please try again."
-      );
+      toast.error("There was an issue submitting your request. Please try again.");
     }
   };
 
@@ -153,6 +150,15 @@ const ConsultationForm = ({ isFranchise }) => {
         className="landing-page-s7-consultation-input"
         name="contact"
         value={formData.contact}
+        onChange={handleInputChange}
+      />
+      <input
+        type="text"
+        required
+        placeholder="District"
+        className="landing-page-s7-consultation-input"
+        name="district"
+        value={formData.district}
         onChange={handleInputChange}
       />
       {location.pathname === "/franchise" ? null : (
@@ -194,7 +200,7 @@ const ConsultationForm = ({ isFranchise }) => {
         </>
       )}
       <ReCAPTCHA
-        sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+        sitekey={"6LdnwcgpAAAAAKUNM_UcDRCQcbUw0B_ICG9VIzxI"}
         onChange={onChange}
       />
       <button type="submit" className="landing-page-s7-consultation-btn">
@@ -204,4 +210,4 @@ const ConsultationForm = ({ isFranchise }) => {
   );
 };
 
-export default ConsultationForm;
+export default RequestForm;

@@ -134,10 +134,11 @@
 // components/PopupModal.tsx
 
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+
 // Assuming this is the path to the form component
 import "./Hero.css";
-import ConsultationForm from "../ConsultationForm";
+import RequestForm from "../FranchiseRequestForm";
+import HeroCarousel from "./franchisecarousel";
 
 export const PopupModal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
@@ -184,15 +185,7 @@ const Hero = () => {
   };
 
   const handleApplyNow = () => {
-    togglePopup(); // Open the pop-up form
-    // Unmute and play the video on button click
-    if (videoRef.current) {
-      videoRef.current.muted = false;
-      videoRef.current.play().catch((error) => {
-        console.log("Playback failed:", error);
-        setPlayFailed(true);
-      });
-    }
+    togglePopup(); 
   };
 
   useEffect(() => {
@@ -221,11 +214,11 @@ const Hero = () => {
                 Apply Now
               </button>
             </div>
-            {playFailed && (
+            {/* {playFailed && (
               <p className="play-error">
                 Click "Apply Now" or the video to enable sound.
               </p>
-            )}
+            )} */}
             <div className="hero-social">
               <p className="social-label">AS SEEN IN</p>
               <div className="social-logos-row">
@@ -281,30 +274,7 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="hero-video" style={{width:"50vw" , paddingRight:"57px"}}>
-            <video
-              ref={videoRef}
-              src="https://res.cloudinary.com/ddzdpsj6i/video/upload/v1750077777/IMG_1783_22_g0tifc.mp4"
-              autoPlay
-              loop
-              unmuted
-              playsInline
-              style={{
-                height: "529px",
-                width:"59%",
-                borderRadius: "16px",
-                marginLeft: "47px",
-                objectFit: "cover",
-                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                marginTop: "20px",
-              }}
-              onLoadedData={(e) => {
-                e.target
-                  .play()
-                  .catch((err) => console.log("Autoplay failed:", err));
-              }}
-            />
-          </div>
+          <HeroCarousel />
         </div>
       </div>
 
@@ -314,7 +284,7 @@ const Hero = () => {
         onClose={togglePopup}
         title="Apply for EarlyJobs Franchise"
       >
-        <ConsultationForm isFranchise={true} />
+        <RequestForm isFranchise={true} />
       </PopupModal>
     </section>
   );
