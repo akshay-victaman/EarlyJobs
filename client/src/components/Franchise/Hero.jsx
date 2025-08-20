@@ -137,7 +137,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 // Assuming this is the path to the form component
 import "./Hero.css";
-import ConsultationForm from "../ConsultationForm";
+import RequestForm from "../FranchiseRequestForm";
 import HeroCarousel from "./franchisecarousel";
 
 export const PopupModal = ({ isOpen, onClose, title, children }) => {
@@ -185,15 +185,7 @@ const Hero = () => {
   };
 
   const handleApplyNow = () => {
-    togglePopup(); // Open the pop-up form
-    // Unmute and play the video on button click
-    if (videoRef.current) {
-      videoRef.current.muted = false;
-      videoRef.current.play().catch((error) => {
-        console.log("Playback failed:", error);
-        setPlayFailed(true);
-      });
-    }
+    togglePopup(); 
   };
 
   useEffect(() => {
@@ -292,7 +284,7 @@ const Hero = () => {
         onClose={togglePopup}
         title="Apply for EarlyJobs Franchise"
       >
-        <ConsultationForm isFranchise={true} />
+        <RequestForm isFranchise={true} />
       </PopupModal>
     </section>
   );

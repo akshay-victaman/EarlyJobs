@@ -82,7 +82,7 @@
 import React, { useState } from "react";
 import { AlarmClock, Check, ArrowRight } from "lucide-react";
 import "./LimitedOffer.css";
-import ConsultationForm from "../ConsultationForm"; // Adjust path as needed
+import RequestForm from "../FranchiseRequestForm"; // Adjust path as needed
 import { PopupModal } from "./Hero"; // Adjust path based on your project
 
 const LimitedOffer = () => {
@@ -151,7 +151,7 @@ const LimitedOffer = () => {
         onClose={handleClosePopup}
         title="Apply for EarlyJobs Franchise"
       >
-        <ConsultationForm isFranchise={true} />
+        <RequestForm isFranchise={true} />
       </PopupModal>
     </section>
   );
