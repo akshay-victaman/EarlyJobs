@@ -854,7 +854,7 @@ const sendRescheduledWhatsappMessage = async (candidate) => {
             if (res && res.data) {
                 try {
                     const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
-                        phoneNumber: candidate_phone,
+                         phoneNumber: `91${candidate_phone}`,
                         message: `Hi ${candidate_name},
 
 As per your request, we’ve rescheduled your interview for the ${roleName} role at ${company_name}.
@@ -869,7 +869,7 @@ Thanks for keeping us informed, and we appreciate your continued interest. If yo
 
 Contact: ${hr_phone}
 Email: ${hr_email}`,
-                        senderName: "Customer Portal"
+                        senderName: `${candidate_name}`
                     });
                     console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
                 } catch (postErr) {
@@ -1331,7 +1331,7 @@ const sendSelectedWhatsappMessage = async (candidate) => {
             if (res && res.data) {
                 try {
                     const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
-                        phoneNumber: candidate_phone,
+                         phoneNumber: `91${candidate_phone}`,
                         message: `Hi ${candidate_name},
 We are thrilled to inform you that you have been selected for the ${roleName} role at ${company_name}!
 
@@ -1339,7 +1339,7 @@ Please confirm your acceptance and expected joining date.
 
 Contact: ${hr_phone}
 Email: ${hr_email}`,
-                        senderName: "Customer Portal"
+                        senderName: `${candidate_name}`
                     });
                     console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
                 } catch (postErr) {
@@ -1407,7 +1407,7 @@ const sendJoinedWhatsappMessage = async (candidate) => {
             if (res && res.data) {
                 try {
                     const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
-                        phoneNumber: candidate_phone,
+                         phoneNumber: `91${candidate_phone}`,
                         message: `Hi ${candidate_name},
 
 Congratulations on your new role at ${company_name}! We’re thrilled to have been part of your journey.
@@ -1421,7 +1421,7 @@ ${hr_email}
 Your kind words will help others find great opportunities too!
 
 Thank you for choosing EarlyJobs. Wishing you all the best in your new role!`,
-                        senderName: "Customer Portal"
+                        senderName: `${candidate_name}`
                     });
                     console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
                 } catch (postErr) {
