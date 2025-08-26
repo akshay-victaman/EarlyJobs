@@ -59,7 +59,7 @@ const CreateBlog = async (req, res) => {
 
 
 const getBlogs = async (req, res) => {
-  const { page = 0, limit = 10, search = "" } = req.query;
+  const { page = 0, limit = 50, search = "" } = req.query;
   try {
     const blogs = await BlogModel.find({ title: { $regex: search, $options: "i" } })
       .skip(Number(page) * Number(limit))

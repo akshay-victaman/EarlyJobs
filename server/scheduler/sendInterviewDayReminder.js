@@ -64,7 +64,7 @@ const sendInterviewDayReminder = async () => {
     if (res && res.data) {
         try {
           const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
-            phoneNumber: candidate_phone, 
+             phoneNumber: `91${candidate_phone}`, 
             message: `Hi ${candidate_name},
 Hope you're doing great! Just a quick reminder about your interview for the ${roleName} role at ${company_name} today.
 
@@ -77,7 +77,7 @@ Wishing you all the best! See you soon. 😊
 📧 Email: ${hr_email}
 
 `,
-            senderName: "Customer Portal"
+            senderName: `${candidate_name}`
           });
           console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
         } catch (postErr) {
@@ -154,7 +154,7 @@ const sendNotJoinedWhatsAppMessages = async () => {
       if (res && res.data) {
         try {
           const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
-            phoneNumber: candidate_phone,
+             phoneNumber: `91${candidate_phone}`,
             message: `Hi ${candidate_name},
 We noticed that your joining date for the ${roleName} role at ${company_name} has passed, and we haven't heard from you yet. We are still excited to have you on board!
 
@@ -164,7 +164,7 @@ Looking forward to your response! 😊
 
 📞 Contact: ${hr_phone}
 📧 Email: ${hr_email}`,
-            senderName: "Customer Portal"
+            senderName: `${candidate_name}`
           });
           console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
         } catch (postErr) {

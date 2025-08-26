@@ -67,7 +67,7 @@ const sendInterviewNoAttendedWhatsAppMessage = async () => {
       if (res && res.data) {
         try {
           const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
-            phoneNumber: candidate_phone,
+             phoneNumber: `91${candidate_phone}`,
             message: `Hi ${candidate_name},
 We noticed that you were unable to attend the interview for the ${roleName} role at ${company_name}.
 
@@ -75,7 +75,7 @@ Would you like to reschedule? Let us know if you’re still interested so we can
 
 Contact: ${hr_phone}
 Email: ${hr_email}`,
-            senderName:"Customer Portal"
+            senderName:`${candidate_name}`
           });
           console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
         } catch (postErr) {
@@ -158,7 +158,7 @@ const sendDayBeforeInterviewReminder = async () => {
       if (res && res.data) {
         try {
           const notifRes = await axios.post("https://toolsapis.earlyjobs.ai/api/webhooks/notification", {
-            phoneNumber: candidate_phone, 
+             phoneNumber: `91${candidate_phone}`, 
             message: `Hi ${candidate_name},
 
 We’re excited to remind you that your interview for the ${roleName} role at ${company_name} is scheduled for tomorrow!
@@ -172,7 +172,7 @@ If you have any questions or need any assistance before the interview, feel free
 
 Contact: ${hr_phone}
 Email: ${hr_email}`,
-            senderName: "Customer Portal"
+            senderName: `${candidate_name}`
           });
           console.log(`📩 Notification API response for ${candidate_phone}:`, notifRes.data);
         } catch (postErr) {
