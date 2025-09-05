@@ -9,7 +9,7 @@ import SuratFranchise from "../pages/Surat";
 import ChandigarhFranchise from "../pages/Chandigarh/Index.jsx";
 import Index from "../pages/FranchiseVizag/Index.jsx";
 import FranchiseChennai from "../pages/FranchiseChennai/Index.jsx";
-
+import Rampur from "../pages/FranchiseRampur/Index.jsx"
 
 
 const JobsPage = lazy(() => import("../components/JobsPage"));
@@ -153,6 +153,16 @@ const EachRoute = ({ initialState }) => {
         render={() => (
           <Suspense fallback={<Loader />}>
             <Index/>
+            {/* <LoginPage /> */}
+          </Suspense>
+        )}
+      />
+      <Route
+        exact
+        path="/franchise/rampur"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <Rampur/>
             {/* <LoginPage /> */}
           </Suspense>
         )}
