@@ -100,6 +100,9 @@ const LoginPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        alert('Please login in to earlyjobs.ai -> Recruiter -> Login');
+        // --- Original login logic below is commented out ---
+        /*
         if(email === '' || password === ''){
             setError("*All fields required")
             return
@@ -133,6 +136,7 @@ const LoginPage = () => {
             setError(data.error)
         }
         setLoading(false)
+        */
     }
 
     if(Cookies.get('jwt_token') !== undefined) {
