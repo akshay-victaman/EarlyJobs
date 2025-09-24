@@ -452,25 +452,25 @@ const EachRoute = ({ initialState }) => {
         )}
       />
 
-      // <ProtectedRoute
-      //   exact
-      //   path="/jobs"
-      //   render={() => (
-      //     <Suspense fallback={<Loader />}>
-      //       <JobsPage />
-      //     </Suspense>
-      //   )}
-      // />
+      <ProtectedRoute
+        exact
+        path="/jobsold"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <JobsPage />
+          </Suspense>
+        )}
+      />
 
-      // <ProtectedRoute
-      //   exact
-      //   path="/jobs/:id"
-      //   render={() => (
-      //     <Suspense fallback={<Loader />}>
-      //       <JobDetailsPage />
-      //     </Suspense>
-      //   )}
-      // />
+      <ProtectedRoute
+        exact
+        path="/jobsold/:id"
+        render={() => (
+          <Suspense fallback={<Loader />}>
+            <JobDetailsPage />
+          </Suspense>
+        )}
+      />
 
       <ProtectedRoute
         exact
