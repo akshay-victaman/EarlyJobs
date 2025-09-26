@@ -454,7 +454,7 @@ const EachRoute = ({ initialState }) => {
 
       <ProtectedRoute
         exact
-        path="/jobs"
+        path="/jobsold"
         render={() => (
           <Suspense fallback={<Loader />}>
             <JobsPage />
@@ -464,7 +464,7 @@ const EachRoute = ({ initialState }) => {
 
       <ProtectedRoute
         exact
-        path="/jobs/:id"
+        path="/jobsold/:id"
         render={() => (
           <Suspense fallback={<Loader />}>
             <JobDetailsPage />
