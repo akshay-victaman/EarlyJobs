@@ -113,50 +113,50 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-     alert('Please login in to earlyjobs.ai -> Recruiter -> Login');
+     // alert('Please login in to earlyjobs.ai -> Recruiter -> Login');
 
     
-    // if (email === "" || password === "") {
-    //   setError("*All fields required");
-    //   return;
-    // }
-    // const credentials = {
-    //   email,
-    //   password,
-    // };
-    // const options = {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(credentials),
-    // };
-    // setLoading(true);
-    // const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
-    // const response = await fetch(`${backendUrl}/api/users/login`, options);
-    // const data = await response.json();
-    // console.log(data);
-    // if (response.ok === true) {
-    //   if (data.error) {
-    //     setError(data.error);
-    //   } else if (data.isBlocked === 1) {
-    //     setError("Your account has been blocked. Please contact the admin.");
-    //   } else {
-    //     onSubmitSuccess(
-    //       data.jwtToken,
-    //       data.username,
-    //       data.role,
-    //       data.email,
-    //       data.userDetailsId,
-    //       data.hiringFor,
-    //       data.hmType
-    //     );
-    //     setError("");
-    //   }
-    // } else {
-    //   setError(data.error);
-    // }
-    // setLoading(false);
+    if (email === "" || password === "") {
+      setError("*All fields required");
+      return;
+    }
+    const credentials = {
+      email,
+      password,
+    };
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    };
+    setLoading(true);
+    const backendUrl = process.env.REACT_APP_BACKEND_API_URL;
+    const response = await fetch(`${backendUrl}/api/users/login`, options);
+    const data = await response.json();
+    console.log(data);
+    if (response.ok === true) {
+      if (data.error) {
+        setError(data.error);
+      } else if (data.isBlocked === 1) {
+        setError("Your account has been blocked. Please contact the admin.");
+      } else {
+        onSubmitSuccess(
+          data.jwtToken,
+          data.username,
+          data.role,
+          data.email,
+          data.userDetailsId,
+          data.hiringFor,
+          data.hmType
+        );
+        setError("");
+      }
+    } else {
+      setError(data.error);
+    }
+    setLoading(false);
   };
 
   if (Cookies.get("jwt_token") !== undefined) {
