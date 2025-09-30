@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "destination": "https://earlyjobs.ai/$1",
+      "destination": "https://earlyjobs.ai",
       "permanent": true
     }
   ]
